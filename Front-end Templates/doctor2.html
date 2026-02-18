@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor</title>
+
+    <!-- Css -->
+    <link rel="stylesheet" href="Css/style.css">
+
+</head>
+<body>
+    <main>
+        <h1>Doctor</h1>
+
+        <div>
+            <label>English</label>
+            <label class="switch">
+                <input type="checkbox" id="langSwitch">
+                <span class="slider"></span>
+            </label>
+            <label>العربية</label>
+        </div>
+
+        <form id="doctor">
+
+            <div>
+                <label for="university">University</label>
+                <input list="universities" id="university" name="university" placeholder="Start typing or choose..." required>
+                <datalist id="universities">
+                    <option>Ain Shams University</option>
+                    <option>Al-Azhar University</option>
+                    <option>Alexandria University</option>
+                    <option>American University in Cairo (AUC)</option>
+                    <option>Arab Academy for Science &amp; Technology</option>
+                    <option>Assiut University</option>
+                    <option>Benha University</option>
+                    <option>Beni Suef University</option>
+                    <option>British University in Egypt</option>
+                    <option>Canadian International College</option>
+                    <option>Cairo University</option>
+                    <option>Fayoum University</option>
+                    <option>Future University in Egypt</option>
+                    <option>German University in Cairo (GUC)</option>
+                    <option>Helwan University</option>
+                    <option>Kafr El Sheikh University</option>
+                    <option>Luxor University</option>
+                    <option>Mansoura University</option>
+                    <option>Matrouh University</option>
+                    <option>Menoufia University</option>
+                    <option>Minia University</option>
+                    <option>Misr International University</option>
+                    <option>Misr University for Science &amp; Technology (MUST)</option>
+                    <option>Nile University</option>
+                    <option>New Valley University</option>
+                    <option>October 6 University</option>
+                    <option>Other</option>
+                    <option>Pharos University</option>
+                    <option>Port Said University</option>
+                    <option>Sohag University</option>
+                    <option>South Valley University</option>
+                    <option>Suez Canal University</option>
+                    <option>Tanta University</option>
+                    <option>Zagazig University</option>
+                </datalist>
+            </div>
+
+            <div>
+                <label for="nationalId">National ID (Front)</label>
+                <input id="nationalId" name="nationalId" type="file" accept="image/*,application/pdf"  required>
+                <label for="nationalId">National ID (Back)</label>
+                <input id="nationalId" name="nationalId" type="file" accept="image/*,application/pdf"  required>
+            </div>
+
+
+            <div>
+                <label for="price">price</label>
+                <input id="price" name="price" type="number" required>
+            </div>
+
+            <div>
+                <label for="excellenceCert">Excellence certificate</label>
+                <input id="excellenceCert" name="excellenceCert" type="file" accept="image/*,application/pdf" required>
+            </div>
+
+            <div>
+                <label for="graduationCert">Graduation certificate</label>
+                <input id="graduationCert" name="graduationCert" type="file" accept="image/*,application/pdf" required>
+            </div>
+
+            <div>
+                <label for="syndicateCard">Syndicate card</label>
+                <input id="syndicateCard" name="syndicateCard" type="file" accept="image/*,application/pdf" required>
+            </div>
+
+            <div>
+                <label for="practicePermit">Practice permit</label>
+                <input id="practicePermit" name="practicePermit" type="file" accept="image/*,application/pdf" required>
+            </div>
+
+            <div>
+                <button type="submit">Submit</button>
+                <button type="reset">Reset</button>
+            </div>
+
+        </form>
+    </main>
+</body>
+</html>
