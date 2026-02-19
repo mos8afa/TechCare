@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor</title>
+
+    <!-- Css -->
+    <link rel="stylesheet" href="Css/style.css">
+</head>
+<body>
+    <main>
+        <h1>Donor</h1>
+
+        <div>
+            <label>English</label>
+            <label class="switch">
+                <input type="checkbox" id="langSwitch">
+                <span class="slider"></span>
+            </label>
+            <label>العربية</label>
+        </div>
+
+        <form id="donor">
+            <div>
+                <label for="firstName">First name</label>
+                <input id="firstName" name="firstName" type="text" required>
+            </div>
+
+            <div>
+                <label for="lastName">Last name</label>
+                <input id="lastName" name="lastName" type="text" required>
+            </div>
+
+            <div>
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" required>
+                    <option value="" disabled selected>Select</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="phone">Phone number</label>
+                <input id="phone" name="phone" type="tel" placeholder="+20 1XXXXXXXXX" required>
+            </div>
+
+
+            <div>
+                <label for="dob">Date of birth</label>
+                <input id="dob" name="dob" type="date" required>
+            </div>
+
+            <div>
+                <label for="lastDonation">Last donation date (if any)</label>
+                <input id="lastDonation" name="lastDonation" type="date">
+            </div>
+
+            <div>
+                <label for="bloodType">Blood type</label>
+                <select id="bloodType" name="bloodType" required>
+                    <option value="" disabled selected>Select blood type</option>
+                    <option>A+</option>
+                    <option>A-</option>
+                    <option>B+</option>
+                    <option>B-</option>
+                    <option>AB+</option>
+                    <option>AB-</option>
+                    <option>O+</option>
+                    <option>O-</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="donorddress">Address</label>
+                <textarea id="donorddress" name="donorddress" required></textarea>
+            </div>
+
+            <div>
+                <label for="governorate">Governorate</label>
+                <select id="governorate" name="governorate" required>
+                    <option value="" disabled selected>Select governorate</option>
+                    <option>Cairo</option>
+                    <option>Giza</option>
+                    <option>Alexandria</option>
+                    <option>Port Said</option>
+                    <option>Suez</option>
+                    <option>Ismailia</option>
+                    <option>Sohag</option>
+                    <option>Minya</option>
+                    <option>Assiut</option>
+                    <option>Qena</option>
+                    <option>Luxor</option>
+                    <option>Aswan</option>
+                    <option>Red Sea</option>
+                    <option>South Sinai</option>
+                    <option>North Sinai</option>
+                    <option>New Valley</option>
+                    <option>Matrouh</option>
+                    <option>Beheira</option>
+                    <option>Dakahlia</option>
+                    <option>Sharqia</option>
+                    <option>Gharbia</option>
+                    <option>Kafr El Sheikh</option>
+                    <option>Monufia</option>
+                    <option>Beni Suef</option>
+                    <option>Faiyum</option>
+                    <option>Damietta</option>
+                    <option>Qalyubia</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="nationalId">National ID (Front)</label>
+                <input id="nationalId" name="nationalId" type="file" accept="image/*,application/pdf"  required>
+                <label for="nationalId">National ID (Back)</label>
+                <input id="nationalId" name="nationalId" type="file" accept="image/*,application/pdf"  required>
+            </div>
+
+            <div>
+                <label for="profilePic">Profile picture</label>
+                <input id="profilePic" name="profilePic" type="file" accept="image/*" required>
+            </div>
+
+            <div>
+                <button type="submit">Submit</button>
+                <button type="reset">Reset</button>
+            </div>
+        </form>
+    </main>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor</title>
+
+    <!-- Css -->
+    <link rel="stylesheet" href="Css/style.css">
+
+</head>
+<body>
+    <main>
+        <h1>Doctor</h1>
+
+        <div>
+            <label>English</label>
+            <label class="switch">
+                <input type="checkbox" id="langSwitch">
+                <span class="slider"></span>
+            </label>
+            <label>العربية</label>
+        </div>
+
+        <form id="doctor">
+            <div>
+                <label for="firstName">First name</label>
+                <input id="firstName" name="firstName" type="text" required>
+            </div>
+
+            <div>
+                <label for="lastName">Last name</label>
+                <input id="lastName" name="lastName" type="text" required>
+            </div>
+
+            <div>
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" required>
+                    <option value="" disabled selected>Select</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="phone">Phone number</label>
+                <input id="phone" name="phone" type="tel" placeholder="+20 1XXXXXXXXX" required>
+            </div>
+
+
+            <div>
+                <label for="dob">Date of birth</label>
+                <input id="dob" name="dob" type="date" required>
+            </div>
+
+            <div>
+                <label for="governorate">Governorate</label>
+                <select id="governorate" name="governorate" required>
+                    <option value="" disabled selected>Select governorate</option>
+                    <option>Alexandria</option>
+                    <option>Aswan</option>
+                    <option>Assiut</option>
+                    <option>Beheira</option>
+                    <option>Beni Suef</option>
+                    <option>Cairo</option>
+                    <option>Dakahlia</option>
+                    <option>Damietta</option>
+                    <option>Faiyum</option>
+                    <option>Gharbia</option>
+                    <option>Giza</option>
+                    <option>Ismailia</option>
+                    <option>Kafr El Sheikh</option>
+                    <option>Luxor</option>
+                    <option>Matrouh</option>
+                    <option>Minya</option>
+                    <option>Monufia</option>
+                    <option>New Valley</option>
+                    <option>North Sinai</option>
+                    <option>Port Said</option>
+                    <option>Qalyubia</option>
+                    <option>Qena</option>
+                    <option>Red Sea</option>
+                    <option>Sharqia</option>
+                    <option>Sohag</option>
+                    <option>South Sinai</option>
+                    <option>Suez</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="doctorAddress">Address</label>
+                <textarea id="doctorAddress" name="doctorAddress" required></textarea>
+            </div>
+
+            <div>
+                <label for="Profile">Profile</label>
+                <input id="Profile" name="Profile" type="file" accept="image/*,application/pdf" required>
+            </div>
+
+            <div>
+                <button type="button"><a href="doctor2.html">Next</a></button>
+            </div>
+
+        </form>
+    </main>
+</body>
+</html>
