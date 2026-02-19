@@ -184,7 +184,7 @@ body {
 .terms label {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 5px;
 
     cursor: pointer;
     font-size: 13px;
@@ -263,6 +263,7 @@ body {
     color: var(--primary-color);
 }
 
+/* Media Query */
 @media (max-width: 480px) {
     .register-container {
         padding: 30px 20px;
