@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.core.cache import cache
@@ -6,6 +6,8 @@ from django.core.mail import send_mail
 from project.settings import EMAIL_HOST_USER
 from django.contrib.auth import get_user_model
 import random
+from .forms import RegisterForm
+
 
 def user_login(request):
     if request.method == 'POST':
@@ -46,16 +48,27 @@ def verify_otp(request):
 
         saved_otp = cache.get(f"otp_{user_id}")
 
+        attempts = request.session.get("otp_attempts", 0)
+
+        if attempts >= 5:
+            messages.error(request, "Too many attempts")
+            return redirect("login")
+        
         if not saved_otp:
             messages.error(request, "OTP expired")
             return redirect("login")
 
         if str(saved_otp) != str(otp):
+            request.session["otp_attempts"] = attempts + 1
             messages.error(request, "Invalid OTP")
             return render(request, "verify_otp.html")
 
+        request.session.pop("otp_attempts", None)
+
         User = get_user_model()
-        user = User.objects.get(id=user_id)
+        user = get_object_or_404(User, id=user_id)
+        user.is_active = True
+        user.save()
         login(request, user)
         cache.delete(f"otp_{user_id}")
         request.session.pop("otp_user_id", None)
@@ -63,3 +76,32 @@ def verify_otp(request):
         return redirect("home")
 
     return render(request, "verify_otp.html")
+
+
+def user_register(request):
+    if request.method =='POST':
+        register_form = RegisterForm(request.POST)
+        if register_form.is_valid():
+            user = register_form.save(commit=False)
+            user.is_active = False
+            user.save()
+
+            otp = random.randint(10000,99999)
+
+            cache.set(f"otp_{user.id}", otp, timeout=300)
+
+            send_mail(
+                subject = "TechCare Team",
+                message = f"your verification OTP is {otp}",
+                from_email = EMAIL_HOST_USER,
+                recipient_list = [user.email]
+            )
+            request.session['otp_user_id'] = user.id
+
+            return redirect('verify-otp')
+    else:
+        register_form = RegisterForm()
+    return render(request, 'register.html',{'register_form':register_form})
+
+
+        
