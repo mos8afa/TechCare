@@ -1,3 +1,8 @@
-from django.shortcuts import render
+def Login():
+    pass
 
-# Create your views here.
+def VerifyOTP():
+    pass
+
+def Register():
+    pass
