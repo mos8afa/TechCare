@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework_simplejwt',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,7 @@ EMAIL_USE_SSL = False
 EMAIL_HOST_USER = 'imos8afa@gmail.com' 
 EMAIL_HOST_PASSWORD = 'cbfg kfuy yzeh bjmc' 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+#------------------------
+AUTH_USER_MODEL = 'accounts.CustomUser'
