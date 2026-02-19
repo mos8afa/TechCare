@@ -9,13 +9,12 @@ from project.settings import EMAIL_HOST_USER
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def Login(request):
     username = request.data.get('username')
     password = request.data.get('password')
 
     user = authenticate(username=username, password=password)
-    
+
     if user is None:
         return Response({"error": "Invalid credentials"}, status=401)
 
