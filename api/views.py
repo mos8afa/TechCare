@@ -8,7 +8,6 @@ from django.core.mail import send_mail
 from project.settings import EMAIL_HOST_USER
 
 
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def Login(request):
@@ -16,6 +15,9 @@ def Login(request):
     password = request.data.get('password')
 
     user = authenticate(username=username, password=password)
+    
+    if user is None:
+        return Response({"error": "Invalid credentials"}, status=401)
 
     otp = random.randint(10000,99999)
 
@@ -30,12 +32,11 @@ def Login(request):
 
     return Response({"message": "OTP sent to your email"})
 
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def VerifyOTP():
     pass
-
-
 
 
 
