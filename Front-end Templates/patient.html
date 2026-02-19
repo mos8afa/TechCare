@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nurse</title>
+    <title>Patient Registration</title>
 
-    <link rel="stylesheet" href="Css/nurse.css">
+    <link rel="stylesheet" href="Css/patient.css">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -22,33 +23,35 @@
         </div>
     </header>
 
-    <main class="doctor-container"> <div class="header-section">
+    <main class="doctor-container">
+        <div class="header-section">
             <div class="logo-icon-small">
-                <i class="fas fa-user-nurse"></i> </div>
-            <h2>Create Nurse Account</h2>
+                <i class="fas fa-user-injured"></i>
+            </div>
+            <h2>Create Patient Account</h2>
             <div class="progress-wrapper">
                 <div class="progress-info">
                     <span>PROGRESS</span>
-                    <span>50%</span>
+                    <span>100%</span>
                 </div>
                 <div class="progress-bar">
-                    <div class="progress-fill" style="width: 50%;"></div>
+                    <div class="progress-fill" style="width: 100%;"></div>
                 </div>
             </div>
         </div>
 
-        <form id="nurseForm">
+        <form id="patientForm">
             <div class="input-row">
                 <div class="input-group">
-                    <label for="nurseFirstName">First Name</label>
+                    <label for="firstName">First Name</label>
                     <div class="input-wrapper">
-                        <input id="nurseFirstName" name="firstName" type="text" placeholder="First name" required>
+                        <input id="firstName" name="firstName" type="text" placeholder="First name" required>
                     </div>
                 </div>
                 <div class="input-group">
-                    <label for="nurseLastName">Last Name</label>
+                    <label for="lastName">Last Name</label>
                     <div class="input-wrapper">
-                        <input id="nurseLastName" name="lastName" type="text" placeholder="Last name" required>
+                        <input id="lastName" name="lastName" type="text" placeholder="Last name" required>
                     </div>
                 </div>
             </div>
@@ -66,18 +69,11 @@
                     </div>
                 </div>
                 <div class="input-group">
-                    <label for="dob">Date of Birth</label>
-                    <div class="input-wrapper DOB">
-                        <input id="dob" name="dob" type="date" required>
+                    <label for="phone">Phone Number</label>
+                    <div class="input-wrapper">
+                        <span class="prefix">+20</span>
+                        <input id="phone" name="phone" type="tel" placeholder="1XXXXXXXXX" required>
                     </div>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label for="phone">Phone Number</label>
-                <div class="input-wrapper">
-                    <span class="prefix">+20</span>
-                    <input id="phone" name="phone" type="tel" placeholder="1XXXXXXXXX" required>
                 </div>
             </div>
 
@@ -87,55 +83,74 @@
                     <i class="fas fa-map-marker-alt"></i>
                     <select id="governorate" name="governorate" required>
                         <option value="" disabled selected>Select governorate</option>
-                        <option>Alexandria</option>
-                        <option>Aswan</option>
-                        <option>Assiut</option>
-                        <option>Beheira</option>
-                        <option>Beni Suef</option>
                         <option>Cairo</option>
+                        <option>Giza</option>
+                        <option>Alexandria</option>
                         <option>Dakahlia</option>
-                        <option>Damietta</option>
+                        <option>Red Sea</option>
+                        <option>Beheira</option>
                         <option>Faiyum</option>
                         <option>Gharbia</option>
-                        <option>Giza</option>
                         <option>Ismailia</option>
-                        <option>Kafr El Sheikh</option>
-                        <option>Luxor</option>
-                        <option>Matrouh</option>
-                        <option>Minya</option>
                         <option>Monufia</option>
-                        <option>New Valley</option>
-                        <option>North Sinai</option>
-                        <option>Port Said</option>
+                        <option>Minya</option>
                         <option>Qalyubia</option>
-                        <option>Qena</option>
-                        <option>Red Sea</option>
-                        <option>Sharqia</option>
-                        <option>Sohag</option>
-                        <option>South Sinai</option>
+                        <option>New Valley</option>
                         <option>Suez</option>
+                        <option>Aswan</option>
+                        <option>Assiut</option>
+                        <option>Beni Suef</option>
+                        <option>Port Said</option>
+                        <option>Damietta</option>
+                        <option>Sharkia</option>
+                        <option>South Sinai</option>
+                        <option>Kafr El Sheikh</option>
+                        <option>Matrouh</option>
+                        <option>Luxor</option>
+                        <option>Qena</option>
+                        <option>North Sinai</option>
+                        <option>Sohag</option>
                     </select>
                 </div>
             </div>
 
             <div class="input-group">
-                <label for="nurseAddress">Full Address</label>
+                <label for="address">Full Address</label>
                 <div class="input-wrapper">
-                    <textarea id="nurseAddress" name="nurseAddress" rows="2" placeholder="Street, Building, Apartment" required></textarea>
+                    <textarea id="address" name="address" rows="2" placeholder="Street, Building, Apartment" required></textarea>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>National ID (Front)</label>
+                    <div class="file-wrapper">
+                        <input name="nationalIdFront" type="file" accept="image/*,application/pdf" required>
+                        <i class="fas fa-id-card"></i>
+                        <span>Upload Front</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>National ID (Back)</label>
+                    <div class="file-wrapper">
+                        <input name="nationalIdBack" type="file" accept="image/*,application/pdf" required>
+                        <i class="fas fa-id-card"></i>
+                        <span>Upload Back</span>
+                    </div>
                 </div>
             </div>
 
             <div class="input-group">
-                <label for="Profile">Profile Picture</label>
+                <label for="profilePic">Profile Picture</label>
                 <div class="file-wrapper">
-                    <input id="Profile" name="Profile" type="file" accept="image/*,application/pdf" required>
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <span>Click to upload file</span>
+                    <input id="profilePic" name="profilePic" type="file" accept="image/*" required>
+                    <i class="fas fa-camera"></i>
+                    <span>Click to upload photo</span>
                 </div>
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn-next">Continue to Next Step <i class="fas fa-arrow-right"></i></button>
+                <button type="submit" class="btn-next">Complete Registration <i class="fas fa-check-circle"></i></button>
                 <button type="reset" class="btn-reset">Reset</button>
             </div>
         </form>

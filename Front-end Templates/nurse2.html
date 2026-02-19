@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor</title>
+    <title>Nurse</title>
 
-    <link rel="stylesheet" href="Css/doctor2.css">
+    <link rel="stylesheet" href="Css/nurse2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -21,8 +21,7 @@
     <main class="doctor-container">
         <div class="header-section">
             <div class="logo-icon-small">
-                <i class="fas fa-graduation-cap"></i>
-            </div>
+                <i class="fas fa-user-nurse"></i> </div>
             <h2>Professional Details</h2>
             <div class="progress-wrapper">
                 <div class="progress-info">
@@ -35,13 +34,13 @@
             </div>
         </div>
 
-        <form id="doctorProfessionalForm">
+        <form id="nurseProfessionalForm">
             
             <div class="input-group">
                 <label for="university">University</label>
                 <div class="input-wrapper">
                     <i class="fas fa-university"></i>
-                    <input list="universities" id="university" name="university" placeholder="Start typing or choose..." required>
+                    <input list="universities" id="university" name="university" placeholder="Choose University..." required>
                     <datalist id="universities">
                         <option>Ain Shams University</option>
                         <option>Al-Azhar University</option>
@@ -84,7 +83,7 @@
             <div class="input-row">
                 <div class="input-group">
                     <label>National ID (Front)</label>
-                    <div class="file-wrapper">
+                    <div class="file-wrapper small">
                         <input type="file" name="idFront" accept="image/*,application/pdf" required>
                         <i class="fas fa-id-card"></i>
                         <span>Upload Front</span>
@@ -92,7 +91,7 @@
                 </div>
                 <div class="input-group">
                     <label>National ID (Back)</label>
-                    <div class="file-wrapper">
+                    <div class="file-wrapper small">
                         <input type="file" name="idBack" accept="image/*,application/pdf" required>
                         <i class="fas fa-id-card"></i>
                         <span>Upload Back</span>
@@ -102,12 +101,12 @@
 
             <div class="input-row">
                 <div class="input-group" style="flex: 2;">
-                    <label for="specialization">Specialization</label>
+                    <label for="serviceName">Service Offered</label>
                     <div class="input-wrapper">
-                        <i class="fas fa-stethoscope"></i>
-                        <select id="specialization" name="specialization" required>
-                            <option value="" disabled selected>Select specialization</option>
-                            <option>لحد ما اخدها من المنوف</option>
+                        <i class="fas fa-hand-holding-medical"></i>
+                        <select id="serviceName" name="serviceName" required>
+                            <option value="" disabled selected>Select service</option>
+                            <option>Home Nursing ya slaaam</option>
                         </select>
                     </div>
                 </div>
@@ -123,18 +122,18 @@
             <div class="input-row">
                 <div class="input-group">
                     <label>Excellence Cert.</label>
-                    <div class="file-wrapper">
+                    <div class="file-wrapper small">
                         <input type="file" name="excellenceCert" required>
                         <i class="fas fa-award"></i>
-                        <span>Upload File</span>
+                        <span>Upload</span>
                     </div>
                 </div>
                 <div class="input-group">
                     <label>Graduation Cert.</label>
-                    <div class="file-wrapper">
+                    <div class="file-wrapper small">
                         <input type="file" name="graduationCert" required>
                         <i class="fas fa-user-graduate"></i>
-                        <span>Upload File</span>
+                        <span>Upload</span>
                     </div>
                 </div>
             </div>
@@ -142,18 +141,18 @@
             <div class="input-row">
                 <div class="input-group">
                     <label>Syndicate Card</label>
-                    <div class="file-wrapper">
+                    <div class="file-wrapper small">
                         <input type="file" name="syndicateCard" required>
                         <i class="fas fa-address-card"></i>
-                        <span>Upload File</span>
+                        <span>Upload</span>
                     </div>
                 </div>
                 <div class="input-group">
                     <label>Practice Permit</label>
-                    <div class="file-wrapper">
+                    <div class="file-wrapper small">
                         <input type="file" name="practicePermit" required>
                         <i class="fas fa-file-medical"></i>
-                        <span>Upload File</span>
+                        <span>Upload</span>
                     </div>
                 </div>
             </div>
