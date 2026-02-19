@@ -145,3 +145,4 @@ EMAIL_HOST_PASSWORD = 'cbfg kfuy yzeh bjmc'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
+AUTH_USER_MODEL = 'accounts.CustomUser'

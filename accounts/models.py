@@ -1,6 +1,6 @@
-from django.contrib.auth.models import User
+from project import settings
 from django.db import models
-
+from django.contrib.auth.models import AbstractUser
 # ----- static choices -----
 ROLES = (
     ("patient", "Patient"),
@@ -168,13 +168,12 @@ SPECIFICATIONS = (
     ("general_practice", "General Practice"),
 )
 
+class CustomUser(AbstractUser):
+    role = models.CharField(max_length=10, choices=ROLES)
 
 #----- patient ------
 class Patient(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=60)
-    last_name = models.CharField(max_length=60)
-    email = models.EmailField()
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     gender = models.CharField(max_length=6, choices=GENDERS)
     profile_pic = models.ImageField(upload_to='patients/profile/')
     national_id_pic = models.ImageField(upload_to='patients/national_id/')
@@ -185,10 +184,7 @@ class Patient(models.Model):
 
 #------- Doctor -----
 class Doctor(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=60)
-    last_name = models.CharField(max_length=60)
-    email = models.EmailField()
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     national_id_pic = models.ImageField(upload_to='doctors/national_id/')
     gender = models.CharField(max_length=6, choices=GENDERS)
     profile_pic = models.ImageField(upload_to='doctors/profile/')
@@ -208,10 +204,7 @@ class Doctor(models.Model):
 
 #------------- Nurse -------
 class Nurse(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=60)
-    last_name = models.CharField(max_length=60)
-    email = models.EmailField()
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     national_id_pic = models.ImageField(upload_to='nurses/national_id/')
     gender = models.CharField(max_length=6, choices=GENDERS)
     profile_pic = models.ImageField(upload_to='nurses/profile/')
@@ -228,10 +221,7 @@ class Nurse(models.Model):
 
 #------- Pharmacist --------
 class Pharmacist(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=60)
-    last_name = models.CharField(max_length=60)
-    email = models.EmailField()
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     national_id_pic = models.ImageField(upload_to='pharmacists/national_id/')
     gender = models.CharField(max_length=6, choices=GENDERS)
     profile_pic = models.ImageField(upload_to='pharmacists/profile/')
@@ -248,10 +238,7 @@ class Pharmacist(models.Model):
 
 # -------- Donor -------
 class Donor(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=60)
-    last_name = models.CharField(max_length=60)
-    email = models.EmailField()
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     national_id_pic = models.ImageField(upload_to='donors/national_id/')
     gender = models.CharField(max_length=6, choices=GENDERS)
     profile_pic = models.ImageField(upload_to='donors/profile/')

@@ -7,7 +7,7 @@ from project.settings import EMAIL_HOST_USER
 from django.contrib.auth import get_user_model
 import random
 
-def Login(request):
+def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -35,7 +35,7 @@ def Login(request):
     return render(request, 'login.html')
 
 
-def VerifyOTP(request):
+def verify_otp(request):
     if request.method == "POST":
         user_id = request.session.get("otp_user_id")
         otp = request.POST.get("otp")
