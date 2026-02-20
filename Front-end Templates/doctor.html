@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doctor</title>
 
-    <!-- Css -->
-    <link rel="stylesheet" href="Css/doctor.css">
-
+    <link rel="stylesheet" href="Css/Form.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
+<body style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url(../img/BG.jpeg) no-repeat center center fixed; background-size: cover;">
 
     <header class="top-header">
         <div class="lang-dropdown" id="langBtn">
@@ -29,6 +27,7 @@
             <div class="logo-icon-small">
                 <i class="fas fa-user-md"></i>
             </div>
+            
             <h2>Create Doctor Account</h2>
             <div class="progress-wrapper">
                 <div class="progress-info">
@@ -44,22 +43,7 @@
         <form id="doctorForm">
             <div class="input-row">
                 <div class="input-group">
-                    <label for="firstName">First Name</label>
-                    <div class="input-wrapper">
-                        <input id="firstName" name="firstName" type="text" placeholder="First name" required>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label for="lastName">Last Name</label>
-                    <div class="input-wrapper">
-                        <input id="lastName" name="lastName" type="text" placeholder="Last name" required>
-                    </div>
-                </div>
-            </div>
-
-            <div class="input-row">
-                <div class="input-group">
-                    <label for="gender">Gender</label>
+                    <label>Gender</label>
                     <div class="input-wrapper">
                         <i class="fas fa-venus-mars"></i>
                         <select id="gender" name="gender" required>
@@ -70,15 +54,15 @@
                     </div>
                 </div>
                 <div class="input-group">
-                    <label for="dob">Date of Birth</label>
-                    <div class="input-wrapper  DOB"  >
+                    <label>Date of Birth</label>
+                    <div class="input-wrapper DOB">
                         <input id="dob" name="dob" type="date" required>
                     </div>
                 </div>
             </div>
 
             <div class="input-group">
-                <label for="phone">Phone Number</label>
+                <label>Phone Number</label>
                 <div class="input-wrapper">
                     <span class="prefix">+20</span>
                     <input id="phone" name="phone" type="tel" placeholder="1XXXXXXXXX" required>
@@ -86,7 +70,7 @@
             </div>
 
             <div class="input-group">
-                <label for="governorate">Governorate</label>
+                <label>Governorate</label>
                 <div class="input-wrapper">
                     <i class="fas fa-map-marker-alt"></i>
                     <select id="governorate" name="governorate" required>
@@ -123,28 +107,28 @@
             </div>
 
             <div class="input-group">
-                <label for="doctorAddress">Full Address</label>
+                <label>Full Address</label>
                 <div class="input-wrapper">
                     <textarea id="doctorAddress" name="doctorAddress" rows="2" placeholder="Street, Building, Apartment" required></textarea>
                 </div>
             </div>
 
             <div class="input-group">
-                <label for="Profile">Profile Picture</label>
-                <div class="file-wrapper">
-                    <input id="Profile" name="Profile" type="file" accept="image/*,application/pdf" required>
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <span>Click to upload file</span>
+                <label>Profile Picture</label>
+                <div class="file-wrapper" id="fileWrapper">
+                    <input id="Profile" name="Profile" type="file" accept="image/*" required>
+                    <i class="fas fa-camera" id="fileIcon"></i>
+                    <span id="fileStatusText">Click to upload file</span>
                 </div>
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn-next">Continue to Next Step <i class="fas fa-arrow-right"></i></button>
                 <button type="reset" class="btn-reset">Reset</button>
+                <button type="submit" id="nextStepBtn" class="btn-next">Continue to Next Step <i class="fas fa-arrow-right"></i></button>
             </div>
         </form>
     </main>
 
-    <script src="JS/Role.js"></script>
+    <script src="JS/Form.js"></script>
 </body>
 </html>

@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Donor</title>
 
-    <link rel="stylesheet" href="Css/donor.css"> 
+    <link rel="stylesheet" href="Css/Form.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
+<body style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url(../img/BG.jpeg) no-repeat center center fixed; background-size: cover;">
 
     <header class="top-header">
         <div class="lang-dropdown" id="langBtn">
@@ -40,24 +40,10 @@
         </div>
 
         <form id="donorForm">
-            <div class="input-row">
-                <div class="input-group">
-                    <label for="firstName">First Name</label>
-                    <div class="input-wrapper">
-                        <input id="firstName" name="firstName" type="text" placeholder="First name" required>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label for="lastName">Last Name</label>
-                    <div class="input-wrapper">
-                        <input id="lastName" name="lastName" type="text" placeholder="Last name" required>
-                    </div>
-                </div>
-            </div>
 
             <div class="input-row">
                 <div class="input-group">
-                    <label for="gender">Gender</label>
+                    <label>Gender</label>
                     <div class="input-wrapper">
                         <i class="fas fa-venus-mars"></i>
                         <select id="gender" name="gender" required>
@@ -68,7 +54,7 @@
                     </div>
                 </div>
                 <div class="input-group">
-                    <label for="dob">Date of Birth</label>
+                    <label>Date of Birth</label>
                     <div class="input-wrapper DOB">
                         <input id="dob" name="dob" type="date" required>
                     </div>
@@ -77,7 +63,7 @@
 
             <div class="input-row">
                 <div class="input-group">
-                    <label for="bloodType">Blood Type</label>
+                    <label>Blood Type</label>
                     <div class="input-wrapper">
                         <i class="fas fa-tint blood"></i>
                         <select id="bloodType" name="bloodType" required>
@@ -94,7 +80,7 @@
                     </div>
                 </div>
                 <div class="input-group">
-                    <label for="lastDonation">Last Donation</label>
+                    <label>Last Donation</label>
                     <div class="input-wrapper DOB">
                         <input id="lastDonation" name="lastDonation" type="date">
                     </div>
@@ -102,7 +88,7 @@
             </div>
 
             <div class="input-group">
-                <label for="phone">Phone Number</label>
+                <label>Phone Number</label>
                 <div class="input-wrapper">
                     <span class="prefix">+20</span>
                     <input id="phone" name="phone" type="tel" placeholder="1XXXXXXXXX" required>
@@ -110,7 +96,7 @@
             </div>
 
             <div class="input-group">
-                <label for="governorate">Governorate</label>
+                <label>Governorate</label>
                 <div class="input-wrapper">
                     <i class="fas fa-map-marker-alt"></i>
                     <select id="governorate" name="governorate" required>
@@ -148,7 +134,7 @@
             </div>
 
             <div class="input-group">
-                <label for="donorddress">Full Address</label>
+                <label>Full Address</label>
                 <div class="input-wrapper">
                     <textarea id="donorddress" name="donorddress" rows="2" placeholder="Street, Building, Apartment" required></textarea>
                 </div>
@@ -174,7 +160,7 @@
             </div>
 
             <div class="input-group">
-                <label for="profilePic">Profile Picture</label>
+                <label>Profile Picture</label>
                 <div class="file-wrapper">
                     <input id="profilePic" name="profilePic" type="file" accept="image/*" required>
                     <i class="fas fa-camera"></i>
@@ -189,6 +175,6 @@
         </form>
     </main>
 
-    <script src="JS/Role.js"></script>
+    <script src="JS/Form.js"></script>
 </body>
 </html>

@@ -5,178 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pharmacist</title>
 
-    <!-- Css -->
-    <link rel="stylesheet" href="Css/style.css">
-
+    <link rel="stylesheet" href="Css/Form.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
-    <main>
-        <h1>Pharmacist</h1>
+<body style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url(../img/BG.jpeg) no-repeat center center fixed; background-size: cover;">
 
-        <div>
-            <label>English</label>
-            <label class="switch">
-                <input type="checkbox" id="langSwitch">
-                <span class="slider"></span>
-            </label>
-            <label>العربية</label>
+    <header class="top-header">
+        <div class="lang-dropdown" id="langBtn">
+            <i class="fas fa-globe"></i>
+            <span id="currentLang">English</span>
+            <i class="fas fa-chevron-down"></i>
+            <ul class="dropdown-menu" id="langMenu">
+                <li>English</li>
+                <li>العربية</li>
+            </ul>
         </div>
+    </header>
 
-        <form id="pharmacist">
-            <div>
-                <label for="firstName">First name</label>
-                <input id="firstName" name="firstName" type="text" required>
-            </div>
-
-            <div>
-                <label for="lastName">Last name</label>
-                <input id="lastName" name="lastName" type="text" required>
-            </div>
-
-            <div>
-                <label for="gender">Gender</label>
-                <select id="gender" name="gender" required>
-                    <option value="" disabled selected>Select</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                </select>
-            </div>
-
-            <div>
-                <label for="phone">Phone number</label>
-                <input id="phone" name="phone" type="tel" placeholder="+20 1XXXXXXXXX" required>
-            </div>
+    <main class="doctor-container">
+        
 
 
-            <div>
-                <label for="dob">Date of birth</label>
-                <input id="dob" name="dob" type="date" required>
-            </div>
-
-            <div>
-                <label for="governorate">Governorate</label>
-                <select id="governorate" name="governorate" required>
-                    <option value="" disabled selected>Select governorate</option>
-                    <option>Alexandria</option>
-                    <option>Aswan</option>
-                    <option>Assiut</option>
-                    <option>Beheira</option>
-                    <option>Beni Suef</option>
-                    <option>Cairo</option>
-                    <option>Dakahlia</option>
-                    <option>Damietta</option>
-                    <option>Faiyum</option>
-                    <option>Gharbia</option>
-                    <option>Giza</option>
-                    <option>Ismailia</option>
-                    <option>Kafr El Sheikh</option>
-                    <option>Luxor</option>
-                    <option>Matrouh</option>
-                    <option>Minya</option>
-                    <option>Monufia</option>
-                    <option>New Valley</option>
-                    <option>North Sinai</option>
-                    <option>Port Said</option>
-                    <option>Qalyubia</option>
-                    <option>Qena</option>
-                    <option>Red Sea</option>
-                    <option>Sharqia</option>
-                    <option>Sohag</option>
-                    <option>South Sinai</option>
-                    <option>Suez</option>
-                </select>
-            </div>
-
-            <div>
-                <label for="pharmacyName">Pharmacy name</label>
-                <input id="pharmacyName" name="pharmacyName" type="text" required>
-            </div>
-
-            <div>
-                <label for="pharmacyAddress">Pharmacy address</label>
-                <textarea id="pharmacyAddress" name="pharmacyAddress" required></textarea>
-            </div>
-
-            <div>
-                <label for="university">University</label>
-                <input list="universities" id="university" name="university" placeholder="Start typing or choose..." required>
-                <datalist id="universities">
-                    <option>Ain Shams University</option>
-                    <option>Al-Azhar University</option>
-                    <option>Alexandria University</option>
-                    <option>American University in Cairo (AUC)</option>
-                    <option>Arab Academy for Science &amp; Technology</option>
-                    <option>Assiut University</option>
-                    <option>Benha University</option>
-                    <option>Beni Suef University</option>
-                    <option>British University in Egypt</option>
-                    <option>Canadian International College</option>
-                    <option>Cairo University</option>
-                    <option>Fayoum University</option>
-                    <option>Future University in Egypt</option>
-                    <option>German University in Cairo (GUC)</option>
-                    <option>Helwan University</option>
-                    <option>Kafr El Sheikh University</option>
-                    <option>Luxor University</option>
-                    <option>Mansoura University</option>
-                    <option>Matrouh University</option>
-                    <option>Menoufia University</option>
-                    <option>Minia University</option>
-                    <option>Misr International University</option>
-                    <option>Misr University for Science &amp; Technology (MUST)</option>
-                    <option>Nile University</option>
-                    <option>New Valley University</option>
-                    <option>October 6 University</option>
-                    <option>Other</option>
-                    <option>Pharos University</option>
-                    <option>Port Said University</option>
-                    <option>Sohag University</option>
-                    <option>South Valley University</option>
-                    <option>Suez Canal University</option>
-                    <option>Tanta University</option>
-                    <option>Zagazig University</option>
-                </datalist>
-            </div>
-
-            <div>
-                <label for="nationalId">National ID (Front)</label>
-                <input id="nationalId" name="nationalId" type="file" accept="image/*,application/pdf"  required>
-                <label for="nationalId">National ID (Back)</label>
-                <input id="nationalId" name="nationalId" type="file" accept="image/*,application/pdf"  required>
-            </div>
-
-            <div>
-                <label for="Profile">Profile</label>
-                <input id="Profile" name="Profile" type="file" accept="image/*,application/pdf" required>
-            </div>
-
-            <div>
-                <label for="excellenceCert">Excellence certificate</label>
-                <input id="excellenceCert" name="excellenceCert" type="file" accept="image/*,application/pdf" required>
-            </div>
-
-            <div>
-                <label for="graduationCert">Graduation certificate</label>
-                <input id="graduationCert" name="graduationCert" type="file" accept="image/*,application/pdf" required>
-            </div>
-
-            <div>
-                <label for="syndicateCard">Syndicate card</label>
-                <input id="syndicateCard" name="syndicateCard" type="file" accept="image/*,application/pdf" required>
-            </div>
-
-            <div>
-                <label for="practicePermit">Practice permit</label>
-                <input id="practicePermit" name="practicePermit" type="file" accept="image/*,application/pdf" required>
-            </div>
 
 
-            <div>
-                <button type="submit">Submit</button>
-                <button type="reset">Reset</button>
-            </div>
 
-        </form>
+
+
+
+
     </main>
 </body>
+    <script src="JS/Form.js"></script>
 </html>
