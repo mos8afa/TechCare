@@ -42,8 +42,16 @@ def user_login(request):
 def verify_otp_login(request):
     if request.method == "POST":
         user_id = request.session.get("otp_user_id")
-        otp = request.POST.get("otp")
-
+        otp1 = request.POST.get("otp1")
+        otp2 = request.POST.get("otp2")
+        otp3 = request.POST.get("otp3")
+        otp4 = request.POST.get("otp4")
+        otp5 = request.POST.get("otp5")
+        otp6 = request.POST.get("otp6")
+        
+        otp_str = str(otp1)+str(otp2)+str(otp3)+str(otp4)+str(otp5)+str(otp6)
+        otp = int(otp_str)
+        
         if not user_id:
             messages.error(request, "User not found")
             return redirect("login")
@@ -134,7 +142,15 @@ def user_register(request):
 def verify_otp_signup(request):
     if request.method == "POST":
         token = request.POST.get("token")
-        otp_input = request.POST.get("otp")
+        otp1 = request.POST.get("otp1")
+        otp2 = request.POST.get("otp2")
+        otp3 = request.POST.get("otp3")
+        otp4 = request.POST.get("otp4")
+        otp5 = request.POST.get("otp5")
+        otp6 = request.POST.get("otp6")
+        
+        otp_str = str(otp1)+str(otp2)+str(otp3)+str(otp4)+str(otp5)+str(otp6)
+        otp_input = int(otp_str)
 
         encrypted_data = cache.get(f"pending_user_{token}")
         if not encrypted_data:
@@ -180,8 +196,7 @@ def verify_otp_signup(request):
 
 
 def verify_otp_faild(request):
-    pass
-
+    render (request, 'accounts/verify_otp_faild.html')
 
 def patient_registration(request):
     if request.method == 'POST':
