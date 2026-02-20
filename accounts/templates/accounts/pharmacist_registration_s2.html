@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacist</title>
+
+    <link rel="stylesheet" href="{% static 'css/Register.css' %}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('{% static 'images/BG.jpeg' %}') no-repeat center center fixed; background-size: cover;">
+    <header class="top-header">
+        <div class="lang-dropdown" id="langBtn">
+            <i class="fas fa-globe"></i>
+            <span id="currentLang">English</span>
+            <i class="fas fa-chevron-down"></i>
+            <ul class="dropdown-menu" id="langMenu">
+                <li>English</li>
+                <li>العربية</li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="doctor-container">
+        <div class="header-section">
+            <div class="logo-icon-small">
+                <i class='bx bx-plus-medical'></i>
+            </div>
+            
+            <h2>Pharmacy Details</h2>
+            <div class="progress-wrapper">
+                <div class="progress-info">
+                    <span>FINAL STEP</span>
+                    <span>100%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <form id="doctorProfessionalForm" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+            <!-- University -->
+            <div class="input-group">
+                <label>University</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-university"></i>
+                    <input list="universities" id="university" name="university" placeholder="Start typing or choose..." required>
+                    <datalist id="universities">
+                        <option value="cairo_university">Cairo University</option>
+                        <option value="ain_shams_university">Ain Shams University</option>
+                        <option value="alexandria_university">Alexandria University</option>
+                        <option value="mansoura_university">Mansoura University</option>
+                        <option value="future_university">Future University in Egypt</option>
+                        <option value="american_university_cairo">The American University in Cairo</option>
+                        <option value="zagazig_university">Zagazig University</option>
+                        <option value="al_azhar_university">Al-Azhar University</option>
+                        <option value="assiut_university">Assiut University</option>
+                        <option value="benha_university">Benha University</option>
+                        <option value="egypt_japan_university">Egypt-Japan University of Science and Technology</option>
+                        <option value="kafr_el_sheikh_university">Kafrelsheikh University</option>
+                        <option value="tanta_university">Tanta University</option>
+                        <option value="arab_academy">Arab Academy for Science, Technology and Maritime Transport</option>
+                        <option value="aswan_university">Aswan University</option>
+                        <option value="beni_suef_university">Beni-Suef University</option>
+                        <option value="damietta_university">Damietta University</option>
+                        <option value="delta_university">Delta University for Science and Technology</option>
+                        <option value="minia_university">Minia University</option>
+                        <option value="new_valley_university">New Valley University</option>
+                        <option value="university_sadat_city">University of Sadat City</option>
+                        <option value="south_valley_university">South Valley University</option>
+                        <option value="suez_canal_university">Suez Canal University</option>
+                        <option value="menofia_university">Menofia University</option>
+                        <option value="fayoum_university">Fayoum University</option>
+                        <option value="sohag_university">Sohag University</option>
+                        <option value="port_said_university">Port Said University</option>
+                        <option value="british_university_egypt">The British University in Egypt</option>
+                        <option value="zewail_city">Zewail City of Science, Technology and Innovation</option>
+                        <option value="damanhour_university">Damanhour University</option>
+                        <option value="helwan_university">Helwan University</option>
+                        <option value="misr_university_science">Misr University for Science and Technology</option>
+                        <option value="nile_university">Nile University</option>
+                        <option value="msa_university">October University for Modern Sciences and Arts</option>
+                        <option value="german_university_cairo">German University in Cairo</option>
+                        <option value="galala_university">Galala University</option>
+                        <option value="badr_university">Badr University in Cairo</option>
+                        <option value="new_giza_university">New Giza University</option>
+                        <option value="pharos_university">Pharos University in Alexandria</option>
+                        <option value="sinai_university">Sinai University</option>
+                        <option value="egyptian_russian_university">Egyptian Russian University</option>
+                        <option value="misr_international_university">Misr International University</option>
+                        <option value="october_6_university">October 6 University</option>
+                        <option value="ahrarm_canadian_university">Ahram Canadian University</option>
+                        <option value="canadian_international_college">Canadian International College</option>
+                        <option value="mti_university">MTI University</option>
+                        <option value="nahda_university">Nahda University in Beni Suef</option>
+                        <option value="heliopolis_university">Heliopolis University</option>
+                        <option value="egyptian_chinese_university">Egyptian Chinese University</option>
+                        <option value="egyptian_elearning_university">Egyptian E-Learning University</option>
+                        <option value="el_shorouk_academy">El Shorouk Academy</option>
+                        <option value="french_university_egypt">French University of Egypt</option>
+                        <option value="hertfordshire_egypt">Hertfordshire University in Egypt</option>
+                        <option value="king_salman_university">King Salman International University</option>
+                        <option value="new_mansoura_university">New Mansoura University</option>
+                        <option value="toronto_metropolitan_cairo">Toronto Metropolitan University Cairo</option>
+                        <option value="university_prince_edward">University of Prince Edward Island</option>
+                        <option value="egypt_university_informatics">Egypt University of Informatics</option>
+                        <option value="luxor_university">Luxor University</option>
+                        <option value="suez_university">Suez University</option>
+                    </datalist>
+                </div>
+            </div>
+
+            <!-- Pharmacy Name -->
+            <div class="input-group">
+                <label>Pharmacy Name</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-kit-medical"></i>
+                    <input type="text" id="pharmacyName" name="pharmacy_name" placeholder="Enter Pharmacy Name" required>
+                </div>
+            </div>
+
+            <!-- Pharmacy Address -->
+            <div class="input-group">
+                <label>Pharmacy Address</label>
+                <div class="input-wrapper">
+                    <textarea id="pharmacyAddress" name="pharmacy_address" rows="2" placeholder="Street, Building, Apartment" required></textarea>
+                </div>
+            </div>
+
+            <!-- Files -->
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Syndicate Card</label>
+                    <div class="file-wrapper" id="wrapper-syndicate">
+                        <input type="file" name="syndicate_card" required>
+                        <i class="fas fa-address-card"></i>
+                        <span>Upload File</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Practice Permit</label>
+                    <div class="file-wrapper" id="wrapper-permit">
+                        <input type="file" name="practice_permit" required>
+                        <i class="fas fa-file-medical"></i>
+                        <span>Upload File</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Graduation Certificate</label>
+                <div class="file-wrapper" id="wrapper-graduation">
+                    <input type="file" name="graduation_certificate" required>
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Upload File</span>
+                </div>
+            </div>
+
+            <!-- Governorate -->
+            <div class="input-group">
+                <label>Governorate</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <select id="governorate" name="governorate" required>
+                        <option value="" disabled selected>Select governorate</option>
+                        <option value="alexandria">Alexandria</option>
+                        <option value="aswan">Aswan</option>
+                        <option value="asyut">Asyut</option>
+                        <option value="beheira">Beheira</option>
+                        <option value="beni_suef">Beni Suef</option>
+                        <option value="cairo">Cairo</option>
+                        <option value="damietta">Damietta</option>
+                        <option value="dakahlia">Dakahlia</option>
+                        <option value="fayoum">Fayoum</option>
+                        <option value="gharbia">Gharbia</option>
+                        <option value="giza">Giza</option>
+                        <option value="ismailia">Ismailia</option>
+                        <option value="kafr_el_sheikh">Kafr El Sheikh</option>
+                        <option value="luxor">Luxor</option>
+                        <option value="matrouh">Matrouh</option>
+                        <option value="minya">Minya</option>
+                        <option value="monufia">Monufia</option>
+                        <option value="new_valley">New Valley</option>
+                        <option value="north_sinai">North Sinai</option>
+                        <option value="port_said">Port Said</option>
+                        <option value="qalyubia">Qalyubia</option>
+                        <option value="qena">Qena</option>
+                        <option value="red_sea">Red Sea</option>
+                        <option value="sharqia">Sharqia</option>
+                        <option value="sohag">Sohag</option>
+                        <option value="south_sinai">South Sinai</option>
+                        <option value="suez">Suez</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-back" onclick="window.location.href='pharmacist.html'">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <button type="submit" class="btn-submit">Complete Registration</button>
+                <button type="reset" class="btn-reset">Reset</button>
+            </div>
+        </form>
+
+    </main>
+</body>
+    <script src="{% static 'JS/register.js' %}"></script>
+</html>

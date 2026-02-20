@@ -15,6 +15,7 @@ urlpatterns = [
     path("doctor/registration/s2/", views.doctor_registration_s2, name="doctor_registration_s2"),
     path("nurse/registration/s2/", views.nurse_registration_step2, name="nurse_registration_s2"),
     path("pharmacist/registration/s2/", views.pharmacist_registration_step2, name="pharmacist_registration_s2"),
-    path("verify/otp/faild", views.verify_otp_faild, name="verify_otp_faild")
-
+    path("verify/otp/faild", views.verify_otp_faild, name="verify_otp_faild"),
+    path("forget/password", views.forget_password, name='forget_password'),
+    path("verify/otp/forget", views.verify_otp_forget_password, name='verify_otp_forget_password'),
 ]

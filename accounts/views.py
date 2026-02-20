@@ -65,16 +65,16 @@ def verify_otp_login(request):
             cache.delete(f"otp_{user_id}")
             request.session.pop("otp_user_id", None)
             request.session.pop("otp_attempts", None)
-            return redirect("login")
+            return redirect("verify_otp_faild")
         
         if not saved_otp:
             messages.error(request, "OTP expired")
-            return redirect("login")
+            return redirect("verify_otp_faild")
 
         if str(saved_otp) != str(otp):
             request.session["otp_attempts"] = attempts + 1
             messages.error(request, "Invalid OTP")
-            return render(request, "accounts/verify_otp_login.html")
+            return render(request, "accounts/verify_otp.html")
 
         request.session.pop("otp_attempts", None)
 
@@ -86,7 +86,7 @@ def verify_otp_login(request):
 
         return redirect("home")
 
-    return render(request, "accounts/verify_otp_login.html")
+    return render(request, "accounts/verify_otp.html")
 
 
 def user_register(request):
@@ -174,7 +174,7 @@ def verify_otp_signup(request):
             updated_encrypted = key.encrypt(json.dumps(pending_data).encode())
             cache.set(f"pending_user_{token}", updated_encrypted, timeout=300)
             messages.error(request, "Invalid OTP")
-            return render(request, "accounts/verify_otp_signup.html")
+            return render(request, "accounts/verify_otp.html")
 
         User = get_user_model()
         user = User.objects.create_user(
@@ -192,7 +192,7 @@ def verify_otp_signup(request):
 
         return redirect(ROLE_REDIRECTS[user.role])
 
-    return render(request, "accounts/verify_otp_signup.html")
+    return render(request, "accounts/verify_otp.html")
 
 
 def verify_otp_faild(request):
@@ -421,3 +421,90 @@ def donor_registration(request):
         return redirect('home')
     return render(request, 'Donor_registration.html')
 
+def forget_password(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        User = get_user_model()
+        user = get_object_or_404(User, email=email)
+
+
+        otp = random.randint(100000,999999)
+
+        cache.set(f"otp_{user.id}", otp, timeout=300)
+
+        send_mail(
+            subject = "TechCare Team",
+            message = f"your verification OTP is {otp}",
+            from_email = EMAIL_HOST_USER,
+            recipient_list = [user.email]
+        )
+        request.session['otp_user_id'] = user.id
+        return redirect('verify_otp_forget_password')
+
+    return render(request, 'accounts/forget_password.html')
+
+def verify_otp_forget_password(request):
+    if request.method == "POST":
+        user_id = request.session.get("otp_user_id")
+        otp1 = request.POST.get("otp1")
+        otp2 = request.POST.get("otp2")
+        otp3 = request.POST.get("otp3")
+        otp4 = request.POST.get("otp4")
+        otp5 = request.POST.get("otp5")
+        otp6 = request.POST.get("otp6")
+        
+        otp_str = str(otp1)+str(otp2)+str(otp3)+str(otp4)+str(otp5)+str(otp6)
+        otp = int(otp_str)
+        if not user_id:
+            messages.error(request, "User not found")
+            return redirect("login")
+
+        saved_otp = cache.get(f"otp_{user_id}")
+
+        attempts = request.session.get("otp_attempts", 0)
+
+        if attempts >= 5:
+            messages.error(request, "Too many attempts")
+            cache.delete(f"otp_{user_id}")
+            request.session.pop("otp_user_id", None)
+            request.session.pop("otp_attempts", None)
+            return redirect("login")
+        
+        if not saved_otp:
+            messages.error(request, "OTP expired")
+            return redirect("login")
+
+        if str(saved_otp) != str(otp):
+            request.session["otp_attempts"] = attempts + 1
+            messages.error(request, "Invalid OTP")
+            return render(request, "accounts/verify_otp.html")
+        
+        cache.delete(f"otp_{user_id}")
+
+        return redirect('reset_password')
+    return render(request, 'accounts/verify_otp.html')  
+
+def reset_password(request):
+    user_id = request.session.get("otp_user_id")
+    if not user_id:
+        messages.error(request, "Session expired")
+        return redirect("login")
+    
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        confirm = request.POST.get('confirm')
+
+        if password != confirm :
+            messages.error(request,"passwords not match")
+            return redirect('reset_password')
+
+        User = get_user_model()
+        user = get_object_or_404(User, id=user_id)
+
+        user.set_password(password)
+        user.save()
+
+        request.session.pop("otp_user_id", None)
+        request.session.pop("otp_attempts", None)
+        return redirect('login')
+    return render(request, 'accounts/reset_password.html')
