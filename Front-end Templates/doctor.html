@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doctor</title>
 
-    <link rel="stylesheet" href="Css/doctor.css">
+    <link rel="stylesheet" href="Css/Form.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body style="background-image: url(../img/BG.jpeg);">
+<body style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url(../img/BG.jpeg) no-repeat center center fixed; background-size: cover;">
 
     <header class="top-header">
         <div class="lang-dropdown" id="langBtn">
@@ -27,6 +27,7 @@
             <div class="logo-icon-small">
                 <i class="fas fa-user-md"></i>
             </div>
+            
             <h2>Create Doctor Account</h2>
             <div class="progress-wrapper">
                 <div class="progress-info">
@@ -116,7 +117,7 @@
                 <label>Profile Picture</label>
                 <div class="file-wrapper" id="fileWrapper">
                     <input id="Profile" name="Profile" type="file" accept="image/*" required>
-                    <i class="fas fa-cloud-upload-alt" id="fileIcon"></i>
+                    <i class="fas fa-camera" id="fileIcon"></i>
                     <span id="fileStatusText">Click to upload file</span>
                 </div>
             </div>
@@ -128,6 +129,6 @@
         </form>
     </main>
 
-    <script src="JS/Role.js"></script>
+    <script src="JS/Form.js"></script>
 </body>
 </html>

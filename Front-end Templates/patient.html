@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Registration</title>
+    <title>Patient</title>
 
-    <link rel="stylesheet" href="Css/patient.css">
-
+    <link rel="stylesheet" href="Css/Form.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
+<body style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url(../img/BG.jpeg) no-repeat center center fixed; background-size: cover;">
 
     <header class="top-header">
         <div class="lang-dropdown" id="langBtn">
@@ -40,25 +39,11 @@
             </div>
         </div>
 
-        <form id="patientForm">
+        <form id="doctorForm"> 
+            
             <div class="input-row">
                 <div class="input-group">
-                    <label for="firstName">First Name</label>
-                    <div class="input-wrapper">
-                        <input id="firstName" name="firstName" type="text" placeholder="First name" required>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label for="lastName">Last Name</label>
-                    <div class="input-wrapper">
-                        <input id="lastName" name="lastName" type="text" placeholder="Last name" required>
-                    </div>
-                </div>
-            </div>
-
-            <div class="input-row">
-                <div class="input-group">
-                    <label for="gender">Gender</label>
+                    <label>Gender</label>
                     <div class="input-wrapper">
                         <i class="fas fa-venus-mars"></i>
                         <select id="gender" name="gender" required>
@@ -69,7 +54,7 @@
                     </div>
                 </div>
                 <div class="input-group">
-                    <label for="phone">Phone Number</label>
+                    <label>Phone Number</label>
                     <div class="input-wrapper">
                         <span class="prefix">+20</span>
                         <input id="phone" name="phone" type="tel" placeholder="1XXXXXXXXX" required>
@@ -78,44 +63,44 @@
             </div>
 
             <div class="input-group">
-                <label for="governorate">Governorate</label>
+                <label>Governorate</label>
                 <div class="input-wrapper">
                     <i class="fas fa-map-marker-alt"></i>
                     <select id="governorate" name="governorate" required>
                         <option value="" disabled selected>Select governorate</option>
-                        <option>Cairo</option>
-                        <option>Giza</option>
                         <option>Alexandria</option>
-                        <option>Dakahlia</option>
-                        <option>Red Sea</option>
-                        <option>Beheira</option>
-                        <option>Faiyum</option>
-                        <option>Gharbia</option>
-                        <option>Ismailia</option>
-                        <option>Monufia</option>
-                        <option>Minya</option>
-                        <option>Qalyubia</option>
-                        <option>New Valley</option>
-                        <option>Suez</option>
                         <option>Aswan</option>
                         <option>Assiut</option>
+                        <option>Beheira</option>
                         <option>Beni Suef</option>
-                        <option>Port Said</option>
+                        <option>Cairo</option>
+                        <option>Dakahlia</option>
                         <option>Damietta</option>
-                        <option>Sharkia</option>
-                        <option>South Sinai</option>
+                        <option>Faiyum</option>
+                        <option>Gharbia</option>
+                        <option>Giza</option>
+                        <option>Ismailia</option>
                         <option>Kafr El Sheikh</option>
-                        <option>Matrouh</option>
                         <option>Luxor</option>
-                        <option>Qena</option>
+                        <option>Matrouh</option>
+                        <option>Minya</option>
+                        <option>Monufia</option>
+                        <option>New Valley</option>
                         <option>North Sinai</option>
+                        <option>Port Said</option>
+                        <option>Qalyubia</option>
+                        <option>Qena</option>
+                        <option>Red Sea</option>
+                        <option>Sharqia</option>
                         <option>Sohag</option>
+                        <option>South Sinai</option>
+                        <option>Suez</option>
                     </select>
                 </div>
             </div>
 
             <div class="input-group">
-                <label for="address">Full Address</label>
+                <label>Full Address</label>
                 <div class="input-wrapper">
                     <textarea id="address" name="address" rows="2" placeholder="Street, Building, Apartment" required></textarea>
                 </div>
@@ -141,11 +126,11 @@
             </div>
 
             <div class="input-group">
-                <label for="profilePic">Profile Picture</label>
-                <div class="file-wrapper">
-                    <input id="profilePic" name="profilePic" type="file" accept="image/*" required>
-                    <i class="fas fa-camera"></i>
-                    <span>Click to upload photo</span>
+                <label>Profile Picture</label>
+                <div class="file-wrapper" id="fileWrapper">
+                    <input id="Profile" name="profilePic" type="file" accept="image/*" required>
+                    <i class="fas fa-camera" id="fileIcon"></i>
+                    <span id="fileStatusText">Click to upload photo</span>
                 </div>
             </div>
 
@@ -156,6 +141,6 @@
         </form>
     </main>
 
-    <script src="JS/Role.js"></script>
+    <script src="JS/Form.js"></script>
 </body>
 </html>

@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doctor</title>
 
-    <link rel="stylesheet" href="Css/doctor2.css">
+    <link rel="stylesheet" href="Css/Form.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body style="background-image: url(../img/BG.jpeg);">
+<body style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url(../img/BG.jpeg) no-repeat center center fixed; background-size: cover;">
 
     <header class="top-header">
         <div class="lang-dropdown" id="langBtn">
@@ -27,6 +27,7 @@
             <div class="logo-icon-small">
                 <i class="fas fa-graduation-cap"></i>
             </div>
+            
             <h2>Professional Details</h2>
             <div class="progress-wrapper">
                 <div class="progress-info">
@@ -41,7 +42,7 @@
 
         <form id="doctorProfessionalForm">
             <div class="input-group">
-                <label for="university">University</label>
+                <label>University</label>
                 <div class="input-wrapper">
                     <i class="fas fa-university"></i>
                     <input list="universities" id="university" name="university" placeholder="Start typing or choose..." required>
@@ -169,7 +170,7 @@
 
             <div class="input-row">
                 <div class="input-group" style="flex: 2;">
-                    <label for="specialization">Specialization</label>
+                    <label>Specialization</label>
                     <div class="input-wrapper">
                         <i class="fas fa-stethoscope"></i>
                         <select id="specialization" name="specialization" required>
@@ -219,7 +220,7 @@
                     </div>
                 </div>
                 <div class="input-group" style="flex: 1;">
-                    <label for="price">Price (EGP)</label>
+                    <label>Price (EGP)</label>
                     <div class="input-wrapper">
                         <i class="fas fa-money-bill-wave"></i>
                         <input id="price" name="price" type="number" placeholder="0" required>
@@ -237,6 +238,6 @@
         </form>
     </main>
 
-    <script src="JS/Role.js"></script>
+    <script src="JS/Form.js"></script>
 </body>
 </html>
