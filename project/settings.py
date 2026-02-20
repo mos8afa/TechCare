@@ -53,7 +53,6 @@ SIMPLE_JWT = {
 
 
 
-
 ROOT_URLCONF = 'project.urls'
 
 TEMPLATES = [
@@ -146,3 +145,5 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+FERNET_KEY = b'NYyLdqgPJlfjbbEVTHvj2S416L95kTLWiBFgyINOZiU='

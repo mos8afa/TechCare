@@ -1,14 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from django.core.cache import cache
 from django.core.mail import send_mail
-from project.settings import EMAIL_HOST_USER 
+from project.settings import EMAIL_HOST_USER, FERNET_KEY
 from django.contrib.auth import get_user_model
 import random
-from .forms import RegisterForm, DonorForm, DoctorStep2Form, DoctorStep1Form, PatientForm, PharmacistStep1Form, NurseStep1Form, NurseStep2Form,PharmacistStep2Form
+from .forms import DonorForm, DoctorStep2Form, DoctorStep1Form, PatientForm, PharmacistStep1Form, NurseStep1Form, NurseStep2Form,PharmacistStep2Form
 from .models import ROLE_REDIRECTS
- 
+from cryptography.fernet import Fernet
+import json, uuid
+
 
 def user_login(request):
     if request.method == 'POST':
@@ -82,42 +85,48 @@ def verify_otp_login(request):
 
 def verify_otp_signup(request):
     if request.method == "POST":
-        user_id = request.session.get("otp_user_id")
-        otp = request.POST.get("otp")
+        token = request.POST.get("token")
+        otp_input = request.POST.get("otp")
 
-        if not user_id:
-            messages.error(request, "User not found")
-            return redirect("register")
-
-        saved_otp = cache.get(f"otp_{user_id}")
-
-        attempts = request.session.get("otp_attempts", 0)
-
-        if attempts >= 5:
-            cache.delete(f"otp_{user_id}")
-            request.session.pop("otp_user_id", None)
-            request.session.pop("otp_attempts", None)
-            messages.error(request, "Too many attempts")
-            return redirect("register")
-        
-        if not saved_otp:
+        encrypted_data = cache.get(f"pending_user_{token}")
+        if not encrypted_data:
             messages.error(request, "OTP expired")
             return redirect("register")
+        
+        key = Fernet(FERNET_KEY)
+        data = key.decrypt(encrypted_data)
 
-        if str(saved_otp) != str(otp):
-            request.session["otp_attempts"] = attempts + 1
+        pending_data = json.loads(data)
+
+        attempts = pending_data['attempts']
+
+        if attempts >= 5:
+            cache.delete(f"pending_user_{token}")
+            messages.error(request, "Too many attempts")
+            return redirect("register")        
+        
+        if str(pending_data['otp']) != str(otp_input):
+            pending_data["attempts"] = attempts + 1
+            updated_encrypted = fernet.encrypt(json.dumps(pending_data).encode())
+
+            cache.set(f"pending_user_{token}", updated_encrypted, timeout=300)
+
             messages.error(request, "Invalid OTP")
             return render(request, "verify_otp.html")
 
-        request.session.pop("otp_attempts", None)
-
         User = get_user_model()
-        user = get_object_or_404(User, id=user_id)
+        user = User.objects.create_user(
+            username=pending_data["username"],
+            email=pending_data["email"],
+            password=pending_data["password"],  
+            first_name=pending_data["first_name"],
+            last_name=pending_data["last_name"],
+            role=pending_data["role"]
+        )
         user.is_active = True
         user.save()
-        cache.delete(f"otp_{user_id}")
-
-        request.session.pop("otp_user_id", None)
+        
+        cache.delete(f"pending_user_{token}")
 
         return redirect(ROLE_REDIRECTS[user.role])
 
@@ -126,28 +135,55 @@ def verify_otp_signup(request):
 
 def user_register(request):
     if request.method =='POST':
-        register_form = RegisterForm(request.POST)
-        if register_form.is_valid():
-            user = register_form.save(commit=False)
-            user.is_active = False
-            user.save()
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        role = request.POST.get('role')
 
-            otp = random.randint(10000,99999)
+        User = get_user_model()
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists")
+            return redirect('register')
+        
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "email already exists")
+            return redirect('register')
+        
 
-            cache.set(f"otp_{user.id}", otp, timeout=300)
+        otp = random.randint(10000,99999)
 
-            send_mail(
-                subject = "TechCare Team",
-                message = f"your verification OTP is {otp}",
-                from_email = EMAIL_HOST_USER,
-                recipient_list = [user.email]
-            )
-            request.session['otp_user_id'] = user.id
 
-            return redirect('verify_otp_s')
-    else:
-        register_form = RegisterForm()
-    return render(request, 'register.html',{'register_form':register_form})
+        pending_data = {
+        "username": username,
+        "password": make_password(password),
+        "first_name": first_name,
+        "last_name": last_name,
+        "email": email,
+        "role": role,
+        "otp": otp,
+        "attempts":0,
+        }
+
+        key = Fernet(FERNET_KEY)
+
+        data = json.dumps(pending_data).encode()
+        encrypted = key.encrypt(data)
+
+        token = str(uuid.uuid4())
+        cache.set(f"pending_user_{token}",encrypted, timeout=300)
+
+        send_mail(
+            subject = "TechCare Team",
+            message = f"your verification OTP is {otp}",
+            from_email = EMAIL_HOST_USER,
+            recipient_list = [email]
+        )
+
+        return redirect('verify_otp_s')
+    
+    return render(request, 'accounts/register.html')
 
 
 def patient_registration(request):
