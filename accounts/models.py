@@ -1,6 +1,7 @@
 from project import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils.text import slugify
 # ----- static choices -----
 ROLES = (
     ("patient", "Patient"),
@@ -10,6 +11,13 @@ ROLES = (
     ("donor", "Donor"),
 )
 
+ROLE_REDIRECTS = {
+    "doctor": "doctor_registration",
+    "patient": "patient_registration",
+    "nurse": "nurse_registration",
+    "pharmacist": "pharmacist_registration",
+    "donor": "donor_registration",
+}
 
 GENDERS = (
     ("male", "Male"),
@@ -170,6 +178,12 @@ SPECIFICATIONS = (
 
 class CustomUser(AbstractUser):
     role = models.CharField(max_length=10, choices=ROLES)
+    slug = models.SlugField()
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.username)
+        super().save(*args, **kwargs)
 
 #----- patient ------
 class Patient(models.Model):
@@ -180,6 +194,11 @@ class Patient(models.Model):
     phone_number = models.CharField(max_length=14)
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
     address = models.TextField()
+    
+
+
+
+    
 
 
 #------- Doctor -----
