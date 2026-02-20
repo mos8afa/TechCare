@@ -55,6 +55,15 @@ if (nextStepBtn2) {
     });
 }
 
+const nextStepBtn3 = document.getElementById('nextStepBtn3');
+if (nextStepBtn3) {
+    nextStepBtn3.addEventListener('click', (e) => {
+        // إذا كان الزر داخل Form، نمنع الـ Submit الافتراضي لو عايز تحكم كامل في الانتقال
+        window.location.href = 'pharmacist2.html';
+    });
+}
+
+
 // --- 4. إعادة التعيين (Reset) ---
 // بيتعرف على أي Form موجود (سواء بتاع الصفحة 1 أو 2) وبيرجع الأشكال لأصلها
 document.addEventListener("DOMContentLoaded", function () {
