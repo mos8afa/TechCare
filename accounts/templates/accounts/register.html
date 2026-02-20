@@ -10,7 +10,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body style="background-image: url('{% static 'images/BG.jpeg' %}');">
+<body style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('{% static 'images/BG.jpeg' %}') no-repeat center center fixed; background-size: cover;">
 
     <header class="top-header">
         <div class="lang-dropdown" id="langBtn">
@@ -38,13 +38,13 @@
             {% csrf_token %}
         <div class="input-row">
                 <div class="input-group">
-                    <label value ="firstName">First Name</label>
+                    <label value ="first_name">First Name</label>
                     <div class="input-wrapper no-icon">
                         <input  name="firstName" type="text" placeholder="First name" required>
                     </div>
                 </div>
                 <div class="input-group">
-                    <label for="lastName" value ='last_name'>Last Name</label>
+                    <label for="last_name" value ='last_name'>Last Name</label>
                     <div class="input-wrapper no-icon">
                         <input id="lastName" name="lastName" type="text" placeholder="Last name" required>
                     </div>
