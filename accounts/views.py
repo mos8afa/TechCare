@@ -19,7 +19,7 @@ def user_login(request):
 
         if user is None:
             messages.error(request,'Invalid username or password')
-            return render(request, 'login.html')
+            return render(request, 'accounts/login.html')
         else:
             otp = random.randint(10000,99999)
 
@@ -35,7 +35,7 @@ def user_login(request):
 
             return redirect('verify_otp_l')
 
-    return render(request, 'login.html')
+    return render(request, 'accounts/login.html')
 
 
 def verify_otp_login(request):
