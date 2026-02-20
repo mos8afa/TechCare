@@ -2,6 +2,8 @@ from project import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.text import slugify
+
+
 # ----- static choices -----
 ROLES = (
     ("patient", "Patient"),
@@ -11,6 +13,7 @@ ROLES = (
     ("donor", "Donor"),
 )
 
+
 ROLE_REDIRECTS = {
     "doctor": "doctor_registration",
     "patient": "patient_registration",
@@ -19,10 +22,12 @@ ROLE_REDIRECTS = {
     "donor": "donor_registration",
 }
 
+
 GENDERS = (
     ("male", "Male"),
     ("female", "Female"),
 )
+
 
 GOVERNORATES = (
     ("alexandria", "Alexandria"),
@@ -65,7 +70,6 @@ BLOOD_TYPES = (
     ("O+", "O+"),
     ("O-", "O-"),
 )
-
 
  
 UNIVERSITIES = (
@@ -176,6 +180,7 @@ SPECIFICATIONS = (
     ("general_practice", "General Practice"),
 )
 
+
 class CustomUser(AbstractUser):
     role = models.CharField(max_length=10, choices=ROLES)
     slug = models.SlugField()
@@ -190,21 +195,18 @@ class Patient(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     gender = models.CharField(max_length=6, choices=GENDERS)
     profile_pic = models.ImageField(upload_to='patients/profile/')
-    national_id_pic = models.ImageField(upload_to='patients/national_id/')
+    national_id_pic_back= models.ImageField(upload_to='doctors/national_id/')
+    national_id_pic_front = models.ImageField(upload_to='patients/national_id/')
     phone_number = models.CharField(max_length=14)
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
     address = models.TextField()
     
 
-
-
-    
-
-
 #------- Doctor -----
 class Doctor(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    national_id_pic = models.ImageField(upload_to='doctors/national_id/')
+    national_id_pic_front = models.ImageField(upload_to='doctors/national_id/')
+    national_id_pic_back= models.ImageField(upload_to='doctors/national_id/')
     gender = models.CharField(max_length=6, choices=GENDERS)
     profile_pic = models.ImageField(upload_to='doctors/profile/')
     phone_number = models.CharField(max_length=14)
@@ -220,11 +222,11 @@ class Doctor(models.Model):
     specification = models.CharField(max_length=50, choices=SPECIFICATIONS)
 
 
-
 #------------- Nurse -------
 class Nurse(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    national_id_pic = models.ImageField(upload_to='nurses/national_id/')
+    national_id_pic_front = models.ImageField(upload_to='nurses/national_id/')
+    national_id_pic_back= models.ImageField(upload_to='doctors/national_id/')
     gender = models.CharField(max_length=6, choices=GENDERS)
     profile_pic = models.ImageField(upload_to='nurses/profile/')
     phone_number = models.CharField(max_length=14)
@@ -237,11 +239,11 @@ class Nurse(models.Model):
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
 
 
-
 #------- Pharmacist --------
 class Pharmacist(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    national_id_pic = models.ImageField(upload_to='pharmacists/national_id/')
+    national_id_pic_front = models.ImageField(upload_to='pharmacists/national_id/')
+    national_id_pic_back= models.ImageField(upload_to='doctors/national_id/')
     gender = models.CharField(max_length=6, choices=GENDERS)
     profile_pic = models.ImageField(upload_to='pharmacists/profile/')
     phone_number = models.CharField(max_length=14)
@@ -252,13 +254,14 @@ class Pharmacist(models.Model):
     practice_permit = models.FileField(upload_to='pharmacists/practice/')
     graduation_certificate = models.FileField(upload_to='pharmacists/graduation/')
     university = models.CharField(max_length=100, choices=UNIVERSITIES)
-    address = models.TextField()
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
+
 
 # -------- Donor -------
 class Donor(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    national_id_pic = models.ImageField(upload_to='donors/national_id/')
+    national_id_pic_front = models.ImageField(upload_to='donors/national_id/')
+    national_id_pic_back= models.ImageField(upload_to='doctors/national_id/')
     gender = models.CharField(max_length=6, choices=GENDERS)
     profile_pic = models.ImageField(upload_to='donors/profile/')
     phone_number = models.CharField(max_length=14)

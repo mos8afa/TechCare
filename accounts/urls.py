@@ -12,5 +12,8 @@ urlpatterns = [
     path("nurse/registration/", views.nurse_registration, name="nurse_registration"),
     path("pharmacist/registration/", views.pharmacist_registration, name="pharmacist_registration"),
     path("donor/registration/", views.donor_registration, name="donor_registration"),
+    path("doctor_registration_s2/", views.doctor_registration_s2, name="doctor_registration_s2"),
+    path("nurse_registration_s2/", views.nurse_registration_s2, name="nurse_registration_s2"),
+    path("pharmacist_registration_s2/", views.pharmacist_registration_s2, name="pharmacist_registration_s2"),
 
 ]

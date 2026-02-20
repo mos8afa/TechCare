@@ -6,7 +6,7 @@ from django.core.mail import send_mail
 from project.settings import EMAIL_HOST_USER 
 from django.contrib.auth import get_user_model
 import random
-from .forms import RegisterForm
+from .forms import RegisterForm, DonorForm, DoctorStep2Form, DoctorStep1Form, PatientForm, PharmacistStep1Form, NurseStep1Form, NurseStep2Form,PharmacistStep2Form
 from .models import ROLE_REDIRECTS
  
 
@@ -151,20 +151,119 @@ def user_register(request):
 
 
 def patient_registration(request):
-    pass
+    if request.method == 'POST':
+        form = PatientForm(request.POST, request.FILES)
+        if form.is_valid():
+            patient = form.save(commit=False)
+            patient.user = request.user
+            patient.save()
+
+            login(request, request.user)
+            return redirect('home')
+    else:
+        form = PatientForm()
+    return render(request, 'patient_registration.html',{'form':form})
 
 
 def doctor_registration(request):
-    pass
+    if request.method == 'POST':
+        form = DoctorStep1Form(request.POST, request.FILES)
+        if form.is_valid():
+            doctor = form.save(commit=False)
+            doctor.user = request.user
+            doctor.save()
+
+            return redirect('doctor_registration_s2')
+        else:
+            form = DoctorStep1Form()
+    return render(request, 'doctor.html', {'form':form})
+
+def doctor_registration_s2(request):
+    if request.method == 'POST':
+        doctor = request.user.doctor
+        form = DoctorStep2Form(request.POST, request.FILES, instance=doctor)
+        if form.is_valid():
+            doctor = form.save(commit=False)
+            doctor.user = request.user
+            doctor.save()
+            
+            login(request, request.user)
+            return redirect('home')
+        else:
+            form = DoctorStep2Form()
+            form.fields=['excellence_certificate', 'price', 'syndicate_card', 'practice_permit', 'graduation_certificate', 'university', 'specification']
+    return render(request, 'doctor.html', {'form':form})
 
 
 def nurse_registration(request):
-    pass
+    if request.method == 'POST':
+        form = NurseStep1Form(request.POST, request.FILES)
+        if form.is_valid():
+            nurse = form.save(commit=False)
+            nurse.user = request.user
+            nurse.save()
+
+            return redirect('nurse_registration_s2')
+        else:
+            form = NurseStep1Form()
+            form.fields = ['gender', 'phone_number', 'date_of_birth', 'governorate','national_id_pic_front', 'national_id_pic_back', 'profile_pic']
+
+    return render(request, 'nurse.html', {'form':form})
+
+def nurse_registration_s2(request):
+    if request.method == 'POST':
+        nurse = request.user.nurse
+        form = NurseStep2Form(request.POST,request.FILES, instance=nurse)
+        if form.is_valid():
+            nurse = form.save(commit=False)
+            nurse.user = request.user
+            nurse.save()
+            login(request, request.user)
+            return redirect('home')
+        else:
+            form = NurseStep2Form()
+    return render(request, 'nurse.html', {'form':form})
 
 
 def pharmacist_registration(request):
-    pass
+    if request.method == 'POST':
+        form = PharmacistStep1Form(request.POST, request.FILES)
+        if form.is_valid():
+            pharmacist = form.save(commit=False)
+            pharmacist.user = request.user
+            pharmacist.save()
+
+            return redirect('pharmacist_registration_s2')
+        else:
+            form = PharmacistStep1Form()
+    return render(request, 'pharmacist.html', {'form':form})
+
+def pharmacist_registration_s2(request):
+    if request.method == 'POST':
+        pharmacist = request.user.pharmacist
+        form = PharmacistStep2Form(request.POST, request.FILES, instance=pharmacist)
+        if form.is_valid():
+            pharmacist = form.save(commit=False)
+            pharmacist.user = request.user
+            pharmacist.save()
+
+            login(request, request.user)
+            return redirect('home')
+        else:
+            form = PharmacistStep2Form()
+    return render(request, 'pharmacist.html', {'form':form})
 
 
 def donor_registration(request):
-    pass        
+        if request.method == 'POST':
+            form = DonorForm(request.POST,request.FILES)
+            if form.is_valid():
+                donor = form.save(commit=False)
+                donor.user = request.user
+                donor.save()
+
+                login(request, request.user)
+                return redirect('home')
+        else:
+            form = DonorForm()
+        return render(request, 'donor_registration.html',{'form':form})      
