@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nurse</title>
+
+    <link rel="stylesheet" href="{% static 'css/Form.css' %}"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('{% static 'images/BG.jpeg' %}') no-repeat center center fixed; background-size: cover;">
+    <header class="top-header">
+        <div class="lang-dropdown" id="langBtn">
+            <i class="fas fa-globe"></i>
+            <span id="currentLang">English</span>
+            <i class="fas fa-chevron-down"></i>
+            <ul class="dropdown-menu" id="langMenu">
+                <li>English</li>
+                <li>العربية</li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="doctor-container"> 
+        <div class="header-section">
+            <div class="logo-icon-small">
+                <i class="fas fa-user-nurse"></i> 
+            </div>
+            
+            <h2>Create Nurse Account</h2>
+            <div class="progress-wrapper">
+                <div class="progress-info">
+                    <span>PROGRESS</span>
+                    <span>50%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 50%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <form id="nurseForm" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Gender</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-venus-mars"></i>
+                        <select name="gender" required>
+                            <option value="" disabled selected>Select</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Date of Birth</label>
+                    <div class="input-wrapper DOB">
+                        <input name="date_of_birth" type="date" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Phone Number</label>
+                <div class="input-wrapper">
+                    <span class="prefix">+20</span>
+                    <input name="phone_number" type="tel" placeholder="1XXXXXXXXX" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Governorate</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <select name="governorate" required>
+                        <option value="" disabled selected>Select governorate</option>
+
+                        <option value="alexandria">Alexandria</option>
+                        <option value="aswan">Aswan</option>
+                        <option value="asyut">Asyut</option>
+                        <option value="beheira">Beheira</option>
+                        <option value="beni_suef">Beni Suef</option>
+                        <option value="cairo">Cairo</option>
+                        <option value="damietta">Damietta</option>
+                        <option value="dakahlia">Dakahlia</option>
+                        <option value="fayoum">Fayoum</option>
+                        <option value="gharbia">Gharbia</option>
+                        <option value="giza">Giza</option>
+                        <option value="ismailia">Ismailia</option>
+                        <option value="kafr_el_sheikh">Kafr El Sheikh</option>
+                        <option value="luxor">Luxor</option>
+                        <option value="matrouh">Matrouh</option>
+                        <option value="minya">Minya</option>
+                        <option value="monufia">Monufia</option>
+                        <option value="new_valley">New Valley</option>
+                        <option value="north_sinai">North Sinai</option>
+                        <option value="port_said">Port Said</option>
+                        <option value="qalyubia">Qalyubia</option>
+                        <option value="qena">Qena</option>
+                        <option value="red_sea">Red Sea</option>
+                        <option value="sharqia">Sharqia</option>
+                        <option value="sohag">Sohag</option>
+                        <option value="south_sinai">South Sinai</option>
+                        <option value="suez">Suez</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Full Address</label>
+                <div class="input-wrapper">
+                    <textarea name="address" rows="2" placeholder="Street, Building, Apartment" required></textarea>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Profile Picture</label>
+                <div class="file-wrapper">
+                    <input name="profile_pic" type="file" accept="image/*" required>
+                    <i class="fas fa-camera"></i>
+                    <span>Click to upload file</span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="reset" class="btn-reset">Reset</button>
+                <button type="submit" class="btn-next">
+                    Continue to Next Step <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <script src="{% static 'JS/Form.js' %}"></script>
+</body>
+</html>

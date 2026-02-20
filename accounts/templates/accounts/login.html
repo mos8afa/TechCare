@@ -34,20 +34,27 @@
         </div>
 
         <form id="loginForm" method="POST" action="{% url 'login' %}">
-            {% csrf_token %}
+        {% csrf_token %}
             <div class="input-group">
-                <label value="username">Username</label>
+                <label for="username">Username</label>
                 <div class="input-wrapper">
                     <i class="far fa-user"></i>
-                    <input id="username" name="username" type="text" placeholder="Enter your username" required>
+                    <input id="username" name="username"
+                        type="text"
+                        placeholder="Enter your username"
+                        required>
                 </div>
             </div>
 
             <div class="input-group password">
-                <label value="password">Password</label>
+                <label for="passwordInput">Password</label>
                 <div class="input-wrapper">
                     <i class="fas fa-lock"></i>
-                    <input id="passwordInput" name="password" type="password" placeholder="Enter your password" required>
+                    <input id="passwordInput"
+                        name="password"
+                        type="password"
+                        placeholder="Enter your password"
+                        required>
                     <i class="far fa-eye show-password" id="togglePassword"></i>
                 </div>
             </div>
@@ -62,7 +69,10 @@
             </div>
 
             <div class="register-footer">
-                <span>Don't have an account? <a href="{% url 'register' %}">Register now</a></span>
+                <span>
+                    Don't have an account?
+                    <a href="{% url 'register' %}">Register now</a>
+                </span>
             </div>
         </form>
     </main>

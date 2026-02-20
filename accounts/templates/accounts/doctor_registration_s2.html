@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor</title>
+
+    <link rel="stylesheet" href="{% static 'css/Form.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('{% static 'images/BG.jpeg' %}') no-repeat center center fixed; background-size: cover;">
+
+    <header class="top-header">
+        <div class="lang-dropdown" id="langBtn">
+            <i class="fas fa-globe"></i>
+            <span id="currentLang">English</span>
+            <i class="fas fa-chevron-down"></i>
+            <ul class="dropdown-menu" id="langMenu">
+                <li>English</li>
+                <li>العربية</li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="doctor-container">
+        <div class="header-section">
+            <div class="logo-icon-small">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            
+            <h2>Professional Details</h2>
+            <div class="progress-wrapper">
+                <div class="progress-info">
+                    <span>FINAL STEP</span>
+                    <span>100%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <form id="doctorProfessionalForm" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <input list="universities" name="university" placeholder="Start typing or choose..." required>
+
+            <input type="file" name="national_id_pic_front" accept="image/*" required>
+            <input type="file" name="national_id_pic_back" accept="image/*" required>
+
+            <input type="file" name="excellence_certificate" required>
+            <input type="file" name="graduation_certificate" required>
+            <input type="file" name="syndicate_card" required>
+            <input type="file" name="practice_permit" required>
+
+            <select name="specification" required>
+                <option value="" disabled selected>Select specialization</option>
+                <option value="neurosurgery">Neurosurgery</option>
+                <option value="orthopedic_surgery">Orthopedic Surgery</option>
+                <option value="plastic_surgery">Plastic Surgery</option>
+                <option value="cardiothoracic_surgery">Cardiothoracic Surgery</option>
+                <option value="ent">Otolaryngology (ENT)</option>
+                <option value="vascular_surgery">Vascular Surgery</option>
+                <option value="urology">Urology</option>
+                <option value="ophthalmology">Ophthalmology</option>
+                <option value="general_surgery">General Surgery</option>
+                <option value="pediatric_surgery">Pediatric Surgery</option>
+                <option value="dermatology">Dermatology</option>
+                <option value="cardiology">Cardiology</option>
+                <option value="gastroenterology">Gastroenterology</option>
+                <option value="oncology">Medical Oncology</option>
+                <option value="hematology">Hematology</option>
+                <option value="endocrinology">Endocrinology</option>
+                <option value="nephrology">Nephrology</option>
+                <option value="rheumatology">Rheumatology</option>
+                <option value="pulmonology">Pulmonology</option>
+                <option value="neurology">Neurology</option>
+                <option value="psychiatry">Psychiatry</option>
+                <option value="emergency_medicine">Emergency Medicine</option>
+                <option value="anesthesiology">Anesthesiology</option>
+                <option value="radiology">Diagnostic Radiology</option>
+                <option value="pathology">Pathology</option>
+                <option value="internal_medicine">Internal Medicine</option>
+                <option value="pediatrics">Pediatrics</option>
+                <option value="obgyn">Obstetrics and Gynecology</option>
+                <option value="family_medicine">Family Medicine</option>
+                <option value="critical_care">Critical Care Medicine</option>
+                <option value="sports_medicine">Sports Medicine</option>
+                <option value="geriatrics">Geriatrics</option>
+                <option value="pain_medicine">Pain Medicine</option>
+                <option value="public_health">Public Health</option>
+                <option value="nuclear_medicine">Nuclear Medicine</option>
+                <option value="physical_medicine_rehab">Physical Medicine and Rehabilitation</option>
+                <option value="addiction_medicine">Addiction Medicine</option>
+                <option value="forensic_psychiatry">Forensic Psychiatry</option>
+                <option value="child_psychiatry">Child and Adolescent Psychiatry</option>
+                <option value="primary_care">Primary Care</option>
+                <option value="general_practice">General Practice</option>
+            </select>
+
+            <input type="number" name="price" placeholder="0" required>
+
+            <div class="form-actions">
+                <button type="button" class="btn-back" onclick="window.location.href='doctor.html'">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <button type="submit" class="btn-submit">Complete Registration</button>
+                <button type="reset" class="btn-reset">Reset</button>
+            </div>
+        </form>
+    </main>
+
+    <script src="{% static 'JS/Form.js' %}"></script>
+</body>
+</html>

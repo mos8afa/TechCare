@@ -71,7 +71,7 @@ BLOOD_TYPES = (
     ("O-", "O-"),
 )
 
- 
+
 UNIVERSITIES = (
     ("cairo_university", "Cairo University"),
     ("ain_shams_university", "Ain Shams University"),

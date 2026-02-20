@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nurse</title>
+
+    <link rel="stylesheet" href="{% static 'css/Form.css' %}"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('{% static 'images/BG.jpeg' %}') no-repeat center center fixed; background-size: cover;">
+    <header class="top-header">
+        <div class="lang-dropdown" id="langBtn">
+            <i class="fas fa-globe"></i>
+            <span id="currentLang">English</span>
+            <i class="fas fa-chevron-down"></i>
+            <ul class="dropdown-menu" id="langMenu">
+                <li>English</li>
+                <li>العربية</li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="doctor-container">
+        <div class="header-section">
+            <div class="logo-icon-small">
+                <i class="fas fa-user-nurse"></i> 
+            </div>
+            
+            <h2>Professional Details</h2>
+            <div class="progress-wrapper">
+                <div class="progress-info">
+                    <span>FINAL STEP</span>
+                    <span>100%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <form id="nurseProfessionalForm" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="input-row">
+                <div class="input-group">
+                    <label>National ID (Front)</label>
+                    <div class="file-wrapper small">
+                        <input type="file" name="national_id_pic_front" accept="image/*,application/pdf" required>
+                        <i class="fas fa-id-card"></i>
+                        <span>Upload Front</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>National ID (Back)</label>
+                    <div class="file-wrapper small">
+                        <input type="file" name="national_id_pic_back" accept="image/*,application/pdf" required>
+                        <i class="fas fa-id-card"></i>
+                        <span>Upload Back</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group" style="flex: 2;">
+                    <label>Service Offered</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-hand-holding-medical"></i>
+                        <select name="serviceName" required>
+                            <option value="" disabled selected>Select service</option>
+                            <option value="home_nursing">Home Nursing ya slaaam</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group" style="flex: 1;">
+                    <label>Price (EGP)</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <input name="price" type="number" placeholder="0.00" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Excellence Cert.</label>
+                    <div class="file-wrapper small">
+                        <input type="file" name="excellence_certificate" required>
+                        <i class="fas fa-award"></i>
+                        <span>Upload</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Graduation Cert.</label>
+                    <div class="file-wrapper small">
+                        <input type="file" name="graduation_certificate" required>
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Upload</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Syndicate Card</label>
+                    <div class="file-wrapper small">
+                        <input type="file" name="syndicate_card" required>
+                        <i class="fas fa-address-card"></i>
+                        <span>Upload</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Practice Permit</label>
+                    <div class="file-wrapper small">
+                        <input type="file" name="practice_permit" required>
+                        <i class="fas fa-file-medical"></i>
+                        <span>Upload</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-back" onclick="window.location.href='nurse.html'">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+
+                <button type="submit" class="btn-submit">Complete Registration</button>
+                <button type="reset" class="btn-reset">Reset</button>
+            </div>
+        </form>
+    </main>
+
+    <script src="{% static 'JS/Form.js' %}"></script>
+</body>
+</html>
