@@ -262,6 +262,7 @@ body {
 .file-wrapper.uploaded span {
     color: var(--primary-color);
     font-weight: 600;
+    text-wrap: auto;
 }
 
 .file-wrapper.uploaded:hover {
