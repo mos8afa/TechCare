@@ -19,8 +19,7 @@ body {
 
     min-height: 100vh;
     padding: 40px 20px;
-    background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), 
-                url('../img/BG.jpeg') no-repeat center center fixed;
+    background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), no-repeat center center fixed;
     background-size: cover;
 }
 
@@ -46,6 +45,30 @@ body {
     color: var(--primary-color);
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    right: 0;
+    top: 110%;
+    width: 120px;
+    background: white;
+    list-style: none;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.dropdown-menu.show { display: block; }
+
+.dropdown-menu li {
+    padding: 10px 15px;
+    color: #4A5568;
+    transition: 0.2s;
+}
+
+.dropdown-menu li:hover { background: #f7fafc; color: var(--primary-color); }
 
 .doctor-container {
     width: 100%;
@@ -245,6 +268,55 @@ input:focus {
     border-radius: 10px;
     color: var(--text-gray);
     border: 1px solid var(--border-color);
+}
+
+/* ... (أبقِ الـ Root والأساسيات كما هي) ... */
+
+/* زر الرجوع الجديد */
+.btn-back {
+    flex: 0.5;
+    background: white;
+    border: 1px solid var(--border-color);
+    color: var(--primary-color);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-back:hover {
+    background: #f0f7ff;
+    border-color: var(--primary-color);
+}
+
+.file-wrapper:not(.uploaded):hover {
+    border-color: var(--primary-color);
+    background: #F7FAFC;
+}
+
+.file-wrapper.uploaded {
+    border-color: var(--primary-color);
+    border-style: solid; 
+    background: #f0f7ff;
+    cursor: default;
+}
+
+.file-wrapper.uploaded i {
+    color: var(--primary-color); 
+}
+
+.file-wrapper.uploaded span {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
 }
 
 /* Media Query */

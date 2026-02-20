@@ -18,8 +18,7 @@ body {
 
     min-height: 100vh;
     padding: 40px 20px;
-    background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), 
-                url('../img/BG.jpeg') no-repeat center center fixed;
+    background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), no-repeat center center fixed;
     background-size: cover;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -229,6 +228,26 @@ body {
 .file-wrapper span {
     font-size: 13px;
     color: var(--text-gray);
+}
+
+.file-wrapper:not(.uploaded):hover {
+    border-color: var(--primary-color);
+    background: #F7FAFC;
+}
+
+.file-wrapper.uploaded {
+    border-color: var(--primary-color);
+    border-style: solid; 
+    background: #f0f7ff;
+    cursor: default;
+}
+
+.file-wrapper.uploaded i {
+    color: var(--primary-color); 
+}
+
+.file-wrapper.uploaded:hover {
+    background: #f0f7ff;
 }
 
 .form-actions {

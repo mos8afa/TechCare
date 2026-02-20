@@ -8,13 +8,17 @@
     <link rel="stylesheet" href="Css/doctor2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
+<body style="background-image: url(../img/BG.jpeg);">
 
     <header class="top-header">
-        <div class="lang-dropdown">
+        <div class="lang-dropdown" id="langBtn">
             <i class="fas fa-globe"></i>
-            <span>English</span>
+            <span id="currentLang">English</span>
             <i class="fas fa-chevron-down"></i>
+            <ul class="dropdown-menu" id="langMenu">
+                <li>English</li>
+                <li>العربية</li>
+            </ul>
         </div>
     </header>
 
@@ -36,47 +40,72 @@
         </div>
 
         <form id="doctorProfessionalForm">
-            
             <div class="input-group">
                 <label for="university">University</label>
                 <div class="input-wrapper">
                     <i class="fas fa-university"></i>
                     <input list="universities" id="university" name="university" placeholder="Start typing or choose..." required>
                     <datalist id="universities">
+                        <option>Cairo University</option>
                         <option>Ain Shams University</option>
-                        <option>Al-Azhar University</option>
                         <option>Alexandria University</option>
-                        <option>American University in Cairo (AUC)</option>
-                        <option>Arab Academy for Science &amp; Technology</option>
+                        <option>Mansoura University</option>
+                        <option>Future University in Egypt</option>
+                        <option>The American University in Cairo</option>
+                        <option>Zagazig University</option>
+                        <option>Al-Azhar University</option>
                         <option>Assiut University</option>
                         <option>Benha University</option>
-                        <option>Beni Suef University</option>
-                        <option>British University in Egypt</option>
-                        <option>Canadian International College</option>
-                        <option>Cairo University</option>
-                        <option>Fayoum University</option>
-                        <option>Future University in Egypt</option>
-                        <option>German University in Cairo (GUC)</option>
-                        <option>Helwan University</option>
-                        <option>Kafr El Sheikh University</option>
-                        <option>Luxor University</option>
-                        <option>Mansoura University</option>
-                        <option>Matrouh University</option>
-                        <option>Menoufia University</option>
+                        <option>Egypt-Japan University of Science and Technology</option>
+                        <option>Kafrelsheikh University</option>
+                        <option>Tanta University</option>
+                        <option>Arab Academy for Science, Technology and Maritime Transport</option>
+                        <option>Aswan University</option>
+                        <option>Beni-Suef University</option>
+                        <option>Damietta University</option>
+                        <option>Delta University for Science and Technology</option>
                         <option>Minia University</option>
-                        <option>Misr International University</option>
-                        <option>Misr University for Science &amp; Technology (MUST)</option>
-                        <option>Nile University</option>
                         <option>New Valley University</option>
-                        <option>October 6 University</option>
-                        <option>Other</option>
-                        <option>Pharos University</option>
-                        <option>Port Said University</option>
-                        <option>Sohag University</option>
+                        <option>University of Sadat City</option>
                         <option>South Valley University</option>
                         <option>Suez Canal University</option>
-                        <option>Tanta University</option>
-                        <option>Zagazig University</option>
+                        <option>Menofia University</option>
+                        <option>Fayoum University</option>
+                        <option>Sohag University</option>
+                        <option>Port Said University</option>
+                        <option>The British University in Egypt</option>
+                        <option>Zewail City of Science, Technology and Innovation</option>
+                        <option>Damanhour University</option>
+                        <option>Helwan University</option>
+                        <option>Misr University for Science and Technology</option>
+                        <option>Nile University</option>
+                        <option>October University for Modern Sciences and Arts</option>
+                        <option>German University in Cairo</option>
+                        <option>Galala University</option>
+                        <option>Badr University in Cairo</option>
+                        <option>New Giza University</option>
+                        <option>Pharos University in Alexandria</option>
+                        <option>Sinai University</option>
+                        <option>Egyptian Russian University</option>
+                        <option>Misr International University</option>
+                        <option>October 6 University</option>
+                        <option>Ahram Canadian University</option>
+                        <option>Canadian International College</option>
+                        <option>MTI University</option>
+                        <option>Nahda University in Beni Suef</option>
+                        <option>Heliopolis University</option>
+                        <option>Egyptian Chinese University</option>
+                        <option>Egyptian E-Learning University</option>
+                        <option>El Shorouk Academy</option>
+                        <option>French University of Egypt</option>
+                        <option>Hertfordshire University in Egypt</option>
+                        <option>King Salman International University</option>
+                        <option>New Mansoura University</option>
+                        <option>Toronto Metropolitan University Cairo</option>
+                        <option>University of Prince Edward Island</option>
+                        <option>Egypt University of Informatics</option>
+                        <option>Luxor University</option>
+                        <option>Suez University</option>                   
                     </datalist>
                 </div>
             </div>
@@ -84,16 +113,16 @@
             <div class="input-row">
                 <div class="input-group">
                     <label>National ID (Front)</label>
-                    <div class="file-wrapper">
-                        <input type="file" name="idFront" accept="image/*,application/pdf" required>
+                    <div class="file-wrapper" id="wrapper-idFront">
+                        <input type="file" name="idFront" accept="image/*" required>
                         <i class="fas fa-id-card"></i>
                         <span>Upload Front</span>
                     </div>
                 </div>
                 <div class="input-group">
                     <label>National ID (Back)</label>
-                    <div class="file-wrapper">
-                        <input type="file" name="idBack" accept="image/*,application/pdf" required>
+                    <div class="file-wrapper" id="wrapper-idBack">
+                        <input type="file" name="idBack" accept="image/*" required>
                         <i class="fas fa-id-card"></i>
                         <span>Upload Back</span>
                     </div>
@@ -103,7 +132,7 @@
             <div class="input-row">
                 <div class="input-group">
                     <label>Excellence Cert.</label>
-                    <div class="file-wrapper">
+                    <div class="file-wrapper" id="wrapper-excellence">
                         <input type="file" name="excellenceCert" required>
                         <i class="fas fa-award"></i>
                         <span>Upload File</span>
@@ -111,7 +140,7 @@
                 </div>
                 <div class="input-group">
                     <label>Graduation Cert.</label>
-                    <div class="file-wrapper">
+                    <div class="file-wrapper" id="wrapper-graduation">
                         <input type="file" name="graduationCert" required>
                         <i class="fas fa-user-graduate"></i>
                         <span>Upload File</span>
@@ -122,7 +151,7 @@
             <div class="input-row">
                 <div class="input-group">
                     <label>Syndicate Card</label>
-                    <div class="file-wrapper">
+                    <div class="file-wrapper" id="wrapper-syndicate">
                         <input type="file" name="syndicateCard" required>
                         <i class="fas fa-address-card"></i>
                         <span>Upload File</span>
@@ -130,7 +159,7 @@
                 </div>
                 <div class="input-group">
                     <label>Practice Permit</label>
-                    <div class="file-wrapper">
+                    <div class="file-wrapper" id="wrapper-permit">
                         <input type="file" name="practicePermit" required>
                         <i class="fas fa-file-medical"></i>
                         <span>Upload File</span>
@@ -145,7 +174,47 @@
                         <i class="fas fa-stethoscope"></i>
                         <select id="specialization" name="specialization" required>
                             <option value="" disabled selected>Select specialization</option>
-                            <option>لحد ما اخدها من المنوف</option>
+                            <option>Neurosurgery</option>
+                            <option>Orthopedic Surgery</option>
+                            <option>Plastic Surgery</option>
+                            <option>Cardiothoracic Surgery</option>
+                            <option>Otolaryngology (ENT)</option>
+                            <option>Vascular Surgery</option>
+                            <option>Urology</option>
+                            <option>Ophthalmology</option>
+                            <option>General Surgery</option>
+                            <option>Pediatric Surgery</option>
+                            <option>Dermatology</option>
+                            <option>Cardiology</option>
+                            <option>Gastroenterology</option>
+                            <option>Medical Oncology</option>
+                            <option>Hematology</option>
+                            <option>Endocrinology</option>
+                            <option>Nephrology</option>
+                            <option>Rheumatology</option>
+                            <option>Pulmonology</option>
+                            <option>Neurology</option>
+                            <option>Psychiatry</option>
+                            <option>Emergency Medicine</option>
+                            <option>Anesthesiology</option>
+                            <option>Diagnostic Radiology</option>
+                            <option>Pathology</option>
+                            <option>Internal Medicine</option>
+                            <option>Pediatrics</option>
+                            <option>Obstetrics and Gynecology</option>
+                            <option>Family Medicine</option>
+                            <option>Critical Care Medicine</option>
+                            <option>Sports Medicine</option>
+                            <option>Geriatrics</option>
+                            <option>Pain Medicine</option>
+                            <option>Public Health</option>
+                            <option>Nuclear Medicine</option>
+                            <option>Physical Medicine and Rehabilitation</option>
+                            <option>Addiction Medicine</option>
+                            <option>Forensic Psychiatry</option>
+                            <option>Child and Adolescent Psychiatry</option>
+                            <option>Primary Care</option>
+                            <option>General Practice</option>
                         </select>
                     </div>
                 </div>
@@ -153,12 +222,15 @@
                     <label for="price">Price (EGP)</label>
                     <div class="input-wrapper">
                         <i class="fas fa-money-bill-wave"></i>
-                        <input id="price" name="price" type="number" placeholder="0.00" required>
+                        <input id="price" name="price" type="number" placeholder="0" required>
                     </div>
                 </div>
             </div>
 
             <div class="form-actions">
+                <button type="button" class="btn-back" onclick="window.location.href='doctor.html'">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
                 <button type="submit" class="btn-submit">Complete Registration</button>
                 <button type="reset" class="btn-reset">Reset</button>
             </div>
