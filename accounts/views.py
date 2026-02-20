@@ -7,8 +7,7 @@ from django.core.mail import send_mail
 from project.settings import EMAIL_HOST_USER, FERNET_KEY
 from django.contrib.auth import get_user_model
 import random
-from .forms import DonorForm, DoctorStep2Form, DoctorStep1Form, PatientForm, PharmacistStep1Form, NurseStep1Form, NurseStep2Form,PharmacistStep2Form
-from .models import ROLE_REDIRECTS
+from .models import ROLE_REDIRECTS, Patient, Doctor, Nurse, Pharmacist, Donor
 from cryptography.fernet import Fernet
 import json, uuid
 
@@ -40,7 +39,6 @@ def user_login(request):
 
     return render(request, 'accounts/login.html')
 
-
 def verify_otp_login(request):
     if request.method == "POST":
         user_id = request.session.get("otp_user_id")
@@ -68,7 +66,7 @@ def verify_otp_login(request):
         if str(saved_otp) != str(otp):
             request.session["otp_attempts"] = attempts + 1
             messages.error(request, "Invalid OTP")
-            return render(request, "verify_otp.html")
+            return render(request, "accounts/verify_otp_login.html")
 
         request.session.pop("otp_attempts", None)
 
@@ -80,57 +78,7 @@ def verify_otp_login(request):
 
         return redirect("home")
 
-    return render(request, "verify_otp.html")
-
-
-def verify_otp_signup(request):
-    if request.method == "POST":
-        token = request.POST.get("token")
-        otp_input = request.POST.get("otp")
-
-        encrypted_data = cache.get(f"pending_user_{token}")
-        if not encrypted_data:
-            messages.error(request, "OTP expired")
-            return redirect("register")
-        
-        key = Fernet(FERNET_KEY)
-        data = key.decrypt(encrypted_data)
-
-        pending_data = json.loads(data)
-
-        attempts = pending_data['attempts']
-
-        if attempts >= 5:
-            cache.delete(f"pending_user_{token}")
-            messages.error(request, "Too many attempts")
-            return redirect("register")        
-        
-        if str(pending_data['otp']) != str(otp_input):
-            pending_data["attempts"] = attempts + 1
-            updated_encrypted = fernet.encrypt(json.dumps(pending_data).encode())
-
-            cache.set(f"pending_user_{token}", updated_encrypted, timeout=300)
-
-            messages.error(request, "Invalid OTP")
-            return render(request, "verify_otp.html")
-
-        User = get_user_model()
-        user = User.objects.create_user(
-            username=pending_data["username"],
-            email=pending_data["email"],
-            password=pending_data["password"],  
-            first_name=pending_data["first_name"],
-            last_name=pending_data["last_name"],
-            role=pending_data["role"]
-        )
-        user.is_active = True
-        user.save()
-        
-        cache.delete(f"pending_user_{token}")
-
-        return redirect(ROLE_REDIRECTS[user.role])
-
-    return render(request, "verify_otp.html")
+    return render(request, "accounts/verify_otp_login.html")
 
 
 def user_register(request):
@@ -151,9 +99,7 @@ def user_register(request):
             messages.error(request, "email already exists")
             return redirect('register')
         
-
         otp = random.randint(10000,99999)
-
 
         pending_data = {
         "username": username,
@@ -185,121 +131,274 @@ def user_register(request):
     
     return render(request, 'accounts/register.html')
 
+def verify_otp_signup(request):
+    if request.method == "POST":
+        token = request.POST.get("token")
+        otp_input = request.POST.get("otp")
+
+        encrypted_data = cache.get(f"pending_user_{token}")
+        if not encrypted_data:
+            messages.error(request, "OTP expired")
+            return redirect("register")
+        
+        key = Fernet(FERNET_KEY)
+        data = key.decrypt(encrypted_data)
+
+        pending_data = json.loads(data)
+
+        attempts = pending_data['attempts']
+
+        if attempts >= 5:
+            cache.delete(f"pending_user_{token}")
+            messages.error(request, "Too many attempts")
+            return redirect("register")        
+        
+        if str(pending_data['otp']) != str(otp_input):
+            pending_data["attempts"] = attempts + 1
+            updated_encrypted = key.encrypt(json.dumps(pending_data).encode())
+            cache.set(f"pending_user_{token}", updated_encrypted, timeout=300)
+            messages.error(request, "Invalid OTP")
+            return render(request, "accounts/verify_otp_signup.html")
+
+        User = get_user_model()
+        user = User.objects.create_user(
+            username=pending_data["username"],
+            email=pending_data["email"],
+            password=pending_data["password"],  
+            first_name=pending_data["first_name"],
+            last_name=pending_data["last_name"],
+            role=pending_data["role"]
+        )
+        user.is_active = True
+        user.save()
+        
+        cache.delete(f"pending_user_{token}")
+
+        return redirect(ROLE_REDIRECTS[user.role])
+
+    return render(request, "accounts/verify_otp_signup.html")
+
 
 def patient_registration(request):
     if request.method == 'POST':
-        form = PatientForm(request.POST, request.FILES)
-        if form.is_valid():
-            patient = form.save(commit=False)
-            patient.user = request.user
-            patient.save()
+        gender = request.POST.get('gender')
+        address = request.POST.get('address')
+        governorate = request.POST.get('governorate')
+        phone_number = request.POST.get('phone_number')
+        profile_pic = request.FILES.get('profile_pic')
+        national_id_pic_back = request.FILES.get('national_id_pic_back')
+        national_id_pic_front = request.FILES.get('national_id_pic_front')
 
-            login(request, request.user)
-            return redirect('home')
-    else:
-        form = PatientForm()
-    return render(request, 'patient_registration.html',{'form':form})
+        Patient.objects.create(
+            user=request.user,
+            gender=gender,
+            address=address,
+            governorate=governorate,
+            phone_number=phone_number,
+            profile_pic=profile_pic,
+            national_id_pic_back=national_id_pic_back,
+            national_id_pic_front=national_id_pic_front,
+        )
+
+        login(request, request.user)
+        return redirect('home')
+    return render(request, 'patient_registration.html')
 
 
 def doctor_registration(request):
     if request.method == 'POST':
-        form = DoctorStep1Form(request.POST, request.FILES)
-        if form.is_valid():
-            doctor = form.save(commit=False)
-            doctor.user = request.user
-            doctor.save()
+        gender = request.POST.get('gender')
+        address = request.POST.get('address')
+        governorate = request.POST.get('governorate')
+        phone_number = request.POST.get('phone_number')
+        profile_pic = request.FILES.get('profile_pic')
+        date_of_birth = request.POST.get('date_of_birth')
 
-            return redirect('doctor_registration_s2')
-        else:
-            form = DoctorStep1Form()
-    return render(request, 'doctor.html', {'form':form})
+        Doctor.objects.create(
+            user=request.user,
+            gender=gender,
+            address=address,
+            governorate=governorate,
+            phone_number=phone_number,
+            profile_pic=profile_pic,
+            date_of_birth = date_of_birth
+        )
+
+        request.session['doctor_id'] = request.user.id
+
+        return redirect('doctor_registration_s2')
+    
+    return render(request, 'doctor.html')
 
 def doctor_registration_s2(request):
+    doctor_id = request.session.get('doctor_id')
+    if not doctor_id:
+        return redirect('doctor_registration')
+
+    doctor = Doctor.objects.get(id=doctor_id)
+
     if request.method == 'POST':
-        doctor = request.user.doctor
-        form = DoctorStep2Form(request.POST, request.FILES, instance=doctor)
-        if form.is_valid():
-            doctor = form.save(commit=False)
-            doctor.user = request.user
-            doctor.save()
-            
-            login(request, request.user)
-            return redirect('home')
-        else:
-            form = DoctorStep2Form()
-            form.fields=['excellence_certificate', 'price', 'syndicate_card', 'practice_permit', 'graduation_certificate', 'university', 'specification']
-    return render(request, 'doctor.html', {'form':form})
+        doctor.excellence_certificate = request.FILES.get('excellence_certificate')
+        doctor.price = request.POST.get('price')
+        doctor.syndicate_card = request.FILES.get('syndicate_card')
+        doctor.practice_permit = request.FILES.get('practice_permit')
+        doctor.graduation_certificate = request.FILES.get('graduation_certificate')
+        doctor.university = request.POST.get('university')
+        doctor.specification = request.FILES.get('national_id_pic_front')
+        doctor.national_id_pic_back = request.FILES.get('national_id_pic_back')
+        doctor.national_id_pic_front = request.FILES.get('national_id_pic_front')
+        doctor.save()
+
+        login(request, request.user)
+
+        del request.session['doctor_id']
+
+        return redirect('home')
+    return render(request, 'doctor_registeration_s2.html')
 
 
-def nurse_registration(request):
+def nurse_registration_step1(request):
     if request.method == 'POST':
-        form = NurseStep1Form(request.POST, request.FILES)
-        if form.is_valid():
-            nurse = form.save(commit=False)
-            nurse.user = request.user
-            nurse.save()
+        gender = request.POST.get('gender')
+        phone_number = request.POST.get('phone_number')
+        date_of_birth = request.POST.get('date_of_birth')
+        governorate = request.POST.get('governorate')
+        profile_pic = request.FILES.get('profile_pic')
 
-            return redirect('nurse_registration_s2')
-        else:
-            form = NurseStep1Form()
-            form.fields = ['gender', 'phone_number', 'date_of_birth', 'governorate','national_id_pic_front', 'national_id_pic_back', 'profile_pic']
+        nurse = Nurse.objects.create(
+            user=request.user,
+            gender=gender,
+            phone_number=phone_number,
+            date_of_birth=date_of_birth,
+            governorate=governorate,
+            profile_pic=profile_pic
+        )
 
-    return render(request, 'nurse.html', {'form':form})
+        request.session['nurse_id'] = nurse.id
 
-def nurse_registration_s2(request):
+        return redirect('nurse_registration_s2')
+
+    return render(request, 'nurse_registration_s1.html')
+
+def nurse_registration_step2(request):
+    nurse_id = request.session.get('nurse_id')
+    if not nurse_id:
+        return redirect('nurse_registration')
+
+    nurse = Nurse.objects.get(id=nurse_id)
+
     if request.method == 'POST':
-        nurse = request.user.nurse
-        form = NurseStep2Form(request.POST,request.FILES, instance=nurse)
-        if form.is_valid():
-            nurse = form.save(commit=False)
-            nurse.user = request.user
-            nurse.save()
-            login(request, request.user)
-            return redirect('home')
-        else:
-            form = NurseStep2Form()
-    return render(request, 'nurse.html', {'form':form})
+        
+        excellence_certificate = request.FILES.get('excellence_certificate')
+        syndicate_card = request.FILES.get('syndicate_card')
+        practice_permit = request.FILES.get('practice_permit')
+        graduation_certificate = request.FILES.get('graduation_certificate')
+        national_id_pic_front = request.FILES.get('national_id_pic_front')
+        national_id_pic_back = request.FILES.get('national_id_pic_back')
+
+        nurse.excellence_certificate = excellence_certificate
+        nurse.syndicate_card = syndicate_card
+        nurse.practice_permit = practice_permit
+        nurse.graduation_certificate = graduation_certificate
+        nurse.national_id_pic_front = national_id_pic_front
+        nurse.national_id_pic_back = national_id_pic_back
+        nurse.save()
+
+        login(request, request.user)
+
+        del request.session['nurse_id']
+
+        return redirect('home')
+
+    return render(request, 'nurse_registration_s2.html')
 
 
-def pharmacist_registration(request):
+def pharmacist_registration_step1(request):
     if request.method == 'POST':
-        form = PharmacistStep1Form(request.POST, request.FILES)
-        if form.is_valid():
-            pharmacist = form.save(commit=False)
-            pharmacist.user = request.user
-            pharmacist.save()
+        gender = request.POST.get('gender')
+        phone_number = request.POST.get('phone_number')
+        date_of_birth = request.POST.get('date_of_birth')
+        national_id_pic_front = request.FILES.get('national_id_pic_front')
+        national_id_pic_back = request.FILES.get('national_id_pic_back')
+        profile_pic = request.FILES.get('profile_pic')
 
-            return redirect('pharmacist_registration_s2')
-        else:
-            form = PharmacistStep1Form()
-    return render(request, 'pharmacist.html', {'form':form})
+        pharmacist = Pharmacist.objects.create(
+            user=request.user,
+            gender=gender,
+            phone_number=phone_number,
+            date_of_birth=date_of_birth,
+            national_id_pic_front=national_id_pic_front,
+            national_id_pic_back=national_id_pic_back,
+            profile_pic=profile_pic
+        )
 
-def pharmacist_registration_s2(request):
+        request.session['pharmacist_id'] = pharmacist.id
+
+        return redirect('pharmacist_registration_s2')
+
+    return render(request, 'pharmacist_registration_s1.html')
+
+def pharmacist_registration_step2(request):
+    pharmacist_id = request.session.get('pharmacist_id')
+    if not pharmacist_id:
+        return redirect('pharmacist_registration')
+
+    pharmacist = Pharmacist.objects.get(id=pharmacist_id)
+
     if request.method == 'POST':
-        pharmacist = request.user.pharmacist
-        form = PharmacistStep2Form(request.POST, request.FILES, instance=pharmacist)
-        if form.is_valid():
-            pharmacist = form.save(commit=False)
-            pharmacist.user = request.user
-            pharmacist.save()
+        pharmacy_name = request.POST.get('pharmacy_name')
+        pharmacy_address = request.POST.get('pharmacy_address')
+        university = request.POST.get('university')
+        governorate = request.POST.get('governorate')
+        syndicate_card = request.FILES.get('syndicate_card')
+        practice_permit = request.FILES.get('practice_permit')
+        graduation_certificate = request.FILES.get('graduation_certificate')
 
-            login(request, request.user)
-            return redirect('home')
-        else:
-            form = PharmacistStep2Form()
-    return render(request, 'pharmacist.html', {'form':form})
+        pharmacist.pharmacy_name = pharmacy_name
+        pharmacist.pharmacy_address = pharmacy_address
+        pharmacist.university = university
+        pharmacist.governorate = governorate
+        pharmacist.syndicate_card = syndicate_card
+        pharmacist.practice_permit = practice_permit
+        pharmacist.graduation_certificate = graduation_certificate
+        pharmacist.save()
+
+        login(request, request.user)
+
+        del request.session['pharmacist_id']
+
+        return redirect('home')
+
+    return render(request, 'pharmacist_registration_s2.html')
 
 
 def donor_registration(request):
-        if request.method == 'POST':
-            form = DonorForm(request.POST,request.FILES)
-            if form.is_valid():
-                donor = form.save(commit=False)
-                donor.user = request.user
-                donor.save()
+    if request.method == 'POST':
+        gender = request.POST.get('gender')
+        address = request.POST.get('address')
+        governorate = request.POST.get('governrate')
+        phone_number = request.POST.get('phone_number')
+        profile_pic = request.FILES.get('profile_pic')
+        national_id_pic_back = request.FILES.get('national_id_pic_back')
+        national_id_pic_front = request.FILES.get('national_id_pic_front')
+        blood_type = request.POST.get('blood_type')
+        last_donation_date =request.POST.get('last_donation_date')
 
-                login(request, request.user)
-                return redirect('home')
-        else:
-            form = DonorForm()
-        return render(request, 'donor_registration.html',{'form':form})      
+
+        Donor.objects.create(
+            user=request.user,
+            gender=gender,
+            address=address,
+            governorate=governorate,
+            phone_number=phone_number,
+            profile_pic=profile_pic,
+            national_id_pic_back=national_id_pic_back,
+            national_id_pic_front=national_id_pic_front,
+            blood_type = blood_type,
+            last_donation_date = last_donation_date
+        )
+
+        login(request, request.user)
+        return redirect('home')
+    return render(request, 'Donor_registration.html')
+
