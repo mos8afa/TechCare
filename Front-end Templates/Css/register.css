@@ -18,9 +18,7 @@ body {
 
     padding: 20px;
     min-height: 100vh;
-    background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), no-repeat center center fixed;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-size: cover;
 }
 
 .top-header {

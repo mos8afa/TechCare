@@ -23,7 +23,7 @@ def user_login(request):
             messages.error(request,'Invalid username or password')
             return render(request, 'accounts/login.html')
         else:
-            otp = random.randint(10000,99999)
+            otp = random.randint(100000,999999)
 
             cache.set(f"otp_{user.id}", otp, timeout=300)
 
@@ -99,7 +99,7 @@ def user_register(request):
             messages.error(request, "email already exists")
             return redirect('register')
         
-        otp = random.randint(10000,99999)
+        otp = random.randint(100000,999999)
 
         pending_data = {
         "username": username,
@@ -139,7 +139,7 @@ def verify_otp_signup(request):
         encrypted_data = cache.get(f"pending_user_{token}")
         if not encrypted_data:
             messages.error(request, "OTP expired")
-            return redirect("register")
+            return redirect("verify_otp_faild")
         
         key = Fernet(FERNET_KEY)
         data = key.decrypt(encrypted_data)
@@ -151,7 +151,7 @@ def verify_otp_signup(request):
         if attempts >= 5:
             cache.delete(f"pending_user_{token}")
             messages.error(request, "Too many attempts")
-            return redirect("register")        
+            return redirect("verify_otp_faild")        
         
         if str(pending_data['otp']) != str(otp_input):
             pending_data["attempts"] = attempts + 1
@@ -177,6 +177,10 @@ def verify_otp_signup(request):
         return redirect(ROLE_REDIRECTS[user.role])
 
     return render(request, "accounts/verify_otp_signup.html")
+
+
+def verify_otp_faild(request):
+    pass
 
 
 def patient_registration(request):
@@ -278,7 +282,7 @@ def nurse_registration_step1(request):
 
         return redirect('nurse_registration_s2')
 
-    return render(request, 'nurse_registration_s1.html')
+    return render(request, 'nurse_registration.html')
 
 def nurse_registration_step2(request):
     nurse_id = request.session.get('nurse_id')
