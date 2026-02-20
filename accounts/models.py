@@ -180,10 +180,11 @@ SPECIFICATIONS = (
     ("general_practice", "General Practice"),
 )
 
-
+#----- user -----
 class CustomUser(AbstractUser):
     role = models.CharField(max_length=10, choices=ROLES)
     slug = models.SlugField()
+    is_verified = models.BooleanField(default=False)
     
     def save(self, *args, **kwargs):
         if not self.slug:
