@@ -176,7 +176,16 @@ body {
     font-size: 14px;
     transition: 0.3s;
 }
-
+/*المشكله في هذا الجزء*/
+.otp-container .input-wrapper input {
+    padding: 1px;
+    text-align: center;
+    font-size: 23px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    width: 60px;
+    padding: 16px 0;
+}
 
 
 .input-wrapper input:focus, .input-wrapper select:focus {
@@ -339,6 +348,119 @@ body {
     font-weight: 600;
 }
 
+/*الجزء الجديد*/
+.page-message-container {
+    background: #ffffff;
+    width: 100%;
+    max-width: 420px;
+    padding: 40px 30px;
+    border-radius: 18px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+    margin: 80px auto;
+}
+
+.page-message-container h2 {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #111;
+}
+
+.page-message-container .form-group {
+    margin-bottom: 20px;
+}
+
+.page-message-container label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #444;
+}
+
+.page-message-container .input-icon-wrapper {
+    position: relative;
+}
+
+.page-message-container input {
+    width: 100%;
+    padding: 14px 45px 14px 14px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    transition: 0.3s ease;
+    background: #fafafa;
+}
+
+.page-message-container input:focus {
+    border-color: #2563eb;
+    background: #fff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.page-message-container .toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #777;
+    font-size: 14px;
+}
+
+.page-message-container button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #1d89e4);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s ease;
+}
+
+.page-message-container button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.page-message-container #message {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+}
+.page-message-container .reset-icon {
+    width: 50px;
+    height: 50px;
+    background: #EBF8FF;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    margin: 0 auto 15px;
+    font-size: 22px;
+}
+
+.page-message-container .reset-icon i {
+    font-size: 22px;
+    color: var(--primary-color);
+}
+
+.page-message-container h4 {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 400;
+    color: #9ca3af;
+    margin-top: -15px;
+    margin-bottom: 28px;
+    letter-spacing: 0.3px;
+}
 /* Media Query */
 @media (max-width: 480px) {
     .input-row { flex-direction: column; gap: 0; }

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set New Password</title>
+
+    <link rel="stylesheet" href="Css/Form.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url(../img/BG.jpeg) no-repeat center center fixed; background-size: cover;">
+
+    <header class="top-header">
+        <div class="lang-dropdown" id="langBtn">
+            <i class="fas fa-globe"></i>
+            <span id="currentLang">English</span>
+            <i class="fas fa-chevron-down"></i>
+            <ul class="dropdown-menu" id="langMenu">
+                <li>English</li>
+                <li>العربية</li>
+            </ul>
+        </div>
+    </header>
+
+
+
+<div class="page-message-container">
+    <div class="reset-icon">
+    <i class="fa-solid fa-unlock"></i>
+    </div>
+    
+    <h2>Set New Password</h2>
+    <h4>must be at least 8 characters</h4>
+    <form id="password-form">
+        <div class="form-group">
+            <label for="new-password">New Password</label>
+            <div class="input-icon-wrapper">
+                <input type="password" id="new-password" placeholder="Enter new password" required>
+                <i class="fa-solid fa-eye toggle-password" onclick="togglePassword('new-password', this)"></i>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="confirm-password">Confirm Password</label>
+            <div class="input-icon-wrapper">
+                <input type="password" id="confirm-password" placeholder="Re-enter new password" required>
+                <i class="fa-solid fa-eye toggle-password" onclick="togglePassword('confirm-password', this)"></i>
+            </div>
+        </div>
+
+        <button type="submit">Set Password</button>
+        <p id="message"></p>
+    </form>
+</div>
+
+
+
+    <script src="JS/Form.js"></script>
+</body>
+</html>
