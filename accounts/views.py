@@ -18,9 +18,9 @@ def user_login(request):
         password = request.POST.get('password')
 
         user = authenticate(request, username=username, password=password)
-
+        
         if user is None:
-            messages.error(request,'Invalid username or password')
+            messages.error(request,'Invalid username or password', extra_tags='login_error')
             return render(request, 'accounts/login.html')
         else:
             otp = random.randint(100000,999999)
@@ -53,7 +53,7 @@ def verify_otp_login(request):
         otp = int(otp_str)
         
         if not user_id:
-            messages.error(request, "User not found")
+            messages.error(request, "User not found", extra_tags='login_user_error')
             return redirect("login")
 
         saved_otp = cache.get(f"otp_{user_id}")
@@ -61,19 +61,19 @@ def verify_otp_login(request):
         attempts = request.session.get("otp_attempts", 0)
 
         if attempts >= 5:
-            messages.error(request, "Too many attempts")
+            messages.error(request, "Too many attempts",extra_tags='otp_attempts_error')
             cache.delete(f"otp_{user_id}")
             request.session.pop("otp_user_id", None)
             request.session.pop("otp_attempts", None)
             return redirect("verify_otp_faild")
         
         if not saved_otp:
-            messages.error(request, "OTP expired")
+            messages.error(request, "OTP expired", extra_tags='otp_expired_error')
             return redirect("verify_otp_faild")
 
         if str(saved_otp) != str(otp):
             request.session["otp_attempts"] = attempts + 1
-            messages.error(request, "Invalid OTP")
+            messages.error(request, "Invalid OTP", extra_tags='otp_error')
             return render(request, "accounts/verify_otp.html")
 
         request.session.pop("otp_attempts", None)
@@ -100,11 +100,11 @@ def user_register(request):
 
         User = get_user_model()
         if User.objects.filter(username=username).exists():
-            messages.error(request, "Username already exists")
+            messages.error(request, "Username already exists", extra_tags='username_error')
             return redirect('register')
         
         if User.objects.filter(email=email).exists():
-            messages.error(request, "email already exists")
+            messages.error(request, "email already exists", extra_tags='emai_error')
             return redirect('register')
         
         otp = random.randint(100000,999999)
@@ -154,7 +154,7 @@ def verify_otp_signup(request):
 
         encrypted_data = cache.get(f"pending_user_{token}")
         if not encrypted_data:
-            messages.error(request, "OTP expired")
+            messages.error(request, "OTP expired", extra_tags='otp_expired_error')
             return redirect("verify_otp_faild")
         
         key = Fernet(FERNET_KEY)
@@ -166,14 +166,14 @@ def verify_otp_signup(request):
 
         if attempts >= 5:
             cache.delete(f"pending_user_{token}")
-            messages.error(request, "Too many attempts")
+            messages.error(request, "Too many attempts",extra_tags='otp_attempts_error' )
             return redirect("verify_otp_faild")        
         
         if str(pending_data['otp']) != str(otp_input):
             pending_data["attempts"] = attempts + 1
             updated_encrypted = key.encrypt(json.dumps(pending_data).encode())
             cache.set(f"pending_user_{token}", updated_encrypted, timeout=300)
-            messages.error(request, "Invalid OTP")
+            messages.error(request, "Invalid OTP", extra_tags='otp_error')
             return render(request, "accounts/verify_otp.html")
 
         User = get_user_model()
@@ -196,7 +196,7 @@ def verify_otp_signup(request):
 
 
 def verify_otp_faild(request):
-    render (request, 'accounts/verify_otp_faild.html')
+    return render (request, 'accounts/verify_otp_faild.html')
 
 
 def patient_registration(request):
@@ -458,7 +458,7 @@ def verify_otp_forget_password(request):
         otp_str = str(otp1)+str(otp2)+str(otp3)+str(otp4)+str(otp5)+str(otp6)
         otp = int(otp_str)
         if not user_id:
-            messages.error(request, "User not found")
+            messages.error(request, "User not found", extra_tags='login_user_error')
             return redirect("login")
 
         saved_otp = cache.get(f"otp_{user_id}")
@@ -466,19 +466,19 @@ def verify_otp_forget_password(request):
         attempts = request.session.get("otp_attempts", 0)
 
         if attempts >= 5:
-            messages.error(request, "Too many attempts")
+            messages.error(request, "Too many attempts", extra_tags='otp_attempts_error')
             cache.delete(f"otp_{user_id}")
             request.session.pop("otp_user_id", None)
             request.session.pop("otp_attempts", None)
             return redirect("login")
         
         if not saved_otp:
-            messages.error(request, "OTP expired")
+            messages.error(request, "OTP expired", extra_tags='otp_expired_error')
             return redirect("login")
 
         if str(saved_otp) != str(otp):
             request.session["otp_attempts"] = attempts + 1
-            messages.error(request, "Invalid OTP")
+            messages.error(request, "Invalid OTP", extra_tags='otp_error')
             return render(request, "accounts/verify_otp.html")
         
         cache.delete(f"otp_{user_id}")
@@ -489,7 +489,7 @@ def verify_otp_forget_password(request):
 def reset_password(request):
     user_id = request.session.get("otp_user_id")
     if not user_id:
-        messages.error(request, "Session expired")
+        messages.error(request, "Session expired",extra_tags='session_error')
         return redirect("login")
     
     if request.method == 'POST':
@@ -497,7 +497,7 @@ def reset_password(request):
         confirm = request.POST.get('confirm')
 
         if password != confirm :
-            messages.error(request,"passwords not match")
+            messages.error(request,"passwords not match",extra_tags='password_error')
             return redirect('reset_password')
 
         User = get_user_model()
