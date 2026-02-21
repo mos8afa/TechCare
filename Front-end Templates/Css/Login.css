@@ -163,6 +163,17 @@ body {
     margin-bottom: 25px;
 }
 
+.form-options span {
+    font-size: 14px;
+    color: var(--text-gray);
+}
+
+.form-options a {
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--primary-color);
+}
+
 .forgot-link {
     font-size: 13px;
     text-decoration: none;
@@ -205,6 +216,11 @@ body {
     transition: 0.3s;
 }
 
+.btn-reset a {
+    text-decoration: none;
+    color: var(--text-gray);
+}
+
 .btn-reset:hover {
     background: #edf2f7;
     border-color: #cbd5e0;
@@ -221,6 +237,31 @@ body {
     text-decoration: none;
     color: var(--primary-color);
 }
+
+/* =============================================================================== */
+/* OTP Inputs */
+.otp-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+.otp-input {
+    width: 50px;
+    height: 55px;
+    font-size: 20px;
+    text-align: center;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    transition: 0.3s;
+}
+
+.otp-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(29, 137, 228, 0.1);
+    outline: none;
+}
+/* =============================================================================== */
 
 /* Media Query */
 @media (max-width: 480px) {
