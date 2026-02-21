@@ -198,6 +198,7 @@ def verify_otp_signup(request):
 def verify_otp_faild(request):
     render (request, 'accounts/verify_otp_faild.html')
 
+
 def patient_registration(request):
     if request.method == 'POST':
         gender = request.POST.get('gender')
@@ -420,6 +421,7 @@ def donor_registration(request):
         login(request, request.user)
         return redirect('home')
     return render(request, 'Donor_registration.html')
+
 
 def forget_password(request):
     if request.method == 'POST':

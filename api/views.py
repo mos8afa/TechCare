@@ -18,7 +18,7 @@ def Login(request):
     if user is None:
         return Response({"error": "Invalid credentials"}, status=401)
 
-    otp = random.randint(10000,99999)
+    otp = random.randint(100000,999999)
 
     cache.set(f"otp_{user.id}", otp, timeout=300)
 
