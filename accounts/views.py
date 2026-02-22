@@ -7,9 +7,9 @@ from django.core.mail import send_mail
 from project.settings import EMAIL_HOST_USER, FERNET_KEY
 from django.contrib.auth import get_user_model
 import random
-from .models import ROLE_REDIRECTS, Patient, Doctor, Nurse, Pharmacist, Donor
+from .models import ROLE_REDIRECTS, Patient, Doctor, Nurse, Pharmacist, Donor, PendingUser
 from cryptography.fernet import Fernet
-import json, uuid
+import json
 
 
 def user_login(request):
@@ -109,13 +109,16 @@ def user_register(request):
         
         otp = random.randint(100000,999999)
 
+        pending_user = PendingUser.objects.create(
+            username=username,
+            email=email,
+            password=make_password(password),
+            first_name=first_name,
+            last_name=last_name,
+            role=role,
+        )
+
         pending_data = {
-        "username": username,
-        "password": make_password(password),
-        "first_name": first_name,
-        "last_name": last_name,
-        "email": email,
-        "role": role,
         "otp": otp,
         "attempts":0,
         }
@@ -125,8 +128,7 @@ def user_register(request):
         data = json.dumps(pending_data).encode()
         encrypted = key.encrypt(data)
 
-        token = str(uuid.uuid4())
-        cache.set(f"pending_user_{token}",encrypted, timeout=300)
+        cache.set(f"pending_data_{pending_user.id}", encrypted, timeout=300)
 
         send_mail(
             subject = "TechCare Team",
@@ -135,24 +137,19 @@ def user_register(request):
             recipient_list = [email]
         )
 
-        return redirect('verify_otp_s')
+        return redirect('verify_otp_s', token=pending_user.id)
     
     return render(request, 'accounts/register.html')
 
-def verify_otp_signup(request):
+def verify_otp_signup(request, token):
+    pending_user = get_object_or_404(PendingUser, id=token)
     if request.method == "POST":
-        token = request.POST.get("token")
-        otp1 = request.POST.get("otp1")
-        otp2 = request.POST.get("otp2")
-        otp3 = request.POST.get("otp3")
-        otp4 = request.POST.get("otp4")
-        otp5 = request.POST.get("otp5")
-        otp6 = request.POST.get("otp6")
-        
-        otp_str = str(otp1)+str(otp2)+str(otp3)+str(otp4)+str(otp5)+str(otp6)
+
+        otp_str = "".join([request.POST.get(f"otp{i}") or "" for i in range(1,7)])
         otp_input = int(otp_str)
 
-        encrypted_data = cache.get(f"pending_user_{token}")
+        encrypted_data = cache.get(f"pending_data_{pending_user.id}")
+
         if not encrypted_data:
             messages.error(request, "OTP expired", extra_tags='otp_expired_error')
             return redirect("verify_otp_faild")
@@ -165,34 +162,36 @@ def verify_otp_signup(request):
         attempts = pending_data['attempts']
 
         if attempts >= 5:
-            cache.delete(f"pending_user_{token}")
+            cache.delete(f"pending_data_{pending_user.id}")
+            pending_user.delete()
             messages.error(request, "Too many attempts",extra_tags='otp_attempts_error' )
             return redirect("verify_otp_faild")        
         
         if str(pending_data['otp']) != str(otp_input):
             pending_data["attempts"] = attempts + 1
             updated_encrypted = key.encrypt(json.dumps(pending_data).encode())
-            cache.set(f"pending_user_{token}", updated_encrypted, timeout=300)
+            cache.set(f"pending_data_{pending_user.id}", updated_encrypted, timeout=300)
             messages.error(request, "Invalid OTP", extra_tags='otp_error')
             return render(request, "accounts/verify_otp.html")
 
         User = get_user_model()
-        user = User.objects.create_user(
-            username=pending_data["username"],
-            email=pending_data["email"],
-            password=pending_data["password"],  
-            first_name=pending_data["first_name"],
-            last_name=pending_data["last_name"],
-            role=pending_data["role"]
+        user = User.objects.create(
+            username=pending_user.username,
+            email=pending_user.email,
+            password=pending_user.password,  
+            first_name=pending_user.first_name,
+            last_name=pending_user.last_name,
+            role=pending_user.role,
+            is_active=True
         )
-        user.is_active = True
         user.save()
         
-        cache.delete(f"pending_user_{token}")
+        cache.delete(f"pending_data_{pending_user.id}")
+        pending_user.delete()
 
         return redirect(ROLE_REDIRECTS[user.role])
 
-    return render(request, "accounts/verify_otp.html")
+    return render(request, "accounts/verify_otp.html", {"token": token})
 
 
 def verify_otp_faild(request):

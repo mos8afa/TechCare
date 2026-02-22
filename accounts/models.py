@@ -191,6 +191,15 @@ class CustomUser(AbstractUser):
             self.slug = slugify(self.username)
         super().save(*args, **kwargs)
 
+class PendingUser(models.Model):
+    username = models.CharField(max_length=150)
+    email = models.EmailField()
+    password = models.CharField(max_length=128)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    role = models.CharField(max_length=10, choices=ROLES)
+    created_at = models.DateTimeField(auto_now_add=True)
+
 #----- patient ------
 class Patient(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
