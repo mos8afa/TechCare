@@ -1,15 +1,27 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Verify OTP</title>
 
-    <link rel="stylesheet" href="Css/Login.css">
+    <link rel="stylesheet" href="{% static 'css/Login.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        body
+        {
+        background-image: url('{%static "img/BG.jpeg" %}');
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-attachment: fixed;
+        background-size: cover;            
+        background-size: cover;
+        }
+    </style>
 </head>
 
-<body style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url(../img/BG.jpeg) no-repeat center center fixed; background-size: cover;">
-
+<body>
     <header class="top-header">
         <div class="lang-dropdown" id="langBtn">
             <i class="fas fa-globe"></i>
@@ -32,8 +44,8 @@
             <p>Enter the 6-digit code sent to your email</p>
         </div>
 
-        <form id="otpForm" method="POST">
-
+        <form method="POST">
+        {% csrf_token %}
             <div class="otp-wrapper">
                 <input name="otp1" type="text" maxlength="1" class="otp-input">
                 <input name="otp2" type="text" maxlength="1" class="otp-input">
@@ -51,7 +63,7 @@
 
             <div class="form-actions">
                 <button type="submit" class="btn-login">Continue</button>
-                <button type="button" class="btn-reset" id="backBtn"><a href="Forget_password.html">Back</a></button>
+                <button type="button" class="btn-reset"><a href="Forget_password.html">Back</a></button>
             </div>
 
         </form>
