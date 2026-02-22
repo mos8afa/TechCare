@@ -52,60 +52,8 @@
             </div>
         </div>
 
-        <form id="doctorProfessionalForm" method="post">
+        <form id="doctorProfessionalForm" method="post" enctype="multipart/form-data">
             {%csrf_token%}
-            <div class="input-group">
-                <label>University</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-university"></i>
-                    <input list="universities" id="university" name="university" placeholder="Start typing or choose..." required>
-                    <datalist id="universities">
-                        <option value="" disabled selected>Select specialization</option>
-                            <option value="neurosurgery">Neurosurgery</option>
-                            <option value="orthopedic_surgery">Orthopedic Surgery</option>
-                            <option value="plastic_surgery">Plastic Surgery</option>
-                            <option value="cardiothoracic_surgery">Cardiothoracic Surgery</option>
-                            <option value="ent">Otolaryngology (ENT)</option>
-                            <option value="vascular_surgery">Vascular Surgery</option>
-                            <option value="urology">Urology</option>
-                            <option value="ophthalmology">Ophthalmology</option>
-                            <option value="general_surgery">General Surgery</option>
-                            <option value="pediatric_surgery">Pediatric Surgery</option>
-                            <option value="dermatology">Dermatology</option>
-                            <option value="cardiology">Cardiology</option>
-                            <option value="gastroenterology">Gastroenterology</option>
-                            <option value="oncology">Medical Oncology</option>
-                            <option value="hematology">Hematology</option>
-                            <option value="endocrinology">Endocrinology</option>
-                            <option value="nephrology">Nephrology</option>
-                            <option value="rheumatology">Rheumatology</option>
-                            <option value="pulmonology">Pulmonology</option>
-                            <option value="neurology">Neurology</option>
-                            <option value="psychiatry">Psychiatry</option>
-                            <option value="emergency_medicine">Emergency Medicine</option>
-                            <option value="anesthesiology">Anesthesiology</option>
-                            <option value="radiology">Diagnostic Radiology</option>
-                            <option value="pathology">Pathology</option>
-                            <option value="internal_medicine">Internal Medicine</option>
-                            <option value="pediatrics">Pediatrics</option>
-                            <option value="obgyn">Obstetrics and Gynecology</option>
-                            <option value="family_medicine">Family Medicine</option>
-                            <option value="critical_care">Critical Care Medicine</option>
-                            <option value="sports_medicine">Sports Medicine</option>
-                            <option value="geriatrics">Geriatrics</option>
-                            <option value="pain_medicine">Pain Medicine</option>
-                            <option value="public_health">Public Health</option>
-                            <option value="nuclear_medicine">Nuclear Medicine</option>
-                            <option value="physical_medicine_rehab">Physical Medicine and Rehabilitation</option>
-                            <option value="addiction_medicine">Addiction Medicine</option>
-                            <option value="forensic_psychiatry">Forensic Psychiatry</option>
-                            <option value="child_psychiatry">Child and Adolescent Psychiatry</option>
-                            <option value="primary_care">Primary Care</option>
-                            <option value="general_practice">General Practice</option>                   
-                    </datalist>
-                </div>
-            </div>
-
             <div class="input-group">
                 <label>Pharmacy Name</label>
                 <div class="input-wrapper">
@@ -113,7 +61,42 @@
                     <input type="text" id="pharmacyName" name="pharmacy_name" placeholder="Enter Pharmacy Name" required>
                 </div>
             </div>
-
+            <div class="input-group">
+                <label>Governorate</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <select id="governorate" name="governorate" required>
+                        <option value="" disabled selected>Select governorate</option>
+                        <option value="alexandria">Alexandria</option>
+                        <option value="aswan">Aswan</option>
+                        <option value="asyut">Assiut</option>
+                        <option value="beheira">Beheira</option>
+                        <option value="beni_suef">Beni Suef</option>
+                        <option value="cairo">Cairo</option>
+                        <option value="dakahlia">Dakahlia</option>
+                        <option value="damietta">Damietta</option>
+                        <option value="fayoum">Faiyum</option>
+                        <option value="gharbia">Gharbia</option>
+                        <option value="giza">Giza</option>
+                        <option value="ismailia">Ismailia</option>
+                        <option value="kafr_el_sheikh">Kafr El Sheikh</option>
+                        <option value="luxor">Luxor</option>
+                        <option value="matrouh">Matrouh</option>
+                        <option value="minya">Minya</option>
+                        <option value="monufia">Monufia</option>
+                        <option value="new_valley">New Valley</option>
+                        <option value="north_sinai">North Sinai</option>
+                        <option value="port_said">Port Said</option>
+                        <option value="qalyubia">Qalyubia</option>
+                        <option value="qena">Qena</option>
+                        <option value="red_sea">Red Sea</option>
+                        <option value="sharqia">Sharqia</option>
+                        <option value="sohag">Sohag</option>
+                        <option value="south_sinai">South Sinai</option>
+                        <option value="suez">Suez</option>
+                    </select>
+                </div>
+            </div>
             <div class="input-group">
                 <label>Pharmacy  Address</label>
                 <div class="input-wrapper">
@@ -151,45 +134,6 @@
                     <span>Upload File</span>
                 </div>
             </div>
-
-
-            <div class="input-group">
-                <label>Governorate</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <select id="governorate" name="governorate" required>
-                        <option value="" disabled selected>Select governorate</option>
-                        <option value="alexandria">Alexandria</option>
-                        <option value="aswan">Aswan</option>
-                        <option value="asyut">Assiut</option>
-                        <option value="beheira">Beheira</option>
-                        <option value="beni_suef">Beni Suef</option>
-                        <option value="cairo">Cairo</option>
-                        <option value="dakahlia">Dakahlia</option>
-                        <option value="damietta">Damietta</option>
-                        <option value="fayoum">Faiyum</option>
-                        <option value="gharbia">Gharbia</option>
-                        <option value="giza">Giza</option>
-                        <option value="ismailia">Ismailia</option>
-                        <option value="kafr_el_sheikh">Kafr El Sheikh</option>
-                        <option value="luxor">Luxor</option>
-                        <option value="matrouh">Matrouh</option>
-                        <option value="minya">Minya</option>
-                        <option value="monufia">Monufia</option>
-                        <option value="new_valley">New Valley</option>
-                        <option value="north_sinai">North Sinai</option>
-                        <option value="port_said">Port Said</option>
-                        <option value="qalyubia">Qalyubia</option>
-                        <option value="qena">Qena</option>
-                        <option value="red_sea">Red Sea</option>
-                        <option value="sharqia">Sharqia</option>
-                        <option value="sohag">Sohag</option>
-                        <option value="south_sinai">South Sinai</option>
-                        <option value="suez">Suez</option>
-                    </select>
-                </div>
-            </div>
-
 
             <div class="form-actions">
                 <button type="button" class="btn-back" onclick="window.location.href='pharmacist.html'">
