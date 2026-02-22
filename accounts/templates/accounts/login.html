@@ -7,10 +7,21 @@
     <title>Login</title>
 
     <link rel="stylesheet" href="{% static 'css/Login.css' %}">
-
-    <link rel="stylesheet" href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body
+        {
+        background-image: url('{% static "img/BG.jpeg" %}');
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-attachment: fixed;
+        background-size: cover;            
+        background-size: cover;
+        }
+    </style>
 </head>
-<body style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('{% static 'images/BG.jpeg' %}') no-repeat center center fixed; background-size: cover;">
+
+<body>
     <header class="top-header">
         <div class="lang-dropdown" id="langBtn">
             <i class="fas fa-globe"></i>
@@ -33,34 +44,27 @@
             <p>Secure access to your healthcare services</p>
         </div>
 
-        <form id="loginForm" method="POST" action="{% url 'login' %}">
-        {% csrf_token %}
+        <form id="loginForm" method="post">
+            {% csrf_token %}
             <div class="input-group">
-                <label for="username">Username</label>
+                <label>Username</label>
                 <div class="input-wrapper">
                     <i class="far fa-user"></i>
-                    <input id="username" name="username"
-                        type="text"
-                        placeholder="Enter your username"
-                        required>
+                    <input id="username" name="username" type="text" placeholder="Enter your username" required>
                 </div>
             </div>
 
             <div class="input-group password">
-                <label for="passwordInput">Password</label>
+                <label>Password</label>
                 <div class="input-wrapper">
                     <i class="fas fa-lock"></i>
-                    <input id="passwordInput"
-                        name="password"
-                        type="password"
-                        placeholder="Enter your password"
-                        required>
+                    <input id="passwordInput" name="password" type="password" placeholder="Enter your password" required>
                     <i class="far fa-eye show-password" id="togglePassword"></i>
                 </div>
             </div>
 
             <div class="form-options">
-                <a href="forget.html" class="forgot-link">Forgot Password?</a>
+                <a href="forget_password.html" class="forgot-link">Forgot Password?</a>
             </div>
 
             <div class="form-actions">
@@ -69,10 +73,7 @@
             </div>
 
             <div class="register-footer">
-                <span>
-                    Don't have an account?
-                    <a href="{% url 'register' %}">Register now</a>
-                </span>
+                <span>Don't have an account? <a href="register.html">Register now</a></span>
             </div>
         </form>
     </main>

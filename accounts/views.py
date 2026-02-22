@@ -42,15 +42,9 @@ def user_login(request):
 def verify_otp_login(request):
     if request.method == "POST":
         user_id = request.session.get("otp_user_id")
-        otp1 = request.POST.get("otp1")
-        otp2 = request.POST.get("otp2")
-        otp3 = request.POST.get("otp3")
-        otp4 = request.POST.get("otp4")
-        otp5 = request.POST.get("otp5")
-        otp6 = request.POST.get("otp6")
-        
-        otp_str = str(otp1)+str(otp2)+str(otp3)+str(otp4)+str(otp5)+str(otp6)
-        otp = int(otp_str)
+
+        otp_str = "".join([request.POST.get(f"otp{i}") or "" for i in range(1,7)])
+        otp_input = int(otp_str)
         
         if not user_id:
             messages.error(request, "User not found", extra_tags='login_user_error')
@@ -71,7 +65,7 @@ def verify_otp_login(request):
             messages.error(request, "OTP expired", extra_tags='otp_expired_error')
             return redirect("verify_otp_faild")
 
-        if str(saved_otp) != str(otp):
+        if saved_otp != otp_input:
             request.session["otp_attempts"] = attempts + 1
             messages.error(request, "Invalid OTP", extra_tags='otp_error')
             return render(request, "accounts/verify_otp.html")
