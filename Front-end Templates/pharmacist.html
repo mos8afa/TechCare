@@ -7,9 +7,20 @@
 
     <link rel="stylesheet" href="Css/Form.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body
+        {
+        background-image: url({% static 'img/BG_FORM.jpg' %});
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-attachment: fixed;
+        background-size: cover;            
+        background-size: cover;
+        }
+    </style>
 </head>
-<body style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url(../img/BG.jpeg) no-repeat center center fixed; background-size: cover;">
 
+<body>
     <header class="top-header">
         <div class="lang-dropdown" id="langBtn">
             <i class="fas fa-globe"></i>
@@ -138,17 +149,9 @@
 
             <div class="form-actions">
                 <button type="reset" class="btn-reset">Reset</button>
-                <button type="submit" id="nextStepBtn3" class="btn-next">Continue to Next Step <i class="fas fa-arrow-right"></i></button>
+                <button type="submit" class="btn-next"><a href="pharmacist2.html">Continue to Next Step <i class="fas fa-arrow-right"></i></a></button>
             </div>
         </form>
-
-
-
-
-
-
-
-
 
     </main>
 </body>
