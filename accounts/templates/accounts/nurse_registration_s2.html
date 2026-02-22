@@ -1,3 +1,4 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,10 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nurse</title>
 
-    <link rel="stylesheet" href="{% static 'css/Form.css' %}"> 
+    <link rel="stylesheet" href="{% static 'css/Form.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body
+        {
+        background-image: url('{% static "img/BG.jpeg" %}');
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-attachment: fixed;
+        background-size: cover;            
+        background-size: cover;
+        }
+    </style>
 </head>
-<body style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('{% static 'images/BG.jpeg' %}') no-repeat center center fixed; background-size: cover;">
+
+<body>
     <header class="top-header">
         <div class="lang-dropdown" id="langBtn">
             <i class="fas fa-globe"></i>
@@ -39,8 +52,78 @@
             </div>
         </div>
 
-        <form id="nurseProfessionalForm" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
+        <form id="nurseProfessionalForm" method="post">
+            {%csrf_token%}
+            <!-- <div class="input-group">
+                <label>University</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-university"></i>
+                    <input list="universities" id="university" name="university" placeholder="Choose University..." required>
+                    <datalist id="universities">
+                        <option>Cairo University</option>
+                        <option>Ain Shams University</option>
+                        <option>Alexandria University</option>
+                        <option>Mansoura University</option>
+                        <option>Future University in Egypt</option>
+                        <option>The American University in Cairo</option>
+                        <option>Zagazig University</option>
+                        <option>Al-Azhar University</option>
+                        <option>Assiut University</option>
+                        <option>Benha University</option>
+                        <option>Egypt-Japan University of Science and Technology</option>
+                        <option>Kafrelsheikh University</option>
+                        <option>Tanta University</option>
+                        <option>Arab Academy for Science, Technology and Maritime Transport</option>
+                        <option>Aswan University</option>
+                        <option>Beni-Suef University</option>
+                        <option>Damietta University</option>
+                        <option>Delta University for Science and Technology</option>
+                        <option>Minia University</option>
+                        <option>New Valley University</option>
+                        <option>University of Sadat City</option>
+                        <option>South Valley University</option>
+                        <option>Suez Canal University</option>
+                        <option>Menofia University</option>
+                        <option>Fayoum University</option>
+                        <option>Sohag University</option>
+                        <option>Port Said University</option>
+                        <option>The British University in Egypt</option>
+                        <option>Zewail City of Science, Technology and Innovation</option>
+                        <option>Damanhour University</option>
+                        <option>Helwan University</option>
+                        <option>Misr University for Science and Technology</option>
+                        <option>Nile University</option>
+                        <option>October University for Modern Sciences and Arts</option>
+                        <option>German University in Cairo</option>
+                        <option>Galala University</option>
+                        <option>Badr University in Cairo</option>
+                        <option>New Giza University</option>
+                        <option>Pharos University in Alexandria</option>
+                        <option>Sinai University</option>
+                        <option>Egyptian Russian University</option>
+                        <option>Misr International University</option>
+                        <option>October 6 University</option>
+                        <option>Ahram Canadian University</option>
+                        <option>Canadian International College</option>
+                        <option>MTI University</option>
+                        <option>Nahda University in Beni Suef</option>
+                        <option>Heliopolis University</option>
+                        <option>Egyptian Chinese University</option>
+                        <option>Egyptian E-Learning University</option>
+                        <option>El Shorouk Academy</option>
+                        <option>French University of Egypt</option>
+                        <option>Hertfordshire University in Egypt</option>
+                        <option>King Salman International University</option>
+                        <option>New Mansoura University</option>
+                        <option>Toronto Metropolitan University Cairo</option>
+                        <option>University of Prince Edward Island</option>
+                        <option>Egypt University of Informatics</option>
+                        <option>Luxor University</option>
+                        <option>Suez University</option>                   
+                    </datalist>
+                </div>
+            </div> -->
+
             <div class="input-row">
                 <div class="input-group">
                     <label>National ID (Front)</label>
@@ -50,7 +133,6 @@
                         <span>Upload Front</span>
                     </div>
                 </div>
-
                 <div class="input-group">
                     <label>National ID (Back)</label>
                     <div class="file-wrapper small">
@@ -61,26 +143,25 @@
                 </div>
             </div>
 
-            <div class="input-row">
+            <!-- <div class="input-row">
                 <div class="input-group" style="flex: 2;">
                     <label>Service Offered</label>
                     <div class="input-wrapper">
                         <i class="fas fa-hand-holding-medical"></i>
-                        <select name="serviceName" required>
+                        <select id="serviceName" name="serviceName" required>
                             <option value="" disabled selected>Select service</option>
-                            <option value="home_nursing">Home Nursing ya slaaam</option>
+                            <option>Home Nursing ya slaaam</option>
                         </select>
                     </div>
-                </div>
-
-                <div class="input-group" style="flex: 1;">
+                </div> -->
+                <!-- <div class="input-group" style="flex: 1;">
                     <label>Price (EGP)</label>
                     <div class="input-wrapper">
                         <i class="fas fa-money-bill-wave"></i>
-                        <input name="price" type="number" placeholder="0.00" required>
+                        <input id="price" name="price" type="number" placeholder="0.00" required>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <div class="input-row">
                 <div class="input-group">
@@ -91,7 +172,6 @@
                         <span>Upload</span>
                     </div>
                 </div>
-
                 <div class="input-group">
                     <label>Graduation Cert.</label>
                     <div class="file-wrapper small">
@@ -111,7 +191,6 @@
                         <span>Upload</span>
                     </div>
                 </div>
-
                 <div class="input-group">
                     <label>Practice Permit</label>
                     <div class="file-wrapper small">
@@ -126,7 +205,6 @@
                 <button type="button" class="btn-back" onclick="window.location.href='nurse.html'">
                     <i class="fas fa-arrow-left"></i>
                 </button>
-
                 <button type="submit" class="btn-submit">Complete Registration</button>
                 <button type="reset" class="btn-reset">Reset</button>
             </div>
