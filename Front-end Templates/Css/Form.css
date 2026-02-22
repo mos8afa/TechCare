@@ -17,7 +17,6 @@ body {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-
     min-height: 100vh;
     padding: 40px 20px;
 }
@@ -307,6 +306,11 @@ body {
 }
 
 .btn-next:hover { background: #1572c2; }
+
+.btn-next a {
+    color: white;
+    text-decoration: none;
+}
 
 .btn-submit {
     flex: 3;
