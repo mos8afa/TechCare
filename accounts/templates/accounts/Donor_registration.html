@@ -1,3 +1,4 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,11 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Donor</title>
 
-    <link rel="stylesheet" href="{% static 'css/Form.css' %}"> 
+    <link rel="stylesheet" href="{% static 'css/Form.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body
+        {
+        background-image: url('{% static "img/BG.jpeg" %}');
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-attachment: fixed;
+        background-size: cover;            
+        background-size: cover;
+        }
+    </style>
 </head>
-<body style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('{% static 'images/BG.jpeg' %}') no-repeat center center fixed; background-size: cover;">
 
+<body>
     <header class="top-header">
         <div class="lang-dropdown" id="langBtn">
             <i class="fas fa-globe"></i>
@@ -39,24 +51,24 @@
             </div>
         </div>
 
-        <form id="donorForm" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
+        <form id="donorForm" method="post">
+        {%csrf_token%}
             <div class="input-row">
                 <div class="input-group">
                     <label>Gender</label>
                     <div class="input-wrapper">
-                        <select name="gender" required>
+                        <i class="fas fa-venus-mars"></i>
+                        <select id="gender" name="gender" required>
                             <option value="" disabled selected>Select</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
                         </select>
                     </div>
                 </div>
-
                 <div class="input-group">
                     <label>Date of Birth</label>
                     <div class="input-wrapper DOB">
-                        <input name="date_of_birth" type="date" required>
+                        <input id="dob" name="date_of_birth" type="date" required>
                     </div>
                 </div>
             </div>
@@ -65,7 +77,8 @@
                 <div class="input-group">
                     <label>Blood Type</label>
                     <div class="input-wrapper">
-                        <select name="blood_type" required>
+                        <i class="fas fa-tint blood"></i>
+                        <select id="bloodType" name="blood_type" required>
                             <option value="" disabled selected>Select</option>
                             <option value="A+">A+</option>
                             <option value="A-">A-</option>
@@ -78,11 +91,10 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="input-group">
                     <label>Last Donation</label>
                     <div class="input-wrapper DOB">
-                        <input name="last_donation_date" type="date">
+                        <input id="lastDonation" name="last_donation_date" type="date">
                     </div>
                 </div>
             </div>
@@ -91,25 +103,25 @@
                 <label>Phone Number</label>
                 <div class="input-wrapper">
                     <span class="prefix">+20</span>
-                    <input name="phone_number" type="tel" placeholder="1XXXXXXXXX" required>
+                    <input id="phone" name="phone_number" type="tel" placeholder="1XXXXXXXXX" required>
                 </div>
             </div>
 
             <div class="input-group">
                 <label>Governorate</label>
                 <div class="input-wrapper">
-                    <select name="governorate" required>
+                    <i class="fas fa-map-marker-alt"></i>
+                    <select id="governorate" name="governorate" required>
                         <option value="" disabled selected>Select governorate</option>
-
                         <option value="alexandria">Alexandria</option>
                         <option value="aswan">Aswan</option>
-                        <option value="asyut">Asyut</option>
+                        <option value="asyut">Assiut</option>
                         <option value="beheira">Beheira</option>
                         <option value="beni_suef">Beni Suef</option>
                         <option value="cairo">Cairo</option>
-                        <option value="damietta">Damietta</option>
                         <option value="dakahlia">Dakahlia</option>
-                        <option value="fayoum">Fayoum</option>
+                        <option value="damietta">Damietta</option>
+                        <option value="fayoum">Faiyum</option>
                         <option value="gharbia">Gharbia</option>
                         <option value="giza">Giza</option>
                         <option value="ismailia">Ismailia</option>
@@ -135,7 +147,7 @@
             <div class="input-group">
                 <label>Full Address</label>
                 <div class="input-wrapper">
-                    <textarea name="address" rows="2" required></textarea>
+                    <textarea id="donorddress" name="address" rows="2" placeholder="Street, Building, Apartment" required></textarea>
                 </div>
             </div>
 
@@ -144,13 +156,16 @@
                     <label>National ID (Front)</label>
                     <div class="file-wrapper">
                         <input name="national_id_pic_front" type="file" accept="image/*,application/pdf" required>
+                        <i class="fas fa-id-card"></i>
+                        <span>Click to upload</span>
                     </div>
                 </div>
-
                 <div class="input-group">
                     <label>National ID (Back)</label>
                     <div class="file-wrapper">
                         <input name="national_id_pic_back" type="file" accept="image/*,application/pdf" required>
+                        <i class="fas fa-id-card"></i>
+                        <span>Click to upload</span>
                     </div>
                 </div>
             </div>
@@ -158,7 +173,9 @@
             <div class="input-group">
                 <label>Profile Picture</label>
                 <div class="file-wrapper">
-                    <input name="profile_pic" type="file" accept="image/*" required>
+                    <input id="profilePic" name="profile_pic" type="file" accept="image/*" required>
+                    <i class="fas fa-camera"></i>
+                    <span>Click to upload photo</span>
                 </div>
             </div>
 

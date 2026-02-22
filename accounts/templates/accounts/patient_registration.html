@@ -7,11 +7,21 @@
     <title>Patient</title>
 
     <link rel="stylesheet" href="{% static 'css/Form.css' %}">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body
+        {
+        background-image: url('{% static "img/BG.jpeg" %}');
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-attachment: fixed;
+        background-size: cover;            
+        background-size: cover;
+        }
+    </style>
 </head>
-<body style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('{% static 'images/BG.jpeg' %}') no-repeat center center fixed; background-size: cover;">
 
+<body>
     <header class="top-header">
         <div class="lang-dropdown" id="langBtn">
             <i class="fas fa-globe"></i>
@@ -41,11 +51,11 @@
             </div>
         </div>
 
-        <form id="doctorForm" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
+        <form id="doctorForm" method="post" enctype="multipart/form-data"> 
+            {% csrf_token %}
             <div class="input-row">
                 <div class="input-group">
-                    <label for="gender">Gender</label>
+                    <label>Gender</label>
                     <div class="input-wrapper">
                         <i class="fas fa-venus-mars"></i>
                         <select id="gender" name="gender" required>
@@ -55,24 +65,21 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="input-group">
-                    <label for="phone">Phone Number</label>
+                    <label>Phone Number</label>
                     <div class="input-wrapper">
                         <span class="prefix">+20</span>
-                        <input id="phone" name="phone_number" type="tel"
-                            placeholder="1XXXXXXXXX" required>
+                        <input id="phone" name="phone_number" type="tel" placeholder="1XXXXXXXXX" required>
                     </div>
                 </div>
             </div>
 
             <div class="input-group">
-                <label for="governorate">Governorate</label>
+                <label>Governorate</label>
                 <div class="input-wrapper">
                     <i class="fas fa-map-marker-alt"></i>
                     <select id="governorate" name="governorate" required>
                         <option value="" disabled selected>Select governorate</option>
-
                         <option value="alexandria">Alexandria</option>
                         <option value="aswan">Aswan</option>
                         <option value="asyut">Assiut</option>

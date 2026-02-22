@@ -188,9 +188,11 @@ def verify_otp_signup(request, token):
     return render(request, "accounts/verify_otp.html", {"token": token})
 
 
+
 def verify_otp_faild(request):
     return render (request, 'accounts/verify_otp_faild.html')
 
+##########################################
 
 def patient_registration(request):
     if request.method == 'POST':
@@ -389,13 +391,14 @@ def donor_registration(request):
     if request.method == 'POST':
         gender = request.POST.get('gender')
         address = request.POST.get('address')
-        governorate = request.POST.get('governrate')
+        governorate = request.POST.get('governorate')
         phone_number = request.POST.get('phone_number')
         profile_pic = request.FILES.get('profile_pic')
         national_id_pic_back = request.FILES.get('national_id_pic_back')
         national_id_pic_front = request.FILES.get('national_id_pic_front')
         blood_type = request.POST.get('blood_type')
         last_donation_date =request.POST.get('last_donation_date')
+        date_of_birth = request.POST.get('date_of_birth')
 
 
         Donor.objects.create(
@@ -408,7 +411,8 @@ def donor_registration(request):
             national_id_pic_back=national_id_pic_back,
             national_id_pic_front=national_id_pic_front,
             blood_type = blood_type,
-            last_donation_date = last_donation_date
+            last_donation_date = last_donation_date,
+            date_of_birth = date_of_birth
         )
 
         login(request, request.user)

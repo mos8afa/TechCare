@@ -205,7 +205,7 @@ class Patient(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     gender = models.CharField(max_length=6, choices=GENDERS)
     profile_pic = models.ImageField(upload_to='patients/profile/')
-    national_id_pic_back= models.ImageField(upload_to='doctors/national_id/')
+    national_id_pic_back= models.ImageField(upload_to='patients/national_id/ ')
     national_id_pic_front = models.ImageField(upload_to='patients/national_id/')
     phone_number = models.CharField(max_length=14)
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
