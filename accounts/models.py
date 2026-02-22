@@ -183,7 +183,7 @@ SPECIFICATIONS = (
 #----- user -----
 class CustomUser(AbstractUser):
     role = models.CharField(max_length=10, choices=ROLES)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True, blank=True)
     is_verified = models.BooleanField(default=False)
     
     def save(self, *args, **kwargs):
@@ -205,8 +205,8 @@ class Patient(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     gender = models.CharField(max_length=6, choices=GENDERS)
     profile_pic = models.ImageField(upload_to='patients/profile/')
-    national_id_pic_back= models.ImageField(upload_to='patients/national_id/ ')
-    national_id_pic_front = models.ImageField(upload_to='patients/national_id/')
+    national_id_pic_back= models.ImageField(upload_to='patients/national_id_pic/back')
+    national_id_pic_front = models.ImageField(upload_to='patients/national_id_pic/front')
     phone_number = models.CharField(max_length=14)
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
     address = models.TextField()
@@ -215,8 +215,8 @@ class Patient(models.Model):
 #------- Doctor -----
 class Doctor(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    national_id_pic_front = models.ImageField(upload_to='doctors/national_id/')
-    national_id_pic_back= models.ImageField(upload_to='doctors/national_id/')
+    national_id_pic_front = models.ImageField(upload_to='doctors/national_id_pic/front')
+    national_id_pic_back= models.ImageField(upload_to='doctors/national_id_pic/back')
     gender = models.CharField(max_length=6, choices=GENDERS)
     profile_pic = models.ImageField(upload_to='doctors/profile/')
     phone_number = models.CharField(max_length=14)
@@ -235,8 +235,8 @@ class Doctor(models.Model):
 #------------- Nurse -------
 class Nurse(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    national_id_pic_front = models.ImageField(upload_to='nurses/national_id/')
-    national_id_pic_back= models.ImageField(upload_to='doctors/national_id/')
+    national_id_pic_front = models.ImageField(upload_to='nurses/national_id_pic/front')
+    national_id_pic_back= models.ImageField(upload_to='nurses/national_id_pic/back')
     gender = models.CharField(max_length=6, choices=GENDERS)
     profile_pic = models.ImageField(upload_to='nurses/profile/')
     phone_number = models.CharField(max_length=14)
@@ -253,7 +253,7 @@ class Nurse(models.Model):
 class Pharmacist(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     national_id_pic_front = models.ImageField(upload_to='pharmacists/national_id/')
-    national_id_pic_back= models.ImageField(upload_to='doctors/national_id/')
+    national_id_pic_back= models.ImageField(upload_to='pharmacists/national_id/')
     gender = models.CharField(max_length=6, choices=GENDERS)
     profile_pic = models.ImageField(upload_to='pharmacists/profile/')
     phone_number = models.CharField(max_length=14)
@@ -271,7 +271,7 @@ class Pharmacist(models.Model):
 class Donor(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     national_id_pic_front = models.ImageField(upload_to='donors/national_id/')
-    national_id_pic_back= models.ImageField(upload_to='doctors/national_id/')
+    national_id_pic_back= models.ImageField(upload_to='donors/national_id/')
     gender = models.CharField(max_length=6, choices=GENDERS)
     profile_pic = models.ImageField(upload_to='donors/profile/')
     phone_number = models.CharField(max_length=14)

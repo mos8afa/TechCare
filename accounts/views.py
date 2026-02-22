@@ -241,7 +241,7 @@ def doctor_registration(request):
 
         return redirect('doctor_registration_s2')
     
-    return render(request, 'accounts/doctor.html')
+    return render(request, 'accounts/doctor_registration.html')
 
 def doctor_registration_s2(request):
     doctor_id = request.session.get('doctor_id')
