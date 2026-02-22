@@ -192,7 +192,6 @@ def verify_otp_signup(request, token):
 def verify_otp_faild(request):
     return render (request, 'accounts/verify_otp_faild.html')
 
-##########################################
 
 def patient_registration(request):
     if request.method == 'POST':
