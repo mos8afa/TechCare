@@ -10,7 +10,7 @@ import random
 from .models import ROLE_REDIRECTS, Patient, Doctor, Nurse, Pharmacist, Donor, PendingUser
 from cryptography.fernet import Fernet
 import json
-
+from django.views.decorators.csrf import csrf_protect
 
 def user_login(request):
     if request.method == 'POST':
@@ -221,7 +221,7 @@ def patient_registration(request):
 
         login(request, request.user)
         return redirect('home')
-    return render(request, 'patient_registration.html')
+    return render(request, 'accounts/patient_registration.html')
 
 
 def doctor_registration(request):
@@ -247,7 +247,7 @@ def doctor_registration(request):
 
         return redirect('doctor_registration_s2')
     
-    return render(request, 'doctor.html')
+    return render(request, 'accounts/doctor.html')
 
 def doctor_registration_s2(request):
     doctor_id = request.session.get('doctor_id')
@@ -273,7 +273,7 @@ def doctor_registration_s2(request):
         del request.session['doctor_id']
 
         return redirect('home')
-    return render(request, 'doctor_registeration_s2.html')
+    return render(request, 'accounts/doctor_registeration_s2.html')
 
 
 def nurse_registration_step1(request):
@@ -297,7 +297,7 @@ def nurse_registration_step1(request):
 
         return redirect('nurse_registration_s2')
 
-    return render(request, 'nurse_registration.html')
+    return render(request, 'accounts/nurse_registration.html')
 
 def nurse_registration_step2(request):
     nurse_id = request.session.get('nurse_id')
@@ -329,7 +329,7 @@ def nurse_registration_step2(request):
 
         return redirect('home')
 
-    return render(request, 'nurse_registration_s2.html')
+    return render(request, 'accounts/nurse_registration_s2.html')
 
 
 def pharmacist_registration_step1(request):
@@ -355,7 +355,7 @@ def pharmacist_registration_step1(request):
 
         return redirect('pharmacist_registration_s2')
 
-    return render(request, 'pharmacist_registration_s1.html')
+    return render(request, 'accounts/pharmacist_registration_s1.html')
 
 def pharmacist_registration_step2(request):
     pharmacist_id = request.session.get('pharmacist_id')
@@ -388,7 +388,7 @@ def pharmacist_registration_step2(request):
 
         return redirect('home')
 
-    return render(request, 'pharmacist_registration_s2.html')
+    return render(request, 'accounts/pharmacist_registration_s2.html')
 
 
 def donor_registration(request):
@@ -419,7 +419,7 @@ def donor_registration(request):
 
         login(request, request.user)
         return redirect('home')
-    return render(request, 'Donor_registration.html')
+    return render(request, 'accounts/Donor_registration.html')
 
 
 def forget_password(request):

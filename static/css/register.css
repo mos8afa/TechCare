@@ -18,10 +18,7 @@ body {
 
     padding: 20px;
     min-height: 100vh;
-    background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), 
-                url('../img/BG.jpeg') no-repeat center center fixed;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-size: cover;
 }
 
 .top-header {
@@ -117,6 +114,15 @@ body {
     color: var(--text-gray);
 }
 
+.input-row {
+    gap: 15px;
+    display: flex;
+}
+
+.input-row .input-group {
+    flex: 1;
+}
+
 .input-group {
     text-align: left;
     margin-bottom: 20px;
@@ -155,7 +161,11 @@ body {
     transition: 0.3s;
 }
 
-.input-wrapper input:focus {
+.input-wrapper.no-icon input {
+    padding-left: 15px; 
+}
+
+.input-wrapper input:focus, .input-wrapper select:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(29, 137, 228, 0.1);
 }
@@ -184,7 +194,7 @@ body {
 .terms label {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 5px;
 
     cursor: pointer;
     font-size: 13px;
@@ -263,9 +273,27 @@ body {
     color: var(--primary-color);
 }
 
+/* Media Query */
 @media (max-width: 480px) {
     .register-container {
-        padding: 30px 20px;
         width: 95%;
+        padding: 30px 20px;
+    }
+    
+    .input-row { 
+        gap: 0; 
+        flex-direction: column; 
+    }
+}
+
+@media (max-width: 288px) {
+    .form-actions {
+        gap: 15px;
+        flex-direction: column; 
+    }
+    
+    .btn-register, .btn-reset {
+        flex: none; 
+        width: 100%; 
     }
 }

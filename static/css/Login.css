@@ -16,13 +16,9 @@ body {
     align-items: center;
     flex-direction: column;
     justify-content: center;
-
     padding: 20px;
     min-height: 100vh;
-    background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), 
-                url('../img/BG.jpeg') no-repeat center center fixed;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-size: cover;
 }
 
 .top-header {
@@ -35,11 +31,9 @@ body {
     gap: 8px;
     display: flex;
     align-items: center;
-
     cursor: pointer;
     position: relative;
     user-select: none;
-
     padding: 8px 15px;
     background: white;
     border-radius: 20px;
@@ -53,7 +47,6 @@ body {
     z-index: 1000;
     overflow: hidden;
     position: absolute;
-
     right: 0;
     top: 110%;
     width: 120px;
@@ -63,9 +56,7 @@ body {
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
-.dropdown-menu.show {
-    display: block; 
-}
+.dropdown-menu.show { display: block; }
 
 .dropdown-menu li {
     padding: 10px 15px;
@@ -89,15 +80,12 @@ body {
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
-.logo-section {
-    margin-bottom: 30px;
-}
+.logo-section { margin-bottom: 30px; }
 
 .logo-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-
     width: 50px;
     height: 50px;
     color: white;
@@ -123,9 +111,10 @@ body {
     margin-bottom: 20px;
 }
 
+.password { margin-bottom: 8px; }
+
 .input-group label {
     display: block;
-
     font-size: 14px;
     font-weight: 600;
     color: #4A5568;
@@ -134,14 +123,12 @@ body {
 
 .input-wrapper {
     position: relative;
-
     display: flex;
     align-items: center;
 }
 
 .input-wrapper i {
     position: absolute;
-
     left: 15px;
     color: #A0AEC0;
 }
@@ -152,7 +139,6 @@ body {
     border-radius: 8px;
     padding: 12px 15px 12px 45px;
     border: 1px solid var(--border-color);
-
     transition: 0.3s;
 }
 
@@ -163,41 +149,29 @@ body {
 
 .show-password {
     cursor: pointer;
-
     right: 15px;
     left: auto !important;
-
     transition: 0.2s;
 }
 
-.show-password:hover {
-    color: var(--primary-color) !important;
-}
+.show-password:hover { color: var(--primary-color) !important; }
 
 .form-options {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-
+    justify-content: flex-end;
     margin-bottom: 25px;
 }
 
-.remember-me {
-    gap: 8px;
-    display: flex;
-    align-items: center;
-}
-
-.remember-me input {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-}
-
-.remember-me label {
-    cursor: pointer;
-    font-size: 13px;
+.form-options span {
+    font-size: 14px;
     color: var(--text-gray);
+}
+
+.form-options a {
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--primary-color);
 }
 
 .forgot-link {
@@ -206,9 +180,7 @@ body {
     color: var(--text-gray);
 }
 
-.forgot-link:hover {
-    color: var(--primary-color);
-}
+.forgot-link:hover { color: var(--primary-color); }
 
 .form-actions {
     gap: 10px;
@@ -219,8 +191,6 @@ body {
 .btn-login {
     flex: 3;
     cursor: pointer;
-
-    width: 100%;
     border: none;
     padding: 14px;
     color: white;
@@ -228,18 +198,14 @@ body {
     font-weight: 600;
     border-radius: 8px;
     background: var(--primary-color);
-    
     transition: 0.3s;
 }
 
-.btn-login:hover {
-    background: #1572c2;
-}
+.btn-login:hover { background: #1572c2; }
 
 .btn-reset {
     flex: 1;
     cursor: pointer;
-
     padding: 14px;
     font-size: 14px;
     font-weight: 600;
@@ -247,8 +213,12 @@ body {
     color: var(--text-gray);
     background: #f7fafc;
     border: 1px solid var(--border-color);
-
     transition: 0.3s;
+}
+
+.btn-reset a {
+    text-decoration: none;
+    color: var(--text-gray);
 }
 
 .btn-reset:hover {
@@ -268,20 +238,53 @@ body {
     color: var(--primary-color);
 }
 
+/* =============================================================================== */
+/* OTP Inputs */
+.otp-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+.otp-input {
+    width: 50px;
+    height: 55px;
+    font-size: 20px;
+    text-align: center;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    transition: 0.3s;
+}
+
+.otp-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(29, 137, 228, 0.1);
+    outline: none;
+}
+/* =============================================================================== */
+
+/* Media Query */
 @media (max-width: 480px) {
     .login-container {
         padding: 30px 20px;
         width: 95%;
     }
-    
-    .top-header {
-        top: 10px;
-        right: 10px;
+    .top-header { top: 10px; right: 10px; }
+}
+
+@media (max-width: 250px) {
+    .form-actions {
+        gap: 12px;
+        flex-direction: column;
     }
+    .btn-login, .btn-reset {
+        flex: none;
+        width: 100%;
+    }
+    .login-container { padding: 25px 15px; }
+    .forgot-link { font-size: 11px; }
 }
 
 @media (max-width: 768px) {
-    body {
-        background-attachment: scroll; 
-    }
+    body { background-attachment: scroll; }
 }

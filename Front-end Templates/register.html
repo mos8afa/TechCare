@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
 
-    <link rel="stylesheet" href="Css/Register.css">
+    <link rel="stylesheet" href="Css/register.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body
         {
-        background-image: url({% static 'img/BG_FORM.jpg' %});
+        background-image: url('img/BG.jpeg');
         background-repeat: no-repeat;
         background-position: center center;
         background-attachment: fixed;
@@ -44,18 +44,17 @@
         </div>
 
         <form id="registerForm">
-            
             <div class="input-row">
                 <div class="input-group">
                     <label for="firstName">First Name</label>
                     <div class="input-wrapper no-icon">
-                        <input id="firstName" name="firstName" type="text" placeholder="First name" required>
+                        <input id="firstName" name="first_name" type="text" placeholder="First name" required>
                     </div>
                 </div>
                 <div class="input-group">
                     <label for="lastName">Last Name</label>
                     <div class="input-wrapper no-icon">
-                        <input id="lastName" name="lastName" type="text" placeholder="Last name" required>
+                        <input id="lastName" name="last_name" type="text" placeholder="Last name" required>
                     </div>
                 </div>
             </div>
