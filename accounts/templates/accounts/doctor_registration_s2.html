@@ -1,3 +1,4 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,8 +8,20 @@
 
     <link rel="stylesheet" href="{% static 'css/Form.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body
+        {
+        background-image: url('{% static "img/BG.jpeg" %}');
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-attachment: fixed;
+        background-size: cover;            
+        background-size: cover;
+        }
+    </style>
 </head>
-<body style="background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('{% static 'images/BG.jpeg' %}') no-repeat center center fixed; background-size: cover;">
+
+<body>
 
     <header class="top-header">
         <div class="lang-dropdown" id="langBtn">
@@ -40,65 +53,194 @@
             </div>
         </div>
 
-        <form id="doctorProfessionalForm" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
+        <form id="doctorProfessionalForm">
+            <div class="input-group">
+                <label>University</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-university"></i>
+                    <input list="universities" id="university" name="university" placeholder="Start typing or choose..." required>
+                    <datalist id="universities">
+                        <option value="" disabled selected>Select your university</option>
+                        <option value="cairo_university">Cairo University</option>
+                        <option value="ain_shams_university">Ain Shams University</option>
+                        <option value="alexandria_university">Alexandria University</option>
+                        <option value="mansoura_university">Mansoura University</option>
+                        <option value="future_university">Future University in Egypt</option>
+                        <option value="american_university_cairo">The American University in Cairo</option>
+                        <option value="zagazig_university">Zagazig University</option>
+                        <option value="al_azhar_university">Al-Azhar University</option>
+                        <option value="assiut_university">Assiut University</option>
+                        <option value="benha_university">Benha University</option>
+                        <option value="egypt_japan_university">Egypt-Japan University of Science and Technology</option>
+                        <option value="kafr_el_sheikh_university">Kafrelsheikh University</option>
+                        <option value="tanta_university">Tanta University</option>
+                        <option value="arab_academy">Arab Academy for Science, Technology and Maritime Transport</option>
+                        <option value="aswan_university">Aswan University</option>
+                        <option value="beni_suef_university">Beni-Suef University</option>
+                        <option value="damietta_university">Damietta University</option>
+                        <option value="delta_university">Delta University for Science and Technology</option>
+                        <option value="minia_university">Minia University</option>
+                        <option value="new_valley_university">New Valley University</option>
+                        <option value="university_sadat_city">University of Sadat City</option>
+                        <option value="south_valley_university">South Valley University</option>
+                        <option value="suez_canal_university">Suez Canal University</option>
+                        <option value="menofia_university">Menofia University</option>
+                        <option value="fayoum_university">Fayoum University</option>
+                        <option value="sohag_university">Sohag University</option>
+                        <option value="port_said_university">Port Said University</option>
+                        <option value="british_university_egypt">The British University in Egypt</option>
+                        <option value="zewail_city">Zewail City of Science, Technology and Innovation</option>
+                        <option value="damanhour_university">Damanhour University</option>
+                        <option value="helwan_university">Helwan University</option>
+                        <option value="misr_university_science">Misr University for Science and Technology</option>
+                        <option value="nile_university">Nile University</option>
+                        <option value="msa_university">October University for Modern Sciences and Arts</option>
+                        <option value="german_university_cairo">German University in Cairo</option>
+                        <option value="galala_university">Galala University</option>
+                        <option value="badr_university">Badr University in Cairo</option>
+                        <option value="new_giza_university">New Giza University</option>
+                        <option value="pharos_university">Pharos University in Alexandria</option>
+                        <option value="sinai_university">Sinai University</option>
+                        <option value="egyptian_russian_university">Egyptian Russian University</option>
+                        <option value="misr_international_university">Misr International University</option>
+                        <option value="october_6_university">October 6 University</option>
+                        <option value="ahrarm_canadian_university">Ahram Canadian University</option>
+                        <option value="canadian_international_college">Canadian International College</option>
+                        <option value="mti_university">MTI University</option>
+                        <option value="nahda_university">Nahda University in Beni Suef</option>
+                        <option value="heliopolis_university">Heliopolis University</option>
+                        <option value="egyptian_chinese_university">Egyptian Chinese University</option>
+                        <option value="egyptian_elearning_university">Egyptian E-Learning University</option>
+                        <option value="el_shorouk_academy">El Shorouk Academy</option>
+                        <option value="french_university_egypt">French University of Egypt</option>
+                        <option value="hertfordshire_egypt">Hertfordshire University in Egypt</option>
+                        <option value="king_salman_university">King Salman International University</option>
+                        <option value="new_mansoura_university">New Mansoura University</option>
+                        <option value="toronto_metropolitan_cairo">Toronto Metropolitan University Cairo</option>
+                        <option value="university_prince_edward">University of Prince Edward Island</option>
+                        <option value="egypt_university_informatics">Egypt University of Informatics</option>
+                        <option value="luxor_university">Luxor University</option>
+                        <option value="suez_university">Suez University</option>                 
+                </datalist>
+                </div>
+            </div>
 
-            <input list="universities" name="university" placeholder="Start typing or choose..." required>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>National ID (Front)</label>
+                    <div class="file-wrapper" id="wrapper-idFront">
+                        <input type="file" name="national_id_pic_front" accept="image/*" required>
+                        <i class="fas fa-id-card"></i>
+                        <span>Upload Front</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>National ID (Back)</label>
+                    <div class="file-wrapper" id="wrapper-idBack">
+                        <input type="file" name="national_id_pic_back" accept="image/*" required>
+                        <i class="fas fa-id-card"></i>
+                        <span>Upload Back</span>
+                    </div>
+                </div>
+            </div>
 
-            <input type="file" name="national_id_pic_front" accept="image/*" required>
-            <input type="file" name="national_id_pic_back" accept="image/*" required>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Excellence Cert.</label>
+                    <div class="file-wrapper" id="wrapper-excellence">
+                        <input type="file" name="excellence_certificate" required>
+                        <i class="fas fa-award"></i>
+                        <span>Upload File</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Graduation Cert.</label>
+                    <div class="file-wrapper" id="wrapper-graduation">
+                        <input type="file" name="graduation_certificate" required>
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Upload File</span>
+                    </div>
+                </div>
+            </div>
 
-            <input type="file" name="excellence_certificate" required>
-            <input type="file" name="graduation_certificate" required>
-            <input type="file" name="syndicate_card" required>
-            <input type="file" name="practice_permit" required>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Syndicate Card</label>
+                    <div class="file-wrapper" id="wrapper-syndicate">
+                        <input type="file" name="syndicate_card" required>
+                        <i class="fas fa-address-card"></i>
+                        <span>Upload File</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Practice Permit</label>
+                    <div class="file-wrapper" id="wrapper-permit">
+                        <input type="file" name="practice_permit" required>
+                        <i class="fas fa-file-medical"></i>
+                        <span>Upload File</span>
+                    </div>
+                </div>
+            </div>
 
-            <select name="specification" required>
-                <option value="" disabled selected>Select specialization</option>
-                <option value="neurosurgery">Neurosurgery</option>
-                <option value="orthopedic_surgery">Orthopedic Surgery</option>
-                <option value="plastic_surgery">Plastic Surgery</option>
-                <option value="cardiothoracic_surgery">Cardiothoracic Surgery</option>
-                <option value="ent">Otolaryngology (ENT)</option>
-                <option value="vascular_surgery">Vascular Surgery</option>
-                <option value="urology">Urology</option>
-                <option value="ophthalmology">Ophthalmology</option>
-                <option value="general_surgery">General Surgery</option>
-                <option value="pediatric_surgery">Pediatric Surgery</option>
-                <option value="dermatology">Dermatology</option>
-                <option value="cardiology">Cardiology</option>
-                <option value="gastroenterology">Gastroenterology</option>
-                <option value="oncology">Medical Oncology</option>
-                <option value="hematology">Hematology</option>
-                <option value="endocrinology">Endocrinology</option>
-                <option value="nephrology">Nephrology</option>
-                <option value="rheumatology">Rheumatology</option>
-                <option value="pulmonology">Pulmonology</option>
-                <option value="neurology">Neurology</option>
-                <option value="psychiatry">Psychiatry</option>
-                <option value="emergency_medicine">Emergency Medicine</option>
-                <option value="anesthesiology">Anesthesiology</option>
-                <option value="radiology">Diagnostic Radiology</option>
-                <option value="pathology">Pathology</option>
-                <option value="internal_medicine">Internal Medicine</option>
-                <option value="pediatrics">Pediatrics</option>
-                <option value="obgyn">Obstetrics and Gynecology</option>
-                <option value="family_medicine">Family Medicine</option>
-                <option value="critical_care">Critical Care Medicine</option>
-                <option value="sports_medicine">Sports Medicine</option>
-                <option value="geriatrics">Geriatrics</option>
-                <option value="pain_medicine">Pain Medicine</option>
-                <option value="public_health">Public Health</option>
-                <option value="nuclear_medicine">Nuclear Medicine</option>
-                <option value="physical_medicine_rehab">Physical Medicine and Rehabilitation</option>
-                <option value="addiction_medicine">Addiction Medicine</option>
-                <option value="forensic_psychiatry">Forensic Psychiatry</option>
-                <option value="child_psychiatry">Child and Adolescent Psychiatry</option>
-                <option value="primary_care">Primary Care</option>
-                <option value="general_practice">General Practice</option>
-            </select>
-
-            <input type="number" name="price" placeholder="0" required>
+            <div class="input-row">
+                <div class="input-group" style="flex: 2;">
+                    <label>Specialization</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-stethoscope"></i>
+                        <select id="specialization" name="specification" required>
+                            <option value="" disabled selected>Select specialization</option>
+                            <option value="neurosurgery">Neurosurgery</option>
+                            <option value="orthopedic_surgery">Orthopedic Surgery</option>
+                            <option value="plastic_surgery">Plastic Surgery</option>
+                            <option value="cardiothoracic_surgery">Cardiothoracic Surgery</option>
+                            <option value="ent">Otolaryngology (ENT)</option>
+                            <option value="vascular_surgery">Vascular Surgery</option>
+                            <option value="urology">Urology</option>
+                            <option value="ophthalmology">Ophthalmology</option>
+                            <option value="general_surgery">General Surgery</option>
+                            <option value="pediatric_surgery">Pediatric Surgery</option>
+                            <option value="dermatology">Dermatology</option>
+                            <option value="cardiology">Cardiology</option>
+                            <option value="gastroenterology">Gastroenterology</option>
+                            <option value="oncology">Medical Oncology</option>
+                            <option value="hematology">Hematology</option>
+                            <option value="endocrinology">Endocrinology</option>
+                            <option value="nephrology">Nephrology</option>
+                            <option value="rheumatology">Rheumatology</option>
+                            <option value="pulmonology">Pulmonology</option>
+                            <option value="neurology">Neurology</option>
+                            <option value="psychiatry">Psychiatry</option>
+                            <option value="emergency_medicine">Emergency Medicine</option>
+                            <option value="anesthesiology">Anesthesiology</option>
+                            <option value="radiology">Diagnostic Radiology</option>
+                            <option value="pathology">Pathology</option>
+                            <option value="internal_medicine">Internal Medicine</option>
+                            <option value="pediatrics">Pediatrics</option>
+                            <option value="obgyn">Obstetrics and Gynecology</option>
+                            <option value="family_medicine">Family Medicine</option>
+                            <option value="critical_care">Critical Care Medicine</option>
+                            <option value="sports_medicine">Sports Medicine</option>
+                            <option value="geriatrics">Geriatrics</option>
+                            <option value="pain_medicine">Pain Medicine</option>
+                            <option value="public_health">Public Health</option>
+                            <option value="nuclear_medicine">Nuclear Medicine</option>
+                            <option value="physical_medicine_rehab">Physical Medicine and Rehabilitation</option>
+                            <option value="addiction_medicine">Addiction Medicine</option>
+                            <option value="forensic_psychiatry">Forensic Psychiatry</option>
+                            <option value="child_psychiatry">Child and Adolescent Psychiatry</option>
+                            <option value="primary_care">Primary Care</option>
+                            <option value="general_practice">General Practice</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group" style="flex: 1;">
+                    <label>Price (EGP)</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <input id="price" name="price" type="number" placeholder="0" required>
+                    </div>
+                </div>
+            </div>
 
             <div class="form-actions">
                 <button type="button" class="btn-back" onclick="window.location.href='doctor.html'">

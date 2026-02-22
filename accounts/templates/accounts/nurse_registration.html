@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 {% load static %}
+=======
+{%load static%}
+>>>>>>> a5da7d0c6bb929ff6607027956502ea433b1f404
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,7 +57,11 @@
         </div>
 
         <form id="nurseForm" method="post">
+<<<<<<< HEAD
             {% csrf_token %}
+=======
+            {%csrf_token%}
+>>>>>>> a5da7d0c6bb929ff6607027956502ea433b1f404
             <div class="input-row">
                 <div class="input-group">
                     <label>Gender</label>
@@ -69,7 +77,11 @@
                 <div class="input-group">
                     <label>Date of Birth</label>
                     <div class="input-wrapper DOB">
+<<<<<<< HEAD
                         <input id="dob" name="dob" type="date" required>
+=======
+                        <input id="dob" name="date_of_birth" type="date" required>
+>>>>>>> a5da7d0c6bb929ff6607027956502ea433b1f404
                     </div>
                 </div>
             </div>
@@ -78,7 +90,11 @@
                 <label>Phone Number</label>
                 <div class="input-wrapper">
                     <span class="prefix">+20</span>
+<<<<<<< HEAD
                     <input id="phone" name="phone" type="tel" placeholder="1XXXXXXXXX" required>
+=======
+                    <input id="phone" name="phone_number" type="tel" placeholder="1XXXXXXXXX" required>
+>>>>>>> a5da7d0c6bb929ff6607027956502ea433b1f404
                 </div>
             </div>
 
@@ -122,14 +138,22 @@
             <div class="input-group">
                 <label>Full Address</label>
                 <div class="input-wrapper">
+<<<<<<< HEAD
                     <textarea id="nurseAddress" name="nurseAddress" rows="2" placeholder="Street, Building, Apartment" required></textarea>
+=======
+                    <textarea id="nurseAddress" name="address" rows="2" placeholder="Street, Building, Apartment" required></textarea>
+>>>>>>> a5da7d0c6bb929ff6607027956502ea433b1f404
                 </div>
             </div>
 
             <div class="input-group">
                 <label>Profile Picture</label>
                 <div class="file-wrapper">
+<<<<<<< HEAD
                     <input id="Profile" name="Profile" type="file" accept="image/*,application/pdf" required>
+=======
+                    <input id="Profile" name="profile_pic" type="file" accept="image/*,application/pdf" required>
+>>>>>>> a5da7d0c6bb929ff6607027956502ea433b1f404
                     <i class="fas fa-camera"></i>
                     <span>Click to upload file</span>
                 </div>
@@ -137,7 +161,11 @@
 
             <div class="form-actions">
                 <button type="reset" class="btn-reset">Reset</button>
+<<<<<<< HEAD
                 <button type="submit" class="btn-next"><a href="nurse_registration_s2.html">Continue to Next Step <i class="fas fa-arrow-right"></i></a></button>
+=======
+                <button type="submit" class="btn-next"><a href="nurse2.html">Continue to Next Step <i class="fas fa-arrow-right"></i></a></button>
+>>>>>>> a5da7d0c6bb929ff6607027956502ea433b1f404
             </div>
         </form>
     </main>
