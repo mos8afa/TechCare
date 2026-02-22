@@ -188,7 +188,6 @@ def verify_otp_signup(request, token):
     return render(request, "accounts/verify_otp.html", {"token": token})
 
 
-
 def verify_otp_faild(request):
     return render (request, 'accounts/verify_otp_faild.html')
 
@@ -350,7 +349,7 @@ def pharmacist_registration_step1(request):
 
         return redirect('pharmacist_registration_s2')
 
-    return render(request, 'accounts/pharmacist_registration_s1.html')
+    return render(request, 'accounts/pharmacist_registration.html')
 
 def pharmacist_registration_step2(request):
     pharmacist_id = request.session.get('pharmacist_id')
