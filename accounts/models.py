@@ -185,6 +185,7 @@ class CustomUser(AbstractUser):
     role = models.CharField(max_length=10, choices=ROLES)
     slug = models.SlugField(unique=True, blank=True)
     is_verified = models.BooleanField(default=False)
+    is_Blocked = models.BooleanField(default=False)
     
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -192,11 +193,11 @@ class CustomUser(AbstractUser):
         super().save(*args, **kwargs)
 
 class PendingUser(models.Model):
-    username = models.CharField(max_length=150)
+    username = models.CharField(max_length=20)
     email = models.EmailField()
-    password = models.CharField(max_length=128)
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
+    password = models.CharField(max_length=50)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
     role = models.CharField(max_length=10, choices=ROLES)
     created_at = models.DateTimeField(auto_now_add=True)
 
