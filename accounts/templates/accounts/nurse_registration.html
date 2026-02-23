@@ -1,3 +1,4 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nurse</title>
 
-    <link rel="stylesheet" href="Css/Form.css">
+    <link rel="stylesheet" href="{% static 'css/Form.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body
         {
-        background-image: url({% static 'img/BG_FORM.jpg' %});
+        background-image: url('{% static "img/BG.jpeg" %}');
         background-repeat: no-repeat;
         background-position: center center;
         background-attachment: fixed;
@@ -51,8 +52,8 @@
             </div>
         </div>
 
-        <form id="nurseForm">
-
+        <form id="nurseForm" method="post" enctype="multipart/form-data">
+            {%csrf_token%}
             <div class="input-row">
                 <div class="input-group">
                     <label>Gender</label>
@@ -68,7 +69,7 @@
                 <div class="input-group">
                     <label>Date of Birth</label>
                     <div class="input-wrapper DOB">
-                        <input id="dob" name="dob" type="date" required>
+                        <input id="dob" name="date_of_birth" type="date" required>
                     </div>
                 </div>
             </div>
@@ -77,7 +78,7 @@
                 <label>Phone Number</label>
                 <div class="input-wrapper">
                     <span class="prefix">+20</span>
-                    <input id="phone" name="phone" type="tel" placeholder="1XXXXXXXXX" required>
+                    <input id="phone" name="phone_number" type="tel" placeholder="1XXXXXXXXX" required>
                 </div>
             </div>
 
@@ -87,33 +88,33 @@
                     <i class="fas fa-map-marker-alt"></i>
                     <select id="governorate" name="governorate" required>
                         <option value="" disabled selected>Select governorate</option>
-                        <option>Alexandria</option>
-                        <option>Aswan</option>
-                        <option>Assiut</option>
-                        <option>Beheira</option>
-                        <option>Beni Suef</option>
-                        <option>Cairo</option>
-                        <option>Dakahlia</option>
-                        <option>Damietta</option>
-                        <option>Faiyum</option>
-                        <option>Gharbia</option>
-                        <option>Giza</option>
-                        <option>Ismailia</option>
-                        <option>Kafr El Sheikh</option>
-                        <option>Luxor</option>
-                        <option>Matrouh</option>
-                        <option>Minya</option>
-                        <option>Monufia</option>
-                        <option>New Valley</option>
-                        <option>North Sinai</option>
-                        <option>Port Said</option>
-                        <option>Qalyubia</option>
-                        <option>Qena</option>
-                        <option>Red Sea</option>
-                        <option>Sharqia</option>
-                        <option>Sohag</option>
-                        <option>South Sinai</option>
-                        <option>Suez</option>
+                        <option value="alexandria">Alexandria</option>
+                        <option value="aswan">Aswan</option>
+                        <option value="asyut">Assiut</option>
+                        <option value="beheira">Beheira</option>
+                        <option value="beni_suef">Beni Suef</option>
+                        <option value="cairo">Cairo</option>
+                        <option value="dakahlia">Dakahlia</option>
+                        <option value="damietta">Damietta</option>
+                        <option value="fayoum">Faiyum</option>
+                        <option value="gharbia">Gharbia</option>
+                        <option value="giza">Giza</option>
+                        <option value="ismailia">Ismailia</option>
+                        <option value="kafr_el_sheikh">Kafr El Sheikh</option>
+                        <option value="luxor">Luxor</option>
+                        <option value="matrouh">Matrouh</option>
+                        <option value="minya">Minya</option>
+                        <option value="monufia">Monufia</option>
+                        <option value="new_valley">New Valley</option>
+                        <option value="north_sinai">North Sinai</option>
+                        <option value="port_said">Port Said</option>
+                        <option value="qalyubia">Qalyubia</option>
+                        <option value="qena">Qena</option>
+                        <option value="red_sea">Red Sea</option>
+                        <option value="sharqia">Sharqia</option>
+                        <option value="sohag">Sohag</option>
+                        <option value="south_sinai">South Sinai</option>
+                        <option value="suez">Suez</option>
                     </select>
                 </div>
             </div>
@@ -121,14 +122,14 @@
             <div class="input-group">
                 <label>Full Address</label>
                 <div class="input-wrapper">
-                    <textarea id="nurseAddress" name="nurseAddress" rows="2" placeholder="Street, Building, Apartment" required></textarea>
+                    <textarea id="nurseAddress" name="address" rows="2" placeholder="Street, Building, Apartment" required></textarea>
                 </div>
             </div>
 
             <div class="input-group">
                 <label>Profile Picture</label>
                 <div class="file-wrapper">
-                    <input id="Profile" name="Profile" type="file" accept="image/*,application/pdf" required>
+                    <input id="Profile" name="profile_pic" type="file" accept="image/*,application/pdf" required>
                     <i class="fas fa-camera"></i>
                     <span>Click to upload file</span>
                 </div>
@@ -136,11 +137,11 @@
 
             <div class="form-actions">
                 <button type="reset" class="btn-reset">Reset</button>
-                <button type="submit" class="btn-next"><a href="nurse2.html">Continue to Next Step <i class="fas fa-arrow-right"></i></a></button>
+                <button type="submit" class="btn-next"><a href="{% url 'nurse_registration_s2' %}">Continue to Next Step <i class="fas fa-arrow-right"></i></a></button>
             </div>
         </form>
     </main>
 
-    <script src="JS/Form.js"></script>
+    <script src="{% static 'JS/Form.js' %}"></script>
 </body>
 </html>

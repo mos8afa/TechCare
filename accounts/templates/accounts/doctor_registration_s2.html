@@ -53,7 +53,8 @@
             </div>
         </div>
 
-        <form id="doctorProfessionalForm">
+        <form id="doctorProfessionalForm" method="post" enctype="multipart/form-data">
+            {%csrf_token%}
             <div class="input-group">
                 <label>University</label>
                 <div class="input-wrapper">
@@ -243,7 +244,7 @@
             </div>
 
             <div class="form-actions">
-                <button type="button" class="btn-back" onclick="window.location.href='doctor.html'">
+                <button type="button" class="btn-back" onclick="window.location.href='{% url "doctor_registration" %}'">
                     <i class="fas fa-arrow-left"></i>
                 </button>
                 <button type="submit" class="btn-submit">Complete Registration</button>
