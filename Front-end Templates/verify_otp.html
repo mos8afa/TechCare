@@ -1,17 +1,16 @@
-{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Verify OTP</title>
 
-    <link rel="stylesheet" href="{% static 'css/Login.css' %}">
+    <link rel="stylesheet" href="/Front-end Templates/Css/Login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
         body
         {
-        background-image: url('{%static "img/BG.jpeg" %}');
+        background-image: url("img/BG.jpeg");
         background-repeat: no-repeat;
         background-position: center center;
         background-attachment: fixed;
@@ -45,7 +44,6 @@
         </div>
 
         <form method="POST">
-        {% csrf_token %}
             <div class="otp-wrapper">
                 <input name="otp1" type="text" maxlength="1" class="otp-input">
                 <input name="otp2" type="text" maxlength="1" class="otp-input">
