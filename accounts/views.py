@@ -9,8 +9,11 @@ from django.contrib.auth import get_user_model
 import random
 from .models import ROLE_REDIRECTS, Patient, Doctor, Nurse, Pharmacist, Donor, PendingUser
 from cryptography.fernet import Fernet
-import json, uuid
-from django.views.decorators.csrf import csrf_protect
+import json
+from . import validations
+
+errors = {}
+
 
 def user_login(request):
     if request.method == 'POST':
@@ -20,7 +23,7 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         
         if user is None:
-            messages.error(request,'Invalid username or password', extra_tags='login_error')
+            errors['login_error']='Invalid username or password'
             return render(request, 'accounts/login.html')
         else:
             otp = random.randint(100000,999999)
@@ -43,11 +46,24 @@ def verify_otp_login(request):
     if request.method == "POST":
         user_id = request.session.get("otp_user_id")
 
-        otp_str = "".join([request.POST.get(f"otp{i}") or "" for i in range(1,7)])
+        if request.method == "POST":
+            list_otp = [
+                request.POST.get('otp1'),
+                request.POST.get('otp2'),
+                request.POST.get('otp3'),
+                request.POST.get('otp4'),
+                request.POST.get('otp5'),
+                request.POST.get('otp6')
+            ]
+        for otp in list_otp:
+            if not otp or not otp.isdigit():
+                errors['otp_invalid']="All OTP fields must be digits only."
+
+        otp_str = "".join(list_otp)
         otp_input = int(otp_str)
         
         if not user_id:
-            messages.error(request, "User not found", extra_tags='login_user_error')
+            errors['user_error']="User not found."
             return redirect("login")
 
         saved_otp = cache.get(f"otp_{user_id}")
@@ -55,19 +71,19 @@ def verify_otp_login(request):
         attempts = request.session.get("otp_attempts", 0)
 
         if attempts >= 5:
-            messages.error(request, "Too many attempts",extra_tags='otp_attempts_error')
+            errors['otp_invalid']="Invalid OTP"
             cache.delete(f"otp_{user_id}")
             request.session.pop("otp_user_id", None)
             request.session.pop("otp_attempts", None)
             return redirect("verify_otp_faild")
         
         if not saved_otp:
-            messages.error(request, "OTP expired", extra_tags='otp_expired_error')
+            errors['otp_invalid']="OTP Expired"
             return redirect("verify_otp_faild")
 
         if saved_otp != otp_input:
             request.session["otp_attempts"] = attempts + 1
-            messages.error(request, "Invalid OTP", extra_tags='otp_error')
+            errors['otp_invalid']="Invalid OTP"
             return render(request, "accounts/verify_otp.html")
 
         request.session.pop("otp_attempts", None)
@@ -93,13 +109,27 @@ def user_register(request):
         role = request.POST.get('role')
 
         User = get_user_model()
+
         if User.objects.filter(username=username).exists():
-            messages.error(request, "Username already exists", extra_tags='username_error')
-            return redirect('register')
-        
+            errors['exist_username']="Username already exists"
+
         if User.objects.filter(email=email).exists():
-            messages.error(request, "email already exists", extra_tags='emai_error')
-            return redirect('register')
+            errors['exist_email']="email already exists"
+
+        if not validations.validate_username(username):
+            errors['username']="Username must be lowercase, allowed letters, numbers, _ or ., and cannot contain forbidden words."
+
+        if not validations.validate_email(email):
+            errors['email']="Email must be valid (user@example.com)"
+            
+        if not validations.validate_password(password):
+            errors['password']="Password must be at least 8 chars and include at least one uppercase, one lowercase, one number, and one special char (!@#&?$%*.-~)."
+        
+        if not validations.validate_name(first_name):
+            errors['name']="Name must start with a capital letter, at least 2 letters, cannot contain forbidden words."
+            
+        if not validations.validate_name(last_name):
+            errors['name']="Name must start with a capital letter, at least 2 letters, cannot contain forbidden words."
         
         otp = random.randint(100000,999999)
 
@@ -138,14 +168,25 @@ def user_register(request):
 def verify_otp_signup(request, token):
     pending_user = get_object_or_404(PendingUser, id=token)
     if request.method == "POST":
+        list_otp = [
+            request.POST.get('otp1'),
+            request.POST.get('otp2'),
+            request.POST.get('otp3'),
+            request.POST.get('otp4'),
+            request.POST.get('otp5'),
+            request.POST.get('otp6')
+        ]
+        for otp in list_otp:
+            if not otp or not otp.isdigit():
+                errors['otp_invalid']="All OTP fields must be digits only."
 
-        otp_str = "".join([request.POST.get(f"otp{i}") or "" for i in range(1,7)])
+        otp_str = "".join(list_otp)
         otp_input = int(otp_str)
 
         encrypted_data = cache.get(f"pending_data_{pending_user.id}")
 
         if not encrypted_data:
-            messages.error(request, "OTP expired", extra_tags='otp_expired_error')
+            errors['otp_invalid']="OTP Expired"
             return redirect("verify_otp_faild")
         
         key = Fernet(FERNET_KEY)
@@ -158,14 +199,14 @@ def verify_otp_signup(request, token):
         if attempts >= 5:
             cache.delete(f"pending_data_{pending_user.id}")
             pending_user.delete()
-            messages.error(request, "Too many attempts",extra_tags='otp_attempts_error' )
             return redirect("verify_otp_faild")        
         
         if str(pending_data['otp']) != str(otp_input):
             pending_data["attempts"] = attempts + 1
             updated_encrypted = key.encrypt(json.dumps(pending_data).encode())
             cache.set(f"pending_data_{pending_user.id}", updated_encrypted, timeout=300)
-            messages.error(request, "Invalid OTP", extra_tags='otp_error')
+            errors['otp_invalid']="Invalid OTP"
+            messages.error(request, "Invalid OTP", extra_tags='')
             return render(request, "accounts/verify_otp.html")
 
         User = get_user_model()
