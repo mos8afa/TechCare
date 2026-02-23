@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 import random
 from .models import ROLE_REDIRECTS, Patient, Doctor, Nurse, Pharmacist, Donor, PendingUser
 from cryptography.fernet import Fernet
-import json
+import json, uuid
 from django.views.decorators.csrf import csrf_protect
 
 def user_login(request):
@@ -179,7 +179,7 @@ def verify_otp_signup(request, token):
             is_active=True
         )
         user.save()
-        
+        login(request, user)
         cache.delete(f"pending_data_{pending_user.id}")
         pending_user.delete()
 
@@ -202,7 +202,7 @@ def patient_registration(request):
         national_id_pic_back = request.FILES.get('national_id_pic_back')
         national_id_pic_front = request.FILES.get('national_id_pic_front')
 
-        Patient.objects.create(
+        patient = Patient.objects.create(
             user=request.user,
             gender=gender,
             address=address,
@@ -213,7 +213,8 @@ def patient_registration(request):
             national_id_pic_front=national_id_pic_front,
         )
 
-        login(request, request.user)
+        patient.save()
+
         return redirect('home')
     return render(request, 'accounts/patient_registration.html')
 
@@ -227,7 +228,7 @@ def doctor_registration(request):
         profile_pic = request.FILES.get('profile_pic')
         date_of_birth = request.POST.get('date_of_birth')
 
-        Doctor.objects.create(
+        doctor = Doctor.objects.create(
             user=request.user,
             gender=gender,
             address=address,
@@ -237,37 +238,29 @@ def doctor_registration(request):
             date_of_birth = date_of_birth
         )
 
-        request.session['doctor_id'] = request.user.id
-
+        doctor.save()
+        
         return redirect('doctor_registration_s2')
     
     return render(request, 'accounts/doctor_registration.html')
 
 def doctor_registration_s2(request):
-    doctor_id = request.session.get('doctor_id')
-    if not doctor_id:
-        return redirect('doctor_registration')
-
-    doctor = Doctor.objects.get(id=doctor_id)
+    doctor = Doctor.objects.get(user=request.user)
 
     if request.method == 'POST':
         doctor.excellence_certificate = request.FILES.get('excellence_certificate')
-        doctor.price = request.POST.get('price')
+        doctor.price = float(request.POST.get('price'))
         doctor.syndicate_card = request.FILES.get('syndicate_card')
         doctor.practice_permit = request.FILES.get('practice_permit')
         doctor.graduation_certificate = request.FILES.get('graduation_certificate')
         doctor.university = request.POST.get('university')
-        doctor.specification = request.FILES.get('national_id_pic_front')
+        doctor.specification = request.POST.get('specification')
         doctor.national_id_pic_back = request.FILES.get('national_id_pic_back')
         doctor.national_id_pic_front = request.FILES.get('national_id_pic_front')
         doctor.save()
 
-        login(request, request.user)
-
-        del request.session['doctor_id']
-
         return redirect('home')
-    return render(request, 'accounts/doctor_registeration_s2.html')
+    return render(request, 'accounts/doctor_registration_s2.html')
 
 
 def nurse_registration_step1(request):
@@ -286,40 +279,25 @@ def nurse_registration_step1(request):
             governorate=governorate,
             profile_pic=profile_pic
         )
-
-        request.session['nurse_id'] = nurse.id
+        nurse.save()
 
         return redirect('nurse_registration_s2')
 
     return render(request, 'accounts/nurse_registration.html')
 
 def nurse_registration_step2(request):
-    nurse_id = request.session.get('nurse_id')
-    if not nurse_id:
-        return redirect('nurse_registration')
 
-    nurse = Nurse.objects.get(id=nurse_id)
+    nurse = Nurse.objects.get(user=request.user)
 
     if request.method == 'POST':
         
-        excellence_certificate = request.FILES.get('excellence_certificate')
-        syndicate_card = request.FILES.get('syndicate_card')
-        practice_permit = request.FILES.get('practice_permit')
-        graduation_certificate = request.FILES.get('graduation_certificate')
-        national_id_pic_front = request.FILES.get('national_id_pic_front')
-        national_id_pic_back = request.FILES.get('national_id_pic_back')
-
-        nurse.excellence_certificate = excellence_certificate
-        nurse.syndicate_card = syndicate_card
-        nurse.practice_permit = practice_permit
-        nurse.graduation_certificate = graduation_certificate
-        nurse.national_id_pic_front = national_id_pic_front
-        nurse.national_id_pic_back = national_id_pic_back
+        nurse.excellence_certificate = request.FILES.get('excellence_certificate')
+        nurse.syndicate_card = request.FILES.get('syndicate_card')
+        nurse.practice_permit = request.FILES.get('practice_permit')
+        nurse.graduation_certificate = request.FILES.get('graduation_certificate')
+        nurse.national_id_pic_front = request.FILES.get('national_id_pic_front')
+        nurse.national_id_pic_back = request.FILES.get('national_id_pic_back')
         nurse.save()
-
-        login(request, request.user)
-
-        del request.session['nurse_id']
 
         return redirect('home')
 
@@ -345,40 +323,24 @@ def pharmacist_registration_step1(request):
             profile_pic=profile_pic
         )
 
-        request.session['pharmacist_id'] = pharmacist.id
+        pharmacist.save()
 
         return redirect('pharmacist_registration_s2')
 
     return render(request, 'accounts/pharmacist_registration.html')
 
 def pharmacist_registration_step2(request):
-    pharmacist_id = request.session.get('pharmacist_id')
-    if not pharmacist_id:
-        return redirect('pharmacist_registration')
-
-    pharmacist = Pharmacist.objects.get(id=pharmacist_id)
+    pharmacist = Pharmacist.objects.get(user = request.user)
 
     if request.method == 'POST':
-        pharmacy_name = request.POST.get('pharmacy_name')
-        pharmacy_address = request.POST.get('pharmacy_address')
-        university = request.POST.get('university')
-        governorate = request.POST.get('governorate')
-        syndicate_card = request.FILES.get('syndicate_card')
-        practice_permit = request.FILES.get('practice_permit')
-        graduation_certificate = request.FILES.get('graduation_certificate')
-
-        pharmacist.pharmacy_name = pharmacy_name
-        pharmacist.pharmacy_address = pharmacy_address
-        pharmacist.university = university
-        pharmacist.governorate = governorate
-        pharmacist.syndicate_card = syndicate_card
-        pharmacist.practice_permit = practice_permit
-        pharmacist.graduation_certificate = graduation_certificate
+        pharmacist.pharmacy_name = request.POST.get('pharmacy_name')
+        pharmacist.pharmacy_address = request.POST.get('pharmacy_address')
+        pharmacist.university = request.POST.get('university')
+        pharmacist.governorate = request.POST.get('governorate')
+        pharmacist.syndicate_card = request.FILES.get('syndicate_card')
+        pharmacist.practice_permit = request.FILES.get('practice_permit')
+        pharmacist.graduation_certificate = request.FILES.get('graduation_certificate')
         pharmacist.save()
-
-        login(request, request.user)
-
-        del request.session['pharmacist_id']
 
         return redirect('home')
 
@@ -399,7 +361,7 @@ def donor_registration(request):
         date_of_birth = request.POST.get('date_of_birth')
 
 
-        Donor.objects.create(
+        donor = Donor.objects.create(
             user=request.user,
             gender=gender,
             address=address,
@@ -412,8 +374,8 @@ def donor_registration(request):
             last_donation_date = last_donation_date,
             date_of_birth = date_of_birth
         )
+        donor.save()
 
-        login(request, request.user)
         return redirect('home')
     return render(request, 'accounts/Donor_registration.html')
 

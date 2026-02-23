@@ -221,7 +221,7 @@ class Doctor(models.Model):
     profile_pic = models.ImageField(upload_to='doctors/profile/')
     phone_number = models.CharField(max_length=14)
     excellence_certificate = models.FileField(upload_to='doctors/certificates/')
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     date_of_birth = models.DateField()
     syndicate_card = models.FileField(upload_to='doctors/syndicate/')
     practice_permit = models.FileField(upload_to='doctors/practice/')
