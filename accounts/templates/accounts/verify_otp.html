@@ -43,7 +43,11 @@
             <h1>Verify OTP</h1>
             <p>Enter the 6-digit code sent to your email</p>
         </div>
-
+        {% if errors.user_error %}
+                <div class="error">
+                    {{ errors.user_error }}
+                </div>
+            {% endif %}
         <form method="POST">
         {% csrf_token %}
             <div class="otp-wrapper">
@@ -65,7 +69,14 @@
                 <button type="submit" class="btn-login">Continue</button>
                 <button type="button" class="btn-reset"><a href='{% url  "forget_password" %}'>Back</a></button>
             </div>
-
+            
+            {% if errors.otp_invalid %}
+                <div class="error">
+                    {{ errors.otp_invalid }}
+                </div>
+            {% endif %}
+            
+            
         </form>
 
     </main>

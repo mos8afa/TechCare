@@ -72,7 +72,11 @@
                     </div>
                 </div>
             </div>
-
+            {% if errors.dob_invalid %}
+                <div class="error">
+                    {{ errors.dob_invalid }}
+                </div>
+            {% endif %}
             <div class="input-row">
                 <div class="input-group">
                     <label>Blood Type</label>
@@ -98,7 +102,11 @@
                     </div>
                 </div>
             </div>
-
+            {% if errors.last_donation_invalid %}
+                <div class="error">
+                    {{ errors.last_donation_invalid }}
+                </div>
+            {% endif %}
             <div class="input-group">
                 <label>Phone Number</label>
                 <div class="input-wrapper">
@@ -106,7 +114,11 @@
                     <input id="phone" name="phone_number" type="tel" placeholder="1XXXXXXXXX" required>
                 </div>
             </div>
-
+            {% if errors.phone_invalid %}
+                <div class="error">
+                    {{ errors.phone_invalid }}
+                </div>
+            {% endif %}
             <div class="input-group">
                 <label>Governorate</label>
                 <div class="input-wrapper">
@@ -150,7 +162,11 @@
                     <textarea id="donorddress" name="address" rows="2" placeholder="Street, Building, Apartment" required></textarea>
                 </div>
             </div>
-
+            {% if errors.address %}
+                <div class="error">
+                    {{ errors.address }}
+                </div>
+            {% endif %}
             <div class="input-row">
                 <div class="input-group">
                     <label>National ID (Front)</label>

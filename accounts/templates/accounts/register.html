@@ -62,7 +62,11 @@
                     </div>
                 </div>
             </div>
-
+                {% if errors.name %}
+                    <div class="error">
+                        {{ errors.name }}
+                    </div>
+                {% endif %}
             <div class="input-group">
                 <label for="username">Username</label>
                 <div class="input-wrapper">
@@ -70,7 +74,16 @@
                     <input id="username" name="username" type="text" placeholder="Enter your username" required>
                 </div>
             </div>
-
+            {% if errors.exist_username %}
+                <div class="error">
+                    {{ errors.exist_username }}
+                </div>
+            {% endif %}
+            {% if errors.username %}
+                <div class="error">
+                    {{ errors.username }}
+                </div>
+            {% endif %}
             <div class="input-group">
                 <label for="email">Email</label>
                 <div class="input-wrapper">
@@ -78,7 +91,16 @@
                     <input id="email" name="email" type="email" placeholder="Enter your email" required>
                 </div>
             </div>
-
+            {% if errors.exist_email %}
+                <div class="error">
+                    {{ errors.exist_email }}
+                </div>
+            {% endif %}
+            {% if errors.email %}
+                <div class="error">
+                    {{ errors.email }}
+                </div>
+            {% endif %}
             <div class="input-group">
                 <label for="password">Password</label>
                 <div class="input-wrapper">
@@ -87,7 +109,11 @@
                     <i class="far fa-eye show-password" id="togglePassword"></i>
                 </div>
             </div>
-
+            {% if errors.password %}
+                <div class="error">
+                    {{ errors.password }}
+                </div>
+            {% endif %}
             <div class="input-group">
                 <label for="role">Role</label>
                 <div class="input-wrapper">

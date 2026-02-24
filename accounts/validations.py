@@ -7,7 +7,9 @@ forbidden = [
     'admin','test','user','abc','qwerty','doctor','nurse','donor','pharmacist','patient',    
     'script','python','javascript','vbscript','alert','prompt','confirm','eval','document.write','innerhtml','window.location','data:','fetch','xmlhttprequest',
     'iframe','object','embed','svg','video','audio','link','body','style','form','input','button','textarea','applet','meta','frame','frameset','marquee','base',
-    'onerror','onclick','onload','onmouseover','onmouseout','onfocus','onsubmit','oninput','onchange','onkeypress','onkeydown','onkeyup','onmouseenter','onmouseleave'
+    'onerror','onclick','onload','onmouseover','onmouseout','onfocus','onsubmit','oninput','onchange','onkeypress','onkeydown','onkeyup','onmouseenter','onmouseleave',
+    '<','>'
+
 ]
 
 def validate_username(username):

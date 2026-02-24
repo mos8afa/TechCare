@@ -62,6 +62,11 @@
                     <input type="text" id="pharmacyName" name="pharmacy_name" placeholder="Enter Pharmacy Name" required>
                 </div>
             </div>
+            {% if errors.name %}
+                    <div class="error">
+                        {{ errors.name }}
+                    </div>
+                {% endif %}
             <div class="input-group">
                 <label>Governorate</label>
                 <div class="input-wrapper">
@@ -104,7 +109,11 @@
                     <textarea id="pharmacyAddress" name="pharmacy_address" rows="2" placeholder="Street, Building, Apartment" required></textarea>
                 </div>
             </div>
-
+            {% if errors.address %}
+                <div class="error">
+                    {{ errors.address }}
+                </div>
+            {% endif %}
             <div class="input-row">
                 <div class="input-group">
                     <label>Syndicate Card</label>

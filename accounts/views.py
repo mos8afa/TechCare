@@ -23,7 +23,7 @@ def user_login(request):
         
         if user is None:
             errors['login_error']='Invalid username or password'
-            return render(request, 'accounts/login.html')
+            return render(request, 'accounts/login.html',{'errors': errors})
         else:
             otp = random.randint(100000,999999)
 
@@ -57,13 +57,14 @@ def verify_otp_login(request):
         for otp in list_otp:
             if not otp or not otp.isdigit():
                 errors['otp_invalid']="All OTP fields must be digits only."
+                return render(request, "accounts/verify_otp.html", {'errors': errors})
 
         otp_str = "".join(list_otp)
         otp_input = int(otp_str)
         
         if not user_id:
             errors['user_error']="User not found."
-            return redirect("login")
+            return render(request, "accounts/verify_otp.html", {'errors': errors} )
 
         saved_otp = cache.get(f"otp_{user_id}")
 
@@ -78,12 +79,12 @@ def verify_otp_login(request):
         
         if not saved_otp:
             errors['otp_invalid']="OTP Expired"
-            return redirect("verify_otp_faild")
+            return render(request, "accounts/verify_otp.html", {'errors': errors})
 
         if saved_otp != otp_input:
             request.session["otp_attempts"] = attempts + 1
             errors['otp_invalid']="Invalid OTP"
-            return render(request, "accounts/verify_otp.html")
+            return render(request, "accounts/verify_otp.html", {'errors': errors})
 
         request.session.pop("otp_attempts", None)
 
@@ -111,25 +112,31 @@ def user_register(request):
 
         if User.objects.filter(username=username).exists():
             errors['exist_username']="Username already exists"
+            return render(request, 'accounts/register.html', {'errors':errors})
 
         if User.objects.filter(email=email).exists():
             errors['exist_email']="email already exists"
-
+            return render(request, 'accounts/register.html', {'errors':errors})
+        
         if not validations.validate_username(username):
             errors['username']="Username must be lowercase, allowed letters, numbers, _ or ., and cannot contain forbidden words."
-
+            return render(request, 'accounts/register.html', {'errors':errors})
+        
         if not validations.validate_email(email):
             errors['email']="Email must be valid (user@example.com)"
-            
+            return render(request, 'accounts/register.html', {'errors':errors})
+        
         if not validations.validate_password(password):
             errors['password']="Password must be at least 8 chars and include at least one uppercase, one lowercase, one number, and one special char (!@#&?$%*.-~)."
+            return render(request, 'accounts/register.html', {'errors':errors})
         
         if not validations.validate_name(first_name):
             errors['name']="Name must start with a capital letter, at least 2 letters, cannot contain forbidden words."
-            
+            return render(request, 'accounts/register.html', {'errors':errors})
+        
         if not validations.validate_name(last_name):
             errors['name']="Name must start with a capital letter, at least 2 letters, cannot contain forbidden words."
-        
+            return render(request, 'accounts/register.html', {'errors':errors})
         otp = random.randint(100000,999999)
 
         pending_user = PendingUser.objects.create(
@@ -178,6 +185,7 @@ def verify_otp_signup(request, token):
         for otp in list_otp:
             if not otp or not otp.isdigit():
                 errors['otp_invalid']="All OTP fields must be digits only."
+                return render(request, "accounts/verify_otp.html", {'errors': errors})
 
         otp_str = "".join(list_otp)
         otp_input = int(otp_str)
@@ -185,8 +193,8 @@ def verify_otp_signup(request, token):
         encrypted_data = cache.get(f"pending_data_{pending_user.id}")
 
         if not encrypted_data:
-            errors['otp_invalid']="OTP Expired"
-            return redirect("verify_otp_faild")
+            #OTP Expired
+            return redirect('login')
         
         key = Fernet(FERNET_KEY)
         data = key.decrypt(encrypted_data)
@@ -205,8 +213,7 @@ def verify_otp_signup(request, token):
             updated_encrypted = key.encrypt(json.dumps(pending_data).encode())
             cache.set(f"pending_data_{pending_user.id}", updated_encrypted, timeout=300)
             errors['otp_invalid']="Invalid OTP"
-            messages.error(request, "Invalid OTP", extra_tags='')
-            return render(request, "accounts/verify_otp.html")
+            return render(request, 'accounts/verify_otp.html',{'errors': errors})
 
         User = get_user_model()
         user = User.objects.create(
@@ -244,6 +251,11 @@ def patient_registration(request):
 
         if not validations.validate_phone(phone_number):
             errors['phone_invalid'] = "Phone number must start with 0 or 1."
+            return render(request, 'accounts/patient_registration.html', {'errors':errors})
+        
+        if not validations.validate_address(address):
+            errors['address']="can't use <,> or forbidden words"
+            return render(request, 'accounts/patient_registration.html', {'errors':errors})
 
         patient = Patient.objects.create(
             user=request.user,
@@ -273,9 +285,15 @@ def doctor_registration(request):
 
         if not validations.validate_phone(phone_number):
             errors['phone_invalid'] = "Phone number must start with 0 or 1."
+            return render(request, 'accounts/doctor_registration.html', {'errors':errors})
         
         if not validations.validate_dop(date_of_birth,22):
             errors['dob_invalid'] = "You must be at least 22 years old."
+            return render(request, 'accounts/doctor_registration.html', {'errors':errors})
+        
+        if not validations.validate_address(address):
+            errors['address']="can't use <,> or forbidden words"
+            return render(request, 'accounts/doctor_registration.html', {'errors':errors})
 
         doctor = Doctor.objects.create(
             user=request.user,
@@ -319,6 +337,20 @@ def nurse_registration_step1(request):
         date_of_birth = request.POST.get('date_of_birth')
         governorate = request.POST.get('governorate')
         profile_pic = request.FILES.get('profile_pic')
+        address = request.POST.get('address')
+
+        if not validations.validate_phone(phone_number):
+            errors['phone_invalid'] = "Phone number must start with 0 or 1."
+            return render(request, 'accounts/nurse_registration.html', {'errors':errors})
+
+        
+        if not validations.validate_dop(date_of_birth,20):
+            errors['dob_invalid'] = "You must be at least 20 years old."
+            return render(request, 'accounts/nurse_registration.html', {'errors':errors})
+        
+        if not validations.validate_address(address):
+            errors['address']="can't use <,> or forbidden words"
+            return render(request, 'accounts/nurse_registration.html', {'errors':errors})
 
         nurse = Nurse.objects.create(
             user=request.user,
@@ -326,15 +358,10 @@ def nurse_registration_step1(request):
             phone_number=phone_number,
             date_of_birth=date_of_birth,
             governorate=governorate,
-            profile_pic=profile_pic
+            profile_pic=profile_pic,
+            address = address,
         )
         nurse.save()
-
-        if not validations.validate_phone(phone_number):
-            errors['phone_invalid'] = "Phone number must start with 0 or 1."
-        
-        if not validations.validate_dop(date_of_birth,20):
-            errors['dob_invalid'] = "You must be at least 20 years old."
 
         return redirect('nurse_registration_s2')
 
@@ -370,9 +397,12 @@ def pharmacist_registration_step1(request):
 
         if not validations.validate_phone(phone_number):
             errors['phone_invalid'] = "Phone number must start with 0 or 1."
+            return render(request, 'accounts/pharmacist_registration.html', {'errors':errors})
+
         
         if not validations.validate_dop(date_of_birth,18):
             errors['dob_invalid'] = "You must be at least 18 years old."
+            return render(request, 'accounts/pharmacist_registration.html', {'errors':errors})
 
         pharmacist = Pharmacist.objects.create(
             user=request.user,
@@ -395,12 +425,18 @@ def pharmacist_registration_step2(request):
 
     if request.method == 'POST':
         pharmacy_name = request.POST.get('pharmacy_name')
+        pharmacy_address = request.POST.get('pharmacy_address')
 
         if not validations.validate_pharmacy_name(pharmacy_name):
             errors['name']="Name must be at most 60 letter."
+            return render(request, 'accounts/pharmacist_registration_s2.html')
+        
+        if not validations.validate_address(pharmacy_address):
+            errors['address']="can't use <,> or forbidden words"
+            return render(request, 'accounts/pharmacist_registration_s2.html')
 
-        pharmacist.pharmacy_name = request.POST.get('pharmacy_name')
-        pharmacist.pharmacy_address = request.POST.get('pharmacy_address')
+        pharmacist.pharmacy_name = pharmacy_name
+        pharmacist.pharmacy_address = pharmacy_address
         pharmacist.university = request.POST.get('university')
         pharmacist.governorate = request.POST.get('governorate')
         pharmacist.syndicate_card = request.FILES.get('syndicate_card')
@@ -428,12 +464,19 @@ def donor_registration(request):
 
         if not validations.validate_phone(phone_number):
             errors['phone_invalid'] = "Phone number must start with 0 or 1."
+            return render(request, 'accounts/Donor_registration.html', {'errors':errors})
 
         if not validations.validate_dop(date_of_birth,18):
             errors['dob_invalid'] = "You must be at least 18 years old."
+            return render(request, 'accounts/Donor_registration.html', {'errors':errors})
         
         if not validations.validate_donation_date(last_donation_date):
             errors['last_donation_invalid'] = "Last blood donation must be after you turned 16."
+            return render(request, 'accounts/Donor_registration.html', {'errors':errors})
+        
+        if not validations.validate_address(address):
+            errors['address']="can't use <,> or forbidden words"
+            return render(request, 'accounts/Donor_registration.html', {'errors':errors})
 
         donor = Donor.objects.create(
             user=request.user,
@@ -462,7 +505,8 @@ def forget_password(request):
         if User.objects.filter(email=email).exists():
             user = get_object_or_404(User, email=email)
         else:
-            errors['exist_email']="email already exists"
+            errors['exist_email']="email don't exists"
+            return render(request, 'accounts/forget_password.html', {'errors':errors})
 
         otp = random.randint(100000,999999)
 
@@ -493,6 +537,7 @@ def verify_otp_forget_password(request):
         for otp in list_otp:
             if not otp or not otp.isdigit():
                 errors['otp_invalid']="All OTP fields must be digits only."
+                return render(request, "accounts/verify_otp.html", {'errors': errors})
 
         otp_str = "".join(list_otp)
         otp_input = int(otp_str)
@@ -500,7 +545,7 @@ def verify_otp_forget_password(request):
         user_id = request.session.get("otp_user_id")
         if not user_id:
             errors['user_error']="User not found."
-            return redirect("login")
+            return render(request, "accounts/verify_otp.html", {'errors': errors})
 
         saved_otp = cache.get(f"otp_{user_id}")
 
@@ -511,16 +556,15 @@ def verify_otp_forget_password(request):
             cache.delete(f"otp_{user_id}")
             request.session.pop("otp_user_id", None)
             request.session.pop("otp_attempts", None)
-            return redirect("login")
+            return redirect("verify_otp_faild")
         
         if not saved_otp:
             errors['otp_invalid']="OTP Expired"
-            return redirect("verify_otp_faild")
-
+            return render(request, "accounts/verify_otp.html", {'errors': errors})
         if saved_otp != otp_input:
             request.session["otp_attempts"] = attempts + 1
             errors['otp_invalid']="Invalid OTP"
-            return render(request, "accounts/verify_otp.html")
+            return render(request, "accounts/verify_otp.html", {'errors': errors})
         
         cache.delete(f"otp_{user_id}")
 
@@ -531,18 +575,19 @@ def reset_password(request):
     user_id = request.session.get("otp_user_id")
     if not user_id:
         errors['user_error']="User not found."
-        return redirect("login")
+        return render(request, 'accounts/reset_password.html', {'errors':errors})
     
     if request.method == 'POST':
         password = request.POST.get('password')
         confirm = request.POST.get('confirm')
 
-    if not validations.validate_password(password):
-        errors['password']="Password must be at least 8 chars and include at least one uppercase, one lowercase, one number, and one special char (!@#&?$%*.-~)."
+        if not validations.validate_password(password):
+            errors['password']="Password must be at least 8 chars and include at least one uppercase, one lowercase, one number, and one special char (!@#&?$%*.-~)."
+            return render(request, 'accounts/reset_password.html', {'errors':errors})
         
         if password != confirm :
             messages.error(request,"passwords not match",extra_tags='password_error')
-            return redirect('reset_password')
+            return render(request, 'accounts/reset_password.html', {'errors':errors})
 
         User = get_user_model()
         user = get_object_or_404(User, id=user_id)
@@ -554,3 +599,6 @@ def reset_password(request):
         request.session.pop("otp_attempts", None)
         return redirect('login')
     return render(request, 'accounts/reset_password.html')
+
+def resend_mail(request):
+    pass

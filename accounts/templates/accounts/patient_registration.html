@@ -73,6 +73,11 @@
                     </div>
                 </div>
             </div>
+            {% if errors.phone_invalid %}
+                <div class="error">
+                    {{ errors.phone_invalid }}
+                </div>
+            {% endif %}
 
             <div class="input-group">
                 <label>Governorate</label>
@@ -119,7 +124,11 @@
                             required></textarea>
                 </div>
             </div>
-
+            {% if errors.address %}
+                <div class="error">
+                    {{ errors.address }}
+                </div>
+            {% endif %}
             <div class="input-row">
                 <div class="input-group">
                     <label>National ID (Front)</label>
