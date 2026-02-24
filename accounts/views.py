@@ -95,7 +95,28 @@ def verify_otp_login(request):
 
         return redirect("home")
 
-    return render(request, "accounts/verify_otp.html")
+    return render(request, "accounts/verify_otp.html", {"otp_type": "login"})
+
+def resend_otp_login(request):
+    if request.method == 'POST':
+        user_id = request.session.get("otp_user_id")
+        if not user_id:
+            return redirect('login')
+        User = get_user_model()
+        user = get_object_or_404(User, id=user_id)
+        otp = random.randint(100000,999999)
+
+        cache.set(f"otp_{user.id}", otp, timeout=300)
+
+        send_mail(
+            subject = "TechCare Team",
+            message = f"your verification OTP is {otp}",
+            from_email = EMAIL_HOST_USER,
+            recipient_list = [user.email]
+        )
+        
+        return redirect('verify_otp_l')
+    return redirect('login')
 
 
 def user_register(request):
@@ -136,6 +157,7 @@ def user_register(request):
         if not validations.validate_name(last_name):
             errors['name']="Name must start with a capital letter, at least 2 letters, cannot contain forbidden words."
             return render(request, 'accounts/register.html', {'errors':errors})
+        
         otp = random.randint(100000,999999)
 
         pending_user = PendingUser.objects.create(
@@ -231,7 +253,34 @@ def verify_otp_signup(request, token):
 
         return redirect(ROLE_REDIRECTS[user.role])
 
-    return render(request, "accounts/verify_otp.html", {"token": token})
+    return render(request, "accounts/verify_otp.html", {"token": token, "otp_type": "signup"})
+
+def resend_otp_signup(request, token):
+    if request.method == 'POST':
+        pending_user = get_object_or_404(PendingUser, id=token)
+        otp = random.randint(100000,999999)
+
+        pending_data = {
+        "otp": otp,
+        "attempts":0,
+        }
+
+        key = Fernet(FERNET_KEY)
+
+        data = json.dumps(pending_data).encode()
+        encrypted = key.encrypt(data)
+
+        cache.set(f"pending_data_{pending_user.id}", encrypted, timeout=300)
+
+        send_mail(
+            subject = "TechCare Team",
+            message = f"your verification OTP is {otp}",
+            from_email = EMAIL_HOST_USER,
+            recipient_list = [pending_user.email]
+        )
+
+        return redirect('verify_otp_s', token=token)
+    return redirect('user_register')
 
 
 def verify_otp_faild(request):
@@ -565,7 +614,7 @@ def verify_otp_forget_password(request):
         cache.delete(f"otp_{user_id}")
 
         return redirect('reset_password')
-    return render(request, 'accounts/verify_otp.html')  
+    return render(  request, "accounts/verify_otp.html", {"otp_type": 'forget'})  
 
 def reset_password(request):
     user_id = request.session.get("otp_user_id")
@@ -595,5 +644,34 @@ def reset_password(request):
         return redirect('login')
     return render(request, 'accounts/reset_password.html')
 
-def resend_mail(request):
-    pass
+def resend_otp_forget_password(request):
+    if request.method == 'POST':
+        user_id = request.session.get("otp_user_id")
+        if not user_id:
+            return redirect('forget_password')
+        User = get_user_model()
+        user = get_object_or_404(User, id=user_id)
+        otp = random.randint(100000,999999)
+
+        cache.set(f"otp_{user.id}", otp, timeout=300)
+
+        send_mail(
+            subject = "TechCare Team",
+            message = f"your verification OTP is {otp}",
+            from_email = EMAIL_HOST_USER,
+            recipient_list = [user.email]
+        )
+            
+        return redirect('verify_otp_forget_password')
+    return redirect('forget_password')
+
+def resend_otp(request):
+    if request.method == 'POST':
+        otp_type = request.POST.get('otp_type')
+        if otp_type == 'login':
+            return redirect('resend_otp_login')
+        elif otp_type == 'signup':
+            token = request.POST.get('token')
+            return redirect('resend_otp_signup', token=token)
+        elif otp_type == 'forget':
+            return redirect('resend_otp_forget_password')

@@ -18,5 +18,5 @@ urlpatterns = [
     path("verify/otp/faild", views.verify_otp_faild, name="verify_otp_faild"),
     path("forget/password", views.forget_password, name='forget_password'),
     path("verify/otp/forget", views.verify_otp_forget_password, name='verify_otp_forget_password'),
-    path("resend/mail", views.resend_mail, name='resend_mail'),
+    path("resend/otp/", views.resend_otp, name='resend_otp'),
 ]

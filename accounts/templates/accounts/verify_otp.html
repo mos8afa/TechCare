@@ -55,7 +55,8 @@
             </div>
 
             <div class="form-options" style="justify-content: center;">
-                <span>Didn't recive OTP?<a href='{% url  "resend_mail" %}'> Click here</a></span>
+                <input type="hidden" name="otp_type" value="{{ otp_type }}">
+                <span>Didn't recive OTP?<a href='{% url  "resend_otp" %}'> Click here</a></span>
             </div>
 
             </div>
