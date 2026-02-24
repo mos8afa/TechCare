@@ -6,7 +6,10 @@ from django.core.cache import cache
 from django.core.mail import send_mail
 from project.settings import EMAIL_HOST_USER
 from rest_framework_simplejwt.tokens import RefreshToken
+import accounts.validations 
 
+
+User = get_user_model()
 
 @api_view(['POST'])
 def Login(request):
@@ -85,5 +88,35 @@ def VerifyOTP(request):
 
 
 @api_view(['POST'])
-def Register():
-    pass
+def Register(request):
+    username = request.data.get('username')
+    email = request.data.get('email')
+    first_name = request.data.get('first_name')
+    last_name = request.data.get('last_name')
+    password = request.data.get('password')
+    role = request.data.get('role')
+
+    if User.objects.filter(username=username).exists():
+        return Response({"error": "Username already exists"}, status=400)
+    
+    if User.objects.filter(email=email).exists():
+        return Response({"error": "Email already exists"}, status=400)
+    
+    if not accounts.validations.validate_password(password):
+        return Response({"error": "Password does not meet complexity requirements"}, status=400)
+    
+    if not accounts.validations.validate_email(email):
+        return Response({"error": "Invalid email format"}, status=400)
+    
+    if not accounts.validations.validate_name(first_name) or not accounts.validations.validate_name(last_name):
+        return Response({"error": "Names can only contain letters"}, status=400)
+    
+    user = User.objects.create_user(
+        username=username,
+        email=email,
+        first_name=first_name,
+        last_name=last_name,
+        password=password,
+        role=role
+    )
+    return Response({"message": "User registered successfully"}, status=201)
