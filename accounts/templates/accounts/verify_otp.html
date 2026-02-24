@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Verify OTP</title>
 
-    <link rel="stylesheet" href="{% static 'css/Login.css' %}">
+    <link rel="stylesheet" href="{% static 'Css/Login.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
@@ -66,7 +66,7 @@
             </div>
             
             {% if errors.otp_invalid %}
-                <div class="error">
+                <div class="error margin">
                     {{ errors.otp_invalid }}
                 </div>
             {% endif %}
@@ -82,22 +82,48 @@
         // التنقل التلقائي
         inputs.forEach((input, index) => {
             input.addEventListener("input", function () {
-            // السماح بالأرقام فقط
-            this.value = this.value.replace(/[^0-9]/g, '');
-            if (this.value && index < inputs.length - 1) {
-                inputs[index + 1].focus();
-            }
+                // السماح بالأرقام فقط
+                this.value = this.value.replace(/[^0-9]/g, '');
+                if (this.value && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener("keydown", function (e) {
+                // لو ضغط Backspace و الحقل فاضي يرجع للي قبله
+                if (e.key === "Backspace" && !this.value && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+
+            // إضافة حدث اللصق (Paste) لكل حقل
+            input.addEventListener("paste", function (e) {
+                e.preventDefault(); // منع اللصق الافتراضي في حقل واحد
+
+                // الحصول على النص المنسوخ من الحافظة
+                const pastedData = (e.clipboardData || window.clipboardData).getData('text');
+
+                // استخراج الأرقام فقط (إزالة أي حروف أو رموز)
+                const digits = pastedData.replace(/\D/g, '').split('');
+
+                // توزيع الأرقام على الحقول الستة
+                for (let i = 0; i < inputs.length; i++) {
+                    if (i < digits.length) {
+                        inputs[i].value = digits[i]; // وضع الرقم في الخانة المناسبة
+                    } else {
+                        inputs[i].value = ''; // إذا كان الرقم أقصر، إفراغ باقي الخانات
+                    }
+                }
+
+                // تحويل التركيز إلى الخانة التالية بعد آخر رقم تم إدخاله
+                if (digits.length > 0) {
+                    const nextIndex = Math.min(digits.length, inputs.length - 1);
+                    inputs[nextIndex].focus();
+                }
+            });
         });
 
-        input.addEventListener("keydown", function (e) {
-            // لو ضغط Backspace و الحقل فاضي يرجع للي قبله
-            if (e.key === "Backspace" && !this.value && index > 0) {
-                inputs[index - 1].focus();
-            }
-        });
-        });
-
-        // نفس كود اللغة
+        // كود قائمة اللغات (بدون تعديل)
         const langBtn = document.getElementById('langBtn');
         const langMenu = document.getElementById('langMenu');
 

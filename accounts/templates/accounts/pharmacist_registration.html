@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pharmacist</title>
 
-    <link rel="stylesheet" href="{% static 'css/Form.css' %}">
+    <link rel="stylesheet" href="{% static 'Css/Form.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body
@@ -71,25 +71,25 @@
                     <div class="input-wrapper DOB">
                         <input id="dob" name="date_of_birth" type="date" required>
                     </div>
+                    {% if errors.dob_invalid %}
+                        <div class="error">
+                            {{ errors.dob_invalid }}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
-            {% if errors.dob_invalid %}
-                <div class="error">
-                    {{ errors.dob_invalid }}
-                </div>
-            {% endif %}
             <div class="input-group">
                 <label>Phone Number</label>
                 <div class="input-wrapper">
                     <span class="prefix">+20</span>
                     <input id="phone" name="phone_number" type="tel" placeholder="1XXXXXXXXX" required>
                 </div>
+                {% if errors.phone_invalid %}
+                    <div class="error">
+                        {{ errors.phone_invalid }}
+                    </div>
+                {% endif %}
             </div>
-            {% if errors.phone_invalid %}
-                <div class="error">
-                    {{ errors.phone_invalid }}
-                </div>
-            {% endif %}
             <div class="input-group">
                 <label>Profile Picture</label>
                 <div class="file-wrapper" id="fileWrapper">

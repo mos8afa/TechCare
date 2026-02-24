@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Donor</title>
 
-    <link rel="stylesheet" href="{% static 'css/Form.css' %}">
+    <link rel="stylesheet" href="{% static 'Css/Form.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body
@@ -55,30 +55,6 @@
         {%csrf_token%}
             <div class="input-row">
                 <div class="input-group">
-                    <label>Gender</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-venus-mars"></i>
-                        <select id="gender" name="gender" required>
-                            <option value="" disabled selected>Select</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label>Date of Birth</label>
-                    <div class="input-wrapper DOB">
-                        <input id="dob" name="date_of_birth" type="date" required>
-                    </div>
-                </div>
-            </div>
-            {% if errors.dob_invalid %}
-                <div class="error">
-                    {{ errors.dob_invalid }}
-                </div>
-            {% endif %}
-            <div class="input-row">
-                <div class="input-group">
                     <label>Blood Type</label>
                     <div class="input-wrapper">
                         <i class="fas fa-tint blood"></i>
@@ -95,30 +71,49 @@
                         </select>
                     </div>
                 </div>
+
+                <div class="input-group">
+                    <label>Phone Number</label>
+                    <div class="input-wrapper">
+                        <span class="prefix">+20</span>
+                        <input id="phone" name="phone_number" type="tel" placeholder="1XXXXXXXXX" required>
+                    </div>
+                    {% if errors.phone_invalid %}
+                    <div class="error">
+                        {{ errors.phone_invalid }}
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+
+            <div class="input-row">
                 <div class="input-group">
                     <label>Last Donation</label>
                     <div class="input-wrapper DOB">
                         <input id="lastDonation" name="last_donation_date" type="date">
                     </div>
+                    {% if errors.last_donation_invalid %}
+                    <div class="error">
+                        {{ errors.last_donation_invalid }}
+                    </div>
+                    {% endif %}
+
+                </div>
+                <div class="input-group">
+                    <label>Date of Birth</label>
+                    <div class="input-wrapper DOB">
+                        <input id="dob" name="date_of_birth" type="date" required>
+                    </div>
+                    {% if errors.dob_invalid %}
+                    <div class="error">
+                        {{ errors.dob_invalid }}
+                    </div>
+                    {% endif %}
+
                 </div>
             </div>
-            {% if errors.last_donation_invalid %}
-                <div class="error">
-                    {{ errors.last_donation_invalid }}
-                </div>
-            {% endif %}
-            <div class="input-group">
-                <label>Phone Number</label>
-                <div class="input-wrapper">
-                    <span class="prefix">+20</span>
-                    <input id="phone" name="phone_number" type="tel" placeholder="1XXXXXXXXX" required>
-                </div>
-            </div>
-            {% if errors.phone_invalid %}
-                <div class="error">
-                    {{ errors.phone_invalid }}
-                </div>
-            {% endif %}
+
             <div class="input-group">
                 <label>Governorate</label>
                 <div class="input-wrapper">
@@ -159,14 +154,14 @@
             <div class="input-group">
                 <label>Full Address</label>
                 <div class="input-wrapper">
-                    <textarea id="donorddress" name="address" rows="2" placeholder="Street, Building, Apartment" required></textarea>
+                    <textarea id="donorddress" name="address" rows="2" placeholder="City, Street, Building, Apartment" required></textarea>
                 </div>
+                {% if errors.address %}
+                    <div class="error">
+                        {{ errors.address }}
+                    </div>
+                {% endif %}
             </div>
-            {% if errors.address %}
-                <div class="error">
-                    {{ errors.address }}
-                </div>
-            {% endif %}
             <div class="input-row">
                 <div class="input-group">
                     <label>National ID (Front)</label>

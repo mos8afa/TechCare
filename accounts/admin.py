@@ -43,4 +43,4 @@ class PharmacistAdmin(admin.ModelAdmin):
 
 @admin.register(Donor)
 class DonorAdmin(admin.ModelAdmin):
-    list_display = ('user', 'gender', 'phone_number', 'blood_type', 'governorate')
+    list_display = ('user', 'phone_number', 'blood_type', 'governorate')
