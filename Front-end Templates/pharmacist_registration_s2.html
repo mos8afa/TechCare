@@ -59,6 +59,9 @@
                     <i class="fa-solid fa-kit-medical"></i>
                     <input type="text" id="pharmacyName" name="pharmacy_name" placeholder="Enter Pharmacy Name" required>
                 </div>
+                <div class="error">
+                    {{ errors.name }}
+                </div>
             </div>
             <div class="input-group">
                 <label>Governorate</label>
@@ -100,6 +103,9 @@
                 <label>Pharmacy  Address</label>
                 <div class="input-wrapper">
                     <textarea id="pharmacyAddress" name="pharmacy_address" rows="2" placeholder="Street, Building, Apartment" required></textarea>
+                </div>
+                <div class="error">
+                    {{ errors.address }}
                 </div>
             </div>
 

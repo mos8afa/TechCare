@@ -1,7 +1,8 @@
 :root {
-    --primary-color: #1D89E4;
+    --error: #E53E3E;
     --text-gray: #718096;
     --border-color: #E2E8F0;
+    --primary-color: #1D89E4;
     --bg-overlay: rgba(255, 255, 255, 0.9);
 }
 
@@ -19,6 +20,15 @@ body {
     padding: 20px;
     min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.error{
+    color: var(--error);
+    font-size: 15px;
+}
+
+.margin{
+    margin-bottom: 15px;
 }
 
 .top-header {
@@ -160,7 +170,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
+}
+
+.form-options a{
+    text-decoration: none;
+    color: var(--primary-color);
 }
 
 .form-options span {
@@ -237,7 +252,7 @@ body {
 .otp-wrapper {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 .otp-input {

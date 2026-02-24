@@ -65,6 +65,10 @@
                 <a href="forget_password.html" class="forgot-link">Forgot Password?</a>
             </div>
 
+            <div class="error margin">
+                {{ errors.login_error }}
+            </div>
+
             <div class="form-actions">
                 <button type="submit" class="btn-login">Login</button>
                 <button type="reset" class="btn-reset">Reset</button>

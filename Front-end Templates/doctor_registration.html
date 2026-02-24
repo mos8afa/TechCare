@@ -69,6 +69,9 @@
                     <div class="input-wrapper DOB">
                         <input id="dob" name="date_of_birth" type="date" required>
                     </div>
+                    <div class="error">
+                        {{ errors.dob_invalid }}
+                    </div>
                 </div>
             </div>
 
@@ -77,6 +80,9 @@
                 <div class="input-wrapper">
                     <span class="prefix">+20</span>
                     <input id="phone" name="phone_number" type="tel" placeholder="1XXXXXXXXX" required>
+                </div>
+                <div class="error">
+                    {{ errors.phone_invalid }}
                 </div>
             </div>
 
@@ -121,6 +127,9 @@
                 <label>Full Address</label>
                 <div class="input-wrapper">
                     <textarea id="doctorAddress" name="address" rows="2" placeholder="Street, Building, Apartment" required></textarea>
+                </div>
+                <div class="error">
+                    {{ errors.address }}
                 </div>
             </div>
 
