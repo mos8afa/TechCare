@@ -3,6 +3,7 @@
     --border-color: #E2E8F0;
     --text-gray: #718096;
     --bg-light: #F7FAFC;
+    --error: #E53E3E;
 }
 
 * {
@@ -19,6 +20,11 @@ body {
     flex-direction: column;
     min-height: 100vh;
     padding: 40px 20px;
+}
+
+.error{
+    color: var(--error);
+    font-size: 12px;
 }
 
 .top-header {
@@ -148,6 +154,10 @@ body {
     font-weight: 600;
     color: #4A5568;
     margin-bottom: 6px;
+}
+
+input[type="checkbox"] {
+    accent-color: var(--primary-color);
 }
 
 .input-wrapper {

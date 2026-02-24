@@ -63,8 +63,7 @@ def verify_otp_login(request):
         otp_input = int(otp_str)
         
         if not user_id:
-            errors['user_error']="User not found."
-            return render(request, "accounts/verify_otp.html", {'errors': errors} )
+            return redirect('login')
 
         saved_otp = cache.get(f"otp_{user_id}")
 
@@ -451,7 +450,6 @@ def pharmacist_registration_step2(request):
 
 def donor_registration(request):
     if request.method == 'POST':
-        gender = request.POST.get('gender')
         address = request.POST.get('address')
         governorate = request.POST.get('governorate')
         phone_number = request.POST.get('phone_number')
@@ -480,7 +478,6 @@ def donor_registration(request):
 
         donor = Donor.objects.create(
             user=request.user,
-            gender=gender,
             address=address,
             governorate=governorate,
             phone_number=phone_number,
@@ -544,8 +541,7 @@ def verify_otp_forget_password(request):
 
         user_id = request.session.get("otp_user_id")
         if not user_id:
-            errors['user_error']="User not found."
-            return render(request, "accounts/verify_otp.html", {'errors': errors})
+            return redirect('login')
 
         saved_otp = cache.get(f"otp_{user_id}")
 
@@ -574,8 +570,7 @@ def verify_otp_forget_password(request):
 def reset_password(request):
     user_id = request.session.get("otp_user_id")
     if not user_id:
-        errors['user_error']="User not found."
-        return render(request, 'accounts/reset_password.html', {'errors':errors})
+        return redirect('forget_password')
     
     if request.method == 'POST':
         password = request.POST.get('password')
@@ -586,7 +581,7 @@ def reset_password(request):
             return render(request, 'accounts/reset_password.html', {'errors':errors})
         
         if password != confirm :
-            messages.error(request,"passwords not match",extra_tags='password_error')
+            errors['password']="Password Not Match."
             return render(request, 'accounts/reset_password.html', {'errors':errors})
 
         User = get_user_model()

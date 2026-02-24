@@ -45,18 +45,20 @@
 
         <form method="POST">
             <div class="otp-wrapper">
-                <input name="otp1" type="text" maxlength="1" class="otp-input">
-                <input name="otp2" type="text" maxlength="1" class="otp-input">
-                <input name="otp3" type="text" maxlength="1" class="otp-input">
-                <input name="otp4" type="text" maxlength="1" class="otp-input">
-                <input name="otp5" type="text" maxlength="1" class="otp-input">
-                <input name="otp6" type="text" maxlength="1" class="otp-input">
+                <input type="text" maxlength="1" class="otp-input" id="otp1" autofocus>
+                <input type="text" maxlength="1" class="otp-input" id="otp2">
+                <input type="text" maxlength="1" class="otp-input" id="otp3">
+                <input type="text" maxlength="1" class="otp-input" id="otp4">
+                <input type="text" maxlength="1" class="otp-input" id="otp5">
+                <input type="text" maxlength="1" class="otp-input" id="otp6">
             </div>
 
             <div class="form-options" style="justify-content: center;">
                 <span>Didn't recive OTP?<a href="resend.html"> Click here</a></span>
             </div>
 
+            <div class="error margin">
+                {{ errors.otp_invalid }}
             </div>
 
             <div class="form-actions">
@@ -74,22 +76,48 @@
         // التنقل التلقائي
         inputs.forEach((input, index) => {
             input.addEventListener("input", function () {
-            // السماح بالأرقام فقط
-            this.value = this.value.replace(/[^0-9]/g, '');
-            if (this.value && index < inputs.length - 1) {
-                inputs[index + 1].focus();
-            }
+                // السماح بالأرقام فقط
+                this.value = this.value.replace(/[^0-9]/g, '');
+                if (this.value && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener("keydown", function (e) {
+                // لو ضغط Backspace و الحقل فاضي يرجع للي قبله
+                if (e.key === "Backspace" && !this.value && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+
+            // إضافة حدث اللصق (Paste) لكل حقل
+            input.addEventListener("paste", function (e) {
+                e.preventDefault(); // منع اللصق الافتراضي في حقل واحد
+
+                // الحصول على النص المنسوخ من الحافظة
+                const pastedData = (e.clipboardData || window.clipboardData).getData('text');
+
+                // استخراج الأرقام فقط (إزالة أي حروف أو رموز)
+                const digits = pastedData.replace(/\D/g, '').split('');
+
+                // توزيع الأرقام على الحقول الستة
+                for (let i = 0; i < inputs.length; i++) {
+                    if (i < digits.length) {
+                        inputs[i].value = digits[i]; // وضع الرقم في الخانة المناسبة
+                    } else {
+                        inputs[i].value = ''; // إذا كان الرقم أقصر، إفراغ باقي الخانات
+                    }
+                }
+
+                // تحويل التركيز إلى الخانة التالية بعد آخر رقم تم إدخاله
+                if (digits.length > 0) {
+                    const nextIndex = Math.min(digits.length, inputs.length - 1);
+                    inputs[nextIndex].focus();
+                }
+            });
         });
 
-        input.addEventListener("keydown", function (e) {
-            // لو ضغط Backspace و الحقل فاضي يرجع للي قبله
-            if (e.key === "Backspace" && !this.value && index > 0) {
-                inputs[index - 1].focus();
-            }
-        });
-        });
-
-        // نفس كود اللغة
+        // كود قائمة اللغات (بدون تعديل)
         const langBtn = document.getElementById('langBtn');
         const langMenu = document.getElementById('langMenu');
 

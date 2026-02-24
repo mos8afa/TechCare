@@ -273,7 +273,6 @@ class Donor(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     national_id_pic_front = models.ImageField(upload_to='donors/national_id/')
     national_id_pic_back= models.ImageField(upload_to='donors/national_id/')
-    gender = models.CharField(max_length=6, choices=GENDERS)
     profile_pic = models.ImageField(upload_to='donors/profile/')
     phone_number = models.CharField(max_length=11)
     date_of_birth = models.DateField()

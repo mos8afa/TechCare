@@ -1,7 +1,8 @@
 :root {
     --primary-color: #1D89E4;
-    --text-gray: #718096;
     --border-color: #E2E8F0;
+    --text-gray: #718096;
+    --error: #E53E3E;
 }
 
 * {
@@ -19,6 +20,11 @@ body {
     padding: 20px;
     min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.error{
+    color: var(--error);
+    font-size: 12px;
 }
 
 .top-header {
@@ -125,7 +131,7 @@ body {
 
 .input-group {
     text-align: left;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .input-group label {
@@ -135,6 +141,10 @@ body {
     font-weight: 600;
     color: #4A5568;
     margin-bottom: 8px;
+}
+
+input[type="checkbox"] {
+    accent-color: var(--primary-color);
 }
 
 .input-wrapper {

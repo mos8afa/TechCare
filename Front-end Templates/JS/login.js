@@ -1,4 +1,4 @@
-// 1. وظيفة العين (إظهار/إخفاء الباسورد)
+// =================eye toggle====================
 const togglePassword = document.querySelector('#togglePassword');
 const passwordInput = document.querySelector('#passwordInput');
 
@@ -12,7 +12,7 @@ togglePassword.addEventListener('click', function () {
     this.classList.toggle('fa-eye-slash');
 });
 
-// 2. وظيفة قائمة اللغات
+// =================Lang Button====================
 const langBtn = document.getElementById('langBtn');
 const langMenu = document.getElementById('langMenu');
 
