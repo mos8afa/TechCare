@@ -168,12 +168,6 @@ body {
     color: var(--text-gray);
 }
 
-.form-options a {
-    font-weight: 600;
-    text-decoration: none;
-    color: var(--primary-color);
-}
-
 .forgot-link {
     font-size: 13px;
     text-decoration: none;

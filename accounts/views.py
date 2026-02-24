@@ -14,7 +14,6 @@ from . import validations
 
 errors = {}
 
-
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -243,6 +242,9 @@ def patient_registration(request):
         national_id_pic_back = request.FILES.get('national_id_pic_back')
         national_id_pic_front = request.FILES.get('national_id_pic_front')
 
+        if not validations.validate_phone(phone_number):
+            errors['phone_invalid'] = "Phone number must start with 0 or 1."
+
         patient = Patient.objects.create(
             user=request.user,
             gender=gender,
@@ -268,6 +270,12 @@ def doctor_registration(request):
         phone_number = request.POST.get('phone_number')
         profile_pic = request.FILES.get('profile_pic')
         date_of_birth = request.POST.get('date_of_birth')
+
+        if not validations.validate_phone(phone_number):
+            errors['phone_invalid'] = "Phone number must start with 0 or 1."
+        
+        if not validations.validate_dop(date_of_birth,22):
+            errors['dob_invalid'] = "You must be at least 22 years old."
 
         doctor = Doctor.objects.create(
             user=request.user,
@@ -322,6 +330,12 @@ def nurse_registration_step1(request):
         )
         nurse.save()
 
+        if not validations.validate_phone(phone_number):
+            errors['phone_invalid'] = "Phone number must start with 0 or 1."
+        
+        if not validations.validate_dop(date_of_birth,20):
+            errors['dob_invalid'] = "You must be at least 20 years old."
+
         return redirect('nurse_registration_s2')
 
     return render(request, 'accounts/nurse_registration.html')
@@ -354,6 +368,12 @@ def pharmacist_registration_step1(request):
         national_id_pic_back = request.FILES.get('national_id_pic_back')
         profile_pic = request.FILES.get('profile_pic')
 
+        if not validations.validate_phone(phone_number):
+            errors['phone_invalid'] = "Phone number must start with 0 or 1."
+        
+        if not validations.validate_dop(date_of_birth,18):
+            errors['dob_invalid'] = "You must be at least 18 years old."
+
         pharmacist = Pharmacist.objects.create(
             user=request.user,
             gender=gender,
@@ -374,6 +394,11 @@ def pharmacist_registration_step2(request):
     pharmacist = Pharmacist.objects.get(user = request.user)
 
     if request.method == 'POST':
+        pharmacy_name = request.POST.get('pharmacy_name')
+
+        if not validations.validate_pharmacy_name(pharmacy_name):
+            errors['name']="Name must be at most 60 letter."
+
         pharmacist.pharmacy_name = request.POST.get('pharmacy_name')
         pharmacist.pharmacy_address = request.POST.get('pharmacy_address')
         pharmacist.university = request.POST.get('university')
@@ -401,6 +426,14 @@ def donor_registration(request):
         last_donation_date =request.POST.get('last_donation_date')
         date_of_birth = request.POST.get('date_of_birth')
 
+        if not validations.validate_phone(phone_number):
+            errors['phone_invalid'] = "Phone number must start with 0 or 1."
+
+        if not validations.validate_dop(date_of_birth,18):
+            errors['dob_invalid'] = "You must be at least 18 years old."
+        
+        if not validations.validate_donation_date(last_donation_date):
+            errors['last_donation_invalid'] = "Last blood donation must be after you turned 16."
 
         donor = Donor.objects.create(
             user=request.user,
@@ -425,8 +458,11 @@ def forget_password(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         User = get_user_model()
-        user = get_object_or_404(User, email=email)
 
+        if User.objects.filter(email=email).exists():
+            user = get_object_or_404(User, email=email)
+        else:
+            errors['exist_email']="email already exists"
 
         otp = random.randint(100000,999999)
 
@@ -445,13 +481,25 @@ def forget_password(request):
 
 def verify_otp_forget_password(request):
     if request.method == "POST":
+        if request.method == "POST":
+            list_otp = [
+                request.POST.get('otp1'),
+                request.POST.get('otp2'),
+                request.POST.get('otp3'),
+                request.POST.get('otp4'),
+                request.POST.get('otp5'),
+                request.POST.get('otp6')
+            ]
+        for otp in list_otp:
+            if not otp or not otp.isdigit():
+                errors['otp_invalid']="All OTP fields must be digits only."
 
-        user_id = request.session.get("otp_user_id")
-        otp_str = "".join([request.POST.get(f"otp{i}") or "" for i in range(1,7)])
+        otp_str = "".join(list_otp)
         otp_input = int(otp_str)
 
+        user_id = request.session.get("otp_user_id")
         if not user_id:
-            messages.error(request, "User not found", extra_tags='login_user_error')
+            errors['user_error']="User not found."
             return redirect("login")
 
         saved_otp = cache.get(f"otp_{user_id}")
@@ -459,19 +507,19 @@ def verify_otp_forget_password(request):
         attempts = request.session.get("otp_attempts", 0)
 
         if attempts >= 5:
-            messages.error(request, "Too many attempts", extra_tags='otp_attempts_error')
+            errors['otp_invalid']="Invalid OTP"
             cache.delete(f"otp_{user_id}")
             request.session.pop("otp_user_id", None)
             request.session.pop("otp_attempts", None)
             return redirect("login")
         
         if not saved_otp:
-            messages.error(request, "OTP expired", extra_tags='otp_expired_error')
-            return redirect("login")
+            errors['otp_invalid']="OTP Expired"
+            return redirect("verify_otp_faild")
 
-        if  saved_otp != otp_input:
+        if saved_otp != otp_input:
             request.session["otp_attempts"] = attempts + 1
-            messages.error(request, "Invalid OTP", extra_tags='otp_error')
+            errors['otp_invalid']="Invalid OTP"
             return render(request, "accounts/verify_otp.html")
         
         cache.delete(f"otp_{user_id}")
@@ -482,13 +530,16 @@ def verify_otp_forget_password(request):
 def reset_password(request):
     user_id = request.session.get("otp_user_id")
     if not user_id:
-        messages.error(request, "Session expired",extra_tags='session_error')
+        errors['user_error']="User not found."
         return redirect("login")
     
     if request.method == 'POST':
         password = request.POST.get('password')
         confirm = request.POST.get('confirm')
 
+    if not validations.validate_password(password):
+        errors['password']="Password must be at least 8 chars and include at least one uppercase, one lowercase, one number, and one special char (!@#&?$%*.-~)."
+        
         if password != confirm :
             messages.error(request,"passwords not match",extra_tags='password_error')
             return redirect('reset_password')
