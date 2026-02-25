@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter OTP</title>
+
+    <!-- Css -->
+    <link rel="stylesheet" href="Css/Login.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <link rel="stylesheet" href="">
+</head>
+<body style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url(../img/BG.jpeg) no-repeat center center fixed; background-size: cover;">
+
+    <header class="top-header">
+        <div class="lang-dropdown" id="langBtn">
+            <i class="fas fa-globe"></i>
+            <span id="currentLang">English</span>
+            <i class="fas fa-chevron-down"></i>
+            <ul class="dropdown-menu" id="langMenu">
+                <li>English</li>
+                <li>العربية</li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="login-container">
+
+        <div class="logo-section">
+            <div class="logo-icon">
+                <i class="fas fa-key"></i>
+            </div>
+            <h1>Verify OTP</h1>
+            <p>Enter the 6-digit code sent to your email or phone</p>
+        </div>
+
+        <form id="otpForm" class="otp-form" onsubmit="return false;">
+            <div class="input-group">
+                <label>One-Time Password</label>
+                <div class="otp-inputs" id="otpInputs">
+                    <input inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp" id="otp-1" />
+                    <input inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp" id="otp-2" />
+                    <input inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp" id="otp-3" />
+                    <input inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp" id="otp-4" />
+                    <input inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp" id="otp-5" />
+                    <input inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp" id="otp-6" />
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button id="backBtn" class="btn-reset">Back</button>
+                <button id="continueBtn" class="btn-login" disabled>Continue</button>
+            </div>
+
+            <div class="form-options">
+                <span>Didn't receive the code? <button id="resendBtn" class="link-button">Resend</button></span>
+                <small id="resendInfo" class="resend-info"></small>
+            </div>
+        </form>
+    </main>
+
+    <script src="JS/login.js"></script>
+</body>
+</html>
