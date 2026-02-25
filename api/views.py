@@ -6,7 +6,10 @@ from django.core.cache import cache
 from django.core.mail import send_mail
 from project.settings import EMAIL_HOST_USER
 from rest_framework_simplejwt.tokens import RefreshToken
+import accounts.validations 
 
+
+User = get_user_model()
 
 @api_view(['POST'])
 def Login(request):
@@ -18,9 +21,10 @@ def Login(request):
     if user is None:
         return Response({"error": "Invalid credentials"}, status=401)
 
-    otp = random.randint(10000,99999)
+    otp = random.randint(100000,999999)
 
     cache.set(f"otp_{user.id}", otp, timeout=300)
+    cache.set(f"otp_attempts_{user.id}", 0, timeout=300)
 
     send_mail(
         subject = "TechCare Team",
@@ -39,20 +43,41 @@ def VerifyOTP(request):
     username = request.data.get('username')
     otp = request.data.get('otp')
 
-    user = User.objects.filter(username=username)
+    user = User.objects.filter(username=username).first()
+
+    list_otp = [
+                request.data.get('otp1'),
+                request.data.get('otp2'),
+                request.data.get('otp3'),
+                request.data.get('otp4'),
+                request.data.get('otp5'),
+                request.data.get('otp6')
+            ]
+    for otp in list_otp:
+        if not otp or not otp.isdigit():
+            return Response({"error": "Invalid OTP format"}, status=400 )
+
+    otp_str = "".join(list_otp)
+    otp_input = int(otp_str)
 
     if not user:
         return Response({"error": "User not found"}, status=404)
+    
+    attempts = cache.get(f"otp_attempts_{user.id}")
+    if attempts is not None and attempts >= 5:
+        return Response({"error": "Too many OTP attempts. Please try again later."}, status=429)
     
     saved_otp = cache.get(f"otp_{user.id}")
 
     if not saved_otp:
         return Response({"error":"OTP expired"},status=400)
     
-    if str(saved_otp) != str(otp):
+    if str(saved_otp) != str(otp_input):
+        cache.incr(f"otp_attempts_{user.id}")
         return Response({"error":"Invalid OTP"},status=400)
     
     cache.delete(f"otp_{user.id}")
+    cache.delete(f"otp_attempts_{user.id}")
 
     refresh = RefreshToken.for_user(user)
 
@@ -63,5 +88,35 @@ def VerifyOTP(request):
 
 
 @api_view(['POST'])
-def Register():
-    pass
+def Register(request):
+    username = request.data.get('username')
+    email = request.data.get('email')
+    first_name = request.data.get('first_name')
+    last_name = request.data.get('last_name')
+    password = request.data.get('password')
+    role = request.data.get('role')
+
+    if User.objects.filter(username=username).exists():
+        return Response({"error": "Username already exists"}, status=400)
+    
+    if User.objects.filter(email=email).exists():
+        return Response({"error": "Email already exists"}, status=400)
+    
+    if not accounts.validations.validate_password(password):
+        return Response({"error": "Password does not meet complexity requirements"}, status=400)
+    
+    if not accounts.validations.validate_email(email):
+        return Response({"error": "Invalid email format"}, status=400)
+    
+    if not accounts.validations.validate_name(first_name) or not accounts.validations.validate_name(last_name):
+        return Response({"error": "Names can only contain letters"}, status=400)
+    
+    user = User.objects.create_user(
+        username=username,
+        email=email,
+        first_name=first_name,
+        last_name=last_name,
+        password=password,
+        role=role
+    )
+    return Response({"message": "User registered successfully"}, status=201)

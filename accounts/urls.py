@@ -6,7 +6,7 @@ urlpatterns = [
     path('login/', views.user_login, name='login'),
     path('verify/otp/login/', views.verify_otp_login, name='verify_otp_l'),
     path('register/', views.user_register, name='register'),
-    path('verify/otp/signup/', views.verify_otp_signup, name='verify_otp_s'),
+    path('verify/otp/signup/<int:token>/', views.verify_otp_signup, name='verify_otp_s'),
     path("doctor/registration/", views.doctor_registration, name="doctor_registration"),
     path("patient/registration/", views.patient_registration, name="patient_registration"),
     path("nurse/registration/", views.nurse_registration_step1, name="nurse_registration"),
@@ -18,4 +18,5 @@ urlpatterns = [
     path("verify/otp/faild", views.verify_otp_faild, name="verify_otp_faild"),
     path("forget/password", views.forget_password, name='forget_password'),
     path("verify/otp/forget", views.verify_otp_forget_password, name='verify_otp_forget_password'),
+    path("resend/otp/", views.resend_otp, name='resend_otp'),
 ]

@@ -5,15 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
 
-    <!-- Css -->
-    <link rel="stylesheet" href="Css/Login.css">
-
+    <link rel="stylesheet" href="/Front-end Templates/Css/Login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-    <link rel="stylesheet" href="">
+    <style>
+        body
+        {
+        background-image: url("img/BG.jpeg");
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-attachment: fixed;
+        background-size: cover;            
+        background-size: cover;
+        }
+    </style>
 </head>
-<body style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url(../img/BG.jpeg) no-repeat center center fixed; background-size: cover;">
 
+<body>
     <header class="top-header">
         <div class="lang-dropdown" id="langBtn">
             <i class="fas fa-globe"></i>
@@ -36,7 +43,7 @@
             <p>Secure access to your healthcare services</p>
         </div>
 
-        <form id="loginForm">
+        <form id="loginForm" method="post">
             <div class="input-group">
                 <label>Username</label>
                 <div class="input-wrapper">
@@ -55,7 +62,11 @@
             </div>
 
             <div class="form-options">
-                <a href="forget.html" class="forgot-link">Forgot Password?</a>
+                <a href="forget_password.html" class="forgot-link">Forgot Password?</a>
+            </div>
+
+            <div class="error margin">
+                {{ errors.login_error }}
             </div>
 
             <div class="form-actions">

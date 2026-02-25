@@ -1,17 +1,16 @@
-{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Verify OTP</title>
 
-    <link rel="stylesheet" href="{% static 'Css/Login.css' %}">
+    <link rel="stylesheet" href="/Front-end Templates/Css/Login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
         body
         {
-        background-image: url('{%static "img/BG.jpeg" %}');
+        background-image: url("img/BG.jpeg");
         background-repeat: no-repeat;
         background-position: center center;
         background-attachment: fixed;
@@ -43,36 +42,30 @@
             <h1>Verify OTP</h1>
             <p>Enter the 6-digit code sent to your email</p>
         </div>
+
         <form method="POST">
-        {% csrf_token %}
             <div class="otp-wrapper">
-                <input name="otp1" type="text" maxlength="1" class="otp-input">
-                <input name="otp2" type="text" maxlength="1" class="otp-input">
-                <input name="otp3" type="text" maxlength="1" class="otp-input">
-                <input name="otp4" type="text" maxlength="1" class="otp-input">
-                <input name="otp5" type="text" maxlength="1" class="otp-input">
-                <input name="otp6" type="text" maxlength="1" class="otp-input">
+                <input type="text" maxlength="1" class="otp-input" id="otp1" autofocus>
+                <input type="text" maxlength="1" class="otp-input" id="otp2">
+                <input type="text" maxlength="1" class="otp-input" id="otp3">
+                <input type="text" maxlength="1" class="otp-input" id="otp4">
+                <input type="text" maxlength="1" class="otp-input" id="otp5">
+                <input type="text" maxlength="1" class="otp-input" id="otp6">
             </div>
 
             <div class="form-options" style="justify-content: center;">
-                <input type="hidden" name="otp_type" value="{{ otp_type }}">
-                <span>Didn't recive OTP?<a href='{% url  "resend_otp" %}'> Click here</a></span>
+                <span>Didn't recive OTP?<a href="resend.html"> Click here</a></span>
             </div>
 
+            <div class="error margin">
+                {{ errors.otp_invalid }}
             </div>
 
             <div class="form-actions">
                 <button type="submit" class="btn-login">Continue</button>
-                <button type="button" class="btn-reset"><a href='{% url  "forget_password" %}'>Back</a></button>
+                <button type="button" class="btn-reset"><a href="Forget_password.html">Back</a></button>
             </div>
-            
-            {% if errors.otp_invalid %}
-                <div class="error margin">
-                    {{ errors.otp_invalid }}
-                </div>
-            {% endif %}
-            
-            
+
         </form>
 
     </main>

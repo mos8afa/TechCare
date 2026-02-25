@@ -5,12 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
 
-    <link rel="stylesheet" href="Css/Register.css">
-
+    <link rel="stylesheet" href="/Front-end Templates/Css/register.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body style="background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url(../img/BG.jpeg) no-repeat center center fixed; background-size: cover;">
 
+    <style>
+        body
+        {
+        background-image: url("img/BG.jpeg");
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-attachment: fixed;
+        background-size: cover;            
+        background-size: cover;
+        }
+    </style>
+</head>
+
+<body>
     <header class="top-header">
         <div class="lang-dropdown" id="langBtn">
             <i class="fas fa-globe"></i>
@@ -33,21 +44,25 @@
             <p>Secure access to your healthcare services</p>
         </div>
 
-        <form id="registerForm">
-            
+        <form id="registerForm" method="post">
             <div class="input-row">
                 <div class="input-group">
                     <label for="firstName">First Name</label>
                     <div class="input-wrapper no-icon">
-                        <input id="firstName" name="firstName" type="text" placeholder="First name" required>
+                        <input id="firstName" name="first_name" type="text" placeholder="First name" required>
                     </div>
                 </div>
                 <div class="input-group">
                     <label for="lastName">Last Name</label>
                     <div class="input-wrapper no-icon">
-                        <input id="lastName" name="lastName" type="text" placeholder="Last name" required>
+                        <input id="lastName" name="last_name" type="text" placeholder="Last name" required>
                     </div>
                 </div>
+                
+            </div>
+
+            <div class="error">
+                {{ errors.name }}
             </div>
 
             <div class="input-group">
@@ -55,6 +70,12 @@
                 <div class="input-wrapper">
                     <i class="far fa-user"></i>
                     <input id="username" name="username" type="text" placeholder="Enter your username" required>
+                </div>
+                <div class="error">
+                    {{ errors.exist_username }}
+                </div>
+                <div class="error">
+                    {{ errors.username }}
                 </div>
             </div>
 
@@ -64,6 +85,12 @@
                     <i class="far fa-envelope"></i>
                     <input id="email" name="email" type="email" placeholder="Enter your email" required>
                 </div>
+                <div class="error">
+                    {{ errors.exist_email }}
+                </div>
+                <div class="error">
+                    {{ errors.email }}
+                </div>
             </div>
 
             <div class="input-group">
@@ -72,6 +99,9 @@
                     <i class="fas fa-lock"></i>
                     <input id="passwordInput" name="password" type="password" placeholder="Enter your password" required>
                     <i class="far fa-eye show-password" id="togglePassword"></i>
+                </div>
+                <div class="error">
+                    {{ errors.password }}
                 </div>
             </div>
 
@@ -109,7 +139,7 @@
 
     </main>
 
-    <script src="JS/register.js"></script>
+    <script src="/Front-end Templates/JS/register.js"></script>
 
 </body>
 </html>

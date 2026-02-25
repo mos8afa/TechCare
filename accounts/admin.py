@@ -24,3 +24,23 @@ class CustomUserAdmin(UserAdmin):
     )
     search_fields = ('username', 'email', 'role')
     ordering = ('username',)
+
+@admin.register(Patient)
+class PatientAdmin(admin.ModelAdmin):
+    list_display = ('user', 'gender', 'phone_number', 'governorate')
+
+@admin.register(Doctor)
+class DoctorAdmin(admin.ModelAdmin):
+    list_display = ('user', 'gender', 'phone_number', 'price', 'governorate')
+
+@admin.register(Nurse)
+class NurseAdmin(admin.ModelAdmin):
+    list_display = ('user', 'gender', 'phone_number', 'governorate')
+
+@admin.register(Pharmacist)
+class PharmacistAdmin(admin.ModelAdmin):
+    list_display = ('user', 'gender', 'phone_number', 'pharmacy_name', 'governorate')
+
+@admin.register(Donor)
+class DonorAdmin(admin.ModelAdmin):
+    list_display = ('user', 'phone_number', 'blood_type', 'governorate')

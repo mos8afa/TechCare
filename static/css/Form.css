@@ -187,6 +187,7 @@ input[type="checkbox"] {
 }
 
 
+
 .input-wrapper input:focus, .input-wrapper select:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(29, 137, 228, 0.1);
@@ -351,7 +352,6 @@ input[type="checkbox"] {
     cursor: pointer;
     font-weight: 600;
 }
-
 
 /* Media Query */
 @media (max-width: 480px) {
