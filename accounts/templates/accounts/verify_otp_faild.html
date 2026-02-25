@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Too Many Attempts</title>
+
+    <link rel="stylesheet" href="{% static 'Css/register.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        
+        <style>
+        body
+        {
+        background-image: url('{% static "img/BG.jpeg" %}');
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-attachment: fixed;
+        background-size: cover;            
+        background-size: cover;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="top-header">
+        <div class="lang-dropdown" id="langBtn">
+            <i class="fas fa-globe"></i>
+            <span id="currentLang">English</span>
+            <i class="fas fa-chevron-down"></i>
+            <ul class="dropdown-menu" id="langMenu">
+                <li>English</li>
+                <li>العربية</li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="register-container">
+
+        <div class="logo-section">
+            <div class="logo-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h1>Too Many Attempts</h1>
+            <p>You have exceeded the maximum number of attempts.
+            Please log in again or create a new account if you don’t have one.</p>
+        </div>
+
+                    <div class="login-footer">
+                <span>don't have an account? </span>
+            </div>
+
+        <div class="form-actions">
+            <button onclick="window.location.href='{% url "register" %}'" class="btn-register">
+                Register
+            </button>
+
+            <button onclick="window.location.href='{% url "login" %}'" class="btn-reset">
+                Login
+            </button>
+        </div>
+
+    </main>
+
+    <style>
+    .logo-section p {
+        padding: 35px 0 0 0;
+    }
+
+    .register-container {
+        width: 100%;
+        padding: 40px;
+        max-width: 450px;
+        text-align: center;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-footer {
+        text-align: left;
+        padding: 20px 0 0 20px;
+        }
+    </style>
+
+    <script>
+    // Language dropdown functionality
+    const langBtn = document.getElementById('langBtn');
+    const langMenu = document.getElementById('langMenu');
+    const currentLangSpan = document.getElementById('currentLang');
+    const langItems = document.querySelectorAll('.dropdown-menu li');
+
+    // Toggle dropdown on button click
+    langBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        langMenu.classList.toggle('show');
+    });
+
+    // Handle language selection
+    langItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const selectedLang = this.textContent;
+            currentLangSpan.textContent = selectedLang;
+            langMenu.classList.remove('show');
+            // Add language change logic here if needed
+        });
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function() {
+        langMenu.classList.remove('show');
+    });
+    </script>
+
+</body>
+</html>
