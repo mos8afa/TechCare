@@ -63,6 +63,7 @@ def validate_dop(dob_str, valid_age):
 
 def validate_donation_date(donation_date,dob):
     last_donation = datetime.strptime(donation_date, "%Y-%m-%d").date()
+    dob = datetime.strptime(dob, "%Y-%m-%d").date()
     min_donation_date = dob + timedelta(days=16*365)
     if last_donation < min_donation_date:
         return False

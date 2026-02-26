@@ -63,7 +63,9 @@
 
             <div class="form-actions">
                 <button type="submit" class="btn-login">Continue</button>
-                <button type="button" class="btn-reset"><a href='{% url  "forget_password" %}'>Back</a></button>
+                <button onclick="window.location.href='{% url url_back %}'" class="btn-reset">
+                Back
+            </button>
             </div>
             
             {% if errors.otp_invalid %}

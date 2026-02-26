@@ -47,17 +47,9 @@
             Please log in again or create a new account if you don’t have one.</p>
         </div>
 
-                    <div class="login-footer">
-                <span>don't have an account? </span>
-            </div>
-
         <div class="form-actions">
-            <button onclick="window.location.href='{% url "register" %}'" class="btn-register">
-                Register
-            </button>
-
-            <button onclick="window.location.href='{% url "login" %}'" class="btn-reset">
-                Login
+            <button onclick="window.location.href='{% url back_url %}'" class="btn-register">
+                Try Again?
             </button>
         </div>
 
@@ -65,7 +57,7 @@
 
     <style>
     .logo-section p {
-        padding: 35px 0 0 0;
+        padding: 15px 0 0 0;
     }
 
     .register-container {
@@ -80,7 +72,7 @@
 
     .login-footer {
         text-align: left;
-        padding: 20px 0 0 20px;
+        {% comment %} padding: 20px 0 0 20px; {% endcomment %}
         }
     </style>
 
