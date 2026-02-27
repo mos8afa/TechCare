@@ -18,5 +18,8 @@ urlpatterns = [
     path("verify/otp/faild", views.verify_otp_faild, name="verify_otp_faild"),
     path("forget/password", views.forget_password, name='forget_password'),
     path("verify/otp/forget", views.verify_otp_forget_password, name='verify_otp_forget_password'),
-    path("resend/otp/", views.resend_otp, name='resend_otp'),
+    #path("resend/otp/<int:token>", views.resend_otp, name='resend_otp'),
+    path("resend/otp/login/", views.resend_otp_login, name='resend_otp_login'),
+    path("resend/otp/signup/<int:token>/", views.resend_otp_signup, name='resend_otp_signup'),
+    path("resend/otp/forget/", views.resend_otp_forget_password, name='resend_otp_forget_password'),
 ]

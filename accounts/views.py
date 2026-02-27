@@ -35,7 +35,6 @@ def user_login(request):
                 recipient_list = [user.email]
             )
 
-            request.session['otp_source'] = 'login'
             request.session['otp_user_id'] = user.id
 
             return redirect('verify_otp_l')
@@ -98,7 +97,7 @@ def verify_otp_login(request):
     return render(request, "accounts/verify_otp.html", {"otp_type": "login"})
 
 def resend_otp_login(request):
-    if request.method == 'POST':
+    if request.method == 'GET':
         user_id = request.session.get("otp_user_id")
         if not user_id:
             return redirect('login')
@@ -180,7 +179,6 @@ def user_register(request):
         encrypted = key.encrypt(data)
 
         cache.set(f"pending_data_{pending_user.id}", encrypted, timeout=300)
-        request.session['otp_source'] = 'signup'
 
         send_mail(
             subject = "TechCare Team",
@@ -214,7 +212,6 @@ def verify_otp_signup(request, token):
         encrypted_data = cache.get(f"pending_data_{pending_user.id}")
 
         if not encrypted_data:
-            #OTP Expired
             return redirect('login')
         
         key = Fernet(FERNET_KEY)
@@ -256,11 +253,10 @@ def verify_otp_signup(request, token):
     return render(request, "accounts/verify_otp.html", {
         "token": token,
         "otp_type": "signup",
-        "url_back": 'register'
         })
 
 def resend_otp_signup(request, token):
-    if request.method == 'POST':
+    if request.method == 'GET':
         pending_user = get_object_or_404(PendingUser, id=token)
         otp = random.randint(100000,999999)
 
@@ -576,7 +572,6 @@ def forget_password(request):
             return render(request, 'accounts/forget_password.html', {'errors':errors})
 
         otp = random.randint(100000,999999)
-        request.session['otp_source'] = 'forget'
 
         cache.set(f"otp_{user.id}", otp, timeout=300)
 
@@ -667,7 +662,7 @@ def reset_password(request):
     return render(request, 'accounts/reset_password.html')
 
 def resend_otp_forget_password(request):
-    if request.method == 'POST':
+    if request.method == 'GET':
         user_id = request.session.get("otp_user_id")
         if not user_id:
             return redirect('forget_password')
@@ -686,14 +681,3 @@ def resend_otp_forget_password(request):
             
         return redirect('verify_otp_forget_password')
     return redirect('forget_password')
-
-def resend_otp(request):
-    if request.method == 'POST':
-        otp_type = request.POST.get('otp_type')
-        if otp_type == 'login':
-            return redirect('resend_otp_login')
-        elif otp_type == 'signup':
-            token = request.POST.get('token')
-            return redirect('resend_otp_signup', token=token)
-        elif otp_type == 'forget':
-            return redirect('resend_otp_forget_password')

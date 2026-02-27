@@ -55,8 +55,14 @@
             </div>
 
             <div class="form-options" style="justify-content: center;">
-                <input type="hidden" name="otp_type" value="{{ otp_type }}">
-                <span>Didn't recive OTP?<a href='{% url  "resend_otp" %}'> Click here</a></span>
+                {% comment %} <input type="hidden" name="otp_type" value="{{ otp_type }}"> {% endcomment %}
+                {% if otp_type == "signup" %}
+                <span>Didn't recive OTP?<a href='{% url  "resend_otp_signup" token=token %}'> Click here</a></span>
+                {% elif otp_type == "forget" %}
+                <span>Didn't recive OTP?<a href='{% url  "resend_otp_forget_password" %}'> Click here</a></span>
+                {% else %}
+                <span>Didn't recive OTP?<a href='{% url  "resend_otp_login" %}'> Click here</a></span>
+                {% endif %}
             </div>
 
             </div>
