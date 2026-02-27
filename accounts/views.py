@@ -70,7 +70,7 @@ def verify_otp_login(request):
 
         attempts = request.session.get("otp_attempts", 0)
 
-        if attempts >= 5:
+        if attempts >= 3:
             errors['otp_invalid']="Invalid OTP"
             cache.delete(f"otp_{user_id}")
             request.session.pop("otp_user_id", None)
@@ -95,7 +95,7 @@ def verify_otp_login(request):
         request.session.pop("otp_user_id", None)
 
         return redirect("home")
-    return render(request, "accounts/verify_otp.html", {"otp_type": "login", "url_back": "login"})
+    return render(request, "accounts/verify_otp.html", {"otp_type": "login"})
 
 def resend_otp_login(request):
     if request.method == 'POST':
@@ -206,7 +206,7 @@ def verify_otp_signup(request, token):
         for otp in list_otp:
             if not otp or not otp.isdigit():
                 errors['otp_invalid']="All OTP fields must be digits only."
-                return render(request, "accounts/verify_otp.html", {'errors': errors})
+                return render(request, "accounts/verify_otp.html", {'errors': errors, "token": token})
 
         otp_str = "".join(list_otp)
         otp_input = int(otp_str)
@@ -234,7 +234,7 @@ def verify_otp_signup(request, token):
             updated_encrypted = key.encrypt(json.dumps(pending_data).encode())
             cache.set(f"pending_data_{pending_user.id}", updated_encrypted, timeout=300)
             errors['otp_invalid']="Invalid OTP"
-            return render(request, 'accounts/verify_otp.html',{'errors': errors})
+            return render(request, 'accounts/verify_otp.html',{'errors': errors, "token": token})
 
         User = get_user_model()
         user = User.objects.create(
@@ -618,7 +618,7 @@ def verify_otp_forget_password(request):
 
         attempts = request.session.get("otp_attempts", 0)
 
-        if attempts >= 5:
+        if attempts >= 3:
             errors['otp_invalid']="Invalid OTP"
             cache.delete(f"otp_{user_id}")
             request.session.pop("otp_user_id", None)
