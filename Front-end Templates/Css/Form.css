@@ -271,7 +271,12 @@ input[type="checkbox"] {
 .file-wrapper.uploaded span {
     color: var(--primary-color);
     font-weight: 600;
-    text-wrap: auto;
+    display: block;
+    margin: 0 auto;
+    max-width: 150px; 
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis; 
 }
 
 .file-wrapper.uploaded:hover {

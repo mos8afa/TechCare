@@ -1,8 +1,6 @@
 from django.contrib import admin
-
-from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, Patient, Doctor, Nurse, Pharmacist, Donor
+from .models import CustomUser, Patient, Doctor, Nurse, Pharmacist, Donor, Transaction, Wallet
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
@@ -44,3 +42,12 @@ class PharmacistAdmin(admin.ModelAdmin):
 @admin.register(Donor)
 class DonorAdmin(admin.ModelAdmin):
     list_display = ('user', 'phone_number', 'blood_type', 'governorate')
+
+#---------------------------
+@admin.register(Wallet)
+class WalletAdmin(admin.ModelAdmin):
+    list_display = ('user', 'balance', 'updated_at')
+
+@admin.register(Transaction)
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = ('wallet', 'transaction_type', 'amount', 'description', 'created_at')

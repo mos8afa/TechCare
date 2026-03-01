@@ -231,6 +231,8 @@ class Doctor(models.Model):
     address = models.TextField()
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
     specification = models.CharField(max_length=50, choices=SPECIFICATIONS)
+    
+    description = models.TextField(blank=True, null=True)
 
 
 #------------- Nurse -------
@@ -249,6 +251,8 @@ class Nurse(models.Model):
     address = models.TextField()
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
 
+    description = models.TextField(blank=True, null=True)
+
 
 #------- Pharmacist --------
 class Pharmacist(models.Model):
@@ -266,6 +270,8 @@ class Pharmacist(models.Model):
     graduation_certificate = models.FileField(upload_to='pharmacists/graduation/')
     university = models.CharField(max_length=100, choices=UNIVERSITIES)
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
+
+    description = models.TextField(blank=True, null=True)
 
 
 # -------- Donor -------

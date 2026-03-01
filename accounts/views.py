@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password
-from django.contrib import messages
 from django.core.cache import cache
 from django.core.mail import send_mail
 from project.settings import EMAIL_HOST_USER, FERNET_KEY
@@ -35,6 +34,7 @@ def user_login(request):
                 from_email = EMAIL_HOST_USER,
                 recipient_list = [user.email]
             )
+
             request.session['otp_user_id'] = user.id
 
             return redirect('verify_otp_l')
@@ -69,7 +69,7 @@ def verify_otp_login(request):
 
         attempts = request.session.get("otp_attempts", 0)
 
-        if attempts >= 5:
+        if attempts >= 3:
             errors['otp_invalid']="Invalid OTP"
             cache.delete(f"otp_{user_id}")
             request.session.pop("otp_user_id", None)
@@ -94,11 +94,10 @@ def verify_otp_login(request):
         request.session.pop("otp_user_id", None)
 
         return redirect("home")
-
     return render(request, "accounts/verify_otp.html", {"otp_type": "login"})
 
 def resend_otp_login(request):
-    if request.method == 'POST':
+    if request.method == 'GET':
         user_id = request.session.get("otp_user_id")
         if not user_id:
             return redirect('login')
@@ -189,7 +188,6 @@ def user_register(request):
         )
 
         return redirect('verify_otp_s', token=pending_user.id)
-    
     return render(request, 'accounts/register.html')
 
 def verify_otp_signup(request, token):
@@ -206,7 +204,7 @@ def verify_otp_signup(request, token):
         for otp in list_otp:
             if not otp or not otp.isdigit():
                 errors['otp_invalid']="All OTP fields must be digits only."
-                return render(request, "accounts/verify_otp.html", {'errors': errors})
+                return render(request, "accounts/verify_otp.html", {'errors': errors, "token": token})
 
         otp_str = "".join(list_otp)
         otp_input = int(otp_str)
@@ -214,7 +212,6 @@ def verify_otp_signup(request, token):
         encrypted_data = cache.get(f"pending_data_{pending_user.id}")
 
         if not encrypted_data:
-            #OTP Expired
             return redirect('login')
         
         key = Fernet(FERNET_KEY)
@@ -224,7 +221,7 @@ def verify_otp_signup(request, token):
 
         attempts = pending_data['attempts']
 
-        if attempts >= 5:
+        if attempts >= 3:
             cache.delete(f"pending_data_{pending_user.id}")
             pending_user.delete()
             return redirect("verify_otp_faild")        
@@ -234,7 +231,7 @@ def verify_otp_signup(request, token):
             updated_encrypted = key.encrypt(json.dumps(pending_data).encode())
             cache.set(f"pending_data_{pending_user.id}", updated_encrypted, timeout=300)
             errors['otp_invalid']="Invalid OTP"
-            return render(request, 'accounts/verify_otp.html',{'errors': errors})
+            return render(request, 'accounts/verify_otp.html',{'errors': errors, "token": token})
 
         User = get_user_model()
         user = User.objects.create(
@@ -253,10 +250,13 @@ def verify_otp_signup(request, token):
 
         return redirect(ROLE_REDIRECTS[user.role])
 
-    return render(request, "accounts/verify_otp.html", {"token": token, "otp_type": "signup"})
+    return render(request, "accounts/verify_otp.html", {
+        "token": token,
+        "otp_type": "signup",
+        })
 
 def resend_otp_signup(request, token):
-    if request.method == 'POST':
+    if request.method == 'GET':
         pending_user = get_object_or_404(PendingUser, id=token)
         otp = random.randint(100000,999999)
 
@@ -284,7 +284,24 @@ def resend_otp_signup(request, token):
 
 
 def verify_otp_faild(request):
-    return render (request, 'accounts/verify_otp_faild.html')
+    source = request.session.get('otp_source')
+
+    if source == 'login':
+        back_url = 'login'
+
+    elif source == 'signup':
+        
+        back_url = 'register'
+
+    elif source == 'forget':
+        back_url = 'forget_password'
+
+    else:
+        back_url = 'login'
+
+    return render(request, 'accounts/verify_otp_faild.html', {
+        'back_url': back_url
+    })
 
 
 def patient_registration(request):
@@ -517,7 +534,7 @@ def donor_registration(request):
             errors['dob_invalid'] = "You must be at least 18 years old."
             return render(request, 'accounts/Donor_registration.html', {'errors':errors})
         
-        if not validations.validate_donation_date(last_donation_date):
+        if not validations.validate_donation_date(last_donation_date, date_of_birth):
             errors['last_donation_invalid'] = "Last blood donation must be after you turned 16."
             return render(request, 'accounts/Donor_registration.html', {'errors':errors})
         
@@ -596,7 +613,7 @@ def verify_otp_forget_password(request):
 
         attempts = request.session.get("otp_attempts", 0)
 
-        if attempts >= 5:
+        if attempts >= 3:
             errors['otp_invalid']="Invalid OTP"
             cache.delete(f"otp_{user_id}")
             request.session.pop("otp_user_id", None)
@@ -614,7 +631,7 @@ def verify_otp_forget_password(request):
         cache.delete(f"otp_{user_id}")
 
         return redirect('reset_password')
-    return render(  request, "accounts/verify_otp.html", {"otp_type": 'forget'})  
+    return render(  request, "accounts/verify_otp.html", {"otp_type": 'forget', "url_back": 'forget_password'})  
 
 def reset_password(request):
     user_id = request.session.get("otp_user_id")
@@ -645,7 +662,7 @@ def reset_password(request):
     return render(request, 'accounts/reset_password.html')
 
 def resend_otp_forget_password(request):
-    if request.method == 'POST':
+    if request.method == 'GET':
         user_id = request.session.get("otp_user_id")
         if not user_id:
             return redirect('forget_password')
@@ -664,14 +681,3 @@ def resend_otp_forget_password(request):
             
         return redirect('verify_otp_forget_password')
     return redirect('forget_password')
-
-def resend_otp(request):
-    if request.method == 'POST':
-        otp_type = request.POST.get('otp_type')
-        if otp_type == 'login':
-            return redirect('resend_otp_login')
-        elif otp_type == 'signup':
-            token = request.POST.get('token')
-            return redirect('resend_otp_signup', token=token)
-        elif otp_type == 'forget':
-            return redirect('resend_otp_forget_password')
