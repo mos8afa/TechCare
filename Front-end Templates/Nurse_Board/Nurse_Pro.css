@@ -1047,7 +1047,7 @@ body.dashboard-body {
 /* profile info grid */
 .profile-info {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: 1fr 1fr;
     gap: 20px 40px;
     position: relative;
 }
@@ -1116,3 +1116,4 @@ body.dashboard-body {
     width: 400px;
     border-radius: 10px;
 }
+
