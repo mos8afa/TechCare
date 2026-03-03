@@ -180,6 +180,14 @@ SPECIFICATIONS = (
     ("general_practice", "General Practice"),
 )
 
+RATE = (
+    (1, "1"),
+    (2, "2"),
+    (3, "3"),
+    (4, "4"),
+    (5, "5"),
+)
+
 #----- user -----
 class CustomUser(AbstractUser):
     role = models.CharField(max_length=10, choices=ROLES)
@@ -211,6 +219,7 @@ class Patient(models.Model):
     phone_number = models.CharField(max_length=11)
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
     address = models.TextField()
+    disease_history = models.TextField(blank=True, null=True)
     
 
 #------- Doctor -----
@@ -231,8 +240,13 @@ class Doctor(models.Model):
     address = models.TextField()
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
     specification = models.CharField(max_length=50, choices=SPECIFICATIONS)
+<<<<<<< HEAD
     
     description = models.TextField(blank=True, null=True)
+=======
+    brief = models.TextField()
+    rate = models.DecimalField(choices=RATE, max_digits=1, decimal_places=0, default=0)
+>>>>>>> 9d81d6e31406b5333b7a42dbbccd21626d7aa78a
 
 
 #------------- Nurse -------
@@ -250,6 +264,10 @@ class Nurse(models.Model):
     graduation_certificate = models.FileField(upload_to='nurses/graduation/')
     address = models.TextField()
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
+    brief = models.TextField()
+    rate = models.DecimalField(choices=RATE, max_digits=1, decimal_places=0, default=0)
+
+
 
     description = models.TextField(blank=True, null=True)
 
@@ -270,6 +288,9 @@ class Pharmacist(models.Model):
     graduation_certificate = models.FileField(upload_to='pharmacists/graduation/')
     university = models.CharField(max_length=100, choices=UNIVERSITIES)
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
+    slogan = models.CharField(max_length=100)
+    rate = models.DecimalField(choices=RATE, max_digits=1, decimal_places=0, default=0)
+
 
     description = models.TextField(blank=True, null=True)
 
