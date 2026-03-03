@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Notifications</title>
+    <title>Requests</title>
 
     <link rel="stylesheet" href="../Css/Dr_Board.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -38,11 +38,11 @@
                     <i class="bi bi-person"></i>
                     <span>Profile</span>
                 </a>
-                <a href="../Dr_Board/Requests.html" class="aside-item ">
+                <a href="../Dr_Board/Requests.html" class="aside-item active">
                     <i class="ri-file-list-line"></i>
                     <span>Requests</span>
                 </a>
-                <a href="../Dr_Board/Notifications.html" class="aside-item active">
+                <a href="../Dr_Board/Notifications.html" class="aside-item">
                     <i class="fa-regular fa-bell"></i>
                     <span>Notifications</span>
                 </a>
@@ -61,7 +61,7 @@
         
             <!-- Top Navbar -->
             <div class="topbar">
-                <h2 class="topbar-title">Notifications</h2>
+                <h2 class="topbar-title">Requests</h2>
 
                 <div class="topbar-right">
                     <div class="topbar-icon" id="notificationBtn">
@@ -99,6 +99,85 @@
 
             <!-- Main Content -->
             <main class="main-content">
+                
+                <div class="requests-sticky">
+                    <div class="requests-header">
+                        <div class="header-text">
+                            <h2>Requests</h2>
+                            <p>Manage incoming consultation requests</p>
+                        </div>
+                        <button class="filter-button">
+                            <b><i class="bi bi-funnel"></i> Filter</b>
+                        </button>
+                    </div>
+
+                    <div class="tabs-navigation">
+                        <button class="tab-link" data-status="pending" onclick="window.location.href='Requests.html'">Pending</button>
+                        <button class="tab-link active" data-status="accepted" onclick="window.location.href='Accepted.html'">Accepted</button>
+                        <button class="tab-link" data-status="done" onclick="window.location.href='Done.html'">Done</button>
+                    </div>
+                </div>
+
+                <div class="requests-grid">
+
+
+                    <div class="request-card-item">
+                        <div class="card-top-section">
+                            <div class="patient-meta">
+                                <div class="patient-avatar-mini">
+                                    <i class="bi bi-person-circle"></i>
+                                </div>
+                                <div class="patient-name-info">
+                                    <h3>Ahmed Mansour</h3>
+                                    <p>
+                                        <i class="bi bi-calendar3"></i> Oct 24, 2023 
+                                        &nbsp; • &nbsp;
+                                        <i class="bi bi-clock"></i> 10:30 AM
+                                    </p>
+                                </div>
+                            </div>
+                            <span class="status-pill accepted">Accepted</span>
+                        </div>
+                    
+                        <div class="info-group location-info">
+                            <p>
+                                <i class="bi bi-geo-alt"></i>
+                                Cairo / Maadi, Street 250, Building 14, 4th Floor
+                            </p>
+                        </div>
+                        <hr style="margin:15px 0; border:1px solid #F0F4F8;">
+                    
+                        <!-- Condition -->
+                        <div class="Condition">
+                            <label>Condition</label>
+                            <span class="accepted-tag">Chest Pain</span>
+                        </div>
+                        <div class="description-box-accepted">
+                            Patient reports severe chest pain and shortness of breath since early morning.
+                            Previous history of hypertension noted.
+                        </div>
+                    
+                        <div class="price-confirmation">
+                            <span>Total Price</span>
+                            <span class="price-value">500 EGP</span>
+                        </div>
+                    
+                        <div class="user-confirmed-banner">
+                            <i class="ri-checkbox-circle-line"></i>
+                            USER HAS CONFIRMED APPOINTMENT
+                        </div>
+                    
+                        <div class="card-footer-flex">
+                            <div class="phone-display">
+                                <i class="ri-phone-line"></i>
+                                <span>+20 102 345 6789</span>
+                            </div>
+                            <button class="btn-done">Done</button>
+                        </div>
+                    </div>
+
+
+                </div>
                 
             </main>
         </div>

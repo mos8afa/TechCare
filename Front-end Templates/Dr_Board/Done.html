@@ -76,7 +76,7 @@
                                     <p>New Consultation Request</p>
                                 </div>
                             </div>
-                            <!-- <hr> -->
+                            <hr>
                             <div class="notification-item" onclick="window.location.href='Notifications.html'">
                                 <img src="https://randomuser.me/api/portraits/women/12.jpg">
                                 <div class="notification-content">
@@ -112,9 +112,9 @@
                     </div>
 
                     <div class="tabs-navigation">
-                        <button class="tab-link active" data-status="pending" onclick="window.location.href='Requests.html'">Pending</button>
+                        <button class="tab-link" data-status="pending" onclick="window.location.href='Requests.html'">Pending</button>
                         <button class="tab-link" data-status="accepted" onclick="window.location.href='Accepted.html'">Accepted</button>
-                        <button class="tab-link" data-status="done" onclick="window.location.href='Done.html'">Done</button>
+                        <button class="tab-link active" data-status="done" onclick="window.location.href='Done.html'">Done</button>
                     </div>
                 </div>
 
@@ -122,65 +122,66 @@
 
 
                     <div class="request-card-item">
+                        <!-- Top Section -->
                         <div class="card-top-section">
                             <div class="patient-meta">
                                 <div class="patient-avatar-mini">
                                     <i class="bi bi-person-circle"></i>
                                 </div>
+                            
                                 <div class="patient-name-info">
                                     <h3>Ahmed Mansour</h3>
+                                    <p>
+                                        <i class="bi bi-calendar3"></i> Oct 24, 2023
+                                        &nbsp; • &nbsp;
+                                        <i class="bi bi-clock"></i> 10:30 AM
+                                    </p>
                                 </div>
                             </div>
-                            <span class="status-pill pending">PENDING</span>
+                            <span class="status-pill Approved">DONE</span>
                         </div>
                     
-                        <div class="card-mid-section">
-                            <div class="info-group">
-                                <label>Date</label>
-                                <p>Oct 24, 2023 &nbsp; </p>
-                            </div>
-                            <div class="info-group">
-                                <label>Time</label>
-                                <p>10:00 AM</p>
-                            </div>
-                            <div class="info-group">
-                                <label>Governorate</label>
-                                <p>Cairo</p>
-                            </div>
-                            <div class="info-group">
-                                <label>Address</label>
-                                <p>Maadi street 15</p>
-                            </div>
+                        <!-- Address -->
+                        <div class="info-group location-info">
+                            <p>
+                                <i class="bi bi-geo-alt"></i>
+                                Cairo / Maadi, Street 250, Building 14, 4th Floor
+                            </p>
+                        </div>
+                        <hr style="margin:15px 0; border:1px solid #F0F4F8;">
+                    
+                        <!-- Condition -->
+                        <div class="Condition">
+                            <label>Condition</label>
+                            <span class="condition-pill">Chest Pain</span>
+                        </div>
+                        <div class="description-box">
+                            Patient reports severe chest pain and shortness of breath since early morning.
+                            Previous history of hypertension noted.
                         </div>
                     
-                        <div class="disease-section">   
-                            <label> DESCRIPTION </label>
-                            <div class="description-box">
-                                Patient reports persistent lower back pain for 3 days with difficulty walking. Requires home visit for assessment and potential therapy.
+                        <!-- Price Section -->
+                        <div class="price-summary">
+                            <div>
+                                <label>Total Price</label>
+                                <p class="total-price">150 EGP</p>
                             </div>
-                        </div>
-                    
-                        <div class="edit-input">
-                            <div class="price-input-section">
-                                <label>DELIVERY PRICE</label>
-                                <input type="text" placeholder="Enter price...">
-                            </div>
-                            <div class="price-input-section">
-                                <label>DATE</label>
-                                <input type="date" placeholder="Enter Date...">
-                            </div>
-                            <div class="price-input-section">
-                                <label>TIME</label>
-                                <input type="time" placeholder="Enter Time...">
+                            <div class="net-income-box">
+                                <label>Net Income</label>
+                                <p class="net-income">120 EGP</p>
                             </div>
                         </div>
                     
-                        <div class="card-footer-actions">
-                            <button class="btn-action reject">Reject</button>
-                            <button class="btn-action accept">Accept</button>
+                        <!-- Footer Actions -->
+                        <div class="card-footer-actions details-footer">
+                            <button class="btn-link">
+                                <i class="bi bi-eye"></i> View Details
+                            </button>
+                            <button class="btn-action edit">
+                                <i class="bi bi-download"></i> Download Report
+                            </button>
                         </div>
                     </div>
-
 
                 </div>
                 

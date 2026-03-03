@@ -1,4 +1,4 @@
-// =================eye toggle====================
+// ================= eye toggle====================
 const togglePassword = document.querySelector('#togglePassword');
 const passwordInput = document.querySelector('#passwordInput');
 

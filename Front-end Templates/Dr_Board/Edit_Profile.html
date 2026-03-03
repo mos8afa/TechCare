@@ -75,7 +75,7 @@
                                     <p>New Consultation Request</p>
                                 </div>
                             </div>
-                            <!-- <hr> -->
+                            <hr>
                             <div class="notification-item" onclick="window.location.href='Notifications.html'">
                                 <img src="https://randomuser.me/api/portraits/women/12.jpg">
                                 <div class="notification-content">
@@ -85,7 +85,7 @@
                             </div>
                         </div>
                     </div>
-                    <hr>
+                    <hr class="line">
                     <div class="topbar-profile" onclick="window.location.href='Profile.html'">
                         <div class="topbar-user-info">
                             <h4>Dr. Sarah Mansour</h4>
@@ -99,13 +99,116 @@
             <!-- Main Content -->
             <main class="main-content">
 
-
-
-
-
-
-
-
+                <div class="edit-profile-wrapper">
+                    <div class="edit-profile-card">
+                        <!-- Header -->
+                        <div class="edit-header">
+                            <div>
+                                <h2>Edit Professional Profile</h2>
+                            </div>
+                            <span class="profile-badge">Doctor Profile</span>
+                        </div>
+                    
+                        <!-- Profile Photo Section -->
+                        <div class="edit-photo-section">
+                            <div class="edit-avatar">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Doctor">
+                            </div>
+                            <div class="edit-photo-info">
+                                <h4>Profile Photo</h4>
+                                <p>
+                                    New profile pictures require admin approval and verification.
+                                    Recommended size: 400x400px.
+                                </p>
+                                <div class="photo-buttons">
+                                    <input type="file" id="profile-upload" style="display: none;">
+                                    <button type="button" class="btn-primary-edit" onclick="document.getElementById('profile-upload').click()">
+                                        Change Photo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <!-- Form -->
+                        <div class="edit-form-grid">
+                        
+                            <div class="form-group-edit">
+                                <label>Full Name</label>
+                                <input type="text" value="Dr. Sarah Mansour">
+                                <small>Contact support to change verified name.</small>
+                            </div>
+                        
+                            <div class="form-group-edit">
+                                <label>Contact Phone Number</label>
+                                <div class="phone-wrapper-custom">
+                                    <span class="country-code">+20</span>
+                                    <input type="tel" placeholder="1001234567" value="1001234567">
+                                </div>
+                            </div>
+                        
+                            <div class="form-group-edit full-width">
+                                <label>Bio / Professional Summary</label>
+                                <textarea rows="4">Experienced cardiologist with over 10 years of practice in interventional cardiology and preventive heart care. Committed to providing personalized patient treatment plans.</textarea>
+                            </div>
+                        
+                            <div class="form-group-edit">
+                                <label>Consultation Price</label>
+                                <div class="price-input-wrapper">
+                                    <input type="number" value="500">
+                                    <span>EGP</span>
+                                </div>
+                            </div>
+                        
+                            <div class="form-group-edit">
+                                <label>Governorate / Location</label>
+                                <select>
+                                    <option value="" disabled selected>Select governorate</option>
+                                    <option value="alexandria">Alexandria</option>
+                                    <option value="aswan">Aswan</option>
+                                    <option value="asyut">Assiut</option>
+                                    <option value="beheira">Beheira</option>
+                                    <option value="beni_suef">Beni Suef</option>
+                                    <option value="cairo">Cairo</option>
+                                    <option value="dakahlia">Dakahlia</option>
+                                    <option value="damietta">Damietta</option>
+                                    <option value="fayoum">Faiyum</option>
+                                    <option value="gharbia">Gharbia</option>
+                                    <option value="giza">Giza</option>
+                                    <option value="ismailia">Ismailia</option>
+                                    <option value="kafr_el_sheikh">Kafr El Sheikh</option>
+                                    <option value="luxor">Luxor</option>
+                                    <option value="matrouh">Matrouh</option>
+                                    <option value="minya">Minya</option>
+                                    <option value="monufia">Monufia</option>
+                                    <option value="new_valley">New Valley</option>
+                                    <option value="north_sinai">North Sinai</option>
+                                    <option value="port_said">Port Said</option>
+                                    <option value="qalyubia">Qalyubia</option>
+                                    <option value="qena">Qena</option>
+                                    <option value="red_sea">Red Sea</option>
+                                    <option value="sharqia">Sharqia</option>
+                                    <option value="sohag">Sohag</option>
+                                    <option value="south_sinai">South Sinai</option>
+                                    <option value="suez">Suez</option>
+                                </select>
+                            </div>
+                            <div class="form-group-edit full-width">
+                                <label>Clinic Address</label>
+                                <div class="address-wrapper-custom full-width">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <input type="text" placeholder="Street, Building, Apartment">
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <!-- Footer Buttons -->
+                        <div class="edit-footer">
+                            <button class="btn-light-edit">Cancel Changes</button>
+                            <button class="btn-primary-edit">Save Changes</button>
+                        </div>
+                    </div>
+            
+                </div>
 
             </main>
         </div>
