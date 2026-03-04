@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Requests</title>
+
+    <link rel="stylesheet" href="Done.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+</head>
+<body>  
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">
+                        <i class="fa-solid fa-user-nurse"></i>
+                    </span>                
+                    <div>
+                        <h2>TechCare</h2>
+                        <p>Medical Portal</p>
+                    </div>
+                    <button class="sidebar-toggle">
+                        <i class="bi bi-layout-sidebar-inset-reverse"></i>
+                    </button>
+                </div>
+            </div>
+
+            <aside class="aside">
+                <a href="Profile.html" class="aside-item">
+                    <i class="bi bi-person"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="Requests.html" class="aside-item active">
+                    <i class="ri-file-list-line"></i>
+                    <span>Requests</span>
+                </a>
+                <a href="Notifications.html" class="aside-item ">
+                    <i class="fa-regular fa-bell"></i>
+                    <span>Notifications</span>
+                </a>
+                <a href="Wallet.html" class="aside-item">
+                    <i class="ri-wallet-3-line"></i>
+                    <span>Wallet</span>
+                </a>
+                <a href="Complaints.html" class="aside-item">
+                    <i class="ri-error-warning-line"></i>
+                    <span>Complaints</span>
+                </a>
+            </aside>
+        </aside>
+
+        <div style="flex:1; display:flex; flex-direction:column;">
+        
+            <!-- Top Navbar -->
+            <div class="topbar">
+                <h2 class="topbar-title">Requests</h2>
+
+                <div class="topbar-right">
+                    <div class="topbar-icon" id="notificationBtn">
+                        <i class="fa-regular fa-bell"></i>
+                        
+
+                        <div class="inbox" id="notificationBox">
+                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg">
+                                <div class="notification-content">
+                                    <h4>Ahmed Ali</h4>
+                                    <p>New Consultation Request</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
+                                <img src="https://randomuser.me/api/portraits/women/12.jpg">
+                                <div class="notification-content">
+                                    <h4>Sara Mohamed</h4>
+                                    <p>Appointment Confirmed</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="line">
+                    <div class="topbar-profile" onclick="window.location.href='Profile.html'">
+                        <div class="topbar-user-info">
+                            <h4>Nurse Sarah Mansour</h4>
+                            <span>Cardiologist</span>
+                        </div>
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Doctor">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+                <main class="main-content-nurse-requst">
+
+                    <div class="requests-sticky">
+                        <div class="requests-header">
+                            <div class="header-text">
+                                <h2>Requests</h2>
+                                <p>Manage incoming consultation requests</p>
+                            </div>
+                            <button class="filter-button">
+                                <b><i class="bi bi-funnel"></i> Filter</b>
+                            </button>
+                        </div>
+
+                        <div class="tabs-navigation">
+                            <button class="tab-link" data-status="pending" onclick="window.location.href='Requests.html'">Pending</button>
+                            <button class="tab-link" data-status="accepted" onclick="window.location.href='Accepted.html'">Accepted</button>
+                            <button class="tab-link active" data-status="done" onclick="window.location.href='Done.html'">Done</button>
+                        </div>
+                    </div>
+
+                    <div class="requests-grid">
+
+
+
+
+                        <div class="request-card-item">
+                            <div class="card-top-section">
+                                <div class="patient-meta">
+                                    <div class="patient-avatar-mini">
+                                        <i class="bi bi-person-circle"></i>
+                                    </div>
+                                    <div class="patient-name-info">
+                                        <h3>Fatma El-Sayed</h3>
+                                        <p>
+                                            <i class="ri-map-pin-2-line"></i>
+                                            Maadi, Cairo - St.15, Building 4
+                                        </p>
+                                    </div>
+                                </div>
+                                <span class="status-pill done">DONE</span>
+                            </div>
+
+                            <hr class="hr">
+
+                            <div class="info-row">
+                                <div class="info-block">
+                                    <span class="info-label">DATE & TIME</span>
+                                    <span class="info-value">22 Oct, 2023 | 09:00 AM</span>
+                                </div>
+                                <div class="info-block">
+                                    <span class="info-label">CONDITION</span>
+                                    <span class="info-value">Post-Operative Recovery</span>
+                                </div>
+                            </div>
+
+                            <hr class="hr">
+                            <label class="l1">DISEASE DESCRIPTION</label>
+                            <div class="disease-box">
+                                Patient is recovering from hip replacement surgery. Requires daily wound dressing, vital signs monitoring, and assistance with prescribed physical therapy exercises.
+                            </div>
+
+                            <div class="services-total">
+                                <label>SERVICES REQUESTED</label>
+                                <div class="services-each">
+                                    <label>Wound Dressing (Major)</label>
+                                    <p>450 EGP</p>
+                                </div>
+                                <div class="services-each">
+                                    <label>Vitals Monitoring</label>
+                                    <p>200 EGP</p>
+                                </div>
+                                <div class="services-each">
+                                    <label>Home Visit Fee</label>
+                                    <p>150 EGP</p>
+                                </div>
+
+                                <hr class="hr">
+
+                                <div class="services-each">
+                                    <label>Total Price</label>
+                                    <p>800 EGP</p>
+                                </div>
+                                <div class="services-eachs earning-row">
+                                    <label>Your Earning</label>
+                                    <p class="earning">680 EGP</p>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+                
+            </main>
+
+            </main>
+        </div>
+
+    </div>
+</body>
+    <script src="../JS/Board.js"></script>
+</html>
