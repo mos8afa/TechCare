@@ -241,8 +241,6 @@ class Doctor(models.Model):
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
     specification = models.CharField(max_length=50, choices=SPECIFICATIONS)
     brief = models.TextField()
-    rate = models.DecimalField(choices=RATE, max_digits=1, decimal_places=0, default=0)
-
 
 #------------- Nurse -------
 class Nurse(models.Model):
@@ -260,10 +258,6 @@ class Nurse(models.Model):
     address = models.TextField()
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
     brief = models.TextField()
-    rate = models.DecimalField(choices=RATE, max_digits=1, decimal_places=0, default=0)
-
-
-
 
 #------- Pharmacist --------
 class Pharmacist(models.Model):
@@ -282,9 +276,12 @@ class Pharmacist(models.Model):
     university = models.CharField(max_length=100, choices=UNIVERSITIES)
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
     slogan = models.CharField(max_length=100)
+
+class Rate(models.Model):
     rate = models.DecimalField(choices=RATE, max_digits=1, decimal_places=0, default=0)
-
-
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, null=True, blank=True, related_name='rates')
+    nurse = models.ForeignKey(Nurse, on_delete=models.CASCADE, null=True, blank=True, related_name='rates')
+    pharmacist = models.ForeignKey(Pharmacist, on_delete=models.CASCADE, null=True, blank=True, related_name='rates')
 
 # -------- Donor -------
 class Donor(models.Model):

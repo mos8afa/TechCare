@@ -93,7 +93,7 @@ def verify_otp_login(request):
         cache.delete(f"otp_{user_id}")
         request.session.pop("otp_user_id", None)
 
-        return redirect("home")
+        return redirect("user_profile", slug=user.username)
     return render(request, "accounts/verify_otp.html", {"otp_type": "login"})
 
 def resend_otp_login(request):
@@ -335,7 +335,7 @@ def patient_registration(request):
 
         patient.save()
 
-        return redirect('home')
+        return redirect("user_profile", slug=patient.user.username)
     return render(request, 'accounts/patient_registration.html')
 
 
@@ -391,7 +391,7 @@ def doctor_registration_s2(request):
         doctor.national_id_pic_front = request.FILES.get('national_id_pic_front')
         doctor.save()
 
-        return redirect('home')
+        return redirect("user_profile", slug=doctor.user.username)
     return render(request, 'accounts/doctor_registration_s2.html')
 
 
@@ -446,7 +446,7 @@ def nurse_registration_step2(request):
         nurse.national_id_pic_back = request.FILES.get('national_id_pic_back')
         nurse.save()
 
-        return redirect('home')
+        return redirect("user_profile", slug=nurse.user.username)
 
     return render(request, 'accounts/nurse_registration_s2.html')
 
@@ -509,7 +509,7 @@ def pharmacist_registration_step2(request):
         pharmacist.graduation_certificate = request.FILES.get('graduation_certificate')
         pharmacist.save()
 
-        return redirect('home')
+        return redirect("user_profile", slug=pharmacist.user.username)
 
     return render(request, 'accounts/pharmacist_registration_s2.html')
 
@@ -556,7 +556,7 @@ def donor_registration(request):
         )
         donor.save()
 
-        return redirect('home')
+        return redirect("user_profile", slug=donor.user.username)
     return render(request, 'accounts/Donor_registration.html')
 
 
@@ -681,3 +681,25 @@ def resend_otp_forget_password(request):
             
         return redirect('verify_otp_forget_password')
     return redirect('forget_password')
+
+def user_profile(request, slug):
+    User = get_user_model()
+    user = get_object_or_404(User, username=slug)
+
+    if user.role == 'doctor':
+        return redirect("doctor:doctor_dashboard", slug=slug)
+    
+    elif user.role == 'patient':
+        return redirect("doctor:doctor_dashboard", slug=slug)
+    
+    elif user.role == 'nurse':
+        return redirect("doctor:doctor_dashboard", slug=slug)
+    
+    elif user.role == 'pharmacist':
+        return redirect("doctor:doctor_dashboard", slug=slug)
+    
+    elif user.role == 'donor':
+        return redirect("doctor:doctor_dashboard", slug=slug)
+        
+    else:
+        return redirect('home')

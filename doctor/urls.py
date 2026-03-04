@@ -1,7 +1,8 @@
 from django.urls import path
 from . import views
 
+app_name = 'doctor'
 
 urlpatterns = [
-    path('int/<slug:slug>/dashboard/', views.doctor_dashboard, name='doctor_dashboard'),
+    path('<slug:slug>', views.doctor_dashboard, name='doctor_dashboard'),
 ]

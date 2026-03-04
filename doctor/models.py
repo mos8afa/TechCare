@@ -9,7 +9,7 @@ STATUS = (
     ("completed", "Completed"),
 )
 
-class DoctorRequest(models.model):
+class DoctorRequest(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     date = models.DateTimeField()
