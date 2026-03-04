@@ -111,7 +111,7 @@
                         <!-- Profile Photo Section -->
                         <div class="edit-photo-section">
                             <div class="edit-avatar">
-                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Doctor">
+                                <img id="profile-img" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Doctor">
                             </div>
                             <div class="edit-photo-info">
                                 <h4>Profile Photo</h4>
@@ -123,6 +123,10 @@
                                     <input type="file" id="profile-upload" style="display: none;">
                                     <button type="button" class="btn-primary-edit" onclick="document.getElementById('profile-upload').click()">
                                         Change Photo
+                                    </button>
+
+                                    <button type="button" class="btn-primary-delete" onclick="removeProfileImage()">
+                                        Remove
                                     </button>
                                 </div>
                             </div>
@@ -152,8 +156,8 @@
                             <div class="form-group-edit">
                                 <label>Governorate / Location</label>
                                 <select>
-                                    <option value="" disabled selected>Select governorate</option>
-                                    <option value="alexandria">Alexandria</option>
+                                    <option value="" disabled >Select governorate</option>
+                                    <option value="alexandria" selected>Alexandria</option>
                                     <option value="aswan">Aswan</option>
                                     <option value="asyut">Assiut</option>
                                     <option value="beheira">Beheira</option>
@@ -214,4 +218,19 @@
     </div>
 </body>
     <script src="../JS/Board.js"></script>
+<script>
+    const defaultImage = "https://randomuser.me/api/portraits/women/44.jpg";
+
+    function removeProfileImage() {
+    const fileInput = document.getElementById("profile-upload");
+    const profileImg = document.getElementById("profile-img");
+
+    // تفريغ الـ file input
+    fileInput.value = "";
+
+    // رجوع للصورة الديفولت
+    profileImg.src = defaultImage;
+}
+</script>
+</script>
 </html>
