@@ -39,7 +39,7 @@
                     <i class="bi bi-person"></i>
                     <span>Profile</span>
                 </a>
-                <a href="../Dr_Board/Requests.html" class="aside-item">
+                <a href="{% url 'doctor:doctor_requests' slug 'pending' %}" class="aside-item">
                     <i class="ri-file-list-line"></i>
                     <span>Requests</span>
                 </a>
@@ -89,12 +89,12 @@
                         </div>
                     </div>
                     <hr class="line">
-                    <div class="topbar-profile" onclick="window.location.href='Profile.html'">
+                    <div class="topbar-profile" onclick="window.location.href='{% url "doctor:doctor_dashboard" slug %}'">
                         <div class="topbar-user-info">
-                            <h4>Dr. Sarah Mansour</h4>
-                            <span>Cardiologist</span>
+                            <h4>{{name}}</h4>
+                            <span>{{ specification }}</span>
                         </div>
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Doctor">
+                        <img src="{{ profile_pic.url }}" alt="Doctor">
                     </div>
                 </div>
             </div>
@@ -156,7 +156,7 @@
                             </div>
                         
                             <!-- Button تحت -->
-                            <button class="edit-button" onclick="window.location.href='Edit_Profile.html'">
+                            <button class="edit-button" onclick="window.location.href='{% url 'doctor:edit_doctor_profile' slug=slug %}'">
                                 <i class="fas fa-edit"></i>
                                 Edit Profile
                             </button>
@@ -231,5 +231,5 @@
         </div>
     </div>
 </body>
-    <script src="../JS/Board.js"></script>
+    <script src="{% static 'JS/Board.js' %}"></script>
 </html>

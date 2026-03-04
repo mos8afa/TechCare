@@ -10,11 +10,12 @@ STATUS = (
 )
 
 class DoctorRequest(models.Model):
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='doctor_requests')
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='doctor_requests')
     date = models.DateTimeField()
     time = models.TimeField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    net_income = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     disease_description = models.TextField()
     governrate = models.CharField(max_length=50, choices=GOVERNORATES)
     address = models.TextField()
