@@ -196,8 +196,7 @@ class CustomUser(AbstractUser):
     is_Blocked = models.BooleanField(default=False)
     
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.username)
+        self.slug = slugify(self.username)
         super().save(*args, **kwargs)
 
 class PendingUser(models.Model):

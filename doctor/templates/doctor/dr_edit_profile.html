@@ -1,102 +1,29 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Doctor</title>
-
-    <link rel="stylesheet" href="{% static 'Css/Dr_Board.css' %}">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
-</head>
-<body>  
-    <div class="dashboard">
-
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <span class="logo-icon">
-                        <i class="fas fa-user-md"></i>
-                    </span>                
-                    <div>
-                        <h2>TechCare</h2>
-                        <p>Medical Portal</p>
-                    </div>
-                    <button class="sidebar-toggle">
-                        <i class="bi bi-layout-sidebar-inset-reverse"></i>
-                    </button>
-                </div>
-            </div>
-
+{% extends 'base.html' %}
+{% block sidebar %}
             <aside class="aside">
-                <a href="../Dr_Board/Profile.html" class="aside-item active">
-                    <i class="bi bi-person"></i>
-                    <span>Profile</span>
-                </a>
-                <a href="../Dr_Board/Requests.html" class="aside-item">
-                    <i class="ri-file-list-line"></i>
-                    <span>Requests</span>
-                </a>
-                <a href="../Dr_Board/Notifications.html" class="aside-item">
-                    <i class="fa-regular fa-bell"></i>
-                    <span>Notifications</span>
-                </a>
-                <a href="../Dr_Board/Wallet.html" class="aside-item">
-                    <i class="ri-wallet-3-line"></i>
-                    <span>Wallet</span>
-                </a>
-                <a href="../Dr_Board/Complaints.html" class="aside-item">
-                    <i class="ri-error-warning-line"></i>
-                    <span>Complaints</span>
-                </a>
-            </aside>
-        </aside>
-
-        <div style="flex:1; display:flex; flex-direction:column;">
-        
-            <div class="topbar">
-                <h2 class="topbar-title">Profile</h2>
-
-                <div class="topbar-right">
-                    <div class="topbar-icon" id="notificationBtn">
-                        <i class="fa-regular fa-bell"></i>
-                        
-
-                        <div class="inbox" id="notificationBox">
-                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg">
-                                <div class="notification-content">
-                                    <h4>Ahmed Ali</h4>
-                                    <p>New Consultation Request</p>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
-                                <img src="https://randomuser.me/api/portraits/women/12.jpg">
-                                <div class="notification-content">
-                                    <h4>Sara Mohamed</h4>
-                                    <p>Appointment Confirmed</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr class="line">
-                    <div class="topbar-profile" onclick="window.location.href='Profile.html'">
-                        <div class="topbar-user-info">
-                            <h4>Dr. Sarah Mansour</h4>
-                            <span>Cardiologist</span>
-                        </div>
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Doctor">
-                    </div>
-                </div>
-            </div>
-
+                            <a href="../Dr_Board/Profile.html" class="aside-item active">
+                                <i class="bi bi-person"></i>
+                                <span>Profile</span>
+                            </a>
+                            <a href="{% url 'doctor:doctor_requests' slug 'pending' %}" class="aside-item">
+                                <i class="ri-file-list-line"></i>
+                                <span>Requests</span>
+                            </a>
+                            <a href="../Dr_Board/Notifications.html" class="aside-item">
+                                <i class="fa-regular fa-bell"></i>
+                                <span>Notifications</span>
+                            </a>
+                            <a href="../Dr_Board/Wallet.html" class="aside-item">
+                                <i class="ri-wallet-3-line"></i>
+                                <span>Wallet</span>
+                            </a>
+                            <a href="../Dr_Board/Complaints.html" class="aside-item">
+                                <i class="ri-error-warning-line"></i>
+                                <span>Complaints</span>
+                            </a>
+                        </aside>
+{% endblock sidebar %}
+{% block content %}
             <!-- Main Content -->
             <main class="main-content">
 
@@ -110,19 +37,21 @@
                             <span class="profile-badge">Doctor Profile</span>
                         </div>
                     
+                        <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
                         <!-- Profile Photo Section -->
                         <div class="edit-photo-section">
                             <div class="edit-avatar">
-                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Doctor">
+                                <img src="{{ doctor.profile_pic.url }}" alt="{{ doctor.user.username }}" />
                             </div>
                             <div class="edit-photo-info">
-                                <h4>Profile Photo</h4>
+                                <h4>{{doctor.user.username}}</h4>
                                 <p>
                                     New profile pictures require admin approval and verification.
                                     Recommended size: 400x400px.
                                 </p>
                                 <div class="photo-buttons">
-                                    <input type="file" id="profile-upload" style="display: none;">
+                                    <input type="file" id="profile-upload" style="display: none;" name="profile_pic" accept="image/*">
                                     <button type="button" class="btn-primary-edit" onclick="document.getElementById('profile-upload').click()">
                                         Change Photo
                                     </button>
@@ -134,70 +63,69 @@
                         <div class="edit-form-grid">
                         
                             <div class="form-group-edit">
-                                <label>Full Name</label>
-                                <input type="text" value="Dr. Sarah Mansour">
-                                <small>Contact support to change verified name.</small>
+                                <label>Username</label>
+                                <input name='username' type="text" value="{{doctor.user.username}}">
                             </div>
                         
                             <div class="form-group-edit">
                                 <label>Contact Phone Number</label>
                                 <div class="phone-wrapper-custom">
                                     <span class="country-code">+20</span>
-                                    <input type="tel" placeholder="1001234567" value="1001234567">
+                                    <input name="phone_number" type="tel" placeholder="1001234567" value="{{ doctor.phone_number}}">
                                 </div>
                             </div>
                         
                             <div class="form-group-edit full-width">
                                 <label>Bio / Professional Summary</label>
-                                <textarea rows="4">Experienced cardiologist with over 10 years of practice in interventional cardiology and preventive heart care. Committed to providing personalized patient treatment plans.</textarea>
+                                <textarea name="brief" rows="4" placeholder="Enter your bio here...">{{ doctor.brief }}</textarea>
                             </div>
                         
                             <div class="form-group-edit">
                                 <label>Consultation Price</label>
                                 <div class="price-input-wrapper">
-                                    <input type="number" value="500">
+                                    <input name="price" type="number" value="{{ doctor.price }}" min="0" step="0.01">
                                     <span>EGP</span>
                                 </div>
                             </div>
                         
                             <div class="form-group-edit">
-                                <label>Governorate / Location</label>
-                                <select>
-                                    <option value="" disabled selected>Select governorate</option>
-                                    <option value="alexandria">Alexandria</option>
-                                    <option value="aswan">Aswan</option>
-                                    <option value="asyut">Assiut</option>
-                                    <option value="beheira">Beheira</option>
-                                    <option value="beni_suef">Beni Suef</option>
-                                    <option value="cairo">Cairo</option>
-                                    <option value="dakahlia">Dakahlia</option>
-                                    <option value="damietta">Damietta</option>
-                                    <option value="fayoum">Faiyum</option>
-                                    <option value="gharbia">Gharbia</option>
-                                    <option value="giza">Giza</option>
-                                    <option value="ismailia">Ismailia</option>
-                                    <option value="kafr_el_sheikh">Kafr El Sheikh</option>
-                                    <option value="luxor">Luxor</option>
-                                    <option value="matrouh">Matrouh</option>
-                                    <option value="minya">Minya</option>
-                                    <option value="monufia">Monufia</option>
-                                    <option value="new_valley">New Valley</option>
-                                    <option value="north_sinai">North Sinai</option>
-                                    <option value="port_said">Port Said</option>
-                                    <option value="qalyubia">Qalyubia</option>
-                                    <option value="qena">Qena</option>
-                                    <option value="red_sea">Red Sea</option>
-                                    <option value="sharqia">Sharqia</option>
-                                    <option value="sohag">Sohag</option>
-                                    <option value="south_sinai">South Sinai</option>
-                                    <option value="suez">Suez</option>
+    <label>Governorate / Location</label>
+                                <select name="governorate">
+                                    <option value="" disabled {% if not doctor.governorate %}selected{% endif %}>Select governorate</option>
+                                    <option value="alexandria" {% if doctor.governorate == 'alexandria' %}selected{% endif %}>Alexandria</option>
+                                    <option value="aswan" {% if doctor.governorate == 'aswan' %}selected{% endif %}>Aswan</option>
+                                    <option value="asyut" {% if doctor.governorate == 'asyut' %}selected{% endif %}>Assiut</option>
+                                    <option value="beheira" {% if doctor.governorate == 'beheira' %}selected{% endif %}>Beheira</option>
+                                    <option value="beni_suef" {% if doctor.governorate == 'beni_suef' %}selected{% endif %}>Beni Suef</option>
+                                    <option value="cairo" {% if doctor.governorate == 'cairo' %}selected{% endif %}>Cairo</option>
+                                    <option value="dakahlia" {% if doctor.governorate == 'dakahlia' %}selected{% endif %}>Dakahlia</option>
+                                    <option value="damietta" {% if doctor.governorate == 'damietta' %}selected{% endif %}>Damietta</option>
+                                    <option value="fayoum" {% if doctor.governorate == 'fayoum' %}selected{% endif %}>Faiyum</option>
+                                    <option value="gharbia" {% if doctor.governorate == 'gharbia' %}selected{% endif %}>Gharbia</option>
+                                    <option value="giza" {% if doctor.governorate == 'giza' %}selected{% endif %}>Giza</option>
+                                    <option value="ismailia" {% if doctor.governorate == 'ismailia' %}selected{% endif %}>Ismailia</option>
+                                    <option value="kafr_el_sheikh" {% if doctor.governorate == 'kafr_el_sheikh' %}selected{% endif %}>Kafr El Sheikh</option>
+                                    <option value="luxor" {% if doctor.governorate == 'luxor' %}selected{% endif %}>Luxor</option>
+                                    <option value="matrouh" {% if doctor.governorate == 'matrouh' %}selected{% endif %}>Matrouh</option>
+                                    <option value="minya" {% if doctor.governorate == 'minya' %}selected{% endif %}>Minya</option>
+                                    <option value="monufia" {% if doctor.governorate == 'monufia' %}selected{% endif %}>Monufia</option>
+                                    <option value="new_valley" {% if doctor.governorate == 'new_valley' %}selected{% endif %}>New Valley</option>
+                                    <option value="north_sinai" {% if doctor.governorate == 'north_sinai' %}selected{% endif %}>North Sinai</option>
+                                    <option value="port_said" {% if doctor.governorate == 'port_said' %}selected{% endif %}>Port Said</option>
+                                    <option value="qalyubia" {% if doctor.governorate == 'qalyubia' %}selected{% endif %}>Qalyubia</option>
+                                    <option value="qena" {% if doctor.governorate == 'qena' %}selected{% endif %}>Qena</option>
+                                    <option value="red_sea" {% if doctor.governorate == 'red_sea' %}selected{% endif %}>Red Sea</option>
+                                    <option value="sharqia" {% if doctor.governorate == 'sharqia' %}selected{% endif %}>Sharqia</option>
+                                    <option value="sohag" {% if doctor.governorate == 'sohag' %}selected{% endif %}>Sohag</option>
+                                    <option value="south_sinai" {% if doctor.governorate == 'south_sinai' %}selected{% endif %}>South Sinai</option>
+                                    <option value="suez" {% if doctor.governorate == 'suez' %}selected{% endif %}>Suez</option>
                                 </select>
                             </div>
                             <div class="form-group-edit full-width">
                                 <label>Clinic Address</label>
                                 <div class="address-wrapper-custom full-width">
                                     <i class="bi bi-geo-alt"></i>
-                                    <input type="text" placeholder="Street, Building, Apartment">
+                                    <input name="address" type="text" placeholder="Street, Building, Apartment" value="{{ doctor.address }}">
                                 </div>
                             </div>
                         </div>
@@ -205,7 +133,7 @@
                         <!-- Footer Buttons -->
                         <div class="edit-footer">
                             <button class="btn-light-edit">Cancel Changes</button>
-                            <button class="btn-primary-edit">Save Changes</button>
+                            <button class="btn-primary-edit" type="submit">Save Changes</button>
                         </div>
                     </div>
             
@@ -213,7 +141,5 @@
 
             </main>
         </div>
-    </div>
-</body>
-    <script src="{% static 'JS/Board.js' %}"></script>
-</html>
+    </div>            
+{% endblock %}

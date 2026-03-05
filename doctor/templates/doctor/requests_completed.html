@@ -23,6 +23,7 @@
                             </a>
                         </aside>
         {% endblock sidebar %}
+
     {% block content %}
             <!-- Main Content -->
             <main class="main-content">
@@ -40,31 +41,35 @@
 
                     <div class="tabs-navigation">
                         <button class="tab-link" data-status="pending" onclick="window.location.href='{% url 'doctor:doctor_requests' slug 'pending' %}'">Pending</button>
-                        <button class="tab-link active" data-status="accepted" onclick="window.location.href='{% url 'doctor:doctor_requests' slug 'accepted' %}'">Accepted</button>
-                        <button class="tab-link" data-status="done" onclick="window.location.href='{% url 'doctor:doctor_requests' slug 'completed' %}'">Done</button>
+                        <button class="tab-link" data-status="accepted" onclick="window.location.href='{% url 'doctor:doctor_requests' slug 'accepted' %}'">Accepted</button>
+                        <button class="tab-link active" data-status="done" onclick="window.location.href='{% url 'doctor:doctor_requests' slug 'completed' %}'">Done</button>
                     </div>
                 </div>
                 <div class="requests-grid">
-            {% if accepted %}
-                {% for request in accepted %}
+                {% if completed %}
+                {% for request in completed %}
                     <div class="request-card-item">
+                        <!-- Top Section -->
                         <div class="card-top-section">
                             <div class="patient-meta">
                                 <div class="patient-avatar-mini">
                                     <i class="bi bi-person-circle"></i>
                                 </div>
+                            
                                 <div class="patient-name-info">
                                     <h3>{{ request.patient.user.first_name }} {{ request.patient.user.last_name }}</h3>
                                     <p>
-                                        <i class="bi bi-calendar3"></i> {{ request.date }} 
+                                        <i class="bi bi-calendar3"></i> {{ request.date }}
                                         &nbsp; • &nbsp;
-                                        <i class="bi bi-clock"></i> {{ request.time }}
+                                        <i class="bi bi-clock"></i> {{ request.time }}  
                                     </p>
                                 </div>
                             </div>
-                            <span class="status-pill accepted">Accepted</span>
+                            <span class="status-pill Approved">DONE</span>
+                        
                         </div>
                     
+                        <!-- Address -->
                         <div class="info-group location-info">
                             <p>
                                 <i class="bi bi-geo-alt"></i>
@@ -76,39 +81,42 @@
                         <!-- Condition -->
                         <div class="Condition">
                             <label>Condition</label>
-                            <span class="accepted-tag">Chest Pain</span>
+                            <span class="condition-pill">Chest Pain</span>
                         </div>
-                        <div class="description-box-accepted">
-                            <p>{{ request.disease_description }}</p>
-                        </div>
-                    
-                        <div class="price-confirmation">
-                            <span>Total Price</span>
-                            <span class="price-value">{{ request.total_price }} EGP</span>
+                        <div class="description-box">
+                            {{ request.disease_description }}
                         </div>
                     
-                        <div class="user-confirmed-banner">
-                            <i class="ri-checkbox-circle-line"></i>
-                            USER HAS CONFIRMED APPOINTMENT
-                        </div>
-                    
-                        <div class="card-footer-flex">
-                            <div class="phone-display">
-                                <i class="ri-phone-line"></i>
-                                <span>{{ request.patient.phone_number }}</span>
+                        <!-- Price Section -->
+                        <div class="price-summary">
+                            <div>
+                                <label>Total Price</label>
+                                <p class="total-price">{{ request.total_price }} EGP</p>
                             </div>
-                            <button class="btn-done">Done</button>
+                            <div class="net-income-box">
+                                <label>Net Income</label>
+                                <p class="net-income">{{ request.net_income }} EGP</p>
+                            </div>
+                        </div>
+                    
+                        <!-- Footer Actions -->
+                        <div class="card-footer-actions details-footer">
+                            <button class="btn-link">
+                                <i class="bi bi-eye"></i> View Details
+                            </button>
+                            <button class="btn-action edit">
+                                <i class="bi bi-download"></i> Download Report
+                            </button>
                         </div>
                     </div>
                 {% endfor %}
                 {% else %}
                     <div class="no-requests-placeholder">
-                        <h3>No Accepted Requests</h3>
-                        <p>Once you accept consultation requests, they will appear here.</p>
+                        <h3>No Completed Requests</h3>
+                        <p>Once you complete consultations, they will appear here.</p>
                     </div>
                 {% endif %}
                 </div>
-                
             </main>
         </div>
 
