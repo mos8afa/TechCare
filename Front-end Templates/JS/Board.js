@@ -50,7 +50,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const addServiceBtn = document.getElementById('addServiceBtn');
     const addServiceModal = document.getElementById('addServiceModal');
     const closeAddService = document.getElementById('closeAddService');
-    const addServiceForm = document.getElementById('addServiceForm');
 
     if (addServiceBtn && addServiceModal) {
         addServiceBtn.addEventListener('click', function() {

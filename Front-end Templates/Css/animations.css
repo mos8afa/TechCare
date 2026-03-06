@@ -1,0 +1,76 @@
+/* GLOBAL ANIMATION SETTINGS */
+.animate {
+    opacity: 0;
+    animation-duration: 0.8s;
+    animation-fill-mode: forwards;
+}
+
+.slide-up {
+    animation-name: slideUp;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide-up-2 {
+    animation-name: slideUp2;
+}
+
+@keyframes slideUp2 {
+    0% {
+        opacity: 0;
+        transform: translateY(120px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.hover-scale {
+    transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+
+.shake {
+    animation: shake 0.4s;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+
+.scroll-slide-up {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.6s ease;
+}
+
+.scroll-slide-up.show {
+    opacity: 1;
+    transform: translateY(0);
+}
