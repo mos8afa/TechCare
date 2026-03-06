@@ -179,10 +179,12 @@ input[type="checkbox"] {
 .input-wrapper input, .input-wrapper select, .input-wrapper textarea {
     width: 100%;
     padding: 12px 15px;
-    border: 1px solid var(--border-color);
     border-radius: 10px;
     outline: none;
     font-size: 14px;
+    box-shadow: 1px 1px 3px 3px #f1f1f1;
+    border: 1px solid var(--border-color);
+
     transition: 0.3s;
 }
 
@@ -215,13 +217,14 @@ input[type="checkbox"] {
 }
 
 .file-wrapper {
-    background: var(--bg-light);
     position: relative;
-    border: 2px dashed var(--border-color);
     padding: 20px;
-    border-radius: 10px;
-    text-align: center;
     cursor: pointer;
+    text-align: center;
+    border-radius: 10px;
+    background: var(--bg-light);
+    box-shadow: 1px 1px 3px 3px #f1f1f1;
+    border: 2px dashed var(--border-color);
     transition: 0.3s;
 }
 
@@ -253,15 +256,14 @@ input[type="checkbox"] {
 }
 
 .file-wrapper:not(.uploaded):hover {
-    border-color: var(--primary-color);
     background: #F7FAFC;
+    border-color: var(--primary-color);
 }
 
 .file-wrapper.uploaded {
-    border-color: var(--primary-color);
-    border-style: solid; 
-    background: #f0f7ff;
     cursor: default;
+    border-style: solid; 
+    border-color: var(--primary-color);
 }
 
 .file-wrapper.uploaded i {
@@ -277,10 +279,6 @@ input[type="checkbox"] {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis; 
-}
-
-.file-wrapper.uploaded:hover {
-    background: #f0f7ff;
 }
 
 .form-actions {

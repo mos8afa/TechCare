@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Requests</title>
 
+    <link rel="stylesheet" href="../Css/animations.css">
     <link rel="stylesheet" href="../Css/Dr_Board.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -121,8 +122,8 @@
                 <div class="requests-grid">
 
 
-                    <div class="request-card-item">
-                        <!-- Top Section -->
+                    <div class="request-card-item animate slide-up">
+                        
                         <div class="card-top-section">
                             <div class="patient-meta">
                                 <div class="patient-avatar-mini">
@@ -141,7 +142,6 @@
                             <span class="status-pill Approved">DONE</span>
                         </div>
                     
-                        <!-- Address -->
                         <div class="info-group location-info">
                             <p>
                                 <i class="bi bi-geo-alt"></i>
@@ -150,7 +150,6 @@
                         </div>
                         <hr style="margin:15px 0; border:1px solid #F0F4F8;">
                     
-                        <!-- Condition -->
                         <div class="Condition">
                             <label>Condition</label>
                             <span class="condition-pill">Chest Pain</span>
@@ -160,7 +159,6 @@
                             Previous history of hypertension noted.
                         </div>
                     
-                        <!-- Price Section -->
                         <div class="price-summary">
                             <div>
                                 <label>Total Price</label>
@@ -172,11 +170,7 @@
                             </div>
                         </div>
                     
-                        <!-- Footer Actions -->
                         <div class="card-footer-actions details-footer">
-                            <button class="btn-link">
-                                <i class="bi bi-eye"></i> View Details
-                            </button>
                             <button class="btn-action edit">
                                 <i class="bi bi-download"></i> Download Report
                             </button>

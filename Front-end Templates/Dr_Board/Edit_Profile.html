@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Doctor</title>
 
+    <link rel="stylesheet" href="../Css/animations.css">
     <link rel="stylesheet" href="../Css/Dr_Board.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -97,11 +98,11 @@
             </div>
 
             <!-- Main Content -->
-            <main class="main-content">
+            <main class="main-content animate slide-up">
 
                 <div class="edit-profile-wrapper">
                     <div class="edit-profile-card">
-                        <!-- Header -->
+
                         <div class="edit-header">
                             <div>
                                 <h2>Edit Professional Profile</h2>
@@ -109,7 +110,6 @@
                             <span class="profile-badge">Doctor Profile</span>
                         </div>
                     
-                        <!-- Profile Photo Section -->
                         <div class="edit-photo-section">
                             <div class="edit-avatar">
                                 <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Doctor">
@@ -129,13 +129,15 @@
                             </div>
                         </div>
                         <hr>
-                        <!-- Form -->
+
                         <div class="edit-form-grid">
                         
                             <div class="form-group-edit">
-                                <label>Full Name</label>
+                                <label>Username</label>
                                 <input type="text" value="Dr. Sarah Mansour">
-                                <small>Contact support to change verified name.</small>
+                                <div class="error">
+                                    {{ errors.phone_invalid }}
+                                </div>
                             </div>
                         
                             <div class="form-group-edit">
@@ -149,6 +151,9 @@
                             <div class="form-group-edit full-width">
                                 <label>Bio / Professional Summary</label>
                                 <textarea rows="4">Experienced cardiologist with over 10 years of practice in interventional cardiology and preventive heart care. Committed to providing personalized patient treatment plans.</textarea>
+                                <div class="error">
+                                    {{ errors.phone_invalid }}
+                                </div>
                             </div>
                         
                             <div class="form-group-edit">
@@ -192,16 +197,29 @@
                                     <option value="suez">Suez</option>
                                 </select>
                             </div>
-                            <div class="form-group-edit full-width">
+                            <div class="form-group-edit">
                                 <label>Clinic Address</label>
-                                <div class="address-wrapper-custom full-width">
+                                <div class="address-wrapper-custom">
                                     <i class="bi bi-geo-alt"></i>
                                     <input type="text" placeholder="Street, Building, Apartment">
+                                </div>
+                                <div class="error">
+                                    {{ errors.phone_invalid }}
+                                </div>
+                            </div>
+
+                            <div class="form-group-edit">
+                                <label>Email</label>
+                                <div class="address-wrapper-custom">
+                                    <i class="fa-regular fa-envelope"></i>
+                                    <input type="email" placeholder="Enter Email.." value="valentinoelbalkiny@gmail.com">
+                                </div>
+                                <div class="error">
+                                    {{ errors.phone_invalid }}
                                 </div>
                             </div>
                         </div>
                     
-                        <!-- Footer Buttons -->
                         <div class="edit-footer">
                             <button class="btn-light-edit">Cancel Changes</button>
                             <button class="btn-primary-edit">Save Changes</button>
