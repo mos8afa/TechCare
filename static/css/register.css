@@ -23,7 +23,7 @@ body {
 }
 
 .error{
-    color: var(--error);
+    color: var(--error) !important;
     font-size: 12px;
 }
 
@@ -166,6 +166,7 @@ input[type="checkbox"] {
     outline: none;
     border-radius: 8px;
     padding: 12px 15px 12px 45px;
+    box-shadow: 1px 1px 3px 3px #f1f1f1;
     border: 1px solid var(--border-color);
 
     transition: 0.3s;

@@ -3,11 +3,16 @@ from accounts import validations
 from accounts.models import Doctor
 from django.db.models import Avg
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 
-errors = {}
 
-def doctor_dashboard(request, slug):
-    doctor = Doctor.objects.get(user__slug=slug)
+@login_required
+def doctor_dashboard(request):
+
+    if request.user.role != "doctor":
+        return redirect("login")
+
+    doctor = Doctor.objects.get(user = request.user)
     name = "Dr. " + doctor.user.first_name + " " + doctor.user.last_name
     specification =  doctor.get_specification_display()
     price = doctor.price
@@ -37,13 +42,14 @@ def doctor_dashboard(request, slug):
         'average_rating': average_rating,
         'brief': brief,
         'profile_pic': profile_pic,
-        'slug': slug,  
         'pending': pending,
         'completed': completed,
     })
 
-def edit_doctor_profile(request, slug):
-    doctor = Doctor.objects.get(user__slug=slug)
+def edit_doctor_profile(request):
+    errors = {}
+
+    doctor = Doctor.objects.get(user = request.user)
     name = "Dr. " + doctor.user.first_name + " " + doctor.user.last_name
     specification =  doctor.get_specification_display()
     profile_pic = doctor.profile_pic
@@ -56,12 +62,11 @@ def edit_doctor_profile(request, slug):
         brief = request.POST.get('brief')
         username = request.POST.get('username')
 
-        if User.objects.filter(username=username).exists():
+        if User.objects.filter(username=username).exclude(id=request.user.id).exists():
             errors['exist_username']="Username already exists"
             return render(request, 'doctor/dr_edit_profile.html', 
             {'errors':errors,
             'doctor': doctor,
-            'slug': slug,
             'name': name,
             'specification': specification,
             'profile_pic': profile_pic,
@@ -72,7 +77,6 @@ def edit_doctor_profile(request, slug):
             return render(request, 'doctor/dr_edit_profile.html', 
             {'errors':errors,
             'doctor': doctor,
-            'slug': slug,
             'name': name,
             'specification': specification,
             'profile_pic': profile_pic,
@@ -83,7 +87,6 @@ def edit_doctor_profile(request, slug):
             return render(request, 'doctor/dr_edit_profile.html',
             {'errors':errors,
                 'doctor': doctor,
-                'slug': slug,
                 'name': name,
                 'specification': specification,
                 'profile_pic': profile_pic,
@@ -94,7 +97,6 @@ def edit_doctor_profile(request, slug):
             return render(request, 'doctor/dr_edit_profile.html',
             {'errors':errors,
             'doctor': doctor,
-            'slug': slug,
             'name': name,
             'specification': specification,
             'profile_pic': profile_pic,
@@ -105,7 +107,6 @@ def edit_doctor_profile(request, slug):
             return render(request, 'doctor/dr_edit_profile.html',
             {'errors':errors,
             'doctor': doctor,
-            'slug': slug,
             'name': name,
             'specification': specification,
             'profile_pic': profile_pic,
@@ -120,19 +121,18 @@ def edit_doctor_profile(request, slug):
         doctor.profile_pic = request.FILES.get('profile_pic') or doctor.profile_pic
         doctor.user.save()
         doctor.save()
-        return redirect('doctor:doctor_dashboard', slug=slug)
+        return redirect('doctor:doctor_dashboard')
 
     return render(request, 'doctor/dr_edit_profile.html', {
         'doctor': doctor,
-        'slug': slug,
         'errors': errors,
         'name': name,
         'specification': specification,
         'profile_pic': profile_pic,
     })
 
-def doctor_requests(request, slug, type):
-    doctor = Doctor.objects.get(user__slug=slug)
+def doctor_requests(request, type):
+    doctor = Doctor.objects.get(user = request.user)
 
 
     name = "Dr. " + doctor.user.first_name + " " + doctor.user.last_name
@@ -155,7 +155,6 @@ def doctor_requests(request, slug, type):
     if type == 'pending' or type is None:
         return render(request, 'doctor/requests_pending.html', {
             'pending': pending,
-            "slug": slug,
             "name": name,
             "specification": specification,
             "profile_pic": profile_pic,
@@ -163,7 +162,6 @@ def doctor_requests(request, slug, type):
     elif type == 'accepted':
         return render(request, 'doctor/requests_accepted.html', {
             'accepted': accepted,
-            "slug": slug,
             "name": name,
             "specification": specification,
             "profile_pic": profile_pic,
@@ -171,12 +169,11 @@ def doctor_requests(request, slug, type):
     elif type == 'completed':
         return render(request, 'doctor/requests_completed.html', {
             'completed': completed,
-            "slug": slug,
             "name": name,
             "specification": specification, 
             "profile_pic": profile_pic,
         })
     
     else:
-        return redirect('doctor:doctor_dashboard', slug=slug)
+        return redirect('doctor:doctor_dashboard')
     

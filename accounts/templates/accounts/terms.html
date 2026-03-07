@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms and Conditions</title>
+
+    <link rel="stylesheet" href="{% static 'Css/animations.css' %}">
+    <link rel="stylesheet" href="{% static 'Css/Form.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-image: url('{% static "img/BG.jpeg" %}');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+    </style>
+</head>
+
+<body>
+    <header class="top-header">
+        <div class="lang-dropdown" id="langBtn">
+            <i class="fas fa-globe"></i>
+            <span id="currentLang">English</span>
+            <i class="fas fa-chevron-down"></i>
+            <ul class="dropdown-menu" id="langMenu">
+                <li>English</li>
+                <li>العربية</li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="doctor-container animate slide-up">
+        <div class="header-section">
+            <div class="logo-icon-small">
+                <i class="fas fa-file-signature"></i>
+            </div>
+            <h2>Terms & Conditions</h2>
+        </div>
+
+        <div class="terms-content">
+
+
+            <div class="terms-section">
+                <h3><i class="fas fa-stethoscope"></i> 1. Service Description</h3>
+                <p><strong>Tech Care</strong> is a digital platform that connects patients, doctors, nurses, pharmacists, and blood donors. The platform enables:</p>
+                <ul>
+                    <li><strong>For patients:</strong> Search and book doctors or nurses for home visits, order medications from nearby pharmacies (cash or online payment).</li>
+                    <li><strong>For doctors & nurses:</strong> Create a verified profile, set consultation fees, and provide home visits.</li>
+                    <li><strong>For pharmacists:</strong> Synchronize a limited catalog of available medications; users can reserve or request delivery.</li>
+                    <li><strong>Blood donation:</strong> Patients can request specific blood types; potential donors matching the criteria receive notifications.</li>
+                </ul>
+                <p>Tech Care acts solely as an intermediary. All medical services are provided by licensed independent professionals.</p>
+            </div>
+
+
+            <div class="terms-section">
+                <h3><i class="fas fa-user-check"></i> 2. User Responsibilities</h3>
+                <p>Every user (patient, doctor, nurse, pharmacist, donor) must provide accurate, complete, and up‑to‑date information. You agree to:</p>
+                <ul>
+                    <li>Submit genuine identification documents and professional credentials (for doctors, nurses, pharmacists).</li>
+                    <li>Provide honest medical history when relevant (only what is necessary for the service).</li>
+                    <li>Respect appointment times and cancellation policies.</li>
+                    <li>Not misuse the platform for fraudulent or illegal purposes.</li>
+                </ul>
+                <p>Tech Care is not liable for any damages arising from false or incomplete information provided by users.</p>
+            </div>
+
+
+            <div class="terms-section">
+                <h3><i class="fas fa-exclamation-triangle"></i> 3. Medical Disclaimer</h3>
+                <p>Tech Care is not a healthcare provider. We do not practice medicine, give medical advice, or diagnose conditions. All consultations, treatments, and prescriptions are delivered solely by qualified, licensed professionals who are independent from Tech Care.</p>
+                <p>You should always exercise your own judgment and seek emergency help when needed. Tech Care does not endorse any specific doctor, nurse, or pharmacist.</p>
+            </div>
+
+
+            <div class="terms-section">
+                <h3><i class="fas fa-credit-card"></i> 4. Appointments & Payments</h3>
+                <ul>
+                    <li><strong>Booking fee:</strong> A small service fee may be charged to both patient and professional (percentage of the visit cost). This covers platform maintenance.</li>
+                    <li><strong>Payment methods:</strong> Cash upon arrival (to the professional) or secure in‑app card payment (where available).</li>
+                    <li><strong>Cancellation:</strong> Users may cancel up to 2 hours before the appointment without penalty. Later cancellations may incur a fee deducted from future bookings.</li>
+                    <li><strong>Pharmacy orders:</strong> Payment for medications is handled directly between the user and the pharmacy. Tech Care may collect a nominal service fee for delivery coordination.</li>
+                </ul>
+            </div>
+
+
+            <div class="terms-section">
+                <h3><i class="fas fa-lock"></i> 5. Privacy & Data Protection</h3>
+                <p>All personal data (including medical images, IDs, and contact details) is stored encrypted and used only to provide and improve our services. We never sell your data to third parties.</p>
+                <p>By using Tech Care, you consent to the collection and processing of your data as described in our <strong>Privacy Policy</strong> (available separately).</p>
+                <div class="note">
+                    <i class="fas fa-shield-alt" style="margin-right: 8px;"></i>
+                    We comply with applicable data protection laws. You may request deletion of your account at any time.
+                </div>
+            </div>
+
+
+            <div class="terms-section">
+                <h3><i class="fas fa-balance-scale"></i> 6. Limitation of Liability</h3>
+                <p>To the maximum extent permitted by law, Tech Care shall not be liable for:</p>
+                <ul>
+                    <li>Any medical outcome, misdiagnosis, or treatment provided by a professional booked through the platform.</li>
+                    <li>Delays, errors, or unavailability of doctors, nurses, or medication stock.</li>
+                    <li>Indirect or consequential damages arising from use of the service.</li>
+                </ul>
+                <p>Our total liability in any case is limited to the amount of service fees paid by you in the past six months.</p>
+            </div>
+
+            <div class="terms-section">
+                <h3><i class="fas fa-tint"></i> 7. Blood Donation Requests</h3>
+                <p>When a patient requests a specific blood type, Tech Care may send push notifications or emails to potential donors who have previously agreed to be contacted. Donors are free to accept or decline.</p>
+                <p>Tech Care does not organise the donation itself; any medical procedure (blood draw, testing) is performed by licensed medical facilities. Donors must be medically eligible and honest about their health status.</p>
+            </div>
+
+
+            <div class="terms-section">
+                <h3><i class="fas fa-edit"></i> 8. Changes to Terms</h3>
+                <p>We may update these Terms & Conditions from time to time. The latest version will always be posted here with an updated revision date. Continued use of Tech Care after changes constitutes your acceptance of the new terms.</p>
+            </div>
+
+            <div class="terms-section">
+                <h3><i class="fas fa-envelope"></i> 9. Contact Us</h3>
+                <p>If you have any questions about these Terms, please <a href="contact.html" class="contact-link">contact our support team</a> or through the in‑app help section.</p>
+            </div>
+        </div>
+
+        <a href='{% url  "register" %}' class="btn-terms">
+            Accept & Continue
+        </a>
+    </div>
+
+    <script src="{% static 'Js/Form.js' %}"></script>
+</body>
+</html>
