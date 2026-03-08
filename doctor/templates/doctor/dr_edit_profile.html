@@ -5,7 +5,7 @@
                                 <i class="bi bi-person"></i>
                                 <span>Profile</span>
                             </a>
-                            <a href="{% url 'doctor:doctor_requests' slug 'pending' %}" class="aside-item">
+                            <a href="{% url 'doctor:doctor_requests' 'pending' %}" class="aside-item">
                                 <i class="ri-file-list-line"></i>
                                 <span>Requests</span>
                             </a>
@@ -89,7 +89,7 @@
                             </div>
                         
                             <div class="form-group-edit">
-    <label>Governorate / Location</label>
+                                <label>Governorate / Location</label>
                                 <select name="governorate">
                                     <option value="" disabled {% if not doctor.governorate %}selected{% endif %}>Select governorate</option>
                                     <option value="alexandria" {% if doctor.governorate == 'alexandria' %}selected{% endif %}>Alexandria</option>

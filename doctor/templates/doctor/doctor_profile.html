@@ -5,7 +5,7 @@
                                 <i class="bi bi-person"></i>
                                 <span>Profile</span>
                             </a>
-                            <a href="{% url 'doctor:doctor_requests' slug 'pending' %}" class="aside-item">
+                            <a href="{% url 'doctor:doctor_requests' 'pending' %}" class="aside-item">
                                 <i class="ri-file-list-line"></i>
                                 <span>Requests</span>
                             </a>
@@ -81,7 +81,7 @@
                             </div>
                         
                             <!-- Button تحت -->
-                            <button class="edit-button" onclick="window.location.href='{% url 'doctor:edit_doctor_profile' slug=slug %}'">
+                            <button class="edit-button" onclick="window.location.href='{% url 'doctor:edit_doctor_profile'%}'">
                                 <i class="fas fa-edit"></i>
                                 Edit Profile
                             </button>

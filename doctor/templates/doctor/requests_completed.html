@@ -5,7 +5,7 @@
                                 <i class="bi bi-person"></i>
                                 <span>Profile</span>
                             </a>
-                            <a href="{% url 'doctor:doctor_requests' slug 'pending' %}" class="aside-item active">
+                            <a href="{% url 'doctor:doctor_requests' 'pending' %}" class="aside-item active">
                                 <i class="ri-file-list-line"></i>
                                 <span>Requests</span>
                             </a>
@@ -40,9 +40,9 @@
                     </div>
 
                     <div class="tabs-navigation">
-                        <button class="tab-link" data-status="pending" onclick="window.location.href='{% url 'doctor:doctor_requests' slug 'pending' %}'">Pending</button>
-                        <button class="tab-link" data-status="accepted" onclick="window.location.href='{% url 'doctor:doctor_requests' slug 'accepted' %}'">Accepted</button>
-                        <button class="tab-link active" data-status="done" onclick="window.location.href='{% url 'doctor:doctor_requests' slug 'completed' %}'">Done</button>
+                        <button class="tab-link" data-status="pending" onclick="window.location.href='{% url 'doctor:doctor_requests' 'pending' %}'">Pending</button>
+                        <button class="tab-link" data-status="accepted" onclick="window.location.href='{% url 'doctor:doctor_requests' 'accepted' %}'">Accepted</button>
+                        <button class="tab-link active" data-status="done" onclick="window.location.href='{% url 'doctor:doctor_requests' 'completed' %}'">Done</button>
                     </div>
                 </div>
                 <div class="requests-grid">
@@ -101,9 +101,6 @@
                     
                         <!-- Footer Actions -->
                         <div class="card-footer-actions details-footer">
-                            <button class="btn-link">
-                                <i class="bi bi-eye"></i> View Details
-                            </button>
                             <button class="btn-action edit">
                                 <i class="bi bi-download"></i> Download Report
                             </button>

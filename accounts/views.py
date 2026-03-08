@@ -11,9 +11,10 @@ from cryptography.fernet import Fernet
 import json
 from . import validations
 
-errors = {}
+
 
 def user_login(request):
+    errors = {}
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -36,12 +37,14 @@ def user_login(request):
             )
 
             request.session['otp_user_id'] = user.id
+            request.session['otp_source'] = 'login'
 
             return redirect('verify_otp_l')
 
     return render(request, 'accounts/login.html')
 
 def verify_otp_login(request):
+    errors = {}
     if request.method == "POST":
         user_id = request.session.get("otp_user_id")
 
@@ -57,7 +60,7 @@ def verify_otp_login(request):
         for otp in list_otp:
             if not otp or not otp.isdigit():
                 errors['otp_invalid']="All OTP fields must be digits only."
-                return render(request, "accounts/verify_otp.html", {'errors': errors})
+                return render(request, "accounts/verify_otp.html", {'errors': errors, "otp_type": "login"})
 
         otp_str = "".join(list_otp)
         otp_input = int(otp_str)
@@ -78,12 +81,12 @@ def verify_otp_login(request):
         
         if not saved_otp:
             errors['otp_invalid']="OTP Expired"
-            return render(request, "accounts/verify_otp.html", {'errors': errors})
+            return render(request, "accounts/verify_otp.html", {'errors': errors, "otp_type": "login"})
 
         if saved_otp != otp_input:
             request.session["otp_attempts"] = attempts + 1
             errors['otp_invalid']="Invalid OTP"
-            return render(request, "accounts/verify_otp.html", {'errors': errors})
+            return render(request, "accounts/verify_otp.html", {'errors': errors, "otp_type": "login"})
 
         request.session.pop("otp_attempts", None)
 
@@ -119,6 +122,7 @@ def resend_otp_login(request):
 
 
 def user_register(request):
+    errors = {}
     if request.method =='POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -187,10 +191,13 @@ def user_register(request):
             recipient_list = [email]
         )
 
+        request.session['otp_source'] = 'signup'
+
         return redirect('verify_otp_s', token=pending_user.id)
     return render(request, 'accounts/register.html')
 
 def verify_otp_signup(request, token):
+    errors = {}
     pending_user = get_object_or_404(PendingUser, id=token)
     if request.method == "POST":
         list_otp = [
@@ -204,7 +211,7 @@ def verify_otp_signup(request, token):
         for otp in list_otp:
             if not otp or not otp.isdigit():
                 errors['otp_invalid']="All OTP fields must be digits only."
-                return render(request, "accounts/verify_otp.html", {'errors': errors, "token": token})
+                return render(request, "accounts/verify_otp.html", {'errors': errors, "token": token, "otp_type": "signup", "url_back": "register"})
 
         otp_str = "".join(list_otp)
         otp_input = int(otp_str)
@@ -231,7 +238,7 @@ def verify_otp_signup(request, token):
             updated_encrypted = key.encrypt(json.dumps(pending_data).encode())
             cache.set(f"pending_data_{pending_user.id}", updated_encrypted, timeout=300)
             errors['otp_invalid']="Invalid OTP"
-            return render(request, 'accounts/verify_otp.html',{'errors': errors, "token": token})
+            return render(request, 'accounts/verify_otp.html',{'errors': errors, "token": token, "otp_type": "signup", "url_back": "register"})
 
         User = get_user_model()
         user = User.objects.create(
@@ -253,6 +260,7 @@ def verify_otp_signup(request, token):
     return render(request, "accounts/verify_otp.html", {
         "token": token,
         "otp_type": "signup",
+        "url_back": "register"
         })
 
 def resend_otp_signup(request, token):
@@ -284,6 +292,7 @@ def resend_otp_signup(request, token):
 
 
 def verify_otp_faild(request):
+    
     source = request.session.get('otp_source')
 
     if source == 'login':
@@ -305,6 +314,7 @@ def verify_otp_faild(request):
 
 
 def patient_registration(request):
+    errors = {}
     if request.method == 'POST':
         gender = request.POST.get('gender')
         address = request.POST.get('address')
@@ -340,6 +350,7 @@ def patient_registration(request):
 
 
 def doctor_registration(request):
+    errors = {}
     if request.method == 'POST':
         gender = request.POST.get('gender')
         address = request.POST.get('address')
@@ -396,6 +407,7 @@ def doctor_registration_s2(request):
 
 
 def nurse_registration_step1(request):
+    errors = {}
     if request.method == 'POST':
         gender = request.POST.get('gender')
         phone_number = request.POST.get('phone_number')
@@ -452,6 +464,7 @@ def nurse_registration_step2(request):
 
 
 def pharmacist_registration_step1(request):
+    errors = {}
     if request.method == 'POST':
         gender = request.POST.get('gender')
         phone_number = request.POST.get('phone_number')
@@ -486,6 +499,8 @@ def pharmacist_registration_step1(request):
     return render(request, 'accounts/pharmacist_registration.html')
 
 def pharmacist_registration_step2(request):
+    errors = {}
+
     pharmacist = Pharmacist.objects.get(user = request.user)
 
     if request.method == 'POST':
@@ -515,6 +530,7 @@ def pharmacist_registration_step2(request):
 
 
 def donor_registration(request):
+    errors = {}
     if request.method == 'POST':
         address = request.POST.get('address')
         governorate = request.POST.get('governorate')
@@ -561,6 +577,7 @@ def donor_registration(request):
 
 
 def forget_password(request):
+    errors = {}
     if request.method == 'POST':
         email = request.POST.get('email')
         User = get_user_model()
@@ -582,11 +599,14 @@ def forget_password(request):
             recipient_list = [user.email]
         )
         request.session['otp_user_id'] = user.id
+        request.session['otp_source'] = 'forget'
+        
         return redirect('verify_otp_forget_password')
 
     return render(request, 'accounts/forget_password.html')
 
 def verify_otp_forget_password(request):
+    errors = {}
     if request.method == "POST":
         if request.method == "POST":
             list_otp = [
@@ -600,7 +620,11 @@ def verify_otp_forget_password(request):
         for otp in list_otp:
             if not otp or not otp.isdigit():
                 errors['otp_invalid']="All OTP fields must be digits only."
-                return render(request, "accounts/verify_otp.html", {'errors': errors})
+                return render(request, "accounts/verify_otp.html", {
+                'errors': errors,
+                'otp_type': 'forget',
+                'url_back': 'forget_password'
+                })
 
         otp_str = "".join(list_otp)
         otp_input = int(otp_str)
@@ -622,11 +646,19 @@ def verify_otp_forget_password(request):
         
         if not saved_otp:
             errors['otp_invalid']="OTP Expired"
-            return render(request, "accounts/verify_otp.html", {'errors': errors})
+            return render(request, "accounts/verify_otp.html", {
+            'errors': errors,
+            'otp_type': 'forget',
+            'url_back': 'forget_password'
+            })
         if saved_otp != otp_input:
             request.session["otp_attempts"] = attempts + 1
             errors['otp_invalid']="Invalid OTP"
-            return render(request, "accounts/verify_otp.html", {'errors': errors})
+            return render(request, "accounts/verify_otp.html", {
+            'errors': errors,
+            'otp_type': 'forget',
+            'url_back': 'forget_password'
+            })
         
         cache.delete(f"otp_{user_id}")
 
@@ -634,6 +666,7 @@ def verify_otp_forget_password(request):
     return render(  request, "accounts/verify_otp.html", {"otp_type": 'forget', "url_back": 'forget_password'})  
 
 def reset_password(request):
+    errors = {}
     user_id = request.session.get("otp_user_id")
     if not user_id:
         return redirect('forget_password')
