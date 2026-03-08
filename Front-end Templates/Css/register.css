@@ -109,6 +109,12 @@ body {
     background: var(--primary-color);
 }
 
+.logo-icon img{
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+}
+
 .logo-section h1 {
     font-size: 24px;
     color: #2D3748;
