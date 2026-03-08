@@ -176,4 +176,3 @@ def doctor_requests(request, type):
     
     else:
         return redirect('doctor:doctor_dashboard')
-    
