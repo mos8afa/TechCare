@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block sidebar %}
             <aside class="aside">
-                            <a href="../Dr_Board/Profile.html" class="aside-item active">
+                            <a href="{% url 'doctor:doctor_dashboard' %}" class="aside-item active">
                                 <i class="bi bi-person"></i>
                                 <span>Profile</span>
                             </a>
@@ -25,7 +25,7 @@
 {% endblock sidebar %}
 {% block content %}
             <!-- Main Content -->
-            <main class="main-content">
+            <main class="main-content animate slide-up">
 
                 <div class="edit-profile-wrapper">
                     <div class="edit-profile-card">

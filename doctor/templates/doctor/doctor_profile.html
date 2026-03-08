@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block sidebar %}
             <aside class="aside">
-                            <a href="../Dr_Board/Profile.html" class="aside-item active">
+                            <a href="{% url 'doctor:doctor_dashboard' %}" class="aside-item active">
                                 <i class="bi bi-person"></i>
                                 <span>Profile</span>
                             </a>
@@ -27,7 +27,7 @@
             <!-- Main Content -->
             <main class="main-content">
                 <!-- Profile Header Card -->
-                <div class="profile-card">
+                <div class="profile-card animate slide-up" >
                     <div class="profile-row">
                         <!-- Avatar & badges -->
                         <div class="profile-avatar">
@@ -93,7 +93,7 @@
                 <!-- Bottom Grid -->
                 <div class="grid-2">
                     <!-- Academic & Credentials Card -->
-                    <div class="info-card certificates-card">
+                    <div class="info-card certificates-card animate slide-up-2">
                         <h3>
                             <i class="bi bi-patch-check"></i>
                             Certifications & Courses
@@ -120,7 +120,7 @@
                     </div>
                 
                     <!-- Financials & Activity Card -->
-                    <div class="info-card">
+                    <div class="info-card animate slide-up-2">
                         <div class="card-header">
                             <h3>
                                 <i class="fa-solid fa-chart-line"></i>

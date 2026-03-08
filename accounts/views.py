@@ -600,7 +600,7 @@ def forget_password(request):
         )
         request.session['otp_user_id'] = user.id
         request.session['otp_source'] = 'forget'
-        
+
         return redirect('verify_otp_forget_password')
 
     return render(request, 'accounts/forget_password.html')
@@ -736,3 +736,6 @@ def user_profile(request):
         
     else:
         return redirect('home')
+    
+def terms(request):
+    return render(request, 'accounts/terms.html')

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block sidebar %}
             <aside class="aside">
-                            <a href="../Dr_Board/Profile.html" class="aside-item">
+                            <a href="{% url 'doctor:doctor_dashboard' %}" class="aside-item">
                                 <i class="bi bi-person"></i>
                                 <span>Profile</span>
                             </a>
