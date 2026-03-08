@@ -496,23 +496,8 @@ body {
     transition:0.2s;
 }
 
-.btn-primary-delete{
-    cursor: pointer;
-    color: #4b5563;
-    font-weight: 600;
-    padding: 12px 22px;
-    border-radius: 12px;
-    background: white;
-    border: 1.5px solid #E2E8F0;
-    transition: 0.2s;
-}
-
 .btn-primary-edit:hover{
     background:var(--secondary-color);
-}
-
-.btn-primary-delete:hover{
-    background:var(--bg-light);
 }
 
 .btn-light-edit{
