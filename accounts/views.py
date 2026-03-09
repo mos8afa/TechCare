@@ -299,7 +299,6 @@ def verify_otp_faild(request):
         back_url = 'login'
 
     elif source == 'signup':
-        
         back_url = 'register'
 
     elif source == 'forget':
@@ -308,6 +307,7 @@ def verify_otp_faild(request):
     else:
         back_url = 'login'
 
+    request.session.pop('otp_source', None)
     return render(request, 'accounts/verify_otp_faild.html', {
         'back_url': back_url
     })
