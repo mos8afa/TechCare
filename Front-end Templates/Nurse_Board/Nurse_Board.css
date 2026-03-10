@@ -40,6 +40,31 @@ body {
     transition: 0.3s ease;
 }
 
+.sidebar.collapsed {
+    width: 80px;
+    padding: 20px 10px;
+}
+
+.sidebar.collapsed ~ div .topbar {
+    left: 80px;
+}
+
+.sidebar.collapsed ~ div .main-content,
+.sidebar.collapsed ~ div .main-content-nurse-requst {
+    margin-left: 80px;
+}
+
+.sidebar.collapsed .logo h2,
+.sidebar.collapsed .logo p,
+.sidebar.collapsed .aside-item span,
+.sidebar.collapsed .logo .logo-icon {
+    display: none;
+}
+
+.sidebar.collapsed .aside-item {
+    justify-content: center;
+}
+
 .logo {
     gap: 12px;
     display: flex;
@@ -52,12 +77,19 @@ body {
     flex-wrap: wrap;
     align-content: center;
     justify-content: center;
+
     width: 40px;
     height: 40px;
     color: white;
     font-size: 22px;
     border-radius: 15px;
     background-color: var(--primary-color);
+}
+
+.logo-icon img{
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
 }
 
 .logo h2 {
@@ -90,31 +122,6 @@ body {
 .sidebar-toggle i {
     font-size: 20px;
     color: var(--text-gray);
-}
-
-.sidebar.collapsed {
-    width: 80px;
-    padding: 20px 10px;
-}
-
-.sidebar.collapsed ~ div .topbar {
-    left: 80px;
-}
-
-.sidebar.collapsed ~ div .main-content,
-.sidebar.collapsed ~ div .main-content-nurse-requst {
-    margin-left: 80px;
-}
-
-.sidebar.collapsed .logo h2,
-.sidebar.collapsed .logo p,
-.sidebar.collapsed .aside-item span,
-.sidebar.collapsed .logo .logo-icon {
-    display: none;
-}
-
-.sidebar.collapsed .aside-item {
-    justify-content: center;
 }
 
 .aside {
@@ -273,6 +280,11 @@ body {
     border: 2px solid #E1E6EC;
 }
 
+.topbar-profile i {
+    font-size: 14px;
+    color: #6b7280;
+}
+
 .topbar-user-info {
     display: flex;
     align-items: flex-end;
@@ -291,11 +303,6 @@ body {
     color: var(--text-gray);
 }
 
-.topbar-profile i {
-    font-size: 14px;
-    color: #6b7280;
-}
-
 /* ===== Main Content (common) ===== */
 .main-content {
     display: flex;
@@ -307,9 +314,7 @@ body {
     transition: 0.3s ease;
 }
 
-/* ================================================================================================ */
-/* Profile Page */
-
+/* ===== Profile Page ===== */
 .card {
     gap: 30px;
     display: flex;
@@ -320,6 +325,12 @@ body {
     border-radius: 12px;
     background: white;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    animation: slideInFromLeft 0.7s ease-out;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
 }
 
 .profile-image-wrapper {
@@ -433,8 +444,10 @@ body {
     background: var(--primary-color);
 }
 
+/* ===== Services Section ===== */
 .Services-Card {
     max-width: 1100px;
+    animation: fadeIn 0.6s ease-out;
 }
 
 .services-header {
@@ -442,6 +455,21 @@ body {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 25px;
+    animation: slideInFromLeft 0.6s ease-out;
+}
+
+.services-header h3 {
+    transition: color 0.3s ease;
+}
+
+.services-header h3:hover {
+    color: var(--secondary-color);
+}
+
+#serviceCount {
+    font-weight: 500;
+    color: var(--primary-color);
+    font-size: 0.95rem;
 }
 
 .btn-add-services {
@@ -451,58 +479,10 @@ body {
     padding: 8px 16px;
     border-radius: 8px;
     background-color: var(--primary-color);
-    transition: background-color 0.2s;
 }
 
 .btn-add-services:hover {
     background-color: var(--secondary-color);
-}
-
-#serviceCount {
-    font-weight: 500;
-    color: var(--primary-color);
-    font-size: 0.95rem;
-}
-
-.services-grid {
-    gap: 20px;
-    display: flex;
-}
-
-.service-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 30px;
-    border-radius: 18px;
-    background-color: white;
-}
-
-.service-card h4 {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
-
-.service-card .money {
-    color: var(--primary-color);
-}
-
-.service-card p {
-    color: var(--text-gray);
-    margin-bottom: 15px;
-}
-
-.service-actions {
-    gap: 20px;
-    display: flex;
-    justify-content: flex-end;
-    font-size: 14px;
-}
-
-.service-actions a {
-    text-decoration: none;
-    color: var(--primary-color);
 }
 
 .modal {
@@ -572,9 +552,112 @@ body {
     background-color: var(--secondary-color);
 }
 
-/* ================================================================================================ */
-/* Requests Page */
+.services-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    animation: slideInFromRight 0.8s ease-out 0.2s both;
+}
 
+.service-nav-btn {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 10px 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: white;
+    color: var(--primary-color);
+    border: 2px solid white;
+    transition: 0.3s;
+    box-shadow: 0 2px 8px rgba(60, 60, 60, 0.25);
+}
+
+.service-nav-btn:hover {
+    color: white;
+    background: var(--primary-color);
+    box-shadow: 0 6px 16px var(--secondary-color);
+    border: var(--secondary-color);
+    animation: scalePulse 0.1s ease-in-out;
+}
+
+.services-grid {
+scroll-snap-type: x mandatory; /* تفعيل الالتقاط الأفقي */
+    gap: 20px;
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    flex: 1;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.services-grid::-webkit-scrollbar {
+    display: none;
+}
+
+.service-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 30px;
+    border-radius: 18px;
+    background-color: white;
+    /* تم إزالة min-width: 300px */
+    width: calc((100% - 40px) / 3); /* 40px تمثل مجموع الفجوات بين البطاقات (فجوتين × 20px) */
+    flex-shrink: 0;
+    animation: slideInFromRight 0.6s ease-out;
+    transition: all 0.3s ease;
+    scroll-snap-align: start;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.service-card h4 {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    animation: fadeIn 0.8s ease-out 0.2s both;
+}
+
+.service-card .money {
+    color: var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.service-card:hover .money {
+    transform: scale(1.1);
+}
+
+.service-card p {
+    color: var(--text-gray);
+    margin-bottom: 15px;
+    animation: fadeIn 0.8s ease-out 0.4s both;
+}
+
+.service-actions {
+    gap: 20px;
+    display: flex;
+    justify-content: flex-end;
+    font-size: 14px;
+    animation: fadeIn 0.8s ease-out 0.6s both;
+}
+
+.service-actions a {
+    text-decoration: none;
+    color: var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.service-actions a:hover {
+    transform: scale(1.15);
+}
+
+/* ===== Requests Page ===== */
 .main-content-nurse-requst {
     display: flex;
     flex-direction: column;
@@ -664,13 +747,6 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
 }
 
-@media (max-width: 1100px) {
-    .requests-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Request Card Component */
 .request-card-item {
     display: flex;
     flex-direction: column;
@@ -726,12 +802,6 @@ body {
 .status-pill.pending {
     background: #FFFBEB;
     color: #D97706;
-}
-
-.hr {
-    border: none;
-    margin: 20px 0;
-    border-top: #f5f5f5 1px solid;
 }
 
 .card-mid-section {
@@ -876,6 +946,12 @@ body {
 }
 
 /* ===== Responsive ===== */
+@media (max-width: 1100px) {
+    .requests-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 900px) {
     .dashboard {
         flex-direction: column;
@@ -910,3 +986,68 @@ body {
         margin-top: 0;
     }
 }
+
+/* ===== Animations ===== */
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scalePulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+/* ===== Animations for Request Cards ===== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.request-card-item {
+    opacity: 0; /* مخفي في البداية */
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+
+/* إذا أردت ظهور البطاقات بشكل متتابع (واحدة تلو الأخرى) يمكن إضافة تأخير تدريجي */
+.request-card-item:nth-child(1) { animation-delay: 0.1s; }
+.request-card-item:nth-child(2) { animation-delay: 0.2s; }
+.request-card-item:nth-child(3) { animation-delay: 0.3s; }
+/* وهكذا حسب عدد البطاقات المتوقع */
