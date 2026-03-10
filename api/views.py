@@ -17,6 +17,30 @@ from rest_framework.permissions import IsAuthenticated
 
 User = get_user_model()
 
+def generate_otp(user):
+    otp = random.randint(100000,999999)
+
+    pending_data = {
+        "otp": otp,
+        "attempts":0,
+        }
+
+    key = Fernet(FERNET_KEY)
+
+    data = json.dumps(pending_data).encode()
+    encrypted = key.encrypt(data)
+
+    cache.set(f"pending_data_{user.id}", encrypted, timeout=300)
+
+    send_mail(
+        subject = "TechCare Team",
+        message = f"your verification OTP is {otp}",
+        from_email = EMAIL_HOST_USER,
+        recipient_list = [user.email]
+    )
+
+    return True, "OTP sent to your email"
+    
 def verify_otp(user_id, otp_input):
     encrypted = cache.get(f"pending_data_{user_id}")
 
@@ -47,7 +71,6 @@ def verify_otp(user_id, otp_input):
 
     return True, None
 
-
 @api_view(['POST'])
 def login(request):
     username = request.data.get('username')
@@ -58,28 +81,11 @@ def login(request):
     if user is None:
         return Response({"error": "Invalid credentials"}, status=401)
 
-    otp = random.randint(100000,999999)
+    otp, message = generate_otp(user)
+    if not otp: 
+        return Response({"error": message}, status=404)
 
-    pending_data = {
-        "otp": otp,
-        "attempts":0,
-        }
-
-    key = Fernet(FERNET_KEY)
-
-    data = json.dumps(pending_data).encode()
-    encrypted = key.encrypt(data)
-
-    cache.set(f"pending_data_{user.id}", encrypted, timeout=300)
-
-    send_mail(
-        subject = "TechCare Team",
-        message = f"your verification OTP is {otp}",
-        from_email = EMAIL_HOST_USER,
-        recipient_list = [user.email]
-    )
-
-    return Response({"message": "OTP sent to your email"})
+    return Response({"message": message}, status=200)
 
 @api_view(['POST'])
 def Verify_OTP_login(request):
@@ -140,28 +146,14 @@ def register(request):
         role = role
     )
 
-    otp = random.randint(100000,999999)
+    pending_user.save()
 
-    pending_data = {
-        "otp": otp,
-        "attempts":0,
-        }
-
-    key = Fernet(FERNET_KEY)
-
-    data = json.dumps(pending_data).encode()
-    encrypted = key.encrypt(data)
-
-    cache.set(f"pending_data_{pending_user.id}", encrypted, timeout=300)
-
-    send_mail(
-        subject = "TechCare Team",
-        message = f"your verification OTP is {otp}",
-        from_email = EMAIL_HOST_USER,
-        recipient_list = [email]
-    )
+    otp, message = generate_otp(pending_user)
+    if not otp:
+        pending_user.delete()
+        return Response({"error": message}, status=404)
     
-    return Response({"message": "OTP sent to your email"})
+    return Response({"message": message}, status=200)
 
 @api_view(['POST'])
 def verify_OTP_register(request, user_id):
@@ -332,3 +324,60 @@ def nurse_register(request):
     nurse.save()
 
     return Response({"message": "Nurse profile created successfully"})
+
+
+@api_view(['POST'])
+def forget_password(request):
+    email = request.data.get('email')
+
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({"error": "User with this email does not exist"}, status=404)
+
+    otp, message = generate_otp(user)
+    if not otp:
+        return Response({"error": message}, status=404)
+
+    return Response({"message": message}, status=200)
+
+@api_view(['POST'])
+def verify_OTP_forget_password(request):
+    try:
+        user = User.objects.get(email=request.data.get('email'))
+    except User.DoesNotExist:
+        return Response({"error": "User with this email does not exist"}, status=404)
+
+    otp = request.data.get('otp')
+
+    if not otp:
+        return Response({"error": "OTP is required"}, status=400)
+    
+    success, error_message = verify_otp(user.id, otp)
+
+    if not success:
+        return Response({"error": error_message}, status=400)
+    
+    return Response({"message": "OTP verified successfully"}, status=200)
+
+@api_view(['POST'])
+def reset_password(request):
+    email = request.data.get('email')
+    password = request.data.get('password')
+    confirm = request.data.get('confirm')
+
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({"error": "User with this email does not exist"}, status=404)
+
+    if password != confirm:
+        return Response({"error": "Passwords do not match"}, status=400)
+
+    if not accounts.validations.validate_password(password):
+        return Response({"error": "Password must be at least 8 chars and include at least one uppercase, one lowercase, one number, and one special char (!@#&?$%*.-~)."}, status=400)
+
+    user.password = make_password(password)
+    user.save()
+
+    return Response({"message": "Password reset successfully"}, status=200)

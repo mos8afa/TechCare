@@ -1,4 +1,4 @@
-from api.views import login, Verify_OTP_login, register, verify_OTP_register, patient_register, doctor_register, nurse_register
+from api.views import login, Verify_OTP_login, register, resend_OTP, verify_OTP_register, patient_register, doctor_register, nurse_register, forget_password, verify_OTP_forget_password, reset_password
 from django.urls import path
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
@@ -13,5 +13,8 @@ urlpatterns = [
     path('auth/patient/', patient_register, name='patient_register'),
     path('auth/doctor/', doctor_register, name='doctor_register'),
     path('auth/nurse/', nurse_register, name='nurse_register'),
+    path('auth/forget-password/', forget_password, name='forget_password'),
+    path('auth/verify-otp-forget-password/', verify_OTP_forget_password, name='verify_otp_forget_password'),
+    path('auth/reset-password/', reset_password, name='reset_password'),
 ]
 
