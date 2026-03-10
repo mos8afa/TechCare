@@ -1,18 +1,53 @@
 import random
+from cryptography.fernet import Fernet
+import json
 from rest_framework.response import Response
 from rest_framework.decorators import api_view 
 from django.contrib.auth import authenticate, get_user_model
 from django.core.cache import cache
 from django.core.mail import send_mail
-from project.settings import EMAIL_HOST_USER
+from project.settings import EMAIL_HOST_USER, FERNET_KEY
 from rest_framework_simplejwt.tokens import RefreshToken
 import accounts.validations 
+from accounts.models import PendingUser
+from django.contrib.auth.hashers import make_password
 
 
 User = get_user_model()
 
+def verify_otp(user_id, otp_input):
+    encrypted = cache.get(f"pending_data_{user_id}")
+
+    if not encrypted:
+        return False, "OTP expired"
+
+    key = Fernet(FERNET_KEY)
+
+    data = key.decrypt(encrypted)
+    pending_data = json.loads(data.decode())
+
+    saved_otp = pending_data["otp"]
+    attempts = pending_data["attempts"]
+
+    if attempts >= 3:
+        return False, "Too many attempts"
+
+    if str(saved_otp) != str(otp_input):
+        pending_data["attempts"] += 1
+
+        new_encrypted = key.encrypt(json.dumps(pending_data).encode())
+
+        cache.set(f"pending_data_{user_id}", new_encrypted, timeout=300)
+
+        return False, "Invalid OTP"
+
+    cache.delete(f"pending_data_{user_id}")
+
+    return True, None
+
+
 @api_view(['POST'])
-def Login(request):
+def login(request):
     username = request.data.get('username')
     password = request.data.get('password')
 
@@ -23,8 +58,17 @@ def Login(request):
 
     otp = random.randint(100000,999999)
 
-    cache.set(f"otp_{user.id}", otp, timeout=300)
-    cache.set(f"otp_attempts_{user.id}", 0, timeout=300)
+    pending_data = {
+        "otp": otp,
+        "attempts":0,
+        }
+
+    key = Fernet(FERNET_KEY)
+
+    data = json.dumps(pending_data).encode()
+    encrypted = key.encrypt(data)
+
+    cache.set(f"pending_data_{user.id}", encrypted, timeout=300)
 
     send_mail(
         subject = "TechCare Team",
@@ -35,50 +79,24 @@ def Login(request):
 
     return Response({"message": "OTP sent to your email"})
 
-
-User = get_user_model
-
 @api_view(['POST'])
-def VerifyOTP(request):
+def Verify_OTP_login(request):
     username = request.data.get('username')
-    otp = request.data.get('otp')
-
-    user = User.objects.filter(username=username).first()
-
-    list_otp = [
-                request.data.get('otp1'),
-                request.data.get('otp2'),
-                request.data.get('otp3'),
-                request.data.get('otp4'),
-                request.data.get('otp5'),
-                request.data.get('otp6')
-            ]
-    for otp in list_otp:
-        if not otp or not otp.isdigit():
-            return Response({"error": "Invalid OTP format"}, status=400 )
-
-    otp_str = "".join(list_otp)
-    otp_input = int(otp_str)
-
-    if not user:
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
         return Response({"error": "User not found"}, status=404)
     
-    attempts = cache.get(f"otp_attempts_{user.id}")
-    if attempts is not None and attempts >= 5:
-        return Response({"error": "Too many OTP attempts. Please try again later."}, status=429)
-    
-    saved_otp = cache.get(f"otp_{user.id}")
+    otp = request.data.get('otp')
 
-    if not saved_otp:
-        return Response({"error":"OTP expired"},status=400)
+    if not otp:
+        return Response({"error": "OTP is required"}, status=400)
     
-    if str(saved_otp) != str(otp_input):
-        cache.incr(f"otp_attempts_{user.id}")
-        return Response({"error":"Invalid OTP"},status=400)
-    
-    cache.delete(f"otp_{user.id}")
-    cache.delete(f"otp_attempts_{user.id}")
+    success, error_message = verify_otp(user.id, otp)
 
+    if not success:
+        return Response({"error": error_message}, status=400)
+    
     refresh = RefreshToken.for_user(user)
 
     return Response({
@@ -88,7 +106,7 @@ def VerifyOTP(request):
 
 
 @api_view(['POST'])
-def Register(request):
+def register(request):
     username = request.data.get('username')
     email = request.data.get('email')
     first_name = request.data.get('first_name')
@@ -111,12 +129,75 @@ def Register(request):
     if not accounts.validations.validate_name(first_name) or not accounts.validations.validate_name(last_name):
         return Response({"error": "Names can only contain letters"}, status=400)
     
-    user = User.objects.create_user(
+    pending_user = PendingUser.objects.create(
         username=username,
         email=email,
         first_name=first_name,
         last_name=last_name,
-        password=password,
-        role=role
+        password=make_password(password),
+        role = role
     )
-    return Response({"message": "User registered successfully"}, status=201)
+
+    otp = random.randint(100000,999999)
+
+    pending_data = {
+        "otp": otp,
+        "attempts":0,
+        }
+
+    key = Fernet(FERNET_KEY)
+
+    data = json.dumps(pending_data).encode()
+    encrypted = key.encrypt(data)
+
+    cache.set(f"pending_data_{pending_user.id}", encrypted, timeout=300)
+
+    send_mail(
+        subject = "TechCare Team",
+        message = f"your verification OTP is {otp}",
+        from_email = EMAIL_HOST_USER,
+        recipient_list = [email]
+    )
+    
+    return Response({"message": "OTP sent to your email"})
+
+@api_view(['POST'])
+def verify_OTP_register(request, user_id):
+    try:
+        pending_user = PendingUser.objects.get(id=user_id)
+    except PendingUser.DoesNotExist:
+        return Response({"error": "User not found"}, status=404)
+    
+    otp = request.data.get('otp')
+
+    if not otp:
+        return Response({"error": "OTP is required"}, status=400)
+
+    success, error_message = verify_otp(pending_user.id, otp)
+
+    if not success:
+        pending_user.delete()
+        return Response({"error": error_message}, status=400)
+    
+
+    user = User.objects.create(
+        username=pending_user.username,
+        email=pending_user.email,
+        first_name=pending_user.first_name,
+        last_name=pending_user.last_name,
+        password=pending_user.password,
+        role = pending_user.role,
+        is_active=True
+    )
+
+    user.save()
+    pending_user.delete()
+
+    refresh = RefreshToken.for_user(user)
+
+    return Response({
+        "access":str(refresh.access_token),
+        "refresh":str(refresh),
+        "message": "Registration successful"
+    })
+

@@ -1,13 +1,14 @@
-from api.views import Login, VerifyOTP, Register
+from api.views import login, Verify_OTP_login, register, verify_OTP_register
 from django.urls import path
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
 urlpatterns = [
-    path('auth/login/', Login, name='login'),
-    path('auth/verify-otp/', VerifyOTP, name='verify_otp'),
+    path('auth/login/', login, name='login'),
+    path('auth/verify-otp-login/', Verify_OTP_login, name='verify_otp_login'),
+    path('auth/register/', register, name='register'),
+    path('auth/verify-otp-register/<str:user_id>/', verify_OTP_register, name='verify_otp_register'),
     path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('auth/register/', Register,name='register'),
 ]
 
