@@ -1,16 +1,18 @@
+from email import errors
 import random
 from cryptography.fernet import Fernet
 import json
 from rest_framework.response import Response
-from rest_framework.decorators import api_view 
+from rest_framework.decorators import api_view, permission_classes 
 from django.contrib.auth import authenticate, get_user_model
 from django.core.cache import cache
 from django.core.mail import send_mail
 from project.settings import EMAIL_HOST_USER, FERNET_KEY
 from rest_framework_simplejwt.tokens import RefreshToken
 import accounts.validations 
-from accounts.models import PendingUser
+from accounts.models import Nurse, Patient, PendingUser, Doctor
 from django.contrib.auth.hashers import make_password
+from rest_framework.permissions import IsAuthenticated
 
 
 User = get_user_model()
@@ -201,3 +203,132 @@ def verify_OTP_register(request, user_id):
         "message": "Registration successful"
     })
 
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def patient_register(request):
+    gender = request.data.get('gender')
+    phone_number = request.data.get('phone_number')
+    address = request.data.get('address')
+    governorate = request.data.get('governorate')
+    profile_pic = request.data.get('profile_pic')
+    national_id_pic_front = request.data.get('national_id_pic_front')
+    national_id_pic_back = request.data.get('national_id_pic_back')
+
+    if not accounts.validations.validate_phone(phone_number):
+            return Response({"error": "Phone number must start with 0 or 1."}, status=400)
+        
+    if not accounts.validations.validate_address(address):
+            return Response({"error": "can't use <,> or forbidden words"}, status=400)
+    
+    patient = Patient.objects.create(
+            user=request.user,
+            gender=gender,
+            address=address,
+            governorate=governorate,
+            phone_number=phone_number,
+            profile_pic=profile_pic,
+            national_id_pic_back=national_id_pic_back,
+            national_id_pic_front=national_id_pic_front,
+        )
+
+    patient.save()
+
+    return Response({"message": "Patient profile created successfully"})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def doctor_register(request):
+    gender = request.data.get('gender')
+    phone_number = request.data.get('phone_number')
+    address = request.data.get('address')
+    governorate = request.data.get('governorate')
+    profile_pic = request.data.get('profile_pic')
+    national_id_pic_front = request.data.get('national_id_pic_front')
+    national_id_pic_back = request.data.get('national_id_pic_back')
+    price = request.data.get('price')
+    date_of_birth = request.data.get('date_of_birth')
+    specification = request.data.get('specification')
+    university= request.data.get('university')
+    syndicate_card = request.data.get('syndicate_card')
+    practice_permit = request.data.get('practice_permit')
+    graduation_certificate = request.data.get('graduation_certificate')
+    excellence_certificate = request.data.get('excellence_certificate')
+
+    if not accounts.validations.validate_phone(phone_number):
+            return Response({"error": "Phone number must start with 0 or 1."}, status=400)
+    
+    if not accounts.validations.validate_address(address):
+            return Response({"error": "can't use <,> or forbidden words"}, status=400)
+    
+    if not accounts.validations.validate_dop(date_of_birth,22):
+            return Response({"error": "You must be at least 22 years old."}, status=400)
+    
+    doctor = Doctor.objects.create(
+            user=request.user,
+            gender=gender,
+            address=address,
+            governorate=governorate,
+            phone_number=phone_number,
+            profile_pic=profile_pic,
+            national_id_pic_back=national_id_pic_back,
+            national_id_pic_front=national_id_pic_front,
+            price=price,
+            date_of_birth=date_of_birth,
+            specification=specification,
+            university=university,
+            syndicate_card=syndicate_card,
+            practice_permit=practice_permit,
+            graduation_certificate=graduation_certificate,
+            excellence_certificate=excellence_certificate,
+        )
+    
+    doctor.save()
+
+    return Response({"message": "Doctor profile created successfully"})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def nurse_register(request):
+    gender = request.data.get('gender')
+    phone_number = request.data.get('phone_number')
+    gender = request.data.get('gender')
+    phone_number = request.data.get('phone_number')
+    address = request.data.get('address')
+    governorate = request.data.get('governorate')
+    profile_pic = request.data.get('profile_pic')
+    national_id_pic_front = request.data.get('national_id_pic_front')
+    national_id_pic_back = request.data.get('national_id_pic_back')
+    date_of_birth = request.data.get('date_of_birth')
+    excellence_certificate = request.data.get('excellence_certificate')
+    syndicate_card = request.data.get('syndicate_card')
+    practice_permit = request.data.get('practice_permit')
+    graduation_certificate = request.data.get('graduation_certificate')
+
+    if not accounts.validations.validate_phone(phone_number):
+            return Response({"error": "Phone number must start with 0 or 1."}, status=400)
+    
+    if not accounts.validations.validate_address(address):
+            return Response({"error": "can't use <,> or forbidden words"}, status=400)
+    
+    if not accounts.validations.validate_dop(date_of_birth,18):
+            return Response({"error": "You must be at least 18 years old."}, status=400)
+    
+    nurse = Nurse.objects.create(
+            user=request.user,  
+            gender=gender,
+            address=address,
+            governorate=governorate,
+            phone_number=phone_number,
+            profile_pic=profile_pic,
+            national_id_pic_back=national_id_pic_back,
+            national_id_pic_front=national_id_pic_front,
+            date_of_birth=date_of_birth,
+            excellence_certificate=excellence_certificate,
+            syndicate_card=syndicate_card,
+            practice_permit=practice_permit,
+            graduation_certificate=graduation_certificate,
+    )
+    nurse.save()
+
+    return Response({"message": "Nurse profile created successfully"})
