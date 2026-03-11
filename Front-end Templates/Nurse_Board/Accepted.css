@@ -1,4 +1,4 @@
-/* ===== Variables & Reset ===== */
+/* ===== Global Variables & Reset ===== */
 :root {
     --bg-light: #F4F7FC;
     --text-gray: #718096;
@@ -18,45 +18,54 @@ body {
     background-color: var(--bg-light);
 }
 
+/* ===== Dashboard Layout ===== */
 .dashboard {
     display: flex;
     min-height: 100vh;
 }
 
-/* ================= Sidebar ================= */
+/* ===== Sidebar ===== */
 .sidebar {
     display: flex;
     flex-direction: column;
-    padding: 24px;
-    background-color: white;
-    border-right: 1px solid #E1E6EC;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     position: fixed;
     top: 0;
     left: 0;
     width: 250px;
     height: 100vh;
+    padding: 24px;
+    background-color: white;
+    border-right: #E1E6EC 1px solid;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     overflow-y: auto;
     transition: 0.3s ease;
 }
 
 .logo {
+    gap: 12px;
     display: flex;
     align-items: center;
-    gap: 12px;
     margin-bottom: 32px;
 }
 
 .logo-icon {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+
     width: 40px;
     height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     color: white;
     font-size: 22px;
     border-radius: 15px;
     background-color: var(--primary-color);
+}
+
+.logo-icon img{
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
 }
 
 .logo h2 {
@@ -71,17 +80,19 @@ body {
 }
 
 .sidebar-toggle {
-    margin-left: auto;
+    z-index: 1000;
     width: 40px;
     height: 40px;
     border: none;
     cursor: ew-resize;
-    background: white;
+    margin-left: auto;
+    background-color: white;
+    transition: all 0.2s;
 }
 
 .sidebar-toggle:hover {
-    background: var(--bg-light);
     border-radius: 10px;
+    background-color: var(--bg-light);
 }
 
 .sidebar-toggle i {
@@ -89,91 +100,86 @@ body {
     color: var(--text-gray);
 }
 
-.sidebar.collapsed {
-    width: 80px;
-    padding: 20px 10px;
-}
-
-.sidebar.collapsed ~ div .topbar {
-    left: 80px;
-}
-
-.sidebar.collapsed ~ div .main-content {
-    margin-left: 80px;
-}
-
-.sidebar.collapsed .logo h2,
-.sidebar.collapsed .logo p,
-.sidebar.collapsed .aside-item span {
-    display: none;
-}
-
 .aside {
+    gap: 8px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
 }
 
 .aside-item {
+    gap: 12px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    font-weight: 500;
+    color: #4b5563;
     padding: 12px 16px;
     border-radius: 15px;
     text-decoration: none;
-    font-weight: 500;
-    color: #4b5563;
     border: 1px solid transparent;
-    transition: 0.3s;
+    transition: border 0.2s, box-shadow 0.2s;
 }
 
 .aside-item i {
+    width: 20px;
     font-size: 20px;
 }
 
 .aside-item.active {
-    background: var(--primary-color);
     color: white;
+    background-color: var(--primary-color);
     box-shadow: 0 2px 8px rgba(0, 133, 255, 0.25);
+    transition: all 0.5s;
+}
+
+.aside-item.active:hover {
+    background-color: var(--secondary-color);
+}
+
+.aside-item:not(.active) {
+    transition: border 0.4s, box-shadow 0.4s;
 }
 
 .aside-item:not(.active):hover {
-    border: 1px solid var(--primary-color);
+    border: var(--primary-color) 1px solid;
     box-shadow: 0 2px 8px rgba(0, 133, 255, 0.25);
 }
 
-/* ================= Topbar ================= */
+/* ===== Top Navbar ===== */
 .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     position: fixed;
     top: 0;
     left: 250px;
     right: 0;
     height: 72px;
     padding: 0 32px;
-    background: white;
+    background-color: white;
     border-bottom: 1px solid #E1E6EC;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(255, 0, 0, 0.03);
+    z-index: 1000;
     transition: 0.3s ease;
 }
 
 .topbar-title {
     font-size: 20px;
     font-weight: 600;
+    color: #1a1c1e;
 }
 
 .topbar-right {
+    gap: 24px;
     display: flex;
     align-items: center;
-    gap: 24px;
 }
 
 .topbar-icon {
-    position: relative;
     font-size: 20px;
     cursor: pointer;
     color: #4b5563;
+    position: relative;
+    transition: color 0.2s;
 }
 
 .topbar-icon:hover {
@@ -181,8 +187,11 @@ body {
 }
 
 .inbox {
+    gap: 10px;
+    z-index: 2000;
     display: none;
     position: absolute;
+    flex-direction: column;
     top: 40px;
     right: 0;
     width: 320px;
@@ -190,8 +199,6 @@ body {
     background: white;
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    flex-direction: column;
-    gap: 10px;
 }
 
 .inbox.active {
@@ -199,12 +206,13 @@ body {
 }
 
 .notification-item {
+    gap: 12px;
     display: flex;
     align-items: center;
-    gap: 12px;
     padding: 10px;
     cursor: pointer;
     border-radius: 10px;
+    transition: background 0.2s;
 }
 
 .notification-item:hover {
@@ -220,6 +228,7 @@ body {
 
 .notification-content h4 {
     font-size: 14px;
+    margin-bottom: 3px;
 }
 
 .notification-content p {
@@ -233,22 +242,36 @@ body {
 }
 
 .topbar-profile {
+    gap: 12px;
     display: flex;
     align-items: center;
-    gap: 12px;
     cursor: pointer;
+}
+
+.topbar-profile img {
+    width: 42px;
+    height: 42px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #E1E6EC;
+}
+
+.topbar-profile i {
+    font-size: 14px;
+    color: #6b7280;
 }
 
 .topbar-user-info {
     display: flex;
-    flex-direction: column;
     align-items: flex-end;
+    flex-direction: column;
     line-height: 1.2;
 }
 
 .topbar-user-info h4 {
     font-size: 14px;
     font-weight: 600;
+    color: #1a1c1e;
 }
 
 .topbar-user-info span {
@@ -256,39 +279,35 @@ body {
     color: var(--text-gray);
 }
 
-.topbar-profile img {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-/* ================= Main ================= */
+/* ===== Main Content ===== */
 .main-content {
     flex: 1;
     padding: 32px;
     margin-left: 250px;
     margin-top: 80px;
+    transition: 0.3s ease;
 }
 
-/* ================= Requests ================= */
+/* ===== Requests Page ===== */
 .requests-sticky {
+    z-index: 100;
     position: sticky;
     top: 80px;
     padding-bottom: 30px;
-    background: var(--bg-light);
+    background-color: var(--bg-light);
 }
 
 .requests-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 24px;
 }
 
 .header-text h2 {
     font-size: 24px;
     font-weight: 700;
+    color: #1a1c1e;
 }
 
 .header-text p {
@@ -297,30 +316,37 @@ body {
 }
 
 .filter-button {
+    gap: 8px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    cursor: pointer;
     padding: 8px 16px;
     border-radius: 10px;
     background: white;
+    color: var(--text-gray);
     border: 1px solid #E2E8F0;
-    cursor: pointer;
+    transition: 0.3s;
+}
+
+.filter-button:hover {
+    background-color: var(--bg-light);
 }
 
 .tabs-navigation {
-    display: flex;
     gap: 30px;
+    display: flex;
     border-bottom: 2px solid #E1E6EC;
 }
 
 .tab-link {
-    background: none;
+    position: relative;
     border: none;
+    cursor: pointer;
+    background: none;
     font-weight: 600;
     padding: 10px 5px;
     color: var(--text-gray);
-    cursor: pointer;
-    position: relative;
+    transition: 0.3s;
 }
 
 .tab-link.active {
@@ -330,20 +356,19 @@ body {
 .tab-link.active::after {
     content: '';
     position: absolute;
-    bottom: -2px;
     left: 0;
     width: 100%;
     height: 2px;
+    bottom: -2px;
     background: var(--primary-color);
 }
 
 .requests-grid {
-    display: grid;
     gap: 24px;
+    display: grid;
     grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
 }
 
-/* ================= Accepted Card ================= */
 .request-card-item {
     display: flex;
     flex-direction: column;
@@ -492,16 +517,6 @@ body {
     color: #1A202C;
 }
 
-.footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    margin-top: 16px;
-    padding-top: 14px;
-    border-top: 1px solid #F0F4F8;
-}
-
 .hr {
     margin: 14px 0;
     border: none;
@@ -524,16 +539,28 @@ body {
     color: var(--primary-color);
 }
 
-.price-confirmation {
+.footer-content {
     display: flex;
     justify-content: space-between;
-    margin-top: 15px;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #F0F4F8;
 }
 
-.price-value {
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: var(--primary-color);
+.phone-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #4A5568;
+    font-weight: 500;
+}
+
+.phone-display i {
+    font-size: 18px;
+    color: #718096;
 }
 
 .user-confirmed-banner {
@@ -555,52 +582,6 @@ body {
 
 .user-confirmed-banner i {
     font-size: 14px;
-}
-
-.card-footer-flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
-    padding-top: 16px;
-    border-top: 1px solid #F0F4F8;
-    gap: 12px;
-}
-
-.footer-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.footer-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 16px;
-    padding: 12px 0;
-    border-top: 1px solid #F0F4F8;
-    gap: 16px;
-}
-
-.footer-left-group {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.phone-display {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    color: #4A5568;
-    font-weight: 500;
-}
-
-.phone-display i {
-    font-size: 18px;
-    color: #718096;
 }
 
 .done-btn {
@@ -626,3 +607,96 @@ body {
 .btn-done:hover {
     background: var(--secondary-color);
 }
+
+/* ===== Responsive ===== */
+@media (max-width: 1100px) {
+    .requests-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 900px) {
+    .dashboard {
+        flex-direction: column;
+    }
+    .sidebar {
+        gap: 16px;
+        width: 100%;
+        padding: 16px;
+        overflow-x: auto;
+        flex-direction: row;
+    }
+    .aside {
+        flex-wrap: wrap;
+        flex-direction: row;
+    }
+    .main-content {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
+
+/* ===== Animations ===== */
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scalePulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+/* ===== Animations for Request Cards ===== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.request-card-item {
+    opacity: 0; /* مخفي في البداية */
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+
+/* إذا أردت ظهور البطاقات بشكل متتابع (واحدة تلو الأخرى) يمكن إضافة تأخير تدريجي */
+.request-card-item:nth-child(1) { animation-delay: 0.1s; }
+.request-card-item:nth-child(2) { animation-delay: 0.2s; }
+.request-card-item:nth-child(3) { animation-delay: 0.3s; }
+/* وهكذا حسب عدد البطاقات المتوقع */

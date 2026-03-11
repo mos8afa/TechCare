@@ -75,3 +75,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 // ==================================================================================
+
+// Service Carousel Navigation
+document.addEventListener('DOMContentLoaded', function() {
+    const servicesGrid = document.querySelector('.services-grid');
+    const prevBtn = document.getElementById('prev-service');
+    const nextBtn = document.getElementById('next-service');
+
+    if (servicesGrid && prevBtn && nextBtn) {
+        // دالة لحساب مسافة التمرير (عرض البطاقة + الفجوة)
+        function getScrollAmount() {
+            const card = servicesGrid.querySelector('.service-card');
+            if (!card) return 300; // قيمة افتراضية في حال عدم وجود بطاقات
+
+            // عرض البطاقة الفعلي (يشمل padding, border)
+            const cardWidth = card.offsetWidth;
+            
+            // الحصول على قيمة الفجوة من CSS (تحويلها من px إلى رقم)
+            const gap = parseFloat(window.getComputedStyle(servicesGrid).gap) || 20;
+            
+            return cardWidth + gap;
+        }
+
+        prevBtn.addEventListener('click', function() {
+            const amount = getScrollAmount();
+            servicesGrid.scrollBy({
+                left: -amount,
+                behavior: 'smooth'
+            });
+        });
+
+        nextBtn.addEventListener('click', function() {
+            const amount = getScrollAmount();
+            servicesGrid.scrollBy({
+                left: amount,
+                behavior: 'smooth'
+            });
+        });
+    }
+});

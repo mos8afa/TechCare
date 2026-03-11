@@ -27,17 +27,15 @@ body {
 .sidebar {
     display: flex;
     flex-direction: column;
-
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
     padding: 24px;
     background-color: white;
     border-right: #E1E6EC 1px solid;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 250px; 
-    height: 100vh;
     overflow-y: auto;
     transition: 0.3s ease;
 }
@@ -63,6 +61,12 @@ body {
     background-color: var(--primary-color);
 }
 
+.logo-icon img{
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+}
+
 .logo h2 {
     font-size: 16px;
     font-weight: 600;
@@ -74,7 +78,7 @@ body {
     color: #6b7280;
 }
 
-.sidebar-toggle{
+.sidebar-toggle {
     z-index: 1000;
     width: 40px;
     height: 40px;
@@ -85,37 +89,14 @@ body {
     transition: all 0.2s;
 }
 
-.sidebar-toggle:hover{
+.sidebar-toggle:hover {
     border-radius: 10px;
     background-color: var(--bg-light);
 }
 
-.sidebar-toggle i{
+.sidebar-toggle i {
     font-size: 20px;
     color: var(--text-gray);
-}
-
-.sidebar.collapsed{
-    width:80px;
-    padding:20px 10px;
-}
-
-.sidebar.collapsed ~ div .topbar {
-    left: 80px;
-}
-
-.sidebar.collapsed ~ div .main-content {
-    margin-left: 80px;
-}
-
-.sidebar.collapsed .logo h2,
-.sidebar.collapsed .logo p,
-.sidebar.collapsed .aside-item span,
-.sidebar.collapsed .logo .logo-icon{
-    display:none;
-}
-.sidebar.collapsed .aside-item{
-    justify-content:center;
 }
 
 .aside {
@@ -128,14 +109,12 @@ body {
     gap: 12px;
     display: flex;
     align-items: center;
-
     font-weight: 500;
     color: #4b5563;
     padding: 12px 16px;
     border-radius: 15px;
     text-decoration: none;
     border: 1px solid transparent;
-
     transition: border 0.2s, box-shadow 0.2s;
 }
 
@@ -148,7 +127,6 @@ body {
     color: white;
     background-color: var(--primary-color);
     box-shadow: 0 2px 8px rgba(0, 133, 255, 0.25);
-
     transition: all 0.5s;
 }
 
@@ -157,7 +135,7 @@ body {
 }
 
 .aside-item:not(.active) {
-    transition: border 0.4s, box-shadow 0.4s; 
+    transition: border 0.4s, box-shadow 0.4s;
 }
 
 .aside-item:not(.active):hover {
@@ -170,17 +148,15 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
+    position: fixed;
+    top: 0;
+    left: 250px;
+    right: 0;
     height: 72px;
     padding: 0 32px;
     background-color: white;
     border-bottom: 1px solid #E1E6EC;
     box-shadow: 0 2px 8px rgba(255, 0, 0, 0.03);
-
-    position: fixed;
-    top: 0;
-    left: 250px;
-    right: 0;
     z-index: 1000;
     transition: 0.3s ease;
 }
@@ -209,68 +185,61 @@ body {
     color: var(--primary-color);
 }
 
-.inbox{
-    gap:10px;
-    z-index:2000;
-    display:none;
-    position:absolute;
-    flex-direction:column;
-
-    top:40px;
-    right:0;
-    width:320px;
-    padding:15px;
-    background:white;
-    border-radius:15px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+.inbox {
+    gap: 10px;
+    z-index: 2000;
+    display: none;
+    position: absolute;
+    flex-direction: column;
+    top: 40px;
+    right: 0;
+    width: 320px;
+    padding: 15px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-.inbox.active{
-    display:flex;
+.notification-item {
+    gap: 12px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background 0.2s;
 }
 
-.notification-item{
-    gap:12px;
-    display:flex;
-    align-items:center;
-
-    padding:10px;
-    cursor:pointer;
-    border-radius:10px;
-    transition:background 0.2s;
+.notification-item:hover {
+    background: var(--bg-light);
 }
 
-.notification-item:hover{
-    background:var(--bg-light);
+.notification-item img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
-.notification-item img{
-    width:45px;
-    height:45px;
-    border-radius:50%;
-    object-fit:cover;
+.notification-content h4 {
+    font-size: 14px;
+    margin-bottom: 3px;
 }
 
-.notification-content h4{
-    font-size:14px;
-    margin-bottom:3px;
-}
-
-.notification-content p{
-    font-size:12px;
-    color:var(--text-gray);
+.notification-content p {
+    font-size: 12px;
+    color: var(--text-gray);
 }
 
 .line {
     height: 30px;
-    border: 1px solid var(--text-gray) ;
+    border: 1px solid var(--text-gray);
 }
 
 .topbar-profile {
     gap: 12px;
     display: flex;
     align-items: center;
-
     cursor: pointer;
 }
 
@@ -286,7 +255,6 @@ body {
     display: flex;
     align-items: flex-end;
     flex-direction: column;
-
     line-height: 1.2;
 }
 
@@ -301,130 +269,157 @@ body {
     color: var(--text-gray);
 }
 
-/* ===== Main Content (common) ===== */
+/* ===== Main Content ===== */
 .main-content {
     flex: 1;
     padding: 32px;
-
     margin-left: 250px;
     margin-top: 80px;
     transition: 0.3s ease;
 }
 
-/* ================================================================================================ */
-/* Edit Profile Page */
-
-.edit-profile-wrapper{
+/* ===== Edit Profile Page ===== */
+.edit-profile-wrapper {
     margin: auto;
     max-width: 1000px;
 }
 
-.edit-profile-card{
+.edit-profile-card {
     padding: 32px;
     border-radius: 20px;
     background: white;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
 }
 
-.edit-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:30px;
+.edit-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
 }
 
-.edit-header h2{
-    font-size:20px;
-    font-weight:700;
+.edit-header h2 {
+    font-size: 20px;
+    font-weight: 700;
 }
 
-.edit-photo-section{
-    gap:30px;
-    display:flex;
-    align-items:center;
-    margin-bottom:25px;
+.edit-photo-section {
+    gap: 30px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
 }
 
-.edit-avatar img{
-    width:120px;
-    height:120px;
-    object-fit:cover;
-    border-radius:50%;
-    border:4px solid #F4F7FC;
+.edit-avatar img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #F4F7FC;
 }
 
-.edit-photo-info h4{
-    font-size:16px;
-    margin-bottom:6px;
+.edit-photo-info h4 {
+    font-size: 16px;
+    margin-bottom: 6px;
 }
 
-.edit-photo-info p{
-    font-size:13px;
-    max-width:450px;
-    margin-bottom:15px;
-    color:var(--text-gray);
+.edit-photo-info p {
+    font-size: 13px;
+    max-width: 450px;
+    margin-bottom: 15px;
+    color: var(--text-gray);
 }
 
-.photo-buttons{
-    gap:12px;
-    display:flex;
+.photo-buttons {
+    gap: 12px;
+    display: flex;
 }
 
-.photo-buttons .btn-light-edit{
-    padding:10px 14px;
+.btn-primary-edit {
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 12px 22px;
+    border-radius: 12px;
+    background: var(--primary-color);
+    transition: 0.2s;
 }
 
-.edit-form-grid{
-    display:grid;
+.btn-primary-edit:hover {
+    background: var(--secondary-color);
+}
+
+.btn-light-edit {
+    cursor: pointer;
+    color: #4b5563;
+    font-weight: 600;
+    padding: 12px 22px;
+    border-radius: 12px;
+    background: white;
+    border: 1.5px solid #E2E8F0;
+    transition: 0.2s;
+}
+
+.btn-light-edit:hover {
+    background: #F4F7FC;
+}
+
+.edit-form-grid {
+    display: grid;
     grid-template-columns: 1fr 1fr;
-    gap:24px;
-    margin-top:25px;
+    gap: 24px;
+    margin-top: 25px;
 }
 
-.form-group-edit{
-    display:flex;
-    flex-direction:column;
+.form-group-edit {
+    display: flex;
+    flex-direction: column;
 }
 
-.form-group-edit.full-width{
+.form-group-edit.full-width {
     grid-column: 1 / -1;
 }
 
-.form-group-edit label{
-    font-size:12px;
-    font-weight:600;
-    margin-bottom:8px;
-    color:#374151;
+.form-group-edit label {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #374151;
 }
 
-.form-group-edit input, .form-group-edit textarea, .form-group-edit select{
-    outline:none;
-    font-size:14px;
-    padding:12px 14px;
-    border-radius:12px;
-    background:#F8FAFC;
-    border:1px solid #E2E8F0;
-    transition:0.2s;
+.form-group-edit input,
+.form-group-edit textarea,
+.form-group-edit select {
+    outline: none;
+    font-size: 14px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    transition: 0.2s;
     font-family: 'Inter', sans-serif;
 }
 
-.form-group-edit input:focus, .form-group-edit textarea:focus, .form-group-edit select:focus{
-    border-color:var(--primary-color);
-    background:white;
+.form-group-edit input:focus,
+.form-group-edit textarea:focus,
+.form-group-edit select:focus {
+    border-color: var(--primary-color);
+    background: white;
 }
 
-.form-group-edit small{
-    font-size:11px;
-    margin-top:5px;
-    color:var(--text-gray);
+.form-group-edit small {
+    font-size: 11px;
+    margin-top: 5px;
+    color: var(--text-gray);
 }
 
 .phone-wrapper-custom {
     display: flex;
     align-items: center;
-    padding: 0 14px; 
+    padding: 0 14px;
     border-radius: 12px;
-    background: #F8FAFC; 
+    background: #F8FAFC;
     border: 1px solid #E2E8F0;
     transition: 0.2s;
 }
@@ -433,7 +428,7 @@ body {
     font-size: 14px;
     font-weight: 600;
     color: #4b5563;
-    user-select: none; 
+    user-select: none;
     padding-right: 8px;
     margin-right: 10px;
     border-right: 1px solid #E2E8F0;
@@ -485,70 +480,80 @@ body {
     box-shadow: 0 0 0 3px rgba(29, 137, 228, 0.1);
 }
 
-.btn-primary-edit{
-    border:none;
-    color:white;
-    cursor:pointer;
-    font-weight:600;
-    padding:12px 22px;
-    border-radius:12px;
-    background:var(--primary-color);
-    transition:0.2s;
+.edit-footer {
+    gap: 15px;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
 }
 
-.btn-primary-delete{
-    cursor: pointer;
-    color: #4b5563;
-    font-weight: 600;
-    padding: 12px 22px;
-    border-radius: 12px;
-    background: white;
-    border: 1.5px solid #E2E8F0;
-    transition: 0.2s;
+.edit-footer .btn-light-edit {
+    margin-right: 10px;
 }
 
-.btn-primary-edit:hover{
-    background:var(--secondary-color);
-}
-
-.btn-primary-delete:hover{
-    background:var(--bg-light);
-}
-
-.btn-light-edit{
-    cursor:pointer;
-    color:#4b5563;
-    font-weight:600;
-    padding:12px 22px;
-    border-radius:12px;
-    background:white;
-    border:1.5px solid #E2E8F0;
-    transition:0.2s;
-}
-
-    .btn-light-edit:hover{
-        background:#F4F7FC;
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+    .dashboard {
+        flex-direction: column;
     }
-
-.edit-footer{
-    gap:15px;
-    display:flex;
-    justify-content:flex-end;
-    margin-top:30px;
-}
-
-.edit-footer .btn-light-edit{
-    margin-right:10px;
-}
-
-
-@media(max-width:900px){
-    .edit-form-grid{
-        grid-template-columns:1fr;
+    .sidebar {
+        gap: 16px;
+        width: 100%;
+        padding: 16px;
+        overflow-x: auto;
+        flex-direction: row;
     }
-    .edit-photo-section{
-        flex-direction:column;
-        align-items:flex-start;
+    .aside {
+        flex-wrap: wrap;
+        flex-direction: row;
+    }
+    .main-content {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    .edit-form-grid {
+        grid-template-columns: 1fr;
+    }
+    .edit-photo-section {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }
 
+/* ===== Animations for Edit Profile Page ===== */
+
+/* حركة الظهور مع انزلاق خفيف من الأسفل */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* حركة الظهور البسيط (تلاشي) */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* تطبيق على الحاوية الرئيسية للصفحة */
+.edit-profile-wrapper {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* تطبيق على بطاقة التعديل نفسها */
+.edit-profile-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* العناصر الداخلية: تظهر كلها مرة واحدة مع البطاقة، بدون تأخير */
+.edit-header,
+.edit-photo-section,
+.edit-form-grid,
+.edit-footer {
+    animation: fadeInUp 0.6s ease-out; /* نفس مدة وتوقيت البطاقة */
+}

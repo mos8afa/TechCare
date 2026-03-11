@@ -21,7 +21,7 @@
             <div class="sidebar-header">
                 <div class="logo">
                     <span class="logo-icon">
-                        <i class="fa-solid fa-user-nurse"></i>
+                        <img src="../img/logo.png" alt="">
                     </span>                
                     <div>
                         <h2>TechCare</h2>
@@ -165,7 +165,7 @@
                     </div>
 
                     <div class="btn-edit">
-                        <button class="btn-outline">Edit Profile</button>
+                        <button class="btn-outline" onclick="window.location.href='Edit_Profile.html'">Edit Profile</button>
                     </div>
                 </div>
 
@@ -198,9 +198,14 @@
                         </div>
                     </div>
 
-                    <div class="services-grid">
-                    
-                        <div class="service-card">
+                    <div class="services-container">
+                        <button class="service-nav-btn prev-service" id="prev-service">
+                            <i class="fas fa-angle-left"></i>
+                        </button>
+                        
+                        <div class="services-grid">
+                        
+                            <div class="service-card">
                             <h4>Home Visit Consultation <span class="money">$45</span></h4>
                             <p>Basic health assessment and vital check-up.</p>
                             <div class="service-actions">
@@ -226,7 +231,34 @@
                                 <a href="#"><i class="fas fa-trash"></i> Remove</a>
                             </div>
                         </div>
-
+                        
+                        <div class="service-card">
+                            <h4>IV Medication Admin <span class="money">$60</span></h4>
+                            <p>Professional administration of intravenous medications.</p>
+                            <div class="service-actions">
+                                <a href="#"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#"><i class="fas fa-trash"></i> Remove</a>
+                            </div>
+                        </div>
+                        
+                        <div class="service-card">
+                            <h4>IV Medication Admin <span class="money">$60</span></h4>
+                            <p>Professional administration of intravenous medications.</p>
+                            <div class="service-actions">
+                                <a href="#"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#"><i class="fas fa-trash"></i> Remove</a>
+                            </div>
+                        </div>
+                        
+                        <div class="service-card">
+                            <h4>IV Medication Admin <span class="money">$60</span></h4>
+                            <p>Professional administration of intravenous medications.</p>
+                            <div class="service-actions">
+                                <a href="#"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="#"><i class="fas fa-trash"></i> Remove</a>
+                            </div>
+                        </div>
+                        
                         <!-- <div class="service-card">
                             <h4>IV Medication Admin <span class="money">$60</span></h4>
                             <p>Professional administration of intravenous medications.</p>
@@ -236,6 +268,11 @@
                             </div>
                         </div> -->
                     
+                        </div>
+                        
+                        <button class="service-nav-btn next-service" id="next-service">
+                            <i class="fas fa-angle-right"></i>
+                        </button>
                     </div>
                 </div>
 
