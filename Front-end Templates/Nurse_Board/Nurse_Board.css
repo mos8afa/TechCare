@@ -20,7 +20,7 @@ body {
     line-height: 1.5;
     font-family: 'Inter', sans-serif;
     background-color: var(--bg-light);
-    overflow-x: hidden; /* prevent horizontal scroll at root */
+    overflow-x: hidden;
 }
 
 .dashboard {
@@ -30,8 +30,6 @@ body {
 
 /* ===== 2. Sidebar ===== */
 .sidebar {
-    display: flex;
-    flex-direction: column;
     position: fixed;
     top: 0;
     left: 0;
@@ -39,11 +37,13 @@ body {
     height: 100vh;
     padding: 24px;
     background-color: white;
-    border-right: #E1E6EC 1px solid;
+    border-right: 1px solid #E1E6EC;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     overflow-y: auto;
     transition: width 0.3s ease, padding 0.3s ease;
     z-index: 900;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar.collapsed {
@@ -63,9 +63,9 @@ body {
 }
 
 .logo {
-    gap: 12px;
     display: flex;
     align-items: center;
+    gap: 12px;
     margin-bottom: 32px;
 }
 
@@ -75,11 +75,11 @@ body {
     justify-content: center;
     width: 40px;
     height: 40px;
-    flex-shrink: 0;
+    background-color: var(--primary-color);
+    border-radius: 15px;
     color: white;
     font-size: 22px;
-    border-radius: 15px;
-    background-color: var(--primary-color);
+    flex-shrink: 0;
 }
 
 .logo-icon img {
@@ -100,20 +100,20 @@ body {
 }
 
 .sidebar-toggle {
-    z-index: 1000;
     width: 40px;
     height: 40px;
-    border: none;
-    cursor: ew-resize;
     margin-left: auto;
     background-color: white;
+    border: none;
+    cursor: ew-resize;
     transition: all 0.2s;
     flex-shrink: 0;
+    z-index: 1000;
 }
 
 .sidebar-toggle:hover {
-    border-radius: 10px;
     background-color: var(--bg-light);
+    border-radius: 10px;
 }
 
 .sidebar-toggle i {
@@ -122,20 +122,20 @@ body {
 }
 
 .aside {
-    gap: 8px;
     display: flex;
     flex-direction: column;
+    gap: 8px;
 }
 
 .aside-item {
-    gap: 12px;
     display: flex;
     align-items: center;
-    font-weight: 500;
-    color: #4b5563;
+    gap: 12px;
     padding: 12px 16px;
     border-radius: 15px;
     text-decoration: none;
+    font-weight: 500;
+    color: #4b5563;
     border: 1px solid transparent;
     transition: border 0.2s, box-shadow 0.2s;
     white-space: nowrap;
@@ -148,8 +148,8 @@ body {
 }
 
 .aside-item.active {
-    color: white;
     background-color: var(--primary-color);
+    color: white;
     box-shadow: 0 2px 8px rgba(0, 133, 255, 0.25);
 }
 
@@ -164,12 +164,9 @@ body {
 
 /* ===== 3. Top Navbar ===== */
 .topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;   /* sticky inside .content-wrapper instead of fixed */
+    position: fixed;
     top: 0;
-    left: 0;
+    left: var(--sidebar-width);
     right: 0;
     height: var(--topbar-height);
     padding: 0 32px;
@@ -177,6 +174,14 @@ body {
     border-bottom: 1px solid #E1E6EC;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
     z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: left 0.3s ease;
+}
+
+.sidebar.collapsed ~ .content-wrapper .topbar {
+    left: var(--sidebar-collapsed-width);
 }
 
 .topbar-title {
@@ -186,16 +191,16 @@ body {
 }
 
 .topbar-right {
-    gap: 24px;
     display: flex;
     align-items: center;
+    gap: 24px;
 }
 
 .topbar-icon {
+    position: relative;
+    color: #4b5563;
     font-size: 20px;
     cursor: pointer;
-    color: #4b5563;
-    position: relative;
     transition: color 0.2s;
 }
 
@@ -204,11 +209,7 @@ body {
 }
 
 .inbox {
-    gap: 10px;
-    z-index: 2000;
-    display: none;
     position: absolute;
-    flex-direction: column;
     top: 40px;
     right: 0;
     width: 320px;
@@ -216,6 +217,10 @@ body {
     background: white;
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    z-index: 2000;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .inbox.active {
@@ -223,12 +228,12 @@ body {
 }
 
 .notification-item {
-    gap: 12px;
     display: flex;
     align-items: center;
+    gap: 12px;
     padding: 10px;
-    cursor: pointer;
     border-radius: 10px;
+    cursor: pointer;
     transition: background 0.2s;
 }
 
@@ -255,21 +260,21 @@ body {
 
 .line {
     height: 30px;
-    border: 1px solid var(--text-gray);
+    border-left: 1px solid var(--text-gray);
 }
 
 .topbar-profile {
-    gap: 12px;
     display: flex;
     align-items: center;
+    gap: 12px;
     cursor: pointer;
 }
 
 .topbar-profile img {
     width: 42px;
     height: 42px;
-    object-fit: cover;
     border-radius: 50%;
+    object-fit: cover;
     border: 2px solid #E1E6EC;
 }
 
@@ -291,14 +296,13 @@ body {
     color: var(--text-gray);
 }
 
-/* ===== 4. Content Wrapper (the div next to the sidebar) ===== */
+/* ===== 4. Content Wrapper ===== */
 .content-wrapper {
     flex: 1;
-    min-width: 0;          /* critical: lets flex child shrink below content size */
-    overflow-x: hidden;    /* clip anything that still tries to escape */
     display: flex;
     flex-direction: column;
     margin-left: var(--sidebar-width);
+    min-width: 0;
     transition: margin-left 0.3s ease;
 }
 
@@ -306,7 +310,7 @@ body {
     margin-left: var(--sidebar-collapsed-width);
 }
 
-/* ===== 4b. Main Content (common) ===== */
+/* ===== 5. Main Content Common ===== */
 .main-content {
     display: flex;
     flex-direction: column;
@@ -315,7 +319,14 @@ body {
     min-width: 0;
 }
 
-/* ===== 5. Profile Page ===== */
+.main-content-nurse-requst {
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+    min-width: 0;
+}
+
+/* ===== 6. Profile Page ===== */
 .profile-main-content {
     align-items: flex-start;
     padding: 32px;
@@ -323,9 +334,9 @@ body {
     max-width: 100%;
     overflow-x: hidden;
     min-width: 0;
+    padding-top: 100px;
 }
 
-/* ── Profile Financials Row ── */
 .profile-financials-row {
     display: flex;
     gap: 28px;
@@ -335,19 +346,18 @@ body {
     min-width: 0;
 }
 
-/* Profile Card */
 .card {
-    flex: 2 1 0;         /* grow twice as fast as info-card */
-    min-width: 0;        /* allow shrinking below content size */
-    gap: 30px;
+    flex: 2 1 0;
+    min-width: 0;
     display: flex;
+    gap: 30px;
     justify-content: flex-start;
     padding: 25px;
-    border-radius: 12px;
     background: white;
+    border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-    animation: slideInFromLeft 0.7s ease-out;
     transition: box-shadow 0.3s ease;
+    animation: slideInFromLeft 0.7s ease-out;
 }
 
 .card:hover {
@@ -356,13 +366,13 @@ body {
 
 .profile-image-wrapper {
     width: 140px;
-    flex-shrink: 0;
     height: 140px;
+    flex-shrink: 0;
 }
 
 .profile-image-wrapper img {
-    width: 140px;
-    height: 140px;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     object-fit: cover;
     border: 4px solid white;
@@ -381,8 +391,8 @@ body {
 
 .hr {
     border: none;
-    margin: 20px 0;
     border-top: 1px solid #f5f5f5;
+    margin: 20px 0;
 }
 
 .profile-info {
@@ -392,24 +402,18 @@ body {
 }
 
 .info-item {
-    gap: 10px;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    gap: 10px;
     min-width: 0;
-}
-
-.info-item > div > i {
-    font-size: 24px;
-    color: var(--text-gray);
 }
 
 .info-item .info-label {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-weight: 500;
     font-size: 0.75rem;
+    font-weight: 500;
     color: var(--text-gray);
     text-transform: uppercase;
 }
@@ -418,18 +422,19 @@ body {
     font-weight: 500;
 }
 
-.info-item .info-value-phone{
+.info-item .info-value-phone {
     font-weight: 500;
     white-space: nowrap;
 }
+
 .margin {
     margin-top: 30px;
 }
 
 .margin strong {
     font-weight: normal;
-    margin-bottom: 10px;
     color: var(--text-gray);
+    margin-bottom: 10px;
 }
 
 .specialization-tags span {
@@ -451,29 +456,28 @@ body {
 }
 
 .btn-outline {
-    cursor: pointer;
-    font-weight: 600;
     padding: 10px 20px;
-    border-radius: 15px;
     background: transparent;
-    color: var(--primary-color);
     border: 2px solid var(--primary-color);
+    border-radius: 15px;
+    color: var(--primary-color);
+    font-weight: 600;
+    cursor: pointer;
     transition: 0.3s;
     white-space: nowrap;
 }
 
 .btn-outline:hover {
-    color: white;
     background: var(--primary-color);
+    color: white;
 }
 
-/* Financial Card */
 .info-card {
-    flex: 1 1 0;         /* grow once, allow shrinking */
-    min-width: 260px;    /* don't collapse below usable size */
+    flex: 1 1 0;
+    min-width: 260px;
     padding: 30px;
-    border-radius: 15px;
     background-color: white;
+    border-radius: 15px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(0, 0, 0, 0.05);
     transition: box-shadow 0.2s ease;
     animation: slideInFromRight 0.7s ease-out;
@@ -493,9 +497,9 @@ body {
 }
 
 .info-card h3 {
-    gap: 10px;
     display: flex;
     align-items: center;
+    gap: 10px;
     font-size: 18px;
     font-weight: 600;
     color: #1a1c1e;
@@ -510,8 +514,8 @@ body {
 .view-link {
     font-size: 14px;
     font-weight: 500;
-    text-decoration: none;
     color: var(--primary-color);
+    text-decoration: none;
     transition: color 0.2s;
 }
 
@@ -523,8 +527,8 @@ body {
     padding: 15px;
     text-align: center;
     margin-bottom: 24px;
-    border-radius: 20px;
     background-color: var(--bg-light);
+    border-radius: 20px;
 }
 
 .balance-card p:first-child {
@@ -540,26 +544,27 @@ body {
 }
 
 .mini-stats {
-    gap: 16px;
     display: grid;
     grid-template-columns: 1fr;
+    gap: 16px;
 }
 
 .stat-card {
-    gap: 10px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: left;
+    gap: 10px;
     padding: 16px;
-    border-radius: 15px;
-    border: 1px solid #edf2f7;
     background-color: var(--bg-light);
+    border: 1px solid #edf2f7;
+    border-radius: 15px;
 }
 
 .stat-card div {
-    gap: 10px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    width: 100%; /* تأكد أن الحاوية تأخذ العرض الكامل */
 }
 
 .stat-card i {
@@ -576,7 +581,7 @@ body {
 
 .stat-value {
     font-size: 20px;
-    font-weight: 700;
+    font-weight: 800;
     color: #1a1c1e;
 }
 
@@ -588,7 +593,6 @@ body {
     color: #f59e0b;
 }
 
-/* Services Section */
 .Services-Card {
     width: 100%;
     margin-bottom: 40px;
@@ -611,18 +615,18 @@ body {
 }
 
 #serviceCount {
+    font-size: 0.95rem;
     font-weight: 500;
     color: var(--primary-color);
-    font-size: 0.95rem;
 }
 
 .btn-add-services {
+    padding: 8px 16px;
+    background-color: var(--primary-color);
     border: none;
+    border-radius: 8px;
     color: white;
     cursor: pointer;
-    padding: 8px 16px;
-    border-radius: 8px;
-    background-color: var(--primary-color);
     transition: background-color 0.2s;
 }
 
@@ -631,14 +635,14 @@ body {
 }
 
 .modal {
-    display: none;
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
+    z-index: 2000;
+    display: none;
     justify-content: center;
     align-items: center;
-    z-index: 2000;
 }
 
 .modal.active {
@@ -646,12 +650,12 @@ body {
 }
 
 .modal-content {
-    background: white;
-    padding: 24px;
-    border-radius: 12px;
-    max-width: 500px;
-    width: 90%;
     position: relative;
+    width: 90%;
+    max-width: 500px;
+    padding: 24px;
+    background: white;
+    border-radius: 12px;
 }
 
 .modal-content .close {
@@ -684,12 +688,12 @@ body {
 
 .btn-primary {
     padding: 10px 20px;
+    background-color: var(--primary-color);
     border: none;
     border-radius: 8px;
-    background-color: var(--primary-color);
     color: white;
-    cursor: pointer;
     font-weight: 600;
+    cursor: pointer;
     transition: background-color 0.2s;
 }
 
@@ -702,45 +706,45 @@ body {
     display: flex;
     align-items: center;
     gap: 20px;
-    animation: slideInFromRight 0.8s ease-out 0.2s both;
     min-width: 0;
+    animation: slideInFromRight 0.8s ease-out 0.2s both;
 }
 
 .service-nav-btn {
-    cursor: pointer;
     width: 50px;
     height: 50px;
-    flex-shrink: 0;
-    border-radius: 50%;
     background: white;
-    color: var(--primary-color);
     border: 2px solid white;
+    border-radius: 50%;
     box-shadow: 0 2px 8px rgba(60, 60, 60, 0.25);
+    color: var(--primary-color);
+    font-size: 20px;
+    cursor: pointer;
     transition: all 0.3s;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+    flex-shrink: 0;
 }
 
 .service-nav-btn:hover {
-    color: white;
     background: var(--primary-color);
     border-color: var(--secondary-color);
+    color: white;
     box-shadow: 0 6px 16px var(--secondary-color);
     animation: scalePulse 0.1s ease-in-out;
 }
 
 .services-grid {
-    gap: 20px;
+    flex: 1;
     display: flex;
+    gap: 20px;
     overflow-x: auto;
     scroll-behavior: smooth;
-    flex: 1;
-    min-width: 0;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    min-width: 0;
 }
 
 .services-grid::-webkit-scrollbar {
@@ -748,17 +752,17 @@ body {
 }
 
 .service-card {
+    flex-shrink: 0;
+    width: calc((100% - 40px) / 3);
+    padding: 30px;
+    background-color: white;
+    border-radius: 18px;
+    scroll-snap-align: start;
+    transition: all 0.3s ease;
+    animation: slideInFromRight 0.6s ease-out;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 30px;
-    border-radius: 18px;
-    background-color: white;
-    width: calc((100% - 40px) / 3);
-    flex-shrink: 0;
-    animation: slideInFromRight 0.6s ease-out;
-    transition: all 0.3s ease;
-    scroll-snap-align: start;
 }
 
 .service-card:hover {
@@ -789,16 +793,16 @@ body {
 }
 
 .service-actions {
-    gap: 20px;
     display: flex;
     justify-content: flex-end;
+    gap: 20px;
     font-size: 14px;
     animation: fadeIn 0.8s ease-out 0.6s both;
 }
 
 .service-actions a {
-    text-decoration: none;
     color: var(--primary-color);
+    text-decoration: none;
     transition: transform 0.3s ease;
 }
 
@@ -806,19 +810,13 @@ body {
     transform: scale(1.15);
 }
 
-/* ===== 6. Requests Page ===== */
-.main-content-nurse-requst {
-    display: flex;
-    flex-direction: column;
-    padding: 32px;
-    min-width: 0;
-}
-
+/* ===== 7. Requests Page ===== */
 .requests-sticky {
-    z-index: 100;
     position: sticky;
-    top: 0;
+    top: var(--topbar-height);
+    z-index: 100;
     padding-bottom: 30px;
+    margin-top: var(--topbar-height);
     background-color: var(--bg-light);
 }
 
@@ -841,15 +839,15 @@ body {
 }
 
 .filter-button {
-    gap: 8px;
     display: flex;
     align-items: center;
-    cursor: pointer;
+    gap: 8px;
     padding: 8px 16px;
-    border-radius: 10px;
     background: white;
-    color: var(--text-gray);
     border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    color: var(--text-gray);
+    cursor: pointer;
     transition: background-color 0.3s;
 }
 
@@ -858,19 +856,19 @@ body {
 }
 
 .tabs-navigation {
-    gap: 30px;
     display: flex;
+    gap: 30px;
     border-bottom: 2px solid #E1E6EC;
 }
 
 .tab-link {
     position: relative;
-    border: none;
-    cursor: pointer;
-    background: none;
-    font-weight: 600;
     padding: 10px 5px;
+    background: none;
+    border: none;
+    font-weight: 600;
     color: var(--text-gray);
+    cursor: pointer;
     transition: color 0.3s;
 }
 
@@ -889,9 +887,9 @@ body {
 }
 
 .requests-grid {
-    gap: 24px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+    gap: 24px;
 }
 
 .request-card-item {
@@ -917,9 +915,9 @@ body {
 }
 
 .patient-meta {
-    gap: 20px;
     display: flex;
     align-items: center;
+    gap: 20px;
 }
 
 .patient-avatar-mini {
@@ -928,10 +926,10 @@ body {
     justify-content: center;
     width: 45px;
     height: 45px;
-    font-size: 20px;
-    border-radius: 50%;
     background: #F0F7FF;
     color: var(--primary-color);
+    font-size: 20px;
+    border-radius: 50%;
 }
 
 .patient-name-info h3 {
@@ -963,9 +961,9 @@ body {
 }
 
 .pending-time-date {
-    gap: 10px;
     display: flex;
     align-items: center;
+    gap: 10px;
 }
 
 .pending-time-date i {
@@ -974,13 +972,13 @@ body {
 }
 
 .pending-time-date div > span {
-    color: var(--text-gray);
     font-size: 15px;
+    color: var(--text-gray);
 }
 
 .pending-time-date div > p {
-    font-weight: bold;
     font-size: 15px;
+    font-weight: bold;
 }
 
 .discription-service {
@@ -988,8 +986,8 @@ body {
 }
 
 .discription-service > label {
-    font-weight: bold;
     font-size: 13px;
+    font-weight: bold;
 }
 
 .description-box {
@@ -998,10 +996,10 @@ body {
 }
 
 .services-total {
-    padding: 15px 20px;
     margin-top: 15px;
-    border-radius: 15px;
+    padding: 15px 20px;
     background-color: var(--bg-light);
+    border-radius: 15px;
 }
 
 .services-total > label {
@@ -1041,9 +1039,9 @@ body {
 
 .price-input-section label {
     display: block;
+    margin-bottom: 6px;
     font-size: 11px;
     font-weight: 700;
-    margin-bottom: 6px;
     letter-spacing: 0.5px;
     color: var(--text-gray);
     text-transform: uppercase;
@@ -1051,11 +1049,11 @@ body {
 
 .price-input-section input {
     width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
     outline: none;
     font-size: 14px;
-    padding: 12px 15px;
-    border-radius: 12px;
-    border: 1px solid #E2E8F0;
     transition: border-color 0.3s;
 }
 
@@ -1064,19 +1062,19 @@ body {
 }
 
 .card-footer-actions {
-    gap: 10px;
     display: flex;
     justify-content: flex-end;
+    gap: 10px;
     margin-top: auto;
 }
 
 .btn-action {
+    padding: 10px 18px;
     border: none;
-    cursor: pointer;
+    border-radius: 10px;
     font-size: 13px;
     font-weight: 600;
-    padding: 10px 18px;
-    border-radius: 10px;
+    cursor: pointer;
     transition: background-color 0.3s;
 }
 
@@ -1094,21 +1092,20 @@ body {
     background: var(--secondary-color);
 }
 
-/* ===== 7. Responsive Design ===== */
+/* ===== 8. Responsive Design ===== */
 @media (max-width: 1100px) {
     .requests-grid {
         grid-template-columns: 1fr;
     }
 
-    /* Stack the two profile cards vertically */
     .profile-financials-row {
         flex-direction: column;
     }
 
     .profile-financials-row .card,
     .profile-financials-row .info-card {
-        flex: none;
         width: 100%;
+        flex: none;
         min-width: 0;
     }
 }
@@ -1122,8 +1119,8 @@ body {
         position: relative;
         width: 100%;
         height: auto;
-        flex-direction: row;
         padding: 16px;
+        flex-direction: row;
         overflow-x: auto;
     }
 
@@ -1132,8 +1129,8 @@ body {
     }
 
     .aside {
-        flex-wrap: wrap;
         flex-direction: row;
+        flex-wrap: wrap;
     }
 
     .main-content,
@@ -1144,7 +1141,6 @@ body {
     }
 
     .profile-financials-row {
-        flex-direction: column;
         gap: 20px;
     }
 }
@@ -1168,28 +1164,54 @@ body {
     }
 }
 
-/* ===== 8. Animations ===== */
+/* ===== 9. Animations ===== */
 @keyframes slideInFromLeft {
-    from { opacity: 0; transform: translateX(-30px); }
-    to   { opacity: 1; transform: translateX(0); }
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 @keyframes slideInFromRight {
-    from { opacity: 0; transform: translateX(30px); }
-    to   { opacity: 1; transform: translateX(0); }
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes scalePulse {
-    0%, 100% { transform: scale(1); }
-    50%       { transform: scale(1.02); }
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
 }
 
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
