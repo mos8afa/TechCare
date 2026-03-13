@@ -8,7 +8,12 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def doctor_dashboard(request):
-
+    if request.method == 'POST':
+        certificate = request.FILES.get('certificate')
+        if certificate:
+            doctor = Doctor.objects.get(user=request.user)
+            doctor.certificates.create(certificate_file=certificate)
+            return redirect('doctor:doctor_dashboard')
     if request.user.role != "doctor":
         return redirect("login")
 
@@ -33,6 +38,16 @@ def doctor_dashboard(request):
     else:
         average_rating = 0
 
+    uploaded_certificates = doctor.certificates.all()
+    certificates = []
+
+    for cert in [doctor.excellence_certificate, doctor.syndicate_card, doctor.practice_permit, doctor.graduation_certificate]:
+        if cert:
+            certificates.append(cert)
+    
+    for cert in uploaded_certificates:
+        certificates.append(cert.certificate_file)
+
     return render(request, 'doctor/doctor_profile.html', {
         'name': name,
         'specification': specification,
@@ -44,6 +59,7 @@ def doctor_dashboard(request):
         'profile_pic': profile_pic,
         'pending': pending,
         'completed': completed,
+        'certificates': certificates,
     })
 
 def edit_doctor_profile(request):

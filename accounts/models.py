@@ -294,3 +294,7 @@ class Donor(models.Model):
     blood_type = models.CharField(max_length=3, choices=BLOOD_TYPES)
     address = models.TextField()
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
+
+class certificate(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='certificates')
+    certificate_file = models.FileField(upload_to='doctors/certificates/')

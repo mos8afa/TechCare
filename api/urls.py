@@ -1,4 +1,4 @@
-from api.views import login, Verify_OTP_login, register, resend_OTP, verify_OTP_register, patient_register, doctor_register, nurse_register, forget_password, verify_OTP_forget_password, reset_password
+from api.views import login, Verify_OTP_login, register, verify_OTP_register, patient_register, doctor_register, nurse_register, forget_password, verify_OTP_forget_password, reset_password
 from django.urls import path
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
