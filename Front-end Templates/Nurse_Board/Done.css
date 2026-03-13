@@ -23,7 +23,6 @@ body {
     min-height: 100vh;
 }
 
-/* ===== Sidebar ===== */
 .sidebar {
     display: flex;
     flex-direction: column;
@@ -40,6 +39,31 @@ body {
     transition: 0.3s ease;
 }
 
+.sidebar.collapsed {
+    width: 80px;
+    padding: 20px 10px;
+}
+
+.sidebar.collapsed ~ div .topbar {
+    left: 80px;
+}
+
+.sidebar.collapsed ~ div .main-content,
+.sidebar.collapsed ~ div .main-content-nurse-requst {
+    margin-left: 80px;
+}
+
+.sidebar.collapsed .logo h2,
+.sidebar.collapsed .logo p,
+.sidebar.collapsed .aside-item span,
+.sidebar.collapsed .logo .logo-icon {
+    display: none;
+}
+
+.sidebar.collapsed .aside-item {
+    justify-content: center;
+}
+
 .logo {
     gap: 12px;
     display: flex;
@@ -49,10 +73,8 @@ body {
 
 .logo-icon {
     display: flex;
-    flex-wrap: wrap;
-    align-content: center;
+    align-items: center;
     justify-content: center;
-
     width: 40px;
     height: 40px;
     color: white;
@@ -61,7 +83,7 @@ body {
     background-color: var(--primary-color);
 }
 
-.logo-icon img{
+.logo-icon img {
     width: 50px;
     height: 50px;
     border-radius: 10px;
@@ -127,19 +149,14 @@ body {
     color: white;
     background-color: var(--primary-color);
     box-shadow: 0 2px 8px rgba(0, 133, 255, 0.25);
-    transition: all 0.5s;
 }
 
 .aside-item.active:hover {
     background-color: var(--secondary-color);
 }
 
-.aside-item:not(.active) {
-    transition: border 0.4s, box-shadow 0.4s;
-}
-
 .aside-item:not(.active):hover {
-    border: var(--primary-color) 1px solid;
+    border: 1px solid var(--primary-color);
     box-shadow: 0 2px 8px rgba(0, 133, 255, 0.25);
 }
 

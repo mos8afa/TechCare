@@ -1,9 +1,10 @@
-/* ===== Global Variables & Reset ===== */
+/* ===== 1. Global Variables & Reset ===== */
 :root {
     --bg-light: #F4F7FC;
     --text-gray: #718096;
     --primary-color: #1D89E4;
     --secondary-color: #2179c2;
+    --error: #E53E3E;
 }
 
 * {
@@ -23,7 +24,7 @@ body {
     min-height: 100vh;
 }
 
-/* ===== Sidebar ===== */
+/* ===== 2. Sidebar ===== */
 .sidebar {
     display: flex;
     flex-direction: column;
@@ -74,10 +75,8 @@ body {
 
 .logo-icon {
     display: flex;
-    flex-wrap: wrap;
-    align-content: center;
+    align-items: center;
     justify-content: center;
-
     width: 40px;
     height: 40px;
     color: white;
@@ -86,7 +85,7 @@ body {
     background-color: var(--primary-color);
 }
 
-.logo-icon img{
+.logo-icon img {
     width: 50px;
     height: 50px;
     border-radius: 10px;
@@ -152,23 +151,18 @@ body {
     color: white;
     background-color: var(--primary-color);
     box-shadow: 0 2px 8px rgba(0, 133, 255, 0.25);
-    transition: all 0.5s;
 }
 
 .aside-item.active:hover {
     background-color: var(--secondary-color);
 }
 
-.aside-item:not(.active) {
-    transition: border 0.4s, box-shadow 0.4s;
-}
-
 .aside-item:not(.active):hover {
-    border: var(--primary-color) 1px solid;
+    border: 1px solid var(--primary-color);
     box-shadow: 0 2px 8px rgba(0, 133, 255, 0.25);
 }
 
-/* ===== Top Navbar ===== */
+/* ===== 3. Top Navbar ===== */
 .topbar {
     display: flex;
     align-items: center;
@@ -280,15 +274,10 @@ body {
     border: 2px solid #E1E6EC;
 }
 
-.topbar-profile i {
-    font-size: 14px;
-    color: #6b7280;
-}
-
 .topbar-user-info {
     display: flex;
-    align-items: flex-end;
     flex-direction: column;
+    align-items: flex-end;
     line-height: 1.2;
 }
 
@@ -303,25 +292,41 @@ body {
     color: var(--text-gray);
 }
 
-/* ===== Main Content (common) ===== */
+/* ===== 4. Main Content (common) ===== */
 .main-content {
     display: flex;
-    align-items: center;
     flex-direction: column;
+    align-items: center;
     padding: 32px;
     margin-top: 80px;
     margin-left: 250px;
     transition: 0.3s ease;
 }
 
-/* ===== Profile Page ===== */
+/* ===== 5. Profile Page ===== */
+.profile-main-content {
+    align-items: flex-start !important;
+    padding-left: 32px !important;
+    padding-right: 32px !important;
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    max-width: none !important;
+}
+
+.profile-financials-row {
+    display: flex !important;
+    gap: 28px !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    margin-bottom: 40px !important;
+}
+
+/* Profile Card */
 .card {
     gap: 30px;
     display: flex;
     justify-content: flex-start;
     padding: 25px;
-    max-width: 1100px;
-    margin-bottom: 40px;
     border-radius: 12px;
     background: white;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
@@ -331,6 +336,13 @@ body {
 
 .card:hover {
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.profile-financials-row .card {
+    flex: 0 0 auto !important;
+    width: 944px !important;
+    max-width: 944px !important;
+    margin-bottom: 0 !important;
 }
 
 .profile-image-wrapper {
@@ -349,7 +361,7 @@ body {
 
 .profile-details {
     flex: 1;
-    padding: 40px 0px;
+    padding: 40px 0;
 }
 
 .gray {
@@ -359,34 +371,31 @@ body {
 .hr {
     border: none;
     margin: 20px 0;
-    border-top: #f5f5f5 1px solid;
+    border-top: 1px solid #f5f5f5;
 }
 
 .profile-info {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px 40px;
-    position: relative;
 }
 
 .info-item {
     gap: 10px;
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: flex-start;
 }
 
 .info-item > div > i {
     font-size: 24px;
-    font-weight: normal;
     color: var(--text-gray);
 }
 
 .info-item .info-label {
-    gap: 6px;
     display: flex;
     align-items: center;
+    gap: 6px;
     font-weight: 500;
     font-size: 0.75rem;
     color: var(--text-gray);
@@ -395,10 +404,6 @@ body {
 
 .info-item .info-value {
     font-weight: 500;
-}
-
-.info-label i {
-    color: var(--text-gray);
 }
 
 .margin {
@@ -444,10 +449,138 @@ body {
     background: var(--primary-color);
 }
 
-/* ===== Services Section ===== */
+/* Financial Card */
+.info-card {
+    padding: 30px;
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease;
+    animation: slideInFromRight 0.7s ease-out;
+}
+
+.info-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.profile-financials-row .info-card {
+    flex: 1 1 0 !important;
+    min-width: 280px !important;
+    max-width: 400px !important;
+    margin-bottom: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.info-card h3 {
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1c1e;
+    margin-bottom: 0;
+}
+
+.info-card h3 i {
+    font-size: 1.3rem;
+    color: var(--primary-color);
+}
+
+.view-link {
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--primary-color);
+    transition: color 0.2s;
+}
+
+.view-link:hover {
+    color: var(--text-gray);
+}
+
+.balance-card {
+    padding: 15px;
+    text-align: center;
+    margin-bottom: 24px;
+    border-radius: 20px;
+    background-color: var(--bg-light);
+}
+
+.balance-card p:first-child {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.balance-amount {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.mini-stats {
+    gap: 16px;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.stat-card {
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    border-radius: 15px;
+    border: 1px solid #edf2f7;
+    background-color: var(--bg-light);
+}
+
+.stat-card div {
+    gap: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.stat-card i {
+    width: 40px;
+    font-size: 1.8rem;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #6b7280;
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1c1e;
+}
+
+.Approved {
+    color: #10b981;
+}
+
+.Pending {
+    color: #f59e0b;
+}
+
+/* Services Section */
 .Services-Card {
-    max-width: 1100px;
-    animation: fadeIn 0.6s ease-out;
+    width: 100%;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .services-header {
@@ -479,6 +612,7 @@ body {
     padding: 8px 16px;
     border-radius: 8px;
     background-color: var(--primary-color);
+    transition: background-color 0.2s;
 }
 
 .btn-add-services:hover {
@@ -545,7 +679,7 @@ body {
     color: white;
     cursor: pointer;
     font-weight: 600;
-    transition: 0.2s;
+    transition: background-color 0.2s;
 }
 
 .btn-primary:hover {
@@ -562,33 +696,36 @@ body {
 
 .service-nav-btn {
     cursor: pointer;
-    font-weight: 600;
-    padding: 10px 20px;
     width: 50px;
     height: 50px;
     border-radius: 50%;
     background: white;
     color: var(--primary-color);
     border: 2px solid white;
-    transition: 0.3s;
     box-shadow: 0 2px 8px rgba(60, 60, 60, 0.25);
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
 }
 
 .service-nav-btn:hover {
     color: white;
     background: var(--primary-color);
+    border-color: var(--secondary-color);
     box-shadow: 0 6px 16px var(--secondary-color);
-    border: var(--secondary-color);
     animation: scalePulse 0.1s ease-in-out;
 }
 
 .services-grid {
-scroll-snap-type: x mandatory; /* تفعيل الالتقاط الأفقي */
     gap: 20px;
     display: flex;
     overflow-x: auto;
     scroll-behavior: smooth;
     flex: 1;
+    width: 100%;
+    scroll-snap-type: x mandatory;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
@@ -604,8 +741,7 @@ scroll-snap-type: x mandatory; /* تفعيل الالتقاط الأفقي */
     padding: 30px;
     border-radius: 18px;
     background-color: white;
-    /* تم إزالة min-width: 300px */
-    width: calc((100% - 40px) / 3); /* 40px تمثل مجموع الفجوات بين البطاقات (فجوتين × 20px) */
+    width: calc((100% - 40px) / 3);
     flex-shrink: 0;
     animation: slideInFromRight 0.6s ease-out;
     transition: all 0.3s ease;
@@ -626,7 +762,7 @@ scroll-snap-type: x mandatory; /* تفعيل الالتقاط الأفقي */
 
 .service-card .money {
     color: var(--primary-color);
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease;
 }
 
 .service-card:hover .money {
@@ -650,14 +786,24 @@ scroll-snap-type: x mandatory; /* تفعيل الالتقاط الأفقي */
 .service-actions a {
     text-decoration: none;
     color: var(--primary-color);
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease;
 }
 
 .service-actions a:hover {
     transform: scale(1.15);
 }
 
-/* ===== Requests Page ===== */
+/* عند تصغير الشريط الجانبي */
+.sidebar.collapsed ~ div .profile-main-content {
+    margin-left: 80px !important;
+    width: calc(100% - 80px) !important;
+}
+
+.sidebar.collapsed ~ div .profile-financials-row .info-card {
+    max-width: none !important;
+}
+
+/* ===== 6. Requests Page ===== */
 .main-content-nurse-requst {
     display: flex;
     flex-direction: column;
@@ -703,7 +849,7 @@ scroll-snap-type: x mandatory; /* تفعيل الالتقاط الأفقي */
     background: white;
     color: var(--text-gray);
     border: 1px solid #E2E8F0;
-    transition: 0.3s;
+    transition: background-color 0.3s;
 }
 
 .filter-button:hover {
@@ -724,7 +870,7 @@ scroll-snap-type: x mandatory; /* تفعيل الالتقاط الأفقي */
     font-weight: 600;
     padding: 10px 5px;
     color: var(--text-gray);
-    transition: 0.3s;
+    transition: color 0.3s;
 }
 
 .tab-link.active {
@@ -735,9 +881,9 @@ scroll-snap-type: x mandatory; /* تفعيل الالتقاط الأفقي */
     content: '';
     position: absolute;
     left: 0;
+    bottom: -2px;
     width: 100%;
     height: 2px;
-    bottom: -2px;
     background: var(--primary-color);
 }
 
@@ -755,7 +901,13 @@ scroll-snap-type: x mandatory; /* تفعيل الالتقاط الأفقي */
     border-radius: 20px;
     border: 1px solid #F0F4F8;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    opacity: 0;
+    animation: fadeInUp 0.5s ease-out forwards;
 }
+
+.request-card-item:nth-child(1) { animation-delay: 0.1s; }
+.request-card-item:nth-child(2) { animation-delay: 0.2s; }
+.request-card-item:nth-child(3) { animation-delay: 0.3s; }
 
 .card-top-section {
     display: flex;
@@ -776,7 +928,7 @@ scroll-snap-type: x mandatory; /* تفعيل الالتقاط الأفقي */
     width: 45px;
     height: 45px;
     font-size: 20px;
-    border-radius: 100%;
+    border-radius: 50%;
     background: #F0F7FF;
     color: var(--primary-color);
 }
@@ -856,15 +1008,11 @@ scroll-snap-type: x mandatory; /* تفعيل الالتقاط الأفقي */
     font-weight: bold;
     letter-spacing: 2px;
     color: var(--text-gray);
-}
-
-.services-total > div:first-of-type {
-    margin-top: 15px;
+    text-transform: uppercase;
 }
 
 .services-each {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
     margin-top: 5px;
 }
@@ -907,7 +1055,7 @@ scroll-snap-type: x mandatory; /* تفعيل الالتقاط الأفقي */
     padding: 12px 15px;
     border-radius: 12px;
     border: 1px solid #E2E8F0;
-    transition: 0.3s;
+    transition: border-color 0.3s;
 }
 
 .price-input-section input:focus {
@@ -928,7 +1076,7 @@ scroll-snap-type: x mandatory; /* تفعيل الالتقاط الأفقي */
     font-weight: 600;
     padding: 10px 18px;
     border-radius: 10px;
-    transition: 0.3s;
+    transition: background-color 0.3s;
 }
 
 .btn-action.reject {
@@ -945,10 +1093,25 @@ scroll-snap-type: x mandatory; /* تفعيل الالتقاط الأفقي */
     background: var(--secondary-color);
 }
 
-/* ===== Responsive ===== */
+/* ===== 7. Responsive Design ===== */
+@media (max-width: 1300px) {
+    .profile-financials-row .card {
+        width: 800px !important;
+        max-width: 800px !important;
+    }
+}
+
 @media (max-width: 1100px) {
     .requests-grid {
         grid-template-columns: 1fr;
+    }
+    .profile-financials-row {
+        flex-wrap: wrap;
+    }
+    .profile-financials-row .card,
+    .profile-financials-row .info-card {
+        width: 100% !important;
+        max-width: 100% !important;
     }
 }
 
@@ -972,6 +1135,17 @@ scroll-snap-type: x mandatory; /* تفعيل الالتقاط الأفقي */
         padding-left: 15px;
         padding-right: 15px;
     }
+    .profile-main-content {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+        align-items: center !important;
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+    .profile-financials-row {
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
 }
 
 @media (max-width: 768px) {
@@ -987,7 +1161,7 @@ scroll-snap-type: x mandatory; /* تفعيل الالتقاط الأفقي */
     }
 }
 
-/* ===== Animations ===== */
+/* ===== 8. Animations ===== */
 @keyframes slideInFromLeft {
     from {
         opacity: 0;
@@ -1028,8 +1202,6 @@ scroll-snap-type: x mandatory; /* تفعيل الالتقاط الأفقي */
     }
 }
 
-/* ===== Animations for Request Cards ===== */
-
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -1040,14 +1212,3 @@ scroll-snap-type: x mandatory; /* تفعيل الالتقاط الأفقي */
         transform: translateY(0);
     }
 }
-
-.request-card-item {
-    opacity: 0; /* مخفي في البداية */
-    animation: fadeInUp 0.5s ease-out forwards;
-}
-
-/* إذا أردت ظهور البطاقات بشكل متتابع (واحدة تلو الأخرى) يمكن إضافة تأخير تدريجي */
-.request-card-item:nth-child(1) { animation-delay: 0.1s; }
-.request-card-item:nth-child(2) { animation-delay: 0.2s; }
-.request-card-item:nth-child(3) { animation-delay: 0.3s; }
-/* وهكذا حسب عدد البطاقات المتوقع */
