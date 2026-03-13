@@ -5,6 +5,9 @@
     --primary-color: #1D89E4;
     --secondary-color: #2179c2;
     --error: #E53E3E;
+    --sidebar-width: 250px;
+    --sidebar-collapsed-width: 80px;
+    --topbar-height: 72px;
 }
 
 * {
@@ -17,6 +20,7 @@ body {
     line-height: 1.5;
     font-family: 'Inter', sans-serif;
     background-color: var(--bg-light);
+    overflow-x: hidden; /* prevent horizontal scroll at root */
 }
 
 .dashboard {
@@ -31,28 +35,20 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 250px;
+    width: var(--sidebar-width);
     height: 100vh;
     padding: 24px;
     background-color: white;
     border-right: #E1E6EC 1px solid;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     overflow-y: auto;
-    transition: 0.3s ease;
+    transition: width 0.3s ease, padding 0.3s ease;
+    z-index: 900;
 }
 
 .sidebar.collapsed {
-    width: 80px;
+    width: var(--sidebar-collapsed-width);
     padding: 20px 10px;
-}
-
-.sidebar.collapsed ~ div .topbar {
-    left: 80px;
-}
-
-.sidebar.collapsed ~ div .main-content,
-.sidebar.collapsed ~ div .main-content-nurse-requst {
-    margin-left: 80px;
 }
 
 .sidebar.collapsed .logo h2,
@@ -79,6 +75,7 @@ body {
     justify-content: center;
     width: 40px;
     height: 40px;
+    flex-shrink: 0;
     color: white;
     font-size: 22px;
     border-radius: 15px;
@@ -111,6 +108,7 @@ body {
     margin-left: auto;
     background-color: white;
     transition: all 0.2s;
+    flex-shrink: 0;
 }
 
 .sidebar-toggle:hover {
@@ -140,11 +138,13 @@ body {
     text-decoration: none;
     border: 1px solid transparent;
     transition: border 0.2s, box-shadow 0.2s;
+    white-space: nowrap;
 }
 
 .aside-item i {
     width: 20px;
     font-size: 20px;
+    flex-shrink: 0;
 }
 
 .aside-item.active {
@@ -167,17 +167,16 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: fixed;
+    position: sticky;   /* sticky inside .content-wrapper instead of fixed */
     top: 0;
-    left: 250px;
+    left: 0;
     right: 0;
-    height: 72px;
+    height: var(--topbar-height);
     padding: 0 32px;
     background-color: white;
     border-bottom: 1px solid #E1E6EC;
-    box-shadow: 0 2px 8px rgba(255, 0, 0, 0.03);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
     z-index: 1000;
-    transition: 0.3s ease;
 }
 
 .topbar-title {
@@ -292,37 +291,54 @@ body {
     color: var(--text-gray);
 }
 
-/* ===== 4. Main Content (common) ===== */
+/* ===== 4. Content Wrapper (the div next to the sidebar) ===== */
+.content-wrapper {
+    flex: 1;
+    min-width: 0;          /* critical: lets flex child shrink below content size */
+    overflow-x: hidden;    /* clip anything that still tries to escape */
+    display: flex;
+    flex-direction: column;
+    margin-left: var(--sidebar-width);
+    transition: margin-left 0.3s ease;
+}
+
+.sidebar.collapsed ~ .content-wrapper {
+    margin-left: var(--sidebar-collapsed-width);
+}
+
+/* ===== 4b. Main Content (common) ===== */
 .main-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 32px;
-    margin-top: 80px;
-    margin-left: 250px;
-    transition: 0.3s ease;
+    min-width: 0;
 }
 
 /* ===== 5. Profile Page ===== */
 .profile-main-content {
-    align-items: flex-start !important;
-    padding-left: 32px !important;
-    padding-right: 32px !important;
-    margin-left: 250px;
-    width: calc(100% - 250px);
-    max-width: none !important;
+    align-items: flex-start;
+    padding: 32px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    min-width: 0;
 }
 
+/* ── Profile Financials Row ── */
 .profile-financials-row {
-    display: flex !important;
-    gap: 28px !important;
-    align-items: stretch !important;
-    width: 100% !important;
-    margin-bottom: 40px !important;
+    display: flex;
+    gap: 28px;
+    align-items: stretch;
+    width: 100%;
+    margin-bottom: 40px;
+    min-width: 0;
 }
 
 /* Profile Card */
 .card {
+    flex: 2 1 0;         /* grow twice as fast as info-card */
+    min-width: 0;        /* allow shrinking below content size */
     gap: 30px;
     display: flex;
     justify-content: flex-start;
@@ -331,22 +347,16 @@ body {
     background: white;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     animation: slideInFromLeft 0.7s ease-out;
-    transition: all 0.3s ease;
+    transition: box-shadow 0.3s ease;
 }
 
 .card:hover {
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
 }
 
-.profile-financials-row .card {
-    flex: 0 0 auto !important;
-    width: 944px !important;
-    max-width: 944px !important;
-    margin-bottom: 0 !important;
-}
-
 .profile-image-wrapper {
     width: 140px;
+    flex-shrink: 0;
     height: 140px;
 }
 
@@ -361,6 +371,7 @@ body {
 
 .profile-details {
     flex: 1;
+    min-width: 0;
     padding: 40px 0;
 }
 
@@ -385,6 +396,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    min-width: 0;
 }
 
 .info-item > div > i {
@@ -406,6 +418,10 @@ body {
     font-weight: 500;
 }
 
+.info-item .info-value-phone{
+    font-weight: 500;
+    white-space: nowrap;
+}
 .margin {
     margin-top: 30px;
 }
@@ -431,6 +447,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    flex-shrink: 0;
 }
 
 .btn-outline {
@@ -442,6 +459,7 @@ body {
     color: var(--primary-color);
     border: 2px solid var(--primary-color);
     transition: 0.3s;
+    white-space: nowrap;
 }
 
 .btn-outline:hover {
@@ -451,25 +469,20 @@ body {
 
 /* Financial Card */
 .info-card {
+    flex: 1 1 0;         /* grow once, allow shrinking */
+    min-width: 260px;    /* don't collapse below usable size */
     padding: 30px;
     border-radius: 15px;
     background-color: white;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(0, 0, 0, 0.05);
     transition: box-shadow 0.2s ease;
     animation: slideInFromRight 0.7s ease-out;
+    display: flex;
+    flex-direction: column;
 }
 
 .info-card:hover {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-}
-
-.profile-financials-row .info-card {
-    flex: 1 1 0 !important;
-    min-width: 280px !important;
-    max-width: 400px !important;
-    margin-bottom: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
 }
 
 .card-header {
@@ -578,9 +591,7 @@ body {
 /* Services Section */
 .Services-Card {
     width: 100%;
-    max-width: none;
-    margin-left: 0;
-    margin-right: 0;
+    margin-bottom: 40px;
 }
 
 .services-header {
@@ -692,12 +703,14 @@ body {
     align-items: center;
     gap: 20px;
     animation: slideInFromRight 0.8s ease-out 0.2s both;
+    min-width: 0;
 }
 
 .service-nav-btn {
     cursor: pointer;
     width: 50px;
     height: 50px;
+    flex-shrink: 0;
     border-radius: 50%;
     background: white;
     color: var(--primary-color);
@@ -724,7 +737,7 @@ body {
     overflow-x: auto;
     scroll-behavior: smooth;
     flex: 1;
-    width: 100%;
+    min-width: 0;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -793,30 +806,18 @@ body {
     transform: scale(1.15);
 }
 
-/* عند تصغير الشريط الجانبي */
-.sidebar.collapsed ~ div .profile-main-content {
-    margin-left: 80px !important;
-    width: calc(100% - 80px) !important;
-}
-
-.sidebar.collapsed ~ div .profile-financials-row .info-card {
-    max-width: none !important;
-}
-
 /* ===== 6. Requests Page ===== */
 .main-content-nurse-requst {
     display: flex;
     flex-direction: column;
     padding: 32px;
-    margin-top: 80px;
-    margin-left: 250px;
-    transition: 0.3s ease;
+    min-width: 0;
 }
 
 .requests-sticky {
     z-index: 100;
     position: sticky;
-    top: 80px;
+    top: 0;
     padding-bottom: 30px;
     background-color: var(--bg-light);
 }
@@ -1094,24 +1095,21 @@ body {
 }
 
 /* ===== 7. Responsive Design ===== */
-@media (max-width: 1300px) {
-    .profile-financials-row .card {
-        width: 800px !important;
-        max-width: 800px !important;
-    }
-}
-
 @media (max-width: 1100px) {
     .requests-grid {
         grid-template-columns: 1fr;
     }
+
+    /* Stack the two profile cards vertically */
     .profile-financials-row {
-        flex-wrap: wrap;
+        flex-direction: column;
     }
+
     .profile-financials-row .card,
     .profile-financials-row .info-card {
-        width: 100% !important;
-        max-width: 100% !important;
+        flex: none;
+        width: 100%;
+        min-width: 0;
     }
 }
 
@@ -1119,32 +1117,35 @@ body {
     .dashboard {
         flex-direction: column;
     }
+
     .sidebar {
-        gap: 16px;
+        position: relative;
         width: 100%;
+        height: auto;
+        flex-direction: row;
         padding: 16px;
         overflow-x: auto;
-        flex-direction: row;
     }
+
+    .content-wrapper {
+        margin-left: 0 !important;
+    }
+
     .aside {
         flex-wrap: wrap;
         flex-direction: row;
     }
+
     .main-content,
-    .main-content-nurse-requst {
+    .main-content-nurse-requst,
+    .profile-main-content {
         padding-left: 15px;
         padding-right: 15px;
     }
-    .profile-main-content {
-        padding-left: 16px !important;
-        padding-right: 16px !important;
-        align-items: center !important;
-        margin-left: 0 !important;
-        width: 100% !important;
-    }
+
     .profile-financials-row {
-        flex-direction: column !important;
-        gap: 20px !important;
+        flex-direction: column;
+        gap: 20px;
     }
 }
 
@@ -1152,63 +1153,43 @@ body {
     .profile-info {
         grid-template-columns: 1fr;
     }
+
     .card {
         flex-direction: column;
         gap: 20px;
     }
+
     .profile-image-wrapper {
         margin-top: 0;
+    }
+
+    .requests-grid {
+        grid-template-columns: 1fr;
     }
 }
 
 /* ===== 8. Animations ===== */
 @keyframes slideInFromLeft {
-    from {
-        opacity: 0;
-        transform: translateX(-30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+    from { opacity: 0; transform: translateX(-30px); }
+    to   { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes slideInFromRight {
-    from {
-        opacity: 0;
-        transform: translateX(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+    from { opacity: 0; transform: translateX(30px); }
+    to   { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 @keyframes scalePulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.02);
-    }
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.02); }
 }
 
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
 }

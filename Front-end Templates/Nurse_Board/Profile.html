@@ -9,9 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
 </head>
 <body>  
     <div class="dashboard">
@@ -42,7 +40,7 @@
                     <i class="ri-file-list-line"></i>
                     <span>Requests</span>
                 </a>
-                <a href="Notifications.html" class="aside-item ">
+                <a href="Notifications.html" class="aside-item">
                     <i class="fa-regular fa-bell"></i>
                     <span>Notifications</span>
                 </a>
@@ -57,7 +55,14 @@
             </aside>
         </aside>
 
-        <div style="flex:1; display:flex; flex-direction:column;">
+        <!--
+            KEY FIX: replaced `<div style="flex:1; display:flex; flex-direction:column;">`
+            with `<div class="content-wrapper">`.
+            The class adds `min-width: 0` (prevents flex blowout) and
+            `margin-left: var(--sidebar-width)` (pushes content clear of the fixed sidebar),
+            removing the need for every child to track the sidebar width itself.
+        -->
+        <div class="content-wrapper">
         
             <!-- Top Navbar -->
             <div class="topbar">
@@ -66,7 +71,6 @@
                 <div class="topbar-right">
                     <div class="topbar-icon" id="notificationBtn">
                         <i class="fa-regular fa-bell"></i>
-                        
 
                         <div class="inbox" id="notificationBox">
                             <div class="notification-item" onclick="window.location.href='Notifications.html'">
@@ -97,12 +101,13 @@
                 </div>
             </div>
 
-            <!-- Main Content مع كلاس خاص لصفحة البروفايل -->
+            <!-- Main Content -->
             <main class="main-content profile-main-content">
                 
-                <!-- حاوية الصف التي تضم الكاردين -->
+                <!-- Row containing both cards -->
                 <div class="profile-financials-row">
-                    <!-- Profile Card (الكارد الرئيسي) -->
+
+                    <!-- Profile Card -->
                     <div class="card">
                         <div class="profile-image-wrapper">
                             <img id="profileImage" src="https://randomuser.me/api/portraits/women/44.jpg">
@@ -111,7 +116,7 @@
                         <div class="profile-details">
                             <div>
                                 <h3>Sarah Johnson, RN</h3>
-                                <p class="gray">Registered Nurse &nbsp; • &nbsp; 8 Years Experience</p>
+                                <p class="gray">Registered Nurse</p>
                             </div>
                         
                             <hr class="hr">
@@ -128,7 +133,7 @@
                                     <div><i class="ri-phone-line"></i></div>
                                     <div>
                                         <p class="info-label">Phone Number</p>
-                                        <p class="info-value">+1 (555) 234-5678</p>
+                                        <p class="info-value-phone">+1 (555) 234-5678</p>
                                     </div>
                                 </div>
                                 <div class="info-item">
@@ -147,15 +152,12 @@
                                 </div>
                             </div>
                         
-                            
-                        
                             <div class="margin">
                                 <strong>About</strong>
                                 <p>
-                                    Dedicated and compassionate Registered Nurse with over 8 years of clinical experience. Specialized in post- operative recovery and complex wound management. Committed to providing high-quality, patient-centered care and supporting families through clinical transitions at home.                            
+                                    Dedicated and compassionate Registered Nurse with over 8 years of clinical experience. Specialized in post-operative recovery and complex wound management. Committed to providing high-quality, patient-centered care and supporting families through clinical transitions at home.
                                 </p>
                             </div>
-                            
                         </div>
 
                         <div class="btn-edit">
@@ -163,8 +165,8 @@
                         </div>
                     </div>
 
-                    <!-- Financials & Activity Card (الكارد المالي) -->
-                    <div class="info-card animate slide-up-2">
+                    <!-- Financials & Activity Card -->
+                    <div class="info-card">
                         <div class="card-header">
                             <h3>
                                 <i class="fa-solid fa-chart-line"></i>
@@ -177,8 +179,6 @@
                             <p>Total Wallet Balance</p>
                             <p class="balance-amount">12,450.00 EGP</p>
                         </div>
-
-                        <br>
                     
                         <div class="mini-stats">
                             <div class="stat-card Approved">
@@ -188,8 +188,6 @@
                                     <p class="stat-value">1,248</p>
                                 </div>
                             </div>
-
-                            <br>
 
                             <div class="stat-card Pending">
                                 <p class="stat-label">Pending Requests</p>
@@ -202,7 +200,7 @@
                     </div>
                 </div>
 
-                <!-- Services Card -->
+                <!-- Services Section -->
                 <div class="Services-Card">
                     <div class="services-header">
                         <h3>My Services <span id="serviceCount">(3)</span></h3>
@@ -237,70 +235,59 @@
                         </button>
                         
                         <div class="services-grid">
+                            <div class="service-card">
+                                <h4>Home Visit Consultation <span class="money">$45</span></h4>
+                                <p>Basic health assessment and vital check-up.</p>
+                                <div class="service-actions">
+                                    <a href="#"><i class="fas fa-edit"></i> Edit</a>
+                                    <a href="#"><i class="fas fa-trash"></i> Remove</a>
+                                </div>
+                            </div>
                         
                             <div class="service-card">
-                            <h4>Home Visit Consultation <span class="money">$45</span></h4>
-                            <p>Basic health assessment and vital check-up.</p>
-                            <div class="service-actions">
-                                <a href="#"><i class="fas fa-edit"></i> Edit</a>
-                                <a href="#"><i class="fas fa-trash"></i> Remove</a>
+                                <h4>Wound Dressing <span class="money">$30</span></h4>
+                                <p>Cleaning and dressing of surgical or chronic wounds.</p>
+                                <div class="service-actions">
+                                    <a href="#"><i class="fas fa-edit"></i> Edit</a>
+                                    <a href="#"><i class="fas fa-trash"></i> Remove</a>
+                                </div>
                             </div>
-                        </div>
-                    
-                        <div class="service-card">
-                            <h4>Wound Dressing <span class="money">$30</span></h4>
-                            <p>Cleaning and dressing of surgical or chronic wounds.</p>
-                            <div class="service-actions">
-                                <a href="#"><i class="fas fa-edit"></i> Edit</a>
-                                <a href="#"><i class="fas fa-trash"></i> Remove</a>
-                            </div>
-                        </div>
-                    
-                        <div class="service-card">
-                            <h4>IV Medication Admin <span class="money">$60</span></h4>
-                            <p>Professional administration of intravenous medications.</p>
-                            <div class="service-actions">
-                                <a href="#"><i class="fas fa-edit"></i> Edit</a>
-                                <a href="#"><i class="fas fa-trash"></i> Remove</a>
-                            </div>
-                        </div>
                         
-                        <div class="service-card">
-                            <h4>IV Medication Admin <span class="money">$60</span></h4>
-                            <p>Professional administration of intravenous medications.</p>
-                            <div class="service-actions">
-                                <a href="#"><i class="fas fa-edit"></i> Edit</a>
-                                <a href="#"><i class="fas fa-trash"></i> Remove</a>
+                            <div class="service-card">
+                                <h4>IV Medication Admin <span class="money">$60</span></h4>
+                                <p>Professional administration of intravenous medications.</p>
+                                <div class="service-actions">
+                                    <a href="#"><i class="fas fa-edit"></i> Edit</a>
+                                    <a href="#"><i class="fas fa-trash"></i> Remove</a>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="service-card">
-                            <h4>IV Medication Admin <span class="money">$60</span></h4>
-                            <p>Professional administration of intravenous medications.</p>
-                            <div class="service-actions">
-                                <a href="#"><i class="fas fa-edit"></i> Edit</a>
-                                <a href="#"><i class="fas fa-trash"></i> Remove</a>
+                            
+                            <div class="service-card">
+                                <h4>IV Medication Admin <span class="money">$60</span></h4>
+                                <p>Professional administration of intravenous medications.</p>
+                                <div class="service-actions">
+                                    <a href="#"><i class="fas fa-edit"></i> Edit</a>
+                                    <a href="#"><i class="fas fa-trash"></i> Remove</a>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="service-card">
-                            <h4>IV Medication Admin <span class="money">$60</span></h4>
-                            <p>Professional administration of intravenous medications.</p>
-                            <div class="service-actions">
-                                <a href="#"><i class="fas fa-edit"></i> Edit</a>
-                                <a href="#"><i class="fas fa-trash"></i> Remove</a>
+                            
+                            <div class="service-card">
+                                <h4>IV Medication Admin <span class="money">$60</span></h4>
+                                <p>Professional administration of intravenous medications.</p>
+                                <div class="service-actions">
+                                    <a href="#"><i class="fas fa-edit"></i> Edit</a>
+                                    <a href="#"><i class="fas fa-trash"></i> Remove</a>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <!-- <div class="service-card">
-                            <h4>IV Medication Admin <span class="money">$60</span></h4>
-                            <p>Professional administration of intravenous medications.</p>
-                            <div class="service-actions">
-                                <a href="#"><i class="fas fa-edit"></i> Edit</a>
-                                <a href="#"><i class="fas fa-trash"></i> Remove</a>
+                            
+                            <div class="service-card">
+                                <h4>IV Medication Admin <span class="money">$60</span></h4>
+                                <p>Professional administration of intravenous medications.</p>
+                                <div class="service-actions">
+                                    <a href="#"><i class="fas fa-edit"></i> Edit</a>
+                                    <a href="#"><i class="fas fa-trash"></i> Remove</a>
+                                </div>
                             </div>
-                        </div> -->
-                    
                         </div>
                         
                         <button class="service-nav-btn next-service" id="next-service">
@@ -313,6 +300,6 @@
         </div>
 
     </div>
-</body>
     <script src="../JS/Board.js"></script>
+</body>
 </html>
