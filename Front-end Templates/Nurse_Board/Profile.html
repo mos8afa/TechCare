@@ -97,75 +97,108 @@
                 </div>
             </div>
 
-            <!-- Main Content -->
-            <main class="main-content">
+            <!-- Main Content مع كلاس خاص لصفحة البروفايل -->
+            <main class="main-content profile-main-content">
                 
-                <!-- Profile Card -->
-                <div class="card">
-                    <div class="profile-image-wrapper">
-                        <img id="profileImage" src="https://randomuser.me/api/portraits/women/44.jpg">
-                    </div>
-                    
-                    <div class="profile-details">
-                        <div>
-                            <h3>Sarah Johnson, RN</h3>
-                            <p class="gray">Registered Nurse &nbsp; • &nbsp; 8 Years Experience</p>
+                <!-- حاوية الصف التي تضم الكاردين -->
+                <div class="profile-financials-row">
+                    <!-- Profile Card (الكارد الرئيسي) -->
+                    <div class="card">
+                        <div class="profile-image-wrapper">
+                            <img id="profileImage" src="https://randomuser.me/api/portraits/women/44.jpg">
                         </div>
-                    
-                        <hr class="hr">
-                    
-                        <div class="profile-info">
-                            <div class="info-item">
-                                <div><i class="ri-mail-line"></i></div>
-                                <div>
-                                    <p class="info-label">Email Address</p>
-                                    <p class="info-value">sarah@techcare.com</p>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <div><i class="ri-phone-line"></i></div>
-                                <div>
-                                    <p class="info-label">Phone Number</p>
-                                    <p class="info-value">+1 (555) 234-5678</p>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <div><i class="ri-map-pin-2-line"></i></div>
-                                <div>
-                                    <p class="info-label">Governorate</p>
-                                    <p class="info-value">Central District</p>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <div><i class="ri-home-4-line"></i></div>
-                                <div>
-                                    <p class="info-label">Address</p>
-                                    <p class="info-value">123 Healthcare St, Medical City</p>
-                                </div>
-                            </div>
-                        </div>
-                    
-                        <div class="margin">
-                            <strong>Specialization</strong>
-                            <div class="specialization-tags">
-                                <span>Post-Operative Care</span>
-                                <span>Diabetes Management</span>
-                                <span>Wound Dressing</span>
-                            </div>
-                        </div>
-                    
-                        <div class="margin">
-                            <strong>About</strong>
-                            <p>
-                                Dedicated and compassionate Registered Nurse with over 8 years of clinical experience. Specialized in post- operative recovery and complex wound management. Committed to providing high-quality, patient-centered care and supporting families through clinical transitions at home.                            
-                            </p>
-                        </div>
-                    
                         
+                        <div class="profile-details">
+                            <div>
+                                <h3>Sarah Johnson, RN</h3>
+                                <p class="gray">Registered Nurse &nbsp; • &nbsp; 8 Years Experience</p>
+                            </div>
+                        
+                            <hr class="hr">
+                        
+                            <div class="profile-info">
+                                <div class="info-item">
+                                    <div><i class="ri-mail-line"></i></div>
+                                    <div>
+                                        <p class="info-label">Email Address</p>
+                                        <p class="info-value">sarah@techcare.com</p>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <div><i class="ri-phone-line"></i></div>
+                                    <div>
+                                        <p class="info-label">Phone Number</p>
+                                        <p class="info-value">+1 (555) 234-5678</p>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <div><i class="ri-map-pin-2-line"></i></div>
+                                    <div>
+                                        <p class="info-label">Governorate</p>
+                                        <p class="info-value">Central District</p>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <div><i class="ri-home-4-line"></i></div>
+                                    <div>
+                                        <p class="info-label">Address</p>
+                                        <p class="info-value">123 Healthcare St, Medical City</p>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            
+                        
+                            <div class="margin">
+                                <strong>About</strong>
+                                <p>
+                                    Dedicated and compassionate Registered Nurse with over 8 years of clinical experience. Specialized in post- operative recovery and complex wound management. Committed to providing high-quality, patient-centered care and supporting families through clinical transitions at home.                            
+                                </p>
+                            </div>
+                            
+                        </div>
+
+                        <div class="btn-edit">
+                            <button class="btn-outline" onclick="window.location.href='Edit_Profile.html'">Edit Profile</button>
+                        </div>
                     </div>
 
-                    <div class="btn-edit">
-                        <button class="btn-outline" onclick="window.location.href='Edit_Profile.html'">Edit Profile</button>
+                    <!-- Financials & Activity Card (الكارد المالي) -->
+                    <div class="info-card animate slide-up-2">
+                        <div class="card-header">
+                            <h3>
+                                <i class="fa-solid fa-chart-line"></i>
+                                Financials & Activity
+                            </h3>
+                            <a href="Wallet.html" class="view-link">View History</a>
+                        </div>
+                    
+                        <div class="balance-card">
+                            <p>Total Wallet Balance</p>
+                            <p class="balance-amount">12,450.00 EGP</p>
+                        </div>
+
+                        <br>
+                    
+                        <div class="mini-stats">
+                            <div class="stat-card Approved">
+                                <p class="stat-label">Completed Requests</p>
+                                <div>
+                                    <i class="bi bi-check2-circle"></i>
+                                    <p class="stat-value">1,248</p>
+                                </div>
+                            </div>
+
+                            <br>
+
+                            <div class="stat-card Pending">
+                                <p class="stat-label">Pending Requests</p>
+                                <div>
+                                    <i class="ri-survey-line"></i>
+                                    <p class="stat-value">14</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -275,10 +308,6 @@
                         </button>
                     </div>
                 </div>
-
-
-
-
 
             </main>
         </div>
