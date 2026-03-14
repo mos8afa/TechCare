@@ -1,6 +1,6 @@
 /* =============================================================
-   requests.css  —  REQUESTS PAGE STYLES
-   Depends on: Nurse_Board.css (global layout + variables)
+    requests.css  —  REQUESTS PAGE STYLES
+Depends on: Nurse_Board.css (global layout + variables)
    ============================================================= */
 
 /* ===== Page wrapper ===== */
@@ -12,13 +12,6 @@
 }
 
 /* ===== Sticky filter / tabs bar ===== */
-.requests-sticky {
-    z-index: 100;
-    position: sticky;
-    top: 80px;
-    padding-bottom: 30px;
-    background-color: var(--bg-light);
-}
 
 .requests-header {
     display: flex;
