@@ -27,10 +27,8 @@ def doctor_dashboard(request):
     profile_pic = doctor.profile_pic
 
     doctor_requests = doctor.doctor_requests.all()
-    pending = doctor_requests.filter(status='pending')
-    pending = pending.count()
-    completed = doctor_requests.filter(status='completed')
-    completed = completed.count()
+    pending = doctor_requests.filter(status='pending').count()
+    completed = doctor_requests.filter(status='completed').count()
 
     if doctor.rates.exists():
         average_rating = doctor.rates.aggregate(Avg('rate'))['rate__avg'] or 0
@@ -62,6 +60,7 @@ def doctor_dashboard(request):
         'certificates': certificates,
     })
 
+@login_required
 def edit_doctor_profile(request):
     errors = {}
 
@@ -147,48 +146,45 @@ def edit_doctor_profile(request):
         'profile_pic': profile_pic,
     })
 
+@login_required
 def doctor_requests(request, type):
+    if request.user.role != 'doctor':
+        return redirect('login')
+    
     doctor = Doctor.objects.get(user = request.user)
-
 
     name = "Dr. " + doctor.user.first_name + " " + doctor.user.last_name
     specification =  doctor.get_specification_display()
     profile_pic = doctor.profile_pic
 
-
     doctor_requests = doctor.doctor_requests.all()
 
-    pending = doctor_requests.filter(status='pending')
-    pending = pending.order_by('-date', '-time')
-    accepted = doctor_requests.filter(status='accepted')
-    accepted = accepted.order_by('-date', '-time')
-    completed = doctor_requests.filter(status='completed')
-    completed = completed.order_by('-date', '-time')
+    pending = doctor_requests.filter(status='pending').order_by('-date', '-time')
+    accepted = doctor_requests.filter(status='accepted').order_by('-date', '-time')
+    completed = doctor_requests.filter(status='completed').order_by('-date', '-time')
 
 
-
+    context_base = {
+        'name': name,
+        'profile_pic': profile_pic,
+        "specification": specification,
+    }
 
     if type == 'pending' or type is None:
         return render(request, 'doctor/requests_pending.html', {
-            'pending': pending,
-            "name": name,
-            "specification": specification,
-            "profile_pic": profile_pic,
+            **context_base,
+            "pending": pending,
         })
     elif type == 'accepted':
         return render(request, 'doctor/requests_accepted.html', {
-            'accepted': accepted,
-            "name": name,
-            "specification": specification,
-            "profile_pic": profile_pic,
+            **context_base,
+            "accepted": accepted,
         })      
     elif type == 'completed':
         return render(request, 'doctor/requests_completed.html', {
+            **context_base,            
             'completed': completed,
-            "name": name,
-            "specification": specification, 
-            "profile_pic": profile_pic,
         })
-    
+
     else:
         return redirect('doctor:doctor_dashboard')

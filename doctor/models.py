@@ -10,8 +10,8 @@ STATUS = (
 )
 
 class DoctorRequest(models.Model):
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='doctor_requests')
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='doctor_requests')
+    patient = models.ForeignKey(Patient, on_delete=models.SET_DEFAULT, related_name='doctor_requests', default='anonymous patient')
+    doctor = models.ForeignKey(Doctor, on_delete=models.SET_DEFAULT, related_name='doctor_requests', default='anonymous doctor')
     date = models.DateTimeField()
     time = models.TimeField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
