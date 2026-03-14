@@ -8,6 +8,12 @@ STATUS = (
     ("completed", "Completed"),
 )
 
+class Service(models.Model):
+    name = models.CharField(max_length=150)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    nurse = models.ForeignKey(Nurse, on_delete=models.CASCADE, related_name='nurse_services')
+
 class NurseRequest(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.SET_DEFAULT, related_name='nurse_requests', default='anonymous patient')
     nurse = models.ForeignKey(Nurse, on_delete=models.SET_DEFAULT, related_name='nurse_requests', default='anonymous nurse')
@@ -16,12 +22,6 @@ class NurseRequest(models.Model):
     governrate = models.CharField(max_length=50, choices=GOVERNORATES)
     address = models.TextField()
     disease_description = models.TextField()
-    Service = models.ManyToManyField(Service)
+    service = models.ManyToManyField(Service)
     net_income = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     status = models.CharField(max_length=10, choices=STATUS, default="pending")
-
-class Service(models.Model):
-    name = models.CharField(max_length=150)
-    description = models.TextField()
-    price = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    nurse = models.ForeignKey(Nurse, on_delete=models.CASCADE, related_name='nurse_services')
