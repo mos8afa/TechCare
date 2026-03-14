@@ -11,6 +11,32 @@ from cryptography.fernet import Fernet
 import json
 from . import validations
 
+def generateOTP(user):
+    try:
+        otp = random.randint(100000,999999)
+
+        pending_data = {
+            "otp": otp,
+            "attempts":0,
+            }
+
+        key = Fernet(FERNET_KEY)
+
+        data = json.dumps(pending_data).encode()
+        encrypted = key.encrypt(data)
+
+        cache.set(f"pending_data_{user.id}", encrypted, timeout=300)
+
+        send_mail(
+            subject = "TechCare Team",
+            message = f"your verification OTP is {otp}",
+            from_email = EMAIL_HOST_USER,
+            recipient_list = [user.email]
+        )
+    except:
+        return False
+    return True
+
 
 
 def user_login(request):
@@ -25,19 +51,12 @@ def user_login(request):
             errors['login_error']='Invalid username or password'
             return render(request, 'accounts/login.html',{'errors': errors})
         else:
-            otp = random.randint(100000,999999)
+            otp = generateOTP(user)
+            if not otp:
+                errors['otp_generate']= 'Generate OTP failed'
 
-            cache.set(f"otp_{user.id}", otp, timeout=300)
-
-            send_mail(
-                subject = "TechCare Team",
-                message = f"your verification OTP is {otp}",
-                from_email = EMAIL_HOST_USER,
-                recipient_list = [user.email]
-            )
-
-            request.session['otp_user_id'] = user.id
             request.session['otp_source'] = 'login'
+            request.session['user'] = user.id
 
             return redirect('verify_otp_l')
 
@@ -46,17 +65,17 @@ def user_login(request):
 def verify_otp_login(request):
     errors = {}
     if request.method == "POST":
-        user_id = request.session.get("otp_user_id")
+        user_id = request.session.get('user')
 
-        if request.method == "POST":
-            list_otp = [
-                request.POST.get('otp1'),
-                request.POST.get('otp2'),
-                request.POST.get('otp3'),
-                request.POST.get('otp4'),
-                request.POST.get('otp5'),
-                request.POST.get('otp6')
-            ]
+        list_otp = [
+            request.POST.get('otp1'),
+            request.POST.get('otp2'),
+            request.POST.get('otp3'),
+            request.POST.get('otp4'),
+            request.POST.get('otp5'),
+            request.POST.get('otp6')
+        ]
+
         for otp in list_otp:
             if not otp or not otp.isdigit():
                 errors['otp_invalid']="All OTP fields must be digits only."
@@ -68,15 +87,23 @@ def verify_otp_login(request):
         if not user_id:
             return redirect('login')
 
-        saved_otp = cache.get(f"otp_{user_id}")
+        encrypted = cache.get(f"pending_data_{user_id}")
 
-        attempts = request.session.get("otp_attempts", 0)
+        if not encrypted:
+            errors['lost data']='pending data not found'
+            return render(request, "accounts/verify_otp.html", {'errors':errors, "otp_type": "login"})
 
-        if attempts >= 3:
+        key = Fernet(FERNET_KEY)
+
+        data = key.decrypt(encrypted)
+        pending_data = json.loads(data.decode())
+
+        saved_otp = pending_data["otp"]
+        attempts = pending_data["attempts"]
+
+        if attempts > 2:
             errors['otp_invalid']="Invalid OTP"
-            cache.delete(f"otp_{user_id}")
-            request.session.pop("otp_user_id", None)
-            request.session.pop("otp_attempts", None)
+            cache.delete(f"pending_data_{user_id}")
             return redirect("verify_otp_faild")
         
         if not saved_otp:
@@ -84,39 +111,31 @@ def verify_otp_login(request):
             return render(request, "accounts/verify_otp.html", {'errors': errors, "otp_type": "login"})
 
         if saved_otp != otp_input:
-            request.session["otp_attempts"] = attempts + 1
+            pending_data["attempts"] += 1
+            new_encrypted = key.encrypt(json.dumps(pending_data).encode())
+            cache.set(f"pending_data_{user_id}", new_encrypted, timeout=300)
             errors['otp_invalid']="Invalid OTP"
             return render(request, "accounts/verify_otp.html", {'errors': errors, "otp_type": "login"})
 
-        request.session.pop("otp_attempts", None)
+        cache.delete(f"pending_data_{user_id}")
 
         User = get_user_model()
         user = get_object_or_404(User, id=user_id)
         login(request, user)
-        cache.delete(f"otp_{user_id}")
-        request.session.pop("otp_user_id", None)
-
+        request.session.pop('user', None)
         return redirect("user_profile")
     return render(request, "accounts/verify_otp.html", {"otp_type": "login"})
 
 def resend_otp_login(request):
     if request.method == 'GET':
-        user_id = request.session.get("otp_user_id")
+        user_id = request.session.get("user")
         if not user_id:
             return redirect('login')
         User = get_user_model()
         user = get_object_or_404(User, id=user_id)
-        otp = random.randint(100000,999999)
 
-        cache.set(f"otp_{user.id}", otp, timeout=300)
+        generateOTP(user)
 
-        send_mail(
-            subject = "TechCare Team",
-            message = f"your verification OTP is {otp}",
-            from_email = EMAIL_HOST_USER,
-            recipient_list = [user.email]
-        )
-        
         return redirect('verify_otp_l')
     return redirect('login')
 
@@ -160,8 +179,6 @@ def user_register(request):
         if not validations.validate_name(last_name):
             errors['name']="Name must start with a capital letter, at least 2 letters, cannot contain forbidden words."
             return render(request, 'accounts/register.html', {'errors':errors})
-        
-        otp = random.randint(100000,999999)
 
         pending_user = PendingUser.objects.create(
             username=username,
@@ -172,33 +189,37 @@ def user_register(request):
             role=role,
         )
 
-        pending_data = {
-        "otp": otp,
-        "attempts":0,
-        }
-
-        key = Fernet(FERNET_KEY)
-
-        data = json.dumps(pending_data).encode()
-        encrypted = key.encrypt(data)
-
-        cache.set(f"pending_data_{pending_user.id}", encrypted, timeout=300)
-
-        send_mail(
-            subject = "TechCare Team",
-            message = f"your verification OTP is {otp}",
-            from_email = EMAIL_HOST_USER,
-            recipient_list = [email]
-        )
+        otp = generateOTP(pending_user)
+        if not otp :
+            errors['otp']='generate otp failed'
 
         request.session['otp_source'] = 'signup'
-
-        return redirect('verify_otp_s', token=pending_user.id)
+        request.session['user'] = pending_user.id
+        return redirect('verify_otp_s')
     return render(request, 'accounts/register.html')
 
-def verify_otp_signup(request, token):
+def verify_otp_signup(request):
     errors = {}
-    pending_user = get_object_or_404(PendingUser, id=token)
+    pending_user_id = request.session.get('user')
+
+    if not pending_user_id:
+        errors['pending_user'] = 'pending user not found'
+        return render(request, "accounts/verify_otp.html", {
+            'errors': errors,
+            "otp_type": "signup",
+            "url_back": "register"
+        })
+
+    pending_user = PendingUser.objects.filter(id=pending_user_id).first()
+
+    if not pending_user:
+        errors['pending_user'] = 'pending user not found'
+        return render(request, "accounts/verify_otp.html", {
+            'errors': errors,
+            "otp_type": "signup",
+            "url_back": "register"
+        })
+
     if request.method == "POST":
         list_otp = [
             request.POST.get('otp1'),
@@ -211,12 +232,12 @@ def verify_otp_signup(request, token):
         for otp in list_otp:
             if not otp or not otp.isdigit():
                 errors['otp_invalid']="All OTP fields must be digits only."
-                return render(request, "accounts/verify_otp.html", {'errors': errors, "token": token, "otp_type": "signup", "url_back": "register"})
+                return render(request, "accounts/verify_otp.html", {'errors': errors, "otp_type": "signup", "url_back": "register"})
 
         otp_str = "".join(list_otp)
         otp_input = int(otp_str)
 
-        encrypted_data = cache.get(f"pending_data_{pending_user.id}")
+        encrypted_data = cache.get(f"pending_data_{pending_user_id}")
 
         if not encrypted_data:
             return redirect('login')
@@ -224,21 +245,21 @@ def verify_otp_signup(request, token):
         key = Fernet(FERNET_KEY)
         data = key.decrypt(encrypted_data)
 
-        pending_data = json.loads(data)
+        pending_data = json.loads(data.decode())
 
         attempts = pending_data['attempts']
 
-        if attempts >= 3:
-            cache.delete(f"pending_data_{pending_user.id}")
+        if attempts > 2:
+            cache.delete(f"pending_data_{pending_user_id}")
             pending_user.delete()
             return redirect("verify_otp_faild")        
         
         if str(pending_data['otp']) != str(otp_input):
             pending_data["attempts"] = attempts + 1
             updated_encrypted = key.encrypt(json.dumps(pending_data).encode())
-            cache.set(f"pending_data_{pending_user.id}", updated_encrypted, timeout=300)
+            cache.set(f"pending_data_{pending_user_id}", updated_encrypted, timeout=300)
             errors['otp_invalid']="Invalid OTP"
-            return render(request, 'accounts/verify_otp.html',{'errors': errors, "token": token, "otp_type": "signup", "url_back": "register"})
+            return render(request, 'accounts/verify_otp.html',{'errors': errors, "otp_type": "signup", "url_back": "register"})
 
         User = get_user_model()
         user = User.objects.create(
@@ -252,42 +273,26 @@ def verify_otp_signup(request, token):
         )
         user.save()
         login(request, user)
-        cache.delete(f"pending_data_{pending_user.id}")
+        cache.delete(f"pending_data_{pending_user_id}")
         pending_user.delete()
-
+        request.session.pop('user', None)
         return redirect(ROLE_REDIRECTS[user.role])
 
     return render(request, "accounts/verify_otp.html", {
-        "token": token,
         "otp_type": "signup",
         "url_back": "register"
         })
 
-def resend_otp_signup(request, token):
+def resend_otp_signup(request):
     if request.method == 'GET':
-        pending_user = get_object_or_404(PendingUser, id=token)
-        otp = random.randint(100000,999999)
+        pending_user_id = request.session.get('user')
+        pending_user = PendingUser.objects.get(id = pending_user_id )
+        if not pending_user:
+            return redirect('user_register')
+        
+        generateOTP(pending_user)
 
-        pending_data = {
-        "otp": otp,
-        "attempts":0,
-        }
-
-        key = Fernet(FERNET_KEY)
-
-        data = json.dumps(pending_data).encode()
-        encrypted = key.encrypt(data)
-
-        cache.set(f"pending_data_{pending_user.id}", encrypted, timeout=300)
-
-        send_mail(
-            subject = "TechCare Team",
-            message = f"your verification OTP is {otp}",
-            from_email = EMAIL_HOST_USER,
-            recipient_list = [pending_user.email]
-        )
-
-        return redirect('verify_otp_s', token=token)
+        return redirect('verify_otp_s')
     return redirect('user_register')
 
 
@@ -588,17 +593,9 @@ def forget_password(request):
             errors['exist_email']="email don't exists"
             return render(request, 'accounts/forget_password.html', {'errors':errors})
 
-        otp = random.randint(100000,999999)
-
-        cache.set(f"otp_{user.id}", otp, timeout=300)
-
-        send_mail(
-            subject = "TechCare Team",
-            message = f"your verification OTP is {otp}",
-            from_email = EMAIL_HOST_USER,
-            recipient_list = [user.email]
-        )
-        request.session['otp_user_id'] = user.id
+        generateOTP(user)
+        
+        request.session['user'] = user.id
         request.session['otp_source'] = 'forget'
 
         return redirect('verify_otp_forget_password')
@@ -607,16 +604,20 @@ def forget_password(request):
 
 def verify_otp_forget_password(request):
     errors = {}
+    user = request.session.get('user')
+    if not user :
+        errors['user']='user not found'
+        return redirect('login')
+
     if request.method == "POST":
-        if request.method == "POST":
-            list_otp = [
-                request.POST.get('otp1'),
-                request.POST.get('otp2'),
-                request.POST.get('otp3'),
-                request.POST.get('otp4'),
-                request.POST.get('otp5'),
-                request.POST.get('otp6')
-            ]
+        list_otp = [
+            request.POST.get('otp1'),
+            request.POST.get('otp2'),
+            request.POST.get('otp3'),
+            request.POST.get('otp4'),
+            request.POST.get('otp5'),
+            request.POST.get('otp6')
+        ]
         for otp in list_otp:
             if not otp or not otp.isdigit():
                 errors['otp_invalid']="All OTP fields must be digits only."
@@ -629,19 +630,24 @@ def verify_otp_forget_password(request):
         otp_str = "".join(list_otp)
         otp_input = int(otp_str)
 
-        user_id = request.session.get("otp_user_id")
-        if not user_id:
-            return redirect('login')
 
-        saved_otp = cache.get(f"otp_{user_id}")
+        encrypted = cache.get(f"pending_data_{user}")
+        if not encrypted:
+            errors['lost data']='pending data not found'
+            return render(request, "accounts/verify_otp.html", {'errors':errors, "otp_type": "login"})
 
-        attempts = request.session.get("otp_attempts", 0)
+        key = Fernet(FERNET_KEY)
+
+        data = key.decrypt(encrypted)
+        pending_data = json.loads(data.decode())
+
+        saved_otp = pending_data["otp"]
+        attempts = pending_data["attempts"]
 
         if attempts >= 3:
             errors['otp_invalid']="Invalid OTP"
-            cache.delete(f"otp_{user_id}")
-            request.session.pop("otp_user_id", None)
-            request.session.pop("otp_attempts", None)
+            cache.delete(f"pending_data_{user}")
+            request.session.pop('user', None)
             return redirect("verify_otp_faild")
         
         if not saved_otp:
@@ -651,8 +657,11 @@ def verify_otp_forget_password(request):
             'otp_type': 'forget',
             'url_back': 'forget_password'
             })
+        
         if saved_otp != otp_input:
-            request.session["otp_attempts"] = attempts + 1
+            pending_data["attempts"] += 1
+            new_encrypted = key.encrypt(json.dumps(pending_data).encode())
+            cache.set(f"pending_data_{user}", new_encrypted, timeout=300)
             errors['otp_invalid']="Invalid OTP"
             return render(request, "accounts/verify_otp.html", {
             'errors': errors,
@@ -660,14 +669,14 @@ def verify_otp_forget_password(request):
             'url_back': 'forget_password'
             })
         
-        cache.delete(f"otp_{user_id}")
+        cache.delete(f"otp_{user}")
 
         return redirect('reset_password')
     return render(  request, "accounts/verify_otp.html", {"otp_type": 'forget', "url_back": 'forget_password'})  
 
 def reset_password(request):
     errors = {}
-    user_id = request.session.get("otp_user_id")
+    user_id = request.session.get("user")
     if not user_id:
         return redirect('forget_password')
     
@@ -689,28 +698,19 @@ def reset_password(request):
         user.set_password(password)
         user.save()
 
-        request.session.pop("otp_user_id", None)
-        request.session.pop("otp_attempts", None)
+        request.session.pop("user", None)
         return redirect('login')
     return render(request, 'accounts/reset_password.html')
 
 def resend_otp_forget_password(request):
     if request.method == 'GET':
-        user_id = request.session.get("otp_user_id")
+        user_id = request.session.get("user")
         if not user_id:
             return redirect('forget_password')
         User = get_user_model()
         user = get_object_or_404(User, id=user_id)
-        otp = random.randint(100000,999999)
 
-        cache.set(f"otp_{user.id}", otp, timeout=300)
-
-        send_mail(
-            subject = "TechCare Team",
-            message = f"your verification OTP is {otp}",
-            from_email = EMAIL_HOST_USER,
-            recipient_list = [user.email]
-        )
+        generateOTP(user)
             
         return redirect('verify_otp_forget_password')
     return redirect('forget_password')
@@ -723,19 +723,19 @@ def user_profile(request):
         return redirect("doctor:doctor_dashboard")
     
     elif user.role == 'patient':
-        return redirect("doctor:doctor_dashboard")
+        return redirect("patient:patient_dashboard")
     
     elif user.role == 'nurse':
-        return redirect("doctor:doctor_dashboard")
+        return redirect("nurse:nurse_dashboard")
     
     elif user.role == 'pharmacist':
-        return redirect("doctor:doctor_dashboard")
+        return redirect("pharmacist:pharmacist_dashboard")
     
     elif user.role == 'donor':
-        return redirect("doctor:doctor_dashboard")
+        return redirect("donor:donor_dashboard")
         
     else:
         return redirect('home')
-    
-def terms(request):
+
+def terms(request): 
     return render(request, 'accounts/terms.html')
