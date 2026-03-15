@@ -1,0 +1,111 @@
+{% extends 'nurse_base.html' %}
+{% block sidebar %}
+            <aside class="aside">
+                            <a href="{% url 'nurse:nurse_dashboard' %}" class="aside-item">
+                                <i class="bi bi-person"></i>
+                                <span>Profile</span>
+                            </a>
+                            <a href="{% url 'nurse:nurse_requests' 'pending' %}" class="aside-item active">
+                                <i class="ri-file-list-line"></i>
+                                <span>Requests</span>
+                            </a>
+                            <a href="#" class="aside-item">
+                                <i class="fa-regular fa-bell"></i>
+                                <span>Notifications</span>
+                            </a>
+                            <a href="#" class="aside-item">
+                                <i class="ri-wallet-3-line"></i>
+                                <span>Wallet</span>
+                            </a>
+                            <a href="#" class="aside-item">
+                                <i class="ri-error-warning-line"></i>
+                                <span>Complaints</span>
+                            </a>
+                        </aside>
+{% endblock sidebar %}
+
+{% block content %}
+            <!-- Main Content -->
+            <main class="main-content-nurse-requst">
+
+                <div class="requests-sticky">
+                    <div class="requests-header">
+                        <div class="header-text">
+                            <h2>Requests</h2>
+                            <p>Manage incoming nursing service requests</p>
+                        </div>
+                        <button class="filter-button">
+                            <b><i class="bi bi-funnel"></i> Filter</b>
+                        </button>
+                    </div>
+
+                    <div class="tabs-navigation">
+                        <button class="tab-link" data-status="pending" onclick="window.location.href='{% url 'nurse:nurse_requests' 'pending' %}'">Pending</button>
+                        <button class="tab-link" data-status="accepted" onclick="window.location.href='{% url 'nurse:nurse_requests' 'accepted' %}'">Accepted</button>
+                        <button class="tab-link active" data-status="done" onclick="window.location.href='{% url 'nurse:nurse_requests' 'completed' %}'">Done</button>
+                    </div>
+                </div>
+
+                <div class="requests-grid">
+                {% if completed %}
+                {% for request in completed %}
+                    <div class="request-card-item">
+                        <div class="card-top-section">
+                            <div class="patient-meta">
+                                <div class="patient-avatar-mini">
+                                    <i class="bi bi-person-circle"></i>
+                                </div>
+                                <div class="patient-name-info">
+                                    <h3>{{ request.patient.user.first_name }} {{ request.patient.user.last_name }}</h3>
+                                    <p>
+                                        <i class="ri-map-pin-2-line"></i>
+                                        {{ request.patient.get_governorate_display }}, {{ request.patient.address }}
+                                    </p>
+                                </div>
+                            </div>
+                            <span class="status-pill done">DONE</span>
+                        </div>
+
+                        <hr class="hr">
+
+                        <div class="info-row">
+                            <div class="info-block">
+                                <span class="info-label">DATE & TIME</span>
+                                <span class="info-value">{{ request.date }} | {{ request.time }}</span>
+                            </div>
+                            <div class="info-block">
+                                <span class="info-label">SERVICE TYPE</span>
+                                <span class="info-value">Nursing Care</span>
+                            </div>
+                        </div>
+
+                        <hr class="hr">
+                        <label class="l1">SERVICE DESCRIPTION</label>
+                        <div class="disease-box">
+                            {{ request.service_description }}
+                        </div>
+
+                        <div class="services-total">
+                            <label>SERVICES REQUESTED</label>
+                            <div class="services-each">
+                                <label>Total Price</label>
+                                <p>{{ request.total_price }} EGP</p>
+                            </div>
+                            <div class="services-eachs earning-row">
+                                <label>Your Earning</label>
+                                <p class="earning">{{ request.net_income }} EGP</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% else %}
+                    <div class="no-requests-placeholder">
+                        <h3>No Completed Requests</h3>
+                        <p>Once you complete nursing services, they will appear here.</p>
+                    </div>
+                {% endif %}
+                </div>
+            </main>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,9 +1,11 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from accounts import validations
 from accounts.models import Nurse
 from django.db.models import Avg
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from.models import Service
+from decimal import Decimal
 
 
 @login_required
@@ -12,7 +14,7 @@ def nurse_dashboard(request):
         return redirect("login")
 
     nurse = Nurse.objects.get(user=request.user)
-    if nurse.user.gender == 'Male':
+    if nurse.gender == 'male':
         name = "Mr. " + nurse.user.first_name + " " + nurse.user.last_name
     else:
         name = "Mrs. " + nurse.user.first_name + " " + nurse.user.last_name
@@ -58,7 +60,7 @@ def edit_nurse_profile(request):
         return redirect("login")
 
     nurse = Nurse.objects.get(user=request.user)
-    if nurse.user.gender == 'Male':
+    if nurse.gender == 'male':
         name = "Mr. " + nurse.user.first_name + " " + nurse.user.last_name
     else:
         name = "Mrs. " + nurse.user.first_name + " " + nurse.user.last_name
@@ -123,7 +125,7 @@ def nurse_requests(request, type):
 
     nurse = Nurse.objects.get(user=request.user)
 
-    if nurse.user.gender == 'Male':
+    if nurse.gender == 'male':
         name = "Mr. " + nurse.user.first_name + " " + nurse.user.last_name
     else:
         name = "Mrs. " + nurse.user.first_name + " " + nurse.user.last_name
@@ -161,7 +163,53 @@ def nurse_requests(request, type):
     
 
 def add_services(request):
-    pass
+    errors={}
+    nurse = Nurse.objects.get(user=request.user)
 
-def edit_service(request):
-    pass
+    name = request.POST.get('name')
+    description = request.POST.get('description')
+    price = request.POST.get('price')
+
+    if not validations.validate_address(description):
+            errors['description'] = "Description can't contain forbidden words."
+            return render(request, 'nurse/nurse_dashboard.html',
+                {'errors': errors})
+    try:
+        price = Decimal(price)
+    except:
+        errors['price'] = "Price must be a valid number."
+        return render(request, 'nurse/nurse_dashboard.html',
+                {'errors': errors})
+
+    if request.method =='POST':
+        nurse.nurse_services.create(
+            name = name,
+            description = description,
+            price = price
+        )
+    
+        return redirect('nurse:nurse_dashboard')
+        
+
+def edit_service(request, service_id):
+    nurse = Nurse.objects.get(user=request.user)
+
+    service = get_object_or_404(Service, id=service_id, nurse=nurse)
+
+    if request.method == "POST":
+        service.name = request.POST.get('name')
+        service.description = request.POST.get('description')
+        service.price = request.POST.get('price')
+
+        service.save()
+
+        return redirect('nurse:nurse_dashboard')
+
+def delete_service(request, service_id):
+    nurse = Nurse.objects.get(user=request.user)
+
+    service = get_object_or_404(Service, id=service_id, nurse=nurse)
+
+    service.delete()
+
+    return redirect('nurse:nurse_dashboard')

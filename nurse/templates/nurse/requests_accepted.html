@@ -1,0 +1,122 @@
+{% extends 'nurse_base.html' %}
+{% block sidebar %}
+            <aside class="aside">
+                            <a href="{% url 'nurse:nurse_dashboard' %}" class="aside-item">
+                                <i class="bi bi-person"></i>
+                                <span>Profile</span>
+                            </a>
+                            <a href="{% url 'nurse:nurse_requests' 'pending' %}" class="aside-item active">
+                                <i class="ri-file-list-line"></i>
+                                <span>Requests</span>
+                            </a>
+                            <a href="#" class="aside-item">
+                                <i class="fa-regular fa-bell"></i>
+                                <span>Notifications</span>
+                            </a>
+                            <a href="#" class="aside-item">
+                                <i class="ri-wallet-3-line"></i>
+                                <span>Wallet</span>
+                            </a>
+                            <a href="#" class="aside-item">
+                                <i class="ri-error-warning-line"></i>
+                                <span>Complaints</span>
+                            </a>
+                        </aside>
+{% endblock sidebar %}
+{% block content %}
+            <!-- Main Content -->
+            <main class="main-content">
+
+                <div class="requests-sticky">
+                    <div class="requests-header">
+                        <div class="header-text">
+                            <h2>Requests</h2>
+                            <p>Manage incoming nursing service requests</p>
+                        </div>
+                        <button class="filter-button">
+                            <b><i class="bi bi-funnel"></i> Filter</b>
+                        </button>
+                    </div>
+
+                    <div class="tabs-navigation">
+                        <button class="tab-link" data-status="pending" onclick="window.location.href='{% url 'nurse:nurse_requests' 'pending' %}'">Pending</button>
+                        <button class="tab-link active" data-status="accepted" onclick="window.location.href='{% url 'nurse:nurse_requests' 'accepted' %}'">Accepted</button>
+                        <button class="tab-link" data-status="done" onclick="window.location.href='{% url 'nurse:nurse_requests' 'completed' %}'">Done</button>
+                    </div>
+                </div>
+
+                <div class="requests-grid">
+            {% if accepted %}
+                {% for request in accepted %}
+                    <div class="request-card-item">
+                        <div class="card-top-section">
+                            <div class="patient-meta">
+                                <div class="patient-avatar-mini">
+                                    <i class="bi bi-person-circle"></i>
+                                </div>
+                                <div class="patient-name-info">
+                                    <h3>{{ request.patient.user.first_name }} {{ request.patient.user.last_name }}</h3>
+                                    <p>
+                                        <i class="bi bi-calendar3"></i> {{ request.date }}
+                                        &nbsp; • &nbsp;
+                                        <i class="bi bi-clock"></i> {{ request.time }}
+                                    </p>
+                                </div>
+                            </div>
+                            <span class="status-pill accepted">Accepted</span>
+                        </div>
+
+                        <div class="info-group location-info">
+                            <p>
+                                <i class="bi bi-geo-alt"></i>
+                                {{ request.patient.get_governorate_display }} / {{ request.patient.address }}
+                            </p>
+                        </div>
+                        <hr style="margin:15px 0; border:1px solid #F0F4F8;">
+
+                        <!-- Condition -->
+                        <div class="Condition">
+                            <label>Condition</label>
+                            <span class="accepted-tag">Nursing Care</span>
+                        </div>
+                        <div class="description-box-accepted">
+                            <p>{{ request.service_description }}</p>
+                        </div>
+
+                        <div class="services-total">
+                            <label>SERVICES REQUESTED</label>
+                            <hr class="hr">
+                            <div class="services-each total-row">
+                                <label>Total Price</label>
+                                <p>{{ request.total_price }} EGP</p>
+                            </div>
+
+                            <div class="footer-content">
+                                <div class="phone-display">
+                                    <i class="ri-phone-line"></i>
+                                    <span>{{ request.patient.phone_number }}</span>
+                                </div>
+                                <div class="user-confirmed-banner">
+                                    <i class="ri-checkbox-circle-line"></i>
+                                    USER HAS CONFIRMED
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="done-btn">
+                            <button class="btn-done">Done</button>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% else %}
+                    <div class="no-requests-placeholder">
+                        <h3>No Accepted Requests</h3>
+                        <p>Once you accept nursing requests, they will appear here.</p>
+                    </div>
+                {% endif %}
+                </div>
+
+            </main>
+        </div>
+    </div>
+{% endblock content %}

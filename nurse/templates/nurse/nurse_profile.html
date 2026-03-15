@@ -1,0 +1,224 @@
+    {% extends "nurse_base.html" %}
+        {% block sidebar %}
+                <aside class="aside">
+                    <a href="{% url 'nurse:nurse_dashboard' %}" class="aside-item active">
+                        <i class="bi bi-person"></i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="{% url 'nurse:nurse_requests' 'pending' %}" class="aside-item">
+                        <i class="ri-file-list-line"></i>
+                        <span>Requests</span>
+                    </a>
+                    <a href="Notifications.html" class="aside-item">
+                        <i class="fa-regular fa-bell"></i>
+                        <span>Notifications</span>
+                    </a>
+                    <a href="Wallet.html" class="aside-item">
+                        <i class="ri-wallet-3-line"></i>
+                        <span>Wallet</span>
+                    </a>
+                    <a href="Complaints.html" class="aside-item">
+                        <i class="ri-error-warning-line"></i>
+                        <span>Complaints</span>
+                    </a>
+                </aside>
+        {% endblock sidebar %}
+        {% block content %}
+            <!-- Main Content -->
+            <main class="main-content profile-main-content">
+                
+                <!-- Row containing both cards -->
+                <div class="profile-financials-row">
+
+                    <!-- Profile Card -->
+                    <div class="card">
+                        <div class="profile-image-wrapper">
+                            <img src="{{ profile_pic.url }}" alt="{{ name }}" />
+                        </div>
+                        
+                        <div class="profile-details">
+                            <div>
+                                <h3>{{name}}, RN</h3>
+                                <p class="gray">Registered Nurse</p>
+                            </div>
+                        
+                            <hr class="hr">
+                        
+                            <div class="profile-info">
+                                <div class="info-item">
+                                    <div><i class="ri-mail-line"></i></div>
+                                    <div>
+                                        <p class="info-label">Email Address</p>
+                                        <p class="info-value">{{email}}</p>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <div><i class="ri-phone-line"></i></div>
+                                    <div>
+                                        <p class="info-label">Phone Number</p>
+                                        <p class="info-value-phone">{{phone_number}}</p>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <div><i class="ri-map-pin-2-line"></i></div>
+                                    <div>
+                                        <p class="info-label">Governorate</p>
+                                        <p class="info-value">{{governorate}}</p>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <div><i class="ri-home-4-line"></i></div>
+                                    <div>
+                                        <p class="info-label">Address</p>
+                                        <p class="info-value">{{address}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div class="margin">
+                                <strong>ABOUT BIO</strong>
+                                <p>
+                                    {{brief}}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="btn-edit">
+                            <button class="btn-outline" onclick="window.location.href='{% url 'nurse:edit_nurse_profile'%}'">Edit Profile</button>
+                        </div>
+                    </div>
+
+                    <!-- Financials & Activity Card -->
+                    <div class="info-card">
+                        <div class="card-header">
+                            <h3>
+                                <i class="fa-solid fa-chart-line"></i>
+                                Financials & Activity
+                            </h3>
+                            <a href="Wallet.html" class="view-link">View History</a>
+                        </div>
+                    
+                        <div class="balance-card">
+                            <p>Total Wallet Balance</p>
+                            <p class="balance-amount">12,450.00 EGP</p>
+                        </div>
+                    
+                        <div class="mini-stats">
+                            <div class="stat-card Approved">
+                                <p class="stat-label">Completed Requests</p>
+                                <div>
+                                    <strong class="stat-value">{{completed}}</strong>
+                                    <i class="bi bi-check2-circle"></i>
+                                    
+                                </div>
+                            </div>
+
+                            <div class="stat-card Pending">
+                                <p class="stat-label">Pending Requests</p>
+                                <div>
+                                    <strong class="stat-value">{{pending}}</strong>
+                                    <i class="ri-survey-line"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Services Section -->
+                <div class="Services-Card">
+                    <div class="services-header">
+                        <h3>My Services <span id="serviceCount">(3)</span></h3>
+                        <button class="btn-add-services" id="addServiceBtn">Add Services</button>
+                    </div>
+
+                    <div id="addServiceModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" id="closeAddService">&times;</span>
+                            <h3>Add New Service</h3>
+                            <form method='post' action="{% url 'nurse:add_services' %}">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="serviceTitle">Title</label>
+                                    <input name='name' type="text" id="serviceTitle" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="servicePrice">Price</label>
+                                    <input name ='price' type="number" id="servicePrice" required />
+                                    {% if errors.price %}
+                                        <p class="error-message">{{ errors.price }}</p>
+                                    {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    <label for="serviceDescription">Description</label>
+                                    <textarea name = 'description'id="serviceDescription" rows="3" required></textarea>
+                                    {% if errors.description %}
+                                        <p class="error-message">{{ errors.description }}</p>
+                                    {% endif %}
+                                </div>
+                                <button type="submit" class="btn-primary">Add Service</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="services-container">
+                        <button class="service-nav-btn prev-service" id="prev-service">
+                            <i class="fas fa-angle-left"></i>
+                        </button>
+                        
+            
+                        {% if services %}
+                            {% for service in services  %}
+                            <div class="service-card">
+                                <h4>{{service.name}} <span class="money">${{service.price}}</span></h4>
+                                <p>{{service.description}}</p>
+                                <div class="service-actions">
+                                    
+
+
+                                    <div id="addServiceModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close" id="closeAddService">&times;</span>
+                                <h3>Add New Service</h3>
+                                <form method='post' action="{% url 'nurse:add_services' %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="serviceTitle">Title</label>
+                                        <input name='name' type="text" id="serviceTitle" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="servicePrice">Price</label>
+                                        <input name ='price' type="number" id="servicePrice" required />
+                                        {% if errors.price %}
+                                            <p class="error-message">{{ errors.price }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="serviceDescription">Description</label>
+                                        <textarea name = 'description'id="serviceDescription" rows="3" required></textarea>
+                                        {% if errors.description %}
+                                            <p class="error-message">{{ errors.description }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <button type="submit" class="btn-primary">Add Service</button>
+                                </form>
+                            </div>
+                        </div>
+                                    <a href="#"><i class="fas fa-edit"></i> Edit</a>
+                                    <a href="{% url 'nurse:delete_service' service.id %}"><i class="fas fa-trash"></i> Remove</a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                        <p>There is no services yet, Once you add service it will be shown here.</p>
+                        {% endif %}
+                            
+                        
+                        <button class="service-nav-btn next-service" id="next-service">
+                            <i class="fas fa-angle-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </main>
+            
+        {% endblock %}

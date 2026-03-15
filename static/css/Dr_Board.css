@@ -1371,7 +1371,6 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     }
     .aside {
         flex-wrap: wrap;
-        flex-direction: row;
     }
     .grid-2 {
         grid-template-columns: 1fr;
@@ -1381,28 +1380,27 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     }
 }
 
+@media (max-width:992px){
+    .sidebar{
+        display: flex;
+        flex-direction: column;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        width:200px;
+        padding:20px;
+    }
+    .topbar{
+        left:200px;
+    }
+    .main-content{
+        margin-left:200px;
+    }
+    .sidebar.collapsed{
+        width:70px;
+    }
+    .sidebar.collapsed ~ div .topbar{
+        left:70px;
+    }
+    .sidebar.collapsed ~ div .main-content{
+        margin-left:70px;
+    }
+}
