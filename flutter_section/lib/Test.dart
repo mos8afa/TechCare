@@ -21,7 +21,7 @@ class _HomeState extends State<Home> {
               color: Colors.red,
               textColor: Colors.white,
               onPressed: () async {
-                var response = await get(Uri.parse("https://jsonplaceholder.typicode.com/posts"));
+                var response = await get(Uri.parse("https://jsonplaceholder.typicode.com/comments"));
                 print(response.body);
               },
               child: Text("Show Dialog"),

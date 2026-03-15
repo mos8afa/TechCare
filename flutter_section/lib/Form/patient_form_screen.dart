@@ -460,7 +460,7 @@ class _PatientFormState extends State<PatientForm> {
                 const SizedBox(height: 8),
                 Text(
                   uploaded
-                      ? file!.path.split('/').last
+                      ? file.path.split('/').last
                       : defaultText,
                   style: TextStyle(
                     fontSize: 13,
