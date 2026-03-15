@@ -170,7 +170,7 @@
                                 Certifications & Courses
                             </h3>
                             <div class="certificate-actions">
-                                <i class="bi bi-scissors scissors-tool" id="scissorsTool"></i>
+                                <i class="bi bi-scissors scissors-tool" id="scissorsTool" ></i>
                                 <label class="add-certificate-btn">
                                     <i class="bi bi-plus-circle"></i>
                                     Add Certificate
@@ -227,49 +227,13 @@
     <script src="../JS/Board.js"></script>
 
     <script>
-        // العناصر
+        const scissors = document.getElementById("scissorsTool");
         const uploadInput = document.getElementById("certificateUpload");
         const board = document.getElementById("certificateBoard");
         const viewer = document.getElementById("certificateViewer");
         const viewerImg = document.getElementById("viewerImage");
-        const scissors = document.getElementById("scissorsTool");
 
-        // متغير لتتبع وضع المقص
-        let scissorsActive = false;
-
-        // جعل المقص قابل للسحب
-        scissors.setAttribute('draggable', 'true');
-
-        // عند بدء السحب
-        scissors.addEventListener('dragstart', (e) => {
-            scissorsActive = true;
-            scissors.style.color = '#dc2626'; // لون أحمر غامق
-            e.dataTransfer.setData('text/plain', 'scissors');
-        });
-
-        // منع السلوك الافتراضي للسحب على اللوحة
-        board.addEventListener('dragover', (e) => e.preventDefault());
-
-        // إفلات المقص على اللوحة
-        board.addEventListener('drop', (e) => {
-            e.preventDefault();
-            if (!scissorsActive) return; // إذا لم يكن المقص نشطاً لا تفعل شيئاً
-        
-            const target = e.target.closest('.certificate-frame');
-            if (target) {
-                // قص الصورة مع أنيميشن
-                target.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-                target.style.transform = 'scale(0) rotate(-10deg)';
-                target.style.opacity = '0';
-                setTimeout(() => target.remove(), 300);
-            }
-        
-            // إلغاء تنشيط المقص بعد الإفلات
-            scissorsActive = false;
-            scissors.style.color = '#ef4444';
-        });
-
-        // رفع الصور
+        // Upload
         uploadInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -277,37 +241,58 @@
             const reader = new FileReader();
             reader.onload = (event) => createCertificateFrame(event.target.result);
             reader.readAsDataURL(file);
-            uploadInput.value = ''; // لتمكين رفع نفس الملف مرة أخرى
+            uploadInput.value = ''; 
         });
 
-        // إنشاء إطار الشهادة
+        // HTML Tags
         function createCertificateFrame(src) {
             const frame = document.createElement('div');
             frame.className = 'certificate-frame';
         
-            // إضافة الخيط الثاني
             const stringRight = document.createElement('span');
             stringRight.className = 'string-right';
             frame.appendChild(stringRight);
         
-            // الصورة
             const img = document.createElement('img');
             img.src = src;
             frame.appendChild(img);
         
-            // عرض الصورة عند النقر
-            img.addEventListener('click', (e) => {
-                e.stopPropagation();
-                viewerImg.src = img.src;
+            img.addEventListener('click', (e) => {                          //<div id="viewer">
+                e.stopPropagation();                                       //     <img id="viewerImg">
+                viewerImg.src = img.src;                                  // </div>
                 viewer.classList.add('active');
             });
-        
-            board.appendChild(frame);
+            board.appendChild(frame);                                         
         }
 
-        // إغلاق viewer
         viewer.addEventListener('click', () => {
             viewer.classList.remove('active');
         });
+
+        // Scissors
+        let scissorsActive = false;
+        scissors.setAttribute('draggable', 'true');
+
+        scissors.addEventListener('dragstart', (e) => {
+            scissorsActive = true;
+        });
+
+        board.addEventListener('dragover', (e) => e.preventDefault());
+
+        board.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (!scissorsActive) return; 
+        
+            const target = e.target.closest('.certificate-frame');
+            if (target) {
+                target.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+                target.style.transform = 'scale(0) rotate(-10deg)';
+                target.style.opacity = '0';
+                setTimeout(() => target.remove(), 300);
+            }
+        
+            scissorsActive = false;
+        });
+
     </script>
 </html>

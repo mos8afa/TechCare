@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
           error: const Color(0xFFE53E3E),
         ),
       ),
-      initialRoute: '/patient-form', // تحديد الصفحة الأولى
+      initialRoute: '/login', // تحديد الصفحة الأولى
       routes: {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
