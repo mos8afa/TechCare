@@ -153,7 +153,7 @@ def register(request):
         pending_user.delete()
         return Response({"error": message}, status=404)
     
-    return Response({"message": message}, status=200)
+    return Response({"message": message, "pending_user_id": pending_user.id}, status=200)
 
 @api_view(['POST'])
 def verify_OTP_register(request, user_id):
