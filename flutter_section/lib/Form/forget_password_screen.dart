@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../services/api_service.dart';
+import '../services/auth_storage.dart';
+
 class ForgetPasswordScreen extends StatelessWidget {
   const ForgetPasswordScreen({super.key});
 
@@ -30,6 +33,7 @@ class _ForgetPasswordFormState extends State<ForgetPasswordForm> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   String? _emailExistError;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +130,7 @@ class _ForgetPasswordFormState extends State<ForgetPasswordForm> {
               Expanded(
                 flex: 3,
                 child: ElevatedButton(
-                  onPressed: _handleResetPassword,
+                  onPressed: _isLoading ? null : _handleResetPassword,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF1D89E4),
                     foregroundColor: Colors.white,
@@ -134,7 +138,12 @@ class _ForgetPasswordFormState extends State<ForgetPasswordForm> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     elevation: 0,
                   ),
-                  child: const Text('Reset Password', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                  child: _isLoading
+                      ? const SizedBox(
+                          width: 20, height: 20,
+                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                        )
+                  : const Text('Reset Password', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                 ),
               ),
             ],
@@ -144,10 +153,24 @@ class _ForgetPasswordFormState extends State<ForgetPasswordForm> {
     );
   }
 
-  void _handleResetPassword() {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _emailExistError = null);
-      Navigator.pushNamed(context, '/otp');
+  void _handleResetPassword() async {
+    if (!_formKey.currentState!.validate()) return;
+    setState(() {
+      _isLoading = true;
+      _emailExistError = null;
+    });
+    final result = await ApiService.forgetPassword(
+      email: _emailController.text.trim(),
+    );
+    setState(() => _isLoading = false);
+    if (result.success) {
+      // حفظ الـ email عشان نبعته في الـ OTP screen
+      await AuthStorage.saveForgetSession(
+        email: _emailController.text.trim(),
+      );
+      if (mounted) Navigator.pushNamed(context, '/otp');
+    } else {
+      setState(() => _emailExistError = result.error);
     }
   }
 

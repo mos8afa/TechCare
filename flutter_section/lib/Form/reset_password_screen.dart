@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../services/api_service.dart';
+import '../services/auth_storage.dart';
+
 class ResetPasswordScreen extends StatelessWidget {
   const ResetPasswordScreen({super.key});
 
@@ -32,6 +35,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
   final _confirmPasswordController = TextEditingController();
   bool _obscureNew = true;
   bool _obscureConfirm = true;
+  bool _isLoading = false;
   String? _passwordError;
 
   @override
@@ -41,7 +45,6 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Logo
           Container(
             width: 72,
             height: 72,
@@ -70,7 +73,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
             onToggle: () => setState(() => _obscureNew = !_obscureNew),
             validator: (v) {
               if (v == null || v.isEmpty) return 'Password is required';
-              if (v.length < 6) return 'At least 6 characters';
+              if (v.length < 8) return 'At least 8 characters';
               return null;
             },
           ),
@@ -105,7 +108,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: _handleResetPassword,
+              onPressed: _isLoading ? null : _handleResetPassword,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF1D89E4),
                 foregroundColor: Colors.white,
@@ -113,14 +116,19 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                 elevation: 0,
               ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Reset Password', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                  SizedBox(width: 8),
-                  Icon(Icons.arrow_forward, size: 18),
-                ],
-              ),
+              child: _isLoading
+                  ? const SizedBox(
+                      width: 20, height: 20,
+                      child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                    )
+                  : const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Reset Password', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                        SizedBox(width: 8),
+                        Icon(Icons.arrow_forward, size: 18),
+                      ],
+                    ),
             ),
           ),
         ],
@@ -160,10 +168,30 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
     );
   }
 
-  void _handleResetPassword() {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _passwordError = null);
-      Navigator.pushReplacementNamed(context, '/login');
+  void _handleResetPassword() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+      _passwordError = null;
+    });
+
+    // جيب الـ email من الـ storage
+    final email = await AuthStorage.getEmail() ?? '';
+
+    final result = await ApiService.resetPassword(
+      email: email,
+      password: _newPasswordController.text,
+      confirm: _confirmPasswordController.text,
+    );
+
+    setState(() => _isLoading = false);
+
+    if (result.success) {
+      await AuthStorage.clearSession();
+      if (mounted) Navigator.pushReplacementNamed(context, '/login');
+    } else {
+      setState(() => _passwordError = result.error);
     }
   }
 

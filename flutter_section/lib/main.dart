@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Segoe UI',
         primaryColor: const Color(0xFF1D89E4),
-        scaffoldBackgroundColor: Colors.transparent,
+        scaffoldBackgroundColor: const Color(0xFFEFF6FF),
         colorScheme: ColorScheme.fromSwatch().copyWith(
           error: const Color(0xFFE53E3E),
         ),
@@ -41,6 +41,13 @@ class MyApp extends StatelessWidget {
         '/otp-login':  (context) => const OtpScreen(source: 'login'),
         '/otp-signup': (context) => const OtpScreen(source: 'signup'),
         '/otp':        (context) => const OtpScreen(source: 'forget'),
+
+        // ضيف دول ← 
+        '/doctor-form':       (context) => const Scaffold(body: Center(child: Text('Doctor Form - Coming Soon'))),
+        '/nurse-form':        (context) => const Scaffold(body: Center(child: Text('Nurse Form - Coming Soon'))),
+        '/donor-form':        (context) => const Scaffold(body: Center(child: Text('Donor Form - Coming Soon'))),
+        '/pharmacist-form':   (context) => const Scaffold(body: Center(child: Text('Pharmacist Form - Coming Soon'))),
+        '/home':              (context) => const Scaffold(body: Center(child: Text('Home - Coming Soon'))),
       },
     );
   }
