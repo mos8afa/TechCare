@@ -269,7 +269,7 @@ class _PatientFormState extends State<PatientForm> {
     return _FormField(
       label: 'Gender',
       child: DropdownButtonFormField<String>(
-        value: _selectedGender,
+        initialValue: _selectedGender,
         hint: const Text('Select', style: TextStyle(color: Color(0xFFA0AEC0))),
         icon: const Icon(Icons.arrow_drop_down),
         isExpanded: true,
@@ -352,7 +352,7 @@ class _PatientFormState extends State<PatientForm> {
     return _FormField(
       label: 'Governorate',
       child: DropdownButtonFormField<String>(
-        value: _selectedGovernorate,
+        initialValue: _selectedGovernorate,
         hint: const Text('Select governorate',
             style: TextStyle(color: Color(0xFFA0AEC0))),
         isExpanded: true,

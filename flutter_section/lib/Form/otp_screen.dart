@@ -1,29 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../widgets/language_dropdown.dart';
+
+import '../services/api_service.dart';
+import '../services/auth_storage.dart';
 
 class OtpScreen extends StatelessWidget {
-  const OtpScreen({super.key});
+  final String source;
+  const OtpScreen({super.key, required this.source});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('img/BG.jpeg'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Container(
-          color: Colors.black.withOpacity(0.3),
-          child: const SafeArea(
-            child: Center(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(20),
-                child: OtpForm(),
-              ),
-            ),
+      backgroundColor: const Color(0xFFEFF6FF),
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 40),
+            child: OtpForm(source: source),
           ),
         ),
       ),
@@ -32,138 +25,137 @@ class OtpScreen extends StatelessWidget {
 }
 
 class OtpForm extends StatefulWidget {
-  const OtpForm({super.key});
+  final String source;
+  const OtpForm({super.key, required this.source});
 
   @override
   State<OtpForm> createState() => _OtpFormState();
 }
 
 class _OtpFormState extends State<OtpForm> {
-  // 6 controllers و 6 focusNodes للخانات
-  final List<TextEditingController> _controllers = List.generate(
-    6,
-    (_) => TextEditingController(),
-  );
+  final List<TextEditingController> _controllers = List.generate(6, (_) => TextEditingController());
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
-
   String? _otpError;
+  bool _isLoading = false;
+
+  // Back route حسب الـ source
+  String get _backRoute {
+    switch (widget.source) {
+      case 'login':   return '/login';
+      case 'signup':  return '/register';
+      case 'forget':  return '/forget-password';
+      default:        return '/login';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 450,
-      padding: const EdgeInsets.all(40),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 25,
-            offset: const Offset(0, 10),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          width: 72,
+          height: 72,
+          decoration: BoxDecoration(
+            color: const Color(0xFF1D89E4),
+            borderRadius: BorderRadius.circular(20),
           ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Language Dropdown
-          const LanguageDropdown(),
-          const SizedBox(height: 20),
+          child: const Icon(Icons.shield_outlined, color: Colors.white, size: 36),
+        ),
+        const SizedBox(height: 20),
+        const Text(
+          'Verify OTP',
+          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF1A202C)),
+        ),
+        const SizedBox(height: 6),
+        const Text(
+          'Enter the 6-digit code sent to your email',
+          style: TextStyle(fontSize: 14, color: Color(0xFF718096)),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 48),
 
-          // Logo Section
-          const _OtpLogoSection(),
-          const SizedBox(height: 30),
+        // OTP Boxes
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: List.generate(6, (index) => _buildOtpBox(index)),
+        ),
+        const SizedBox(height: 24),
 
-          // OTP Inputs
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: List.generate(6, (index) => _buildOtpBox(index)),
+        // Resend
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("Didn't receive OTP? ", style: TextStyle(fontSize: 14, color: Color(0xFF718096))),
+            GestureDetector(
+              onTap: _isLoading ? null : _handleResend,
+              child: const Text('Click here', style: TextStyle(fontSize: 14, color: Color(0xFF1D89E4), fontWeight: FontWeight.w700)),
+            ),
+          ],
+        ),
+
+        if (_otpError != null)
+          Container(
+            margin: const EdgeInsets.only(top: 12),
+            alignment: Alignment.centerLeft,
+            child: Text(_otpError!, style: const TextStyle(color: Color(0xFFE53E3E), fontSize: 13)),
           ),
-          const SizedBox(height: 20),
+        const SizedBox(height: 24),
 
-          // Resend OTP
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                "Didn't receive OTP? ",
-                style: TextStyle(fontSize: 14, color: Color(0xFF718096)),
-              ),
-              GestureDetector(
-                onTap: _handleResend,
-                child: const Text(
-                  'Click here',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF1D89E4),
-                    fontWeight: FontWeight.w600,
-                  ),
+        // Buttons
+        Row(
+          children: [
+            // Continue Button
+            Expanded(
+              flex: 3,
+              child: ElevatedButton(
+                onPressed: _isLoading ? null : _handleContinue,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1D89E4),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  elevation: 0,
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-
-          // رسالة خطأ الـ OTP
-          if (_otpError != null)
-            Container(
-              margin: const EdgeInsets.only(bottom: 15),
-              alignment: Alignment.centerLeft,
-              child: Text(
-                _otpError!,
-                style: const TextStyle(color: Color(0xFFE53E3E), fontSize: 15),
+                child: _isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                      )
+                    : const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Continue', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                          SizedBox(width: 8),
+                          Icon(Icons.arrow_forward, size: 18),
+                        ],
+                      ),
               ),
             ),
+            const SizedBox(width: 12),
 
-          // Buttons
-          Row(
-            children: [
-              // Continue
-              Expanded(
-                flex: 3,
-                child: ElevatedButton(
-                  onPressed: _handleContinue,                                 //Navigator.pushReplacementNamed(context, '/too-many-attempts');
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF1D89E4),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+            // Back Button - بيرجع حسب الـ source
+            Expanded(
+              flex: 1,
+              child: GestureDetector(
+                onTap: _isLoading ? null : () => Navigator.pushReplacementNamed(context, _backRoute),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
                   ),
-                  child: const Text(
-                    'Continue',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  child: const Center(
+                    child: Text('Back', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF718096))),
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
-              // Back
-              Expanded(
-                flex: 1,
-                child: OutlinedButton(
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/forget-password');
-                  },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF718096),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    side: const BorderSide(color: Color(0xFFE2E8F0)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    'Back',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -187,32 +179,30 @@ class _OtpFormState extends State<OtpForm> {
           focusNode: _focusNodes[index],
           textAlign: TextAlign.center,
           keyboardType: TextInputType.number,
-          maxLength: 6, // خلينا 6 عشان يلتقط الـ paste
+          maxLength: 6,
           autofocus: index == 0,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
           decoration: InputDecoration(
             counterText: '',
             contentPadding: EdgeInsets.zero,
+            filled: true,
+            fillColor: Colors.white,
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: Color(0xFF1D89E4), width: 2),
             ),
           ),
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           onChanged: (value) {
             if (value.isEmpty) return;
-
-            // Paste: لو جه أكتر من رقم في خانة واحدة
             if (value.length > 1) {
               _handlePaste(value, index);
               return;
             }
-
-            // تايب عادي: انتقل للخانة التالية
             if (index < 5) {
               _focusNodes[index + 1].requestFocus();
             } else {
@@ -226,97 +216,94 @@ class _OtpFormState extends State<OtpForm> {
 
   void _handlePaste(String value, int startIndex) {
     final digits = value.replaceAll(RegExp(r'\D'), '');
-
     for (int i = 0; i < 6; i++) {
       if (i < digits.length) {
         _controllers[i].text = digits[i];
-        _controllers[i].selection = TextSelection.fromPosition(
-          TextPosition(offset: 1),
-        );
+        _controllers[i].selection = TextSelection.fromPosition(const TextPosition(offset: 1));
       } else {
         _controllers[i].clear();
       }
     }
-
-    // focus على الخانة التالية بعد آخر رقم
     final nextIndex = digits.length >= 6 ? 5 : digits.length;
     _focusNodes[nextIndex].requestFocus();
     setState(() {});
   }
 
-  void _handleContinue() {
+  void _handleContinue() async {
     final otp = _controllers.map((c) => c.text).join();
     if (otp.length < 6) {
       setState(() => _otpError = 'Please enter the complete 6-digit code');
       return;
     }
-    setState(() => _otpError = null);
-    print('OTP: $otp');
 
-    // لو الـ Backend رجع إن الكود غلط:
-    // setState(() => _otpError = 'Invalid OTP code');
+    setState(() {
+      _otpError = null;
+      _isLoading = true;
+    });
 
-    // لو نجح، تنقل لصفحة reset password:
-    Navigator.pushNamed(context, '/reset-password');
+    ApiResult result;
+
+    if (widget.source == 'login') {
+      final username = await AuthStorage.getUsername() ?? '';
+      result = await ApiService.verifyOtpLogin(username: username, otp: otp);
+      if (result.success) {
+        await AuthStorage.clearSession();
+        if (mounted) Navigator.pushReplacementNamed(context, '/home');
+      }
+
+    } else if (widget.source == 'signup') {
+      final pendingUserId = await AuthStorage.getPendingUserId() ?? '';
+      result = await ApiService.verifyOtpRegister(userId: pendingUserId, otp: otp);
+      if (result.success) {
+        final role = await AuthStorage.getRole() ?? '';
+        await AuthStorage.clearSession();
+        if (mounted) {
+          switch (role.toLowerCase()) {
+            case 'patient':
+              Navigator.pushReplacementNamed(context, '/patient-form');
+              break;
+            case 'doctor':
+              Navigator.pushReplacementNamed(context, '/doctor-form');
+              break;
+            case 'nurse':
+              Navigator.pushReplacementNamed(context, '/nurse-form');
+              break;
+            default:
+              Navigator.pushReplacementNamed(context, '/home');
+          }
+        }
+      }
+
+    } else {
+      final email = await AuthStorage.getEmail() ?? '';
+      result = await ApiService.verifyOtpForgetPassword(email: email, otp: otp);
+      if (result.success) {
+        if (mounted) Navigator.pushNamed(context, '/reset-password');
+      }
+    }
+
+    setState(() => _isLoading = false);
+
+    if (!result.success) {
+      final error = result.error ?? '';
+      if (error.contains('Too many') || error.contains('too_many')) {
+        if (mounted) Navigator.pushReplacementNamed(context, '/too-many-attempts');
+      } else {
+        setState(() => _otpError = error);
+      }
+    }
   }
 
   void _handleResend() {
-    for (var c in _controllers) {
-      c.clear();
-    }
+    for (var c in _controllers) c.clear();
     _focusNodes[0].requestFocus();
     setState(() => _otpError = null);
-    print('OTP Resent');
   }
 
   @override
   void dispose() {
-    for (var c in _controllers) {
-      c.dispose();
-    }
-    for (var f in _focusNodes) {
-      f.dispose();
-    }
+    for (var c in _controllers) c.dispose();
+    for (var f in _focusNodes) f.dispose();
     super.dispose();
-  }
-}
-
-class _OtpLogoSection extends StatelessWidget {
-  const _OtpLogoSection();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-            color: const Color(0xFF1D89E4),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: const Icon(
-            Icons.shield_outlined,
-            color: Colors.white,
-            size: 24,
-          ),
-        ),
-        const SizedBox(height: 15),
-        const Text(
-          'Verify OTP',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF2D3748),
-          ),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Enter the 6-digit code sent to your email',
-          style: TextStyle(fontSize: 14, color: Color(0xFF718096)),
-          textAlign: TextAlign.center,
-        ),
-      ],
-    );
   }
 }
