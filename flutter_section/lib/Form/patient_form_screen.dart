@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import '../widgets/language_dropdown.dart';
+import '../services/api_service.dart';
 
 class PatientFormScreen extends StatelessWidget {
   const PatientFormScreen({super.key});
@@ -10,22 +10,12 @@ class PatientFormScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('img/BG.jpeg'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Container(
-          color: Colors.black.withOpacity(0.3),
-          child: const SafeArea(
-            child: Center(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(20),
-                child: PatientForm(),
-              ),
-            ),
+      backgroundColor: const Color(0xFFEFF6FF),
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 40),
+            child: const PatientForm(),
           ),
         ),
       ),
@@ -44,23 +34,19 @@ class _PatientFormState extends State<PatientForm> {
   final _formKey = GlobalKey<FormState>();
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
+  bool _isLoading = false;
+  bool _isPickingImage = false;
 
   String? _selectedGender;
   String? _selectedGovernorate;
-
-  // ملفات الصور
   File? _nationalIdFront;
   File? _nationalIdBack;
   File? _profilePic;
-
-  // أخطاء الـ Backend
   String? _phoneError;
   String? _addressError;
 
   final ImagePicker _picker = ImagePicker();
-
   final List<String> _genders = ['Male', 'Female'];
-
   final List<Map<String, String>> _governorates = [
     {'value': 'alexandria', 'label': 'Alexandria'},
     {'value': 'aswan', 'label': 'Aswan'},
@@ -92,218 +78,213 @@ class _PatientFormState extends State<PatientForm> {
   ];
 
   Future<void> _pickImage(String type) async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
+    if (_isPickingImage) return;
+
+    setState(() {
+      _isPickingImage = true;
+    });
+
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.gallery,
+      );
+      if (image != null) {
+        setState(() {
+          if (type == 'front') _nationalIdFront = File(image.path);
+          if (type == 'back') _nationalIdBack = File(image.path);
+          if (type == 'profile') _profilePic = File(image.path);
+        });
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
       setState(() {
-        if (type == 'front') _nationalIdFront = File(image.path);
-        if (type == 'back') _nationalIdBack = File(image.path);
-        if (type == 'profile') _profilePic = File(image.path);
+        _isPickingImage = false;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 600,
-      padding: const EdgeInsets.all(40),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 35,
-            offset: const Offset(0, 15),
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Header
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color: const Color(0xFFEBF8FF),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: const Icon(Icons.personal_injury_outlined, color: Color(0xFF1D89E4), size: 28),
+          ),
+          const SizedBox(height: 16),
+          const Text('Create Patient Account',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF1A202C))),
+          const SizedBox(height: 20),
+
+          // Progress Bar
+          _buildProgressBar(1.0, '100%'),
+          const SizedBox(height: 30),
+
+          // Gender + Phone
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: _buildDropdown(
+                label: 'GENDER',
+                icon: Icons.wc_outlined,
+                hint: 'Select',
+                items: _genders.map((g) => DropdownMenuItem(value: g.toLowerCase(), child: Text(g))).toList(),
+                value: _selectedGender,
+                onChanged: (v) => setState(() => _selectedGender = v),
+                validator: (v) => v == null ? 'Required' : null,
+              )),
+              const SizedBox(width: 12),
+              Expanded(child: _buildPhoneField()),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Governorate
+          _buildDropdown(
+            label: 'GOVERNORATE',
+            icon: Icons.location_on_outlined,
+            hint: 'Select governorate',
+            items: _governorates.map((g) => DropdownMenuItem(value: g['value'], child: Text(g['label']!))).toList(),
+            value: _selectedGovernorate,
+            onChanged: (v) => setState(() => _selectedGovernorate = v),
+            validator: (v) => v == null ? 'Required' : null,
+          ),
+          const SizedBox(height: 16),
+
+          // Address
+          _buildAddressField(),
+          const SizedBox(height: 16),
+
+          // National ID
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: _buildFileUpload(label: 'National ID (Front)', icon: Icons.credit_card, file: _nationalIdFront, defaultText: 'Upload Front', onTap: () => _pickImage('front'))),
+              const SizedBox(width: 12),
+              Expanded(child: _buildFileUpload(label: 'National ID (Back)', icon: Icons.credit_card, file: _nationalIdBack, defaultText: 'Upload Back', onTap: () => _pickImage('back'))),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Profile Pic
+          _buildFileUpload(label: 'Profile Picture', icon: Icons.camera_alt_outlined, file: _profilePic, defaultText: 'Click to upload photo', onTap: () => _pickImage('profile')),
+          const SizedBox(height: 24),
+
+          // Buttons
+          Row(
+            children: [
+              Expanded(
+                flex: 3,
+                child: ElevatedButton(
+                  onPressed: _isLoading ? null : _handleSubmit,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1D89E4),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    elevation: 0,
+                  ),
+                  child: _isLoading
+                      ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                      : const Text('Complete Registration', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                flex: 1,
+                child: GestureDetector(
+                  onTap: _isLoading ? null : _handleReset,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFE2E8F0))),
+                    child: const Center(child: Text('Reset', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF718096)))),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
-      ),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Language Dropdown
-            const LanguageDropdown(),
-            const SizedBox(height: 20),
-
-            // Header Section
-            _buildHeader(),
-            const SizedBox(height: 30),
-
-            // Gender + Phone Row
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: _buildGenderDropdown()),
-                const SizedBox(width: 15),
-                Expanded(child: _buildPhoneField()),
-              ],
-            ),
-
-            // Governorate
-            _buildGovernorateDropdown(),
-            const SizedBox(height: 18),
-
-            // Full Address
-            _buildAddressField(),
-            const SizedBox(height: 18),
-
-            // National ID Front + Back Row
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: _buildFileUpload(
-                    label: 'National ID (Front)',
-                    icon: Icons.credit_card,
-                    file: _nationalIdFront,
-                    defaultText: 'Upload Front',
-                    onTap: () => _pickImage('front'),
-                  ),
-                ),
-                const SizedBox(width: 15),
-                Expanded(
-                  child: _buildFileUpload(
-                    label: 'National ID (Back)',
-                    icon: Icons.credit_card,
-                    file: _nationalIdBack,
-                    defaultText: 'Upload Back',
-                    onTap: () => _pickImage('back'),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 18),
-
-            // Profile Picture
-            _buildFileUpload(
-              label: 'Profile Picture',
-              icon: Icons.camera_alt_outlined,
-              file: _profilePic,
-              defaultText: 'Click to upload photo',
-              onTap: () => _pickImage('profile'),
-            ),
-            const SizedBox(height: 25),
-
-            // Buttons
-            Row(
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: ElevatedButton(
-                    onPressed: _handleSubmit,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1D89E4),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      'Complete Registration',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  flex: 1,
-                  child: OutlinedButton(
-                    onPressed: _handleReset,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0xFF718096),
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      side: const BorderSide(color: Color(0xFFE2E8F0)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      'Reset',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }
 
-  // ==================== Header ====================
-  Widget _buildHeader() {
+  Widget _buildProgressBar(double value, String percent) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-            color: const Color(0xFFEBF8FF),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: const Icon(
-            Icons.personal_injury_outlined,
-            color: Color(0xFF1D89E4),
-            size: 22,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('PROGRESS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF1D89E4))),
+            Text(percent, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF1D89E4))),
+          ],
         ),
-        const SizedBox(height: 15),
-        const Text(
-          'Create Patient Account',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF2D3748),
+        const SizedBox(height: 8),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: LinearProgressIndicator(
+            value: value,
+            minHeight: 6,
+            backgroundColor: const Color(0xFFEDF2F7),
+            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF1D89E4)),
           ),
         ),
       ],
     );
   }
 
-  // ==================== Gender Dropdown ====================
-  Widget _buildGenderDropdown() {
-    return _FormField(
-      label: 'Gender',
-      child: DropdownButtonFormField<String>(
-        initialValue: _selectedGender,
-        hint: const Text('Select', style: TextStyle(color: Color(0xFFA0AEC0))),
-        icon: const Icon(Icons.arrow_drop_down),
-        isExpanded: true,
-        decoration: const InputDecoration(
-          border: InputBorder.none,
-          prefixIcon: Icon(Icons.wc_outlined, color: Color(0xFFA0AEC0)),
-          contentPadding: EdgeInsets.symmetric(horizontal: 45, vertical: 12),
+  Widget _buildDropdown({
+    required String label,
+    required IconData icon,
+    required String hint,
+    required List<DropdownMenuItem<String>> items,
+    required String? value,
+    required void Function(String?) onChanged,
+    required String? Function(String?) validator,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF4A5568), letterSpacing: 0.8)),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFE2E8F0))),
+          child: DropdownButtonFormField<String>(
+            value: value,
+            hint: Text(hint, style: const TextStyle(color: Color(0xFFA0AEC0), fontSize: 14)),
+            isExpanded: true,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              prefixIcon: Icon(icon, color: const Color(0xFFA0AEC0), size: 20),
+              contentPadding: const EdgeInsets.symmetric(vertical: 8),
+            ),
+            items: items,
+            onChanged: onChanged,
+            validator: validator,
+          ),
         ),
-        items: _genders.map((g) => DropdownMenuItem(value: g, child: Text(g))).toList(),
-        onChanged: (v) => setState(() => _selectedGender = v),
-        validator: (v) => v == null ? 'Please select gender' : null,
-      ),
+      ],
     );
   }
 
-  // ==================== Phone Field ====================
   Widget _buildPhoneField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Phone Number',
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF4A5568),
-          ),
-        ),
-        const SizedBox(height: 6),
+        const Text('PHONE NUMBER', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF4A5568), letterSpacing: 0.8)),
+        const SizedBox(height: 8),
         Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xFFE2E8F0)),
-            borderRadius: BorderRadius.circular(10),
-          ),
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFE2E8F0))),
           child: TextFormField(
             controller: _phoneController,
             keyboardType: TextInputType.phone,
@@ -311,84 +292,36 @@ class _PatientFormState extends State<PatientForm> {
             decoration: const InputDecoration(
               border: InputBorder.none,
               prefixIcon: Padding(
-                padding: EdgeInsets.only(left: 15, right: 8),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      '+20',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF4A5568),
-                      ),
-                    ),
-                  ],
-                ),
+                padding: EdgeInsets.only(left: 15, right: 4),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  Text('+20', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF4A5568))),
+                ]),
               ),
               hintText: '1XXXXXXXXX',
               hintStyle: TextStyle(color: Color(0xFFA0AEC0)),
-              contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+              contentPadding: EdgeInsets.symmetric(vertical: 16),
             ),
             validator: (v) {
-              if (v == null || v.isEmpty) return 'Phone is required';
-              if (v.length != 10) return 'Enter valid phone number';
+              if (v == null || v.isEmpty) return 'Required';
+              if (v.length != 10) return 'Invalid phone';
               return null;
             },
           ),
         ),
         if (_phoneError != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Text(_phoneError!,
-                style: const TextStyle(color: Color(0xFFE53E3E), fontSize: 12)),
-          ),
+          Padding(padding: const EdgeInsets.only(top: 4), child: Text(_phoneError!, style: const TextStyle(color: Color(0xFFE53E3E), fontSize: 12))),
       ],
     );
   }
 
-  // ==================== Governorate Dropdown ====================
-  Widget _buildGovernorateDropdown() {
-    return _FormField(
-      label: 'Governorate',
-      child: DropdownButtonFormField<String>(
-        initialValue: _selectedGovernorate,
-        hint: const Text('Select governorate',
-            style: TextStyle(color: Color(0xFFA0AEC0))),
-        isExpanded: true,
-        decoration: const InputDecoration(
-          border: InputBorder.none,
-          prefixIcon: Icon(Icons.location_on_outlined, color: Color(0xFFA0AEC0)),
-          contentPadding: EdgeInsets.symmetric(horizontal: 45, vertical: 8),
-        ),
-        items: _governorates
-            .map((g) => DropdownMenuItem(value: g['value'], child: Text(g['label']!)))
-            .toList(),
-        onChanged: (v) => setState(() => _selectedGovernorate = v),
-        validator: (v) => v == null ? 'Please select governorate' : null,
-      ),
-    );
-  }
-
-  // ==================== Address Field ====================
   Widget _buildAddressField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Full Address',
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF4A5568),
-          ),
-        ),
-        const SizedBox(height: 6),
+        const Text('FULL ADDRESS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF4A5568), letterSpacing: 0.8)),
+        const SizedBox(height: 8),
         Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xFFE2E8F0)),
-            borderRadius: BorderRadius.circular(10),
-          ),
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFE2E8F0))),
           child: TextFormField(
             controller: _addressController,
             maxLines: 2,
@@ -396,112 +329,91 @@ class _PatientFormState extends State<PatientForm> {
               border: InputBorder.none,
               hintText: 'Street, Building, Apartment',
               hintStyle: TextStyle(color: Color(0xFFA0AEC0)),
-              contentPadding: EdgeInsets.all(15),
+              contentPadding: EdgeInsets.all(16),
             ),
-            validator: (v) {
-              if (v == null || v.isEmpty) return 'Address is required';
-              return null;
-            },
+            validator: (v) => v == null || v.isEmpty ? 'Required' : null,
           ),
         ),
         if (_addressError != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Text(_addressError!,
-                style: const TextStyle(color: Color(0xFFE53E3E), fontSize: 12)),
-          ),
+          Padding(padding: const EdgeInsets.only(top: 4), child: Text(_addressError!, style: const TextStyle(color: Color(0xFFE53E3E), fontSize: 12))),
       ],
     );
   }
 
-  // ==================== File Upload ====================
-  Widget _buildFileUpload({
-    required String label,
-    required IconData icon,
-    required File? file,
-    required String defaultText,
-    required VoidCallback onTap,
-  }) {
+  Widget _buildFileUpload({required String label, required IconData icon, required File? file, required String defaultText, required VoidCallback onTap}) {
     final bool uploaded = file != null;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF4A5568),
-          ),
-        ),
-        const SizedBox(height: 6),
+        Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF4A5568), letterSpacing: 0.8)),
+        const SizedBox(height: 8),
         GestureDetector(
-          onTap: onTap,
+          onTap: _isPickingImage ? null : onTap,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             width: double.infinity,
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: uploaded ? const Color(0xFFF0F7FF) : const Color(0xFFF7FAFC),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: uploaded ? const Color(0xFF1D89E4) : const Color(0xFFE2E8F0),
-                width: uploaded ? 1.5 : 1,
-                style: uploaded ? BorderStyle.solid : BorderStyle.solid,
+              color: uploaded ? const Color(0xFFF0F7FF) : Colors.white,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: uploaded ? const Color(0xFF1D89E4) : const Color(0xFFE2E8F0), width: uploaded ? 1.5 : 1),
+            ),
+            child: Column(children: [
+              Icon(uploaded ? Icons.check_circle : icon, color: const Color(0xFF1D89E4), size: 24),
+              const SizedBox(height: 8),
+              Text(
+                uploaded ? file.path.split('/').last : defaultText,
+                style: TextStyle(fontSize: 13, color: uploaded ? const Color(0xFF1D89E4) : const Color(0xFF718096), fontWeight: uploaded ? FontWeight.w600 : FontWeight.normal),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                textAlign: TextAlign.center,
               ),
-            ),
-            child: Column(
-              children: [
-                Icon(
-                  uploaded ? Icons.check_circle : icon,
-                  color: const Color(0xFF1D89E4),
-                  size: 24,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  uploaded
-                      ? file.path.split('/').last
-                      : defaultText,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: uploaded ? const Color(0xFF1D89E4) : const Color(0xFF718096),
-                    fontWeight: uploaded ? FontWeight.w600 : FontWeight.normal,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
+            ]),
           ),
         ),
       ],
     );
   }
 
-  // ==================== Handlers ====================
-  void _handleSubmit() {
-    if (_formKey.currentState!.validate()) {
-      if (_nationalIdFront == null || _nationalIdBack == null || _profilePic == null) {
+  void _handleSubmit() async {
+    if (!_formKey.currentState!.validate()) return;
+    if (_nationalIdFront == null || _nationalIdBack == null || _profilePic == null) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please upload all required files'), backgroundColor: Color(0xFFE53E3E)));
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    final result = await ApiService.patientRegister(
+      gender: _selectedGender!,
+      phoneNumber: _phoneController.text.trim(),
+      address: _addressController.text.trim(),
+      governorate: _selectedGovernorate!,
+      profilePic: _profilePic!,
+      nationalIdFront: _nationalIdFront!,
+      nationalIdBack: _nationalIdBack!,
+    );
+
+    setState(() => _isLoading = false);
+
+    if (result.success) {
+      if (mounted) Navigator.pushReplacementNamed(context, '/home');
+    } else {
+      final error = result.error ?? 'Registration failed';
+      if (error.contains('phone')) {
+        setState(() => _phoneError = error);
+      } 
+      else if (error.contains('address')) {
+        setState(() => _addressError = error);
+      } 
+      else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please upload all required files'),
-            backgroundColor: Color(0xFFE53E3E),
+          SnackBar(
+            content: Text(error),
+            backgroundColor: const Color(0xFFE53E3E),
           ),
         );
-        return;
       }
-      setState(() {
-        _phoneError = null;
-        _addressError = null;
-      });
-      print('Gender: $_selectedGender');
-      print('Phone: +20${_phoneController.text}');
-      print('Governorate: $_selectedGovernorate');
-      print('Address: ${_addressController.text}');
-
-      // لو الـ Backend رجع خطأ:
-      // setState(() => _phoneError = 'Invalid phone number');
     }
   }
 
@@ -525,39 +437,5 @@ class _PatientFormState extends State<PatientForm> {
     _phoneController.dispose();
     _addressController.dispose();
     super.dispose();
-  }
-}
-
-// ==================== Helper Widget ====================
-class _FormField extends StatelessWidget {
-  final String label;
-  final Widget child;
-
-  const _FormField({required this.label, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF4A5568),
-          ),
-        ),
-        const SizedBox(height: 6),
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xFFE2E8F0)),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: child,
-        ),
-        const SizedBox(height: 18),
-      ],
-    );
   }
 }

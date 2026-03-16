@@ -286,6 +286,79 @@ class ApiService {
       return ApiResult.error('Connection error: $e');
     }
   }
+
+  static Future<ApiResult> doctorRegister({
+    required String gender, required String phoneNumber,
+    required String address, required String governorate,
+    required File profilePic, required File nationalIdFront,
+    required File nationalIdBack, required String dateOfBirth,
+    required String price, required String specification,
+    required String university, required File syndicateCard,
+    required File practicePerm, required File graduationCert,
+    required File excellenceCert,
+  }) async {
+    try {
+      final token = await getAccessToken();
+      final request = http.MultipartRequest('POST', Uri.parse('$baseUrl/auth/doctor/'));
+      request.headers['Authorization'] = 'Bearer $token';
+      request.fields['gender'] = gender;
+      request.fields['phone_number'] = phoneNumber;
+      request.fields['address'] = address;
+      request.fields['governorate'] = governorate;
+      request.fields['date_of_birth'] = dateOfBirth;
+      request.fields['price'] = price;
+      request.fields['specification'] = specification;
+      request.fields['university'] = university;
+      request.files.add(await http.MultipartFile.fromPath('profile_pic', profilePic.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_front', nationalIdFront.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_back', nationalIdBack.path));
+      request.files.add(await http.MultipartFile.fromPath('syndicate_card', syndicateCard.path));
+      request.files.add(await http.MultipartFile.fromPath('practice_permit', practicePerm.path));
+      request.files.add(await http.MultipartFile.fromPath('graduation_certificate', graduationCert.path));
+      request.files.add(await http.MultipartFile.fromPath('excellence_certificate', excellenceCert.path));
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      return ApiResult.error(data['error'] ?? 'Doctor registration failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  static Future<ApiResult> nurseRegister({
+    required String gender, required String phoneNumber,
+    required String address, required String governorate,
+    required File profilePic, required File nationalIdFront,
+    required File nationalIdBack, required String dateOfBirth,
+    required File excellenceCert, required File syndicateCard,
+    required File practicePerm, required File graduationCert,
+  }) async {
+    try {
+      final token = await getAccessToken();
+      final request = http.MultipartRequest('POST', Uri.parse('$baseUrl/auth/nurse/'));
+      request.headers['Authorization'] = 'Bearer $token';
+      request.fields['gender'] = gender;
+      request.fields['phone_number'] = phoneNumber;
+      request.fields['address'] = address;
+      request.fields['governorate'] = governorate;
+      request.fields['date_of_birth'] = dateOfBirth;
+      request.files.add(await http.MultipartFile.fromPath('profile_pic', profilePic.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_front', nationalIdFront.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_back', nationalIdBack.path));
+      request.files.add(await http.MultipartFile.fromPath('excellence_certificate', excellenceCert.path));
+      request.files.add(await http.MultipartFile.fromPath('syndicate_card', syndicateCard.path));
+      request.files.add(await http.MultipartFile.fromPath('practice_permit', practicePerm.path));
+      request.files.add(await http.MultipartFile.fromPath('graduation_certificate', graduationCert.path));
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      return ApiResult.error(data['error'] ?? 'Nurse registration failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
 }
 
 // ==================== ApiResult Helper ====================
