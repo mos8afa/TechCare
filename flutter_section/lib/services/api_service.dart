@@ -223,6 +223,30 @@ class ApiService {
     }
   }
 
+  static Future<ApiResult> resendOtp({
+    required String source,
+    String? username,
+    String? pendingUserId,
+    String? email,
+  }) async {
+    try {
+      final body = {'source': source};
+      if (username != null) body['username'] = username;
+      if (pendingUserId != null) body['pending_user_id'] = pendingUserId;
+      if (email != null) body['email'] = email;
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/resend-otp/'),
+        headers: _headers,
+        body: jsonEncode(body),
+      );
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      return ApiResult.error(data['error'] ?? 'Resend failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
   // ==================== PATIENT REGISTER ====================
   static Future<ApiResult> patientRegister({
     required String gender,

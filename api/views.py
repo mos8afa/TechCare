@@ -40,7 +40,7 @@ def generate_otp(user):
     )
 
     return True, "OTP sent to your email"
-    
+
 def verify_otp(user_id, otp_input):
     encrypted = cache.get(f"pending_data_{user_id}")
 
@@ -170,7 +170,6 @@ def verify_OTP_register(request, user_id):
     success, error_message = verify_otp(pending_user.id, otp)
 
     if not success:
-        pending_user.delete()
         return Response({"error": error_message}, status=400)
     
 
@@ -381,3 +380,36 @@ def reset_password(request):
     user.save()
 
     return Response({"message": "Password reset successfully"}, status=200)
+
+@api_view(['POST'])
+def resend_otp(request):
+    source = request.data.get('source')  # 'login', 'signup', 'forget'
+    
+    if source == 'login':
+        username = request.data.get('username')
+        try:
+            user = User.objects.get(username=username)
+            generate_otp(user)
+            return Response({"message": "OTP resent"}, status=200)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+
+    elif source == 'signup':
+        pending_user_id = request.data.get('pending_user_id')
+        try:
+            pending_user = PendingUser.objects.get(id=pending_user_id)
+            generate_otp(pending_user)
+            return Response({"message": "OTP resent"}, status=200)
+        except PendingUser.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+
+    elif source == 'forget':
+        email = request.data.get('email')
+        try:
+            user = User.objects.get(email=email)
+            generate_otp(user)
+            return Response({"message": "OTP resent"}, status=200)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+
+    return Response({"error": "Invalid source"}, status=400)

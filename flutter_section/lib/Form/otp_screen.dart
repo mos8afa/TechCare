@@ -294,10 +294,20 @@ class _OtpFormState extends State<OtpForm> {
     }
   }
 
-  void _handleResend() {
+  void _handleResend() async {
     for (var c in _controllers) c.clear();
     _focusNodes[0].requestFocus();
     setState(() => _otpError = null);
+    if (widget.source == 'login') {
+      final username = await AuthStorage.getUsername() ?? '';
+      await ApiService.resendOtp(source: 'login', username: username);
+    } else if (widget.source == 'signup') {
+      final pendingUserId = await AuthStorage.getPendingUserId() ?? '';
+      await ApiService.resendOtp(source: 'signup', pendingUserId: pendingUserId);
+    } else {
+      final email = await AuthStorage.getEmail() ?? '';
+      await ApiService.resendOtp(source: 'forget', email: email);
+    }
   }
 
   @override
