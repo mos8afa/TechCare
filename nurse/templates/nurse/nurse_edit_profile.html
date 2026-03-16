@@ -1,0 +1,218 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nurse Profile</title>
+
+    <link rel="stylesheet" href="{% static 'Css/Edit_Profile.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+</head>
+<body>  
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">
+                        <img src="{% static 'img/logo.png' %}" alt="">
+                    </span>                
+                    <div>
+                        <h2>TechCare</h2>
+                        <p>Medical Portal</p>
+                    </div>
+                    <button class="sidebar-toggle">
+                        <i class="bi bi-layout-sidebar-inset-reverse"></i>
+                    </button>
+                </div>
+            </div>
+
+            <aside class="aside">
+                <a href="{% url 'nurse:nurse_dashboard' %}" class="aside-item active">
+                    <i class="bi bi-person"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="{% url 'nurse:nurse_requests' 'accepted' %}" class="aside-item">
+                    <i class="ri-file-list-line"></i>
+                    <span>Requests</span>
+                </a>
+                <a href="Notifications.html" class="aside-item">
+                    <i class="fa-regular fa-bell"></i>
+                    <span>Notifications</span>
+                </a>
+                <a href="Wallet.html" class="aside-item">
+                    <i class="ri-wallet-3-line"></i>
+                    <span>Wallet</span>
+                </a>
+                <a href="Complaints.html" class="aside-item">
+                    <i class="ri-error-warning-line"></i>
+                    <span>Complaints</span>
+                </a>
+            </aside>
+        </aside>
+
+        <div style="flex:1; display:flex; flex-direction:column;">
+        
+            <div class="topbar">
+                <h2 class="topbar-title">Profile</h2>
+
+                <div class="topbar-right">
+                    <div class="topbar-icon" id="notificationBtn">
+                        <i class="fa-regular fa-bell"></i>
+                        
+
+                        <div class="inbox" id="notificationBox">
+                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg">
+                                <div class="notification-content">
+                                    <h4>Ahmed Ali</h4>
+                                    <p>New Consultation Request</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
+                                <img src="https://randomuser.me/api/portraits/women/12.jpg">
+                                <div class="notification-content">
+                                    <h4>Sara Mohamed</h4>
+                                    <p>Appointment Confirmed</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="line">
+                        <div class="topbar-profile" onclick="window.location.href='{% url 'nurse:nurse_dashboard' %}'">
+                            <div class="topbar-user-info">
+                            <h4>{{name}}</h4>
+                            <span>Registered Nurse</span>
+                        </div>
+                        <img src="{{profile_pic.url}}" alt="{{name}}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="main-content">
+
+                <div class="edit-profile-wrapper">
+                    <div class="edit-profile-card">
+                        <!-- Header -->
+                        <div class="edit-header">
+                            <div>
+                                <h2>Edit Professional Profile</h2>
+                            </div>
+                        </div>
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <!-- Profile Photo Section -->
+                            <div class="edit-photo-section">
+                                <div class="edit-avatar">
+                                    <img id="profile-img" src="{{nurse.profile_pic.url}}" alt="{{nurse.user.username}}">
+                                </div>
+                                <div class="edit-photo-info">
+                                    <h4>Profile Photo</h4>
+                                    <p>
+                                        New profile pictures require admin approval and verification.
+                                        Recommended size: 400x400px.
+                                    </p>
+                                    <div class="photo-buttons">
+                                        <input name='profile_pic' type="file" id="profile-upload" style="display: none;">
+                                        <button type="button" class="btn-primary-edit" onclick="document.getElementById('profile-upload').click()">
+                                            Change Photo
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <hr style="margin:15px 0; border:1px solid #F0F4F8;">
+                            <!-- Form -->
+                            <div class="edit-form-grid">
+                            
+                                <div class="form-group-edit">
+                                    <label>Username</label>
+                                    <input name='username' type="text" value="{{nurse.user.username}}">
+                                    <small>Contact support to change verified name.</small>
+                                </div>
+                            
+                                <div class="form-group-edit ">
+                                    <label>Clinic Address</label>
+                                    <div class="address-wrapper-custom full-width">
+                                        <i class="bi bi-geo-alt"></i>
+                                        <input name='address' type="text" placeholder="Street, Building, Apartment " value="{{nurse.address}}" >
+                                    </div>
+                                </div>
+
+                            
+                                <div class="form-group-edit full-width">
+                                    <label>Bio / Professional Summary</label>
+                                    <textarea name='brief' rows="4">{{nurse.brief}}</textarea>
+                                </div>
+                            
+                            
+                                <div class="form-group-edit full-width ">
+                                <label>Governorate / Location</label>
+                                <select name="governorate">
+                                    <option value="" disabled {% if not nurse.governorate %}selected{% endif %}>Select governorate</option>
+                                    <option value="alexandria" {% if nurse.governorate == 'alexandria' %}selected{% endif %}>Alexandria</option>
+                                    <option value="aswan" {% if nurse.governorate == 'aswan' %}selected{% endif %}>Aswan</option>
+                                    <option value="asyut" {% if nurse.governorate == 'asyut' %}selected{% endif %}>Assiut</option>
+                                    <option value="beheira" {% if nurse.governorate == 'beheira' %}selected{% endif %}>Beheira</option>
+                                    <option value="beni_suef" {% if nurse.governorate == 'beni_suef' %}selected{% endif %}>Beni Suef</option>
+                                    <option value="cairo" {% if nurse.governorate == 'cairo' %}selected{% endif %}>Cairo</option>
+                                    <option value="dakahlia" {% if nurse.governorate == 'dakahlia' %}selected{% endif %}>Dakahlia</option>
+                                    <option value="damietta" {% if nurse.governorate == 'damietta' %}selected{% endif %}>Damietta</option>
+                                    <option value="fayoum" {% if nurse.governorate == 'fayoum' %}selected{% endif %}>Faiyum</option>
+                                    <option value="gharbia" {% if nurse.governorate == 'gharbia' %}selected{% endif %}>Gharbia</option>
+                                    <option value="giza" {% if nurse.governorate == 'giza' %}selected{% endif %}>Giza</option>
+                                    <option value="ismailia" {% if nurse.governorate == 'ismailia' %}selected{% endif %}>Ismailia</option>
+                                    <option value="kafr_el_sheikh" {% if nurse.governorate == 'kafr_el_sheikh' %}selected{% endif %}>Kafr El Sheikh</option>
+                                    <option value="luxor" {% if nurse.governorate == 'luxor' %}selected{% endif %}>Luxor</option>
+                                    <option value="matrouh" {% if nurse.governorate == 'matrouh' %}selected{% endif %}>Matrouh</option>
+                                    <option value="minya" {% if nurse.governorate == 'minya' %}selected{% endif %}>Minya</option>
+                                    <option value="monufia" {% if nurse.governorate == 'monufia' %}selected{% endif %}>Monufia</option>
+                                    <option value="new_valley" {% if nurse.governorate == 'new_valley' %}selected{% endif %}>New Valley</option>
+                                    <option value="north_sinai" {% if nurse.governorate == 'north_sinai' %}selected{% endif %}>North Sinai</option>
+                                    <option value="port_said" {% if nurse.governorate == 'port_said' %}selected{% endif %}>Port Said</option>
+                                    <option value="qalyubia" {% if nurse.governorate == 'qalyubia' %}selected{% endif %}>Qalyubia</option>
+                                    <option value="qena" {% if nurse.governorate == 'qena' %}selected{% endif %}>Qena</option>
+                                    <option value="red_sea" {% if nurse.governorate == 'red_sea' %}selected{% endif %}>Red Sea</option>
+                                    <option value="sharqia" {% if nurse.governorate == 'sharqia' %}selected{% endif %}>Sharqia</option>
+                                    <option value="sohag" {% if nurse.governorate == 'sohag' %}selected{% endif %}>Sohag</option>
+                                    <option value="south_sinai" {% if nurse.governorate == 'south_sinai' %}selected{% endif %}>South Sinai</option>
+                                    <option value="suez" {% if nurse.governorate == 'suez' %}selected{% endif %}>Suez</option>
+                                </select>
+                            </div>
+
+                                <div class="form-group-edit full-width">
+                                    <label>Contact Phone Number</label>
+                                    <div class="phone-wrapper-custom">
+                                        <span class="country-code">+20</span>
+                                        <input name='phone_number' type="tel" placeholder="1001234567" value="{{nurse.phone_number}}">
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        
+                            <!-- Footer Buttons -->
+                            <div class="edit-footer">
+                                <button class="btn-light-edit" type="button">Cancel Changes</button>
+                                <button class="btn-primary-edit" type="submit">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+            
+                </div>
+
+            </main>
+        </div>
+    </div>
+</body>
+        <script src="{% static 'JS/Board.js' %}"></script>
+</html>
