@@ -6,7 +6,7 @@ import 'Form/otp_screen.dart';
 import 'Form/reset_password_screen.dart';
 import 'Form/too_many_attempts_screen.dart';
 import 'Form/patient_form_screen.dart';
-import 'Test.dart';
+import 'Form/terms_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,16 +28,19 @@ class MyApp extends StatelessWidget {
           error: const Color(0xFFE53E3E),
         ),
       ),
-      initialRoute: '/login', // تحديد الصفحة الأولى
+      initialRoute: '/login',
       routes: {
-        '/login': (context) => const LoginScreen(),
-        '/register': (context) => const RegisterScreen(),
-        '/forget-password': (context) => const ForgetPasswordScreen(),
-        '/otp': (context) => const OtpScreen(),
-        '/reset-password': (context) => const ResetPasswordScreen(),
+        '/login':             (context) => const LoginScreen(),
+        '/register':          (context) => const RegisterScreen(),
+        '/forget-password':   (context) => const ForgetPasswordScreen(),
+        '/reset-password':    (context) => const ResetPasswordScreen(),
         '/too-many-attempts': (context) => const TooManyAttemptsScreen(),
-        '/patient-form': (context) => const PatientFormScreen(),
-        '/home': (context) => const Home(),
+        '/patient-form':      (context) => const PatientFormScreen(),
+        '/terms':             (context) => const TermsScreen(),
+
+        '/otp-login':  (context) => const OtpScreen(source: 'login'),
+        '/otp-signup': (context) => const OtpScreen(source: 'signup'),
+        '/otp':        (context) => const OtpScreen(source: 'forget'),
       },
     );
   }
