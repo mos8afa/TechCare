@@ -9,8 +9,8 @@ import 'Form/patient_form_screen.dart';
 import 'Form/terms_screen.dart';
 import 'Form/doctor_form_screen.dart';
 import 'Form/nurse_form_screen.dart';
+import 'Form/donor_form_screen.dart';
 // import 'Form/pharmacy_form_screen.dart';
-// import 'Form/donor_form_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         '/patient-form':     (context) => const PatientFormScreen(),
         '/doctor-form':      (context) => const DoctorFormScreen(),
         '/nurse-form':       (context) => const NurseFormScreen(),
-        // '/donor-form':       (context) => const DonorFormScreen(),
+        '/donor-form':       (context) => const DonorFormScreen(),
         // '/pharmacist-form':  (context) => const PharmacyFormScreen(),
         '/home':             (context) => const Scaffold(body: Center(child: Text('Home - Coming Soon'))),
       },
