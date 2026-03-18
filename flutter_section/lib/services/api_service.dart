@@ -26,14 +26,6 @@ class ApiService {
   }
 
   // ==================== Headers ====================
-  static Future<Map<String, String>> _authHeaders() async {
-    final token = await getAccessToken();
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    };
-  }
-
   static const Map<String, String> _headers = {
     'Content-Type': 'application/json',
   };

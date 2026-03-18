@@ -43,7 +43,7 @@ class _DoctorFormStep1State extends State<DoctorFormStep1> {
   String? _phoneError;
   String? _dobError;
   String? _addressError;
-  bool _isLoading = false;
+  bool _isLoading = false; 
   bool _isPickingImage = false;
 
   final ImagePicker _picker = ImagePicker();
@@ -583,7 +583,9 @@ class _DoctorFormStep2State extends State<DoctorFormStep2> {
     if (result.success) {
       if (mounted) Navigator.pushReplacementNamed(context, '/home');
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.error ?? 'Error'), backgroundColor: const Color(0xFFE53E3E)));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.error ?? 'Error'), backgroundColor: const Color(0xFFE53E3E)));
+      }
     }
   }
 
