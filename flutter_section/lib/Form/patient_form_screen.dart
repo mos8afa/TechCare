@@ -399,20 +399,17 @@ class _PatientFormState extends State<PatientForm> {
     if (result.success) {
       if (mounted) Navigator.pushReplacementNamed(context, '/home');
     } else {
-      final error = result.error ?? 'Registration failed';
-      if (error.contains('phone')) {
-        setState(() => _phoneError = error);
-      } 
-      else if (error.contains('address')) {
-        setState(() => _addressError = error);
-      } 
-      else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(error),
-            backgroundColor: const Color(0xFFE53E3E),
-          ),
-        );
+      if (mounted) {
+        final error = result.error ?? 'Registration failed';
+        if (error.contains('phone')) {
+          setState(() => _phoneError = error);
+        } else if (error.contains('address')) {
+          setState(() => _addressError = error);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error), backgroundColor: const Color(0xFFE53E3E)),
+          );
+        }
       }
     }
   }

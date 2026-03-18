@@ -440,7 +440,11 @@ class _NurseFormStep2State extends State<NurseFormStep2> {
     if (result.success) {
       if (mounted) Navigator.pushReplacementNamed(context, '/home');
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.error ?? 'Error'), backgroundColor: const Color(0xFFE53E3E)));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.error ?? 'Error'), backgroundColor: const Color(0xFFE53E3E)),
+        );
+      }
     }
   }
 }

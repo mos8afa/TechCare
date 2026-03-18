@@ -341,8 +341,9 @@ class _OtpFormState extends State<OtpForm> {
     if (!result.success) {
       final error = result.error ?? '';
       if (error.contains('Too many') || error.contains('too_many')) {
-        if (mounted)
+        if (mounted){
           Navigator.pushReplacementNamed(context, '/too-many-attempts');
+        }
       } else {
         setState(() => _otpError = error);
       }
@@ -350,7 +351,10 @@ class _OtpFormState extends State<OtpForm> {
   }
 
   void _handleResend() async {
-    for (var c in _controllers) c.clear();
+    for (var c in _controllers)
+    {
+      c.clear();
+    }
     _focusNodes[0].requestFocus();
     setState(() => _otpError = null);
     if (widget.source == 'login') {
@@ -370,8 +374,14 @@ class _OtpFormState extends State<OtpForm> {
 
   @override
   void dispose() {
-    for (var c in _controllers) c.dispose();
-    for (var f in _focusNodes) f.dispose();
+    for (var c in _controllers)
+    {
+      c.dispose();
+    } 
+    for (var f in _focusNodes)
+    {
+      f.dispose();
+    } 
     super.dispose();
   }
 }

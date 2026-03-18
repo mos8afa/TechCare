@@ -368,10 +368,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     } else {
       final error = result.error ?? '';
       setState(() {
-        if (error.contains('Username')) _usernameExistError = error;
-        else if (error.contains('Email')) _emailExistError = error;
-        else if (error.contains('Password')) _passwordError = error;
-        else if (error.contains('Name')) _nameError = error;
+        if (error.contains('Username')) {_usernameExistError = error;}
+        else if (error.contains('Email')) {_emailExistError = error;}
+        else if (error.contains('Password')) {_passwordError = error;}
+        else if (error.contains('Name')) { _nameError = error;}
       });
     }
   }
