@@ -33,7 +33,10 @@ class OtpForm extends StatefulWidget {
 }
 
 class _OtpFormState extends State<OtpForm> {
-  final List<TextEditingController> _controllers = List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> _controllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
   String? _otpError;
   bool _isLoading = false;
@@ -41,10 +44,14 @@ class _OtpFormState extends State<OtpForm> {
   // Back route حسب الـ source
   String get _backRoute {
     switch (widget.source) {
-      case 'login':   return '/login';
-      case 'signup':  return '/register';
-      case 'forget':  return '/forget-password';
-      default:        return '/login';
+      case 'login':
+        return '/login';
+      case 'signup':
+        return '/register';
+      case 'forget':
+        return '/forget-password';
+      default:
+        return '/login';
     }
   }
 
@@ -60,12 +67,20 @@ class _OtpFormState extends State<OtpForm> {
             color: const Color(0xFF1D89E4),
             borderRadius: BorderRadius.circular(20),
           ),
-          child: const Icon(Icons.shield_outlined, color: Colors.white, size: 36),
+          child: const Icon(
+            Icons.shield_outlined,
+            color: Colors.white,
+            size: 36,
+          ),
         ),
         const SizedBox(height: 20),
         const Text(
           'Verify OTP',
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF1A202C)),
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF1A202C),
+          ),
         ),
         const SizedBox(height: 6),
         const Text(
@@ -86,10 +101,20 @@ class _OtpFormState extends State<OtpForm> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("Didn't receive OTP? ", style: TextStyle(fontSize: 14, color: Color(0xFF718096))),
+            const Text(
+              "Didn't receive OTP? ",
+              style: TextStyle(fontSize: 14, color: Color(0xFF718096)),
+            ),
             GestureDetector(
               onTap: _isLoading ? null : _handleResend,
-              child: const Text('Click here', style: TextStyle(fontSize: 14, color: Color(0xFF1D89E4), fontWeight: FontWeight.w700)),
+              child: const Text(
+                'Click here',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Color(0xFF1D89E4),
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ),
           ],
         ),
@@ -98,7 +123,10 @@ class _OtpFormState extends State<OtpForm> {
           Container(
             margin: const EdgeInsets.only(top: 12),
             alignment: Alignment.centerLeft,
-            child: Text(_otpError!, style: const TextStyle(color: Color(0xFFE53E3E), fontSize: 13)),
+            child: Text(
+              _otpError!,
+              style: const TextStyle(color: Color(0xFFE53E3E), fontSize: 13),
+            ),
           ),
         const SizedBox(height: 24),
 
@@ -114,19 +142,30 @@ class _OtpFormState extends State<OtpForm> {
                   backgroundColor: const Color(0xFF1D89E4),
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                   elevation: 0,
                 ),
                 child: _isLoading
                     ? const SizedBox(
                         width: 20,
                         height: 20,
-                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
                       )
                     : const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Continue', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                          Text(
+                            'Continue',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                           SizedBox(width: 8),
                           Icon(Icons.arrow_forward, size: 18),
                         ],
@@ -139,7 +178,9 @@ class _OtpFormState extends State<OtpForm> {
             Expanded(
               flex: 1,
               child: GestureDetector(
-                onTap: _isLoading ? null : () => Navigator.pushReplacementNamed(context, _backRoute),
+                onTap: _isLoading
+                    ? null
+                    : () => Navigator.pushReplacementNamed(context, _backRoute),
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   decoration: BoxDecoration(
@@ -148,7 +189,14 @@ class _OtpFormState extends State<OtpForm> {
                     border: Border.all(color: const Color(0xFFE2E8F0)),
                   ),
                   child: const Center(
-                    child: Text('Back', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF718096))),
+                    child: Text(
+                      'Back',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF718096),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -219,7 +267,9 @@ class _OtpFormState extends State<OtpForm> {
     for (int i = 0; i < 6; i++) {
       if (i < digits.length) {
         _controllers[i].text = digits[i];
-        _controllers[i].selection = TextSelection.fromPosition(const TextPosition(offset: 1));
+        _controllers[i].selection = TextSelection.fromPosition(
+          const TextPosition(offset: 1),
+        );
       } else {
         _controllers[i].clear();
       }
@@ -250,10 +300,12 @@ class _OtpFormState extends State<OtpForm> {
         await AuthStorage.clearSession();
         if (mounted) Navigator.pushReplacementNamed(context, '/home');
       }
-
     } else if (widget.source == 'signup') {
       final pendingUserId = await AuthStorage.getPendingUserId() ?? '';
-      result = await ApiService.verifyOtpRegister(userId: pendingUserId, otp: otp);
+      result = await ApiService.verifyOtpRegister(
+        userId: pendingUserId,
+        otp: otp,
+      );
       if (result.success) {
         final role = await AuthStorage.getRole() ?? '';
         await AuthStorage.clearSession();
@@ -268,12 +320,14 @@ class _OtpFormState extends State<OtpForm> {
             case 'nurse':
               Navigator.pushReplacementNamed(context, '/nurse-form');
               break;
+            case 'donor':
+              Navigator.pushReplacementNamed(context, '/donor-form');
+              break;
             default:
               Navigator.pushReplacementNamed(context, '/home');
           }
         }
       }
-
     } else {
       final email = await AuthStorage.getEmail() ?? '';
       result = await ApiService.verifyOtpForgetPassword(email: email, otp: otp);
@@ -287,7 +341,8 @@ class _OtpFormState extends State<OtpForm> {
     if (!result.success) {
       final error = result.error ?? '';
       if (error.contains('Too many') || error.contains('too_many')) {
-        if (mounted) Navigator.pushReplacementNamed(context, '/too-many-attempts');
+        if (mounted)
+          Navigator.pushReplacementNamed(context, '/too-many-attempts');
       } else {
         setState(() => _otpError = error);
       }
@@ -303,7 +358,10 @@ class _OtpFormState extends State<OtpForm> {
       await ApiService.resendOtp(source: 'login', username: username);
     } else if (widget.source == 'signup') {
       final pendingUserId = await AuthStorage.getPendingUserId() ?? '';
-      await ApiService.resendOtp(source: 'signup', pendingUserId: pendingUserId);
+      await ApiService.resendOtp(
+        source: 'signup',
+        pendingUserId: pendingUserId,
+      );
     } else {
       final email = await AuthStorage.getEmail() ?? '';
       await ApiService.resendOtp(source: 'forget', email: email);
