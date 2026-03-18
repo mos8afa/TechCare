@@ -19,7 +19,7 @@
                 <div class="sidebar-header">
                     <div class="logo">
                         <span class="logo-icon">
-                            <img src="../img/logo.png" alt="">
+                            <img src="..\img\logo.png" alt="">
                         </span>                
                         <div>
                             <h2>TechCare</h2>
@@ -55,13 +55,6 @@
                 </aside>
             </aside>
 
-            <!--
-                KEY FIX: replaced `<div style="flex:1; display:flex; flex-direction:column;">`
-                with `<div class="content-wrapper">`.
-                The class adds `min-width: 0` (prevents flex blowout) and
-                `margin-left: var(--sidebar-width)` (pushes content clear of the fixed sidebar),
-                removing the need for every child to track the sidebar width itself.
-            -->
             <div class="content-wrapper">
             
                 <!-- Top Navbar -->
@@ -204,36 +197,47 @@
                     <!-- Services Section -->
                     <div class="Services-Card">
                         <div class="services-header">
-                            <h3>My Services <span id="serviceCount">(3)</span></h3>
+                            <h3>My Services <span id="serviceCount">(0)</span></h3>
                             <button class="btn-add-services" id="addServiceBtn">Add Services</button>
                         </div>
-
+                    
+                        <!-- Modal for Add/Edit -->
                         <div id="addServiceModal" class="modal">
                             <div class="modal-content">
                                 <span class="close" id="closeAddService">&times;</span>
-                                <h3>Add New Service</h3>
-                                <form>
+                                <h3 id="modalTitle">Add New Service</h3>
+                                <form id="serviceForm">
                                     <div class="form-group">
                                         <label for="serviceTitle">Title</label>
                                         <input type="text" id="serviceTitle" required />
                                     </div>
                                     <div class="form-group">
-                                        <label for="servicePrice">Price</label>
+                                        <label for="servicePrice">Price ($)</label>
                                         <input type="number" id="servicePrice" required />
                                     </div>
                                     <div class="form-group">
                                         <label for="serviceDescription">Description</label>
                                         <textarea id="serviceDescription" rows="3" required></textarea>
                                     </div>
-                                    <button type="submit" class="btn-primary">Add Service</button>
+                                    <button type="submit" class="btn-primary" id="saveServiceBtn">Add Service</button>
                                 </form>
                             </div>
                         </div>
-
+                        
                         <div class="services-container">
                             <button class="service-nav-btn prev-service" id="prev-service">
                                 <i class="fas fa-angle-left"></i>
                             </button>
+
+                            <div class="services-grid" id="servicesGrid">
+                                <!-- Dynamic cards will be injected here -->
+                            </div>
+
+                            <button class="service-nav-btn next-service" id="next-service">
+                                <i class="fas fa-angle-right"></i>
+                            </button>
+                        </div>
+                    </div>
                             
                             <div class="services-grid">
                                 <div class="service-card">
@@ -302,5 +306,6 @@
 
         </div>
         <script src="../JS/Board.js"></script>
+        
     </body>
     </html>
