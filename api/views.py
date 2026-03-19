@@ -10,7 +10,7 @@ from django.core.mail import send_mail
 from project.settings import EMAIL_HOST_USER, FERNET_KEY
 from rest_framework_simplejwt.tokens import RefreshToken
 import accounts.validations
-from accounts.models import Nurse, Patient, PendingUser, Doctor, Donor
+from accounts.models import Nurse, Patient, PendingUser, Doctor, Donor , Pharmacist
 from django.contrib.auth.hashers import make_password
 from rest_framework.permissions import IsAuthenticated
 
@@ -373,6 +373,54 @@ def donor_register(request):
 
     return Response({"message": "Donor profile created successfully"})
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def pharmacist_register(request):
+    gender = request.data.get('gender')
+    phone_number = request.data.get('phone_number')
+    date_of_birth = request.data.get('date_of_birth')
+    profile_pic = request.FILES.get('profile_pic')
+    national_id_pic_front = request.FILES.get('national_id_pic_front')
+    national_id_pic_back = request.FILES.get('national_id_pic_back')
+    pharmacy_name = request.data.get('pharmacy_name')
+    pharmacy_address = request.data.get('pharmacy_address')
+    governorate = request.data.get('governorate')
+    university = request.data.get('university')
+    syndicate_card = request.FILES.get('syndicate_card')
+    practice_permit = request.FILES.get('practice_permit')
+    graduation_certificate = request.FILES.get('graduation_certificate')
+
+    if not accounts.validations.validate_phone(phone_number):
+        return Response({"error": "Phone number must start with 0 or 1."}, status=400)
+
+    if not accounts.validations.validate_dop(date_of_birth, 18):
+        return Response({"error": "You must be at least 18 years old."}, status=400)
+
+    if not accounts.validations.validate_pharmacy_name(pharmacy_name):
+        return Response({"error": "Pharmacy name must be at most 60 letters."}, status=400)
+
+    if not accounts.validations.validate_address(pharmacy_address):
+        return Response({"error": "can't use <,> or forbidden words"}, status=400)
+
+    pharmacist = Pharmacist.objects.create(
+        user=request.user,
+        gender=gender,
+        phone_number=phone_number,
+        date_of_birth=date_of_birth,
+        profile_pic=profile_pic,
+        national_id_pic_front=national_id_pic_front,
+        national_id_pic_back=national_id_pic_back,
+        pharmacy_name=pharmacy_name,
+        pharmacy_address=pharmacy_address,
+        governorate=governorate,
+        university=university,
+        syndicate_card=syndicate_card,
+        practice_permit=practice_permit,
+        graduation_certificate=graduation_certificate,
+    )
+    pharmacist.save()
+
+    return Response({"message": "Pharmacist profile created successfully"})
 
 @api_view(['POST'])
 def forget_password(request):

@@ -661,7 +661,7 @@ class _DonorFormState extends State<DonorForm> {
 
     final result = await ApiService.donorRegister(
       bloodType: _selectedBloodType!,
-      phoneNumber: _phoneController.text.trim(),
+      phoneNumber: '0${_phoneController.text.trim()}',
       address: _addressController.text.trim(),
       governorate: _selectedGovernorate!,
       dateOfBirth: _dateOfBirthController.text.trim(),
