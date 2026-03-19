@@ -323,6 +323,9 @@ class _OtpFormState extends State<OtpForm> {
             case 'donor':
               Navigator.pushReplacementNamed(context, '/donor-form');
               break;
+            case 'pharmacist':                                          
+              Navigator.pushReplacementNamed(context, '/pharmacist-form');
+              break;
             default:
               Navigator.pushReplacementNamed(context, '/home');
           }
