@@ -14,9 +14,7 @@ from accounts.models import Nurse, Patient, PendingUser, Doctor, Donor , Pharmac
 from django.contrib.auth.hashers import make_password
 from rest_framework.permissions import IsAuthenticated
 
-
 User = get_user_model()
-
 
 def generate_otp(user):
     otp = random.randint(100000, 999999)
@@ -353,7 +351,9 @@ def donor_register(request):
     if not accounts.validations.validate_dop(date_of_birth, 18):
         return Response({"error": "You must be at least 18 years old."}, status=400)
 
-    # Handle last_donation_date - if not provided, use date_of_birth as default
+    if not accounts.validations.validate_donation_date(last_donation_date,date_of_birth):
+        return Response({'error':"Last blood donation must be after you turned 16."}, status=400)
+    
     donation_date = last_donation_date if last_donation_date else date_of_birth
 
     donor = Donor.objects.create(
@@ -483,7 +483,7 @@ def reset_password(request):
 
 @api_view(['POST'])
 def resend_otp(request):
-    source = request.data.get('source')  # 'login', 'signup', 'forget'
+    source = request.data.get('source')
 
     if source == 'login':
         username = request.data.get('username')
