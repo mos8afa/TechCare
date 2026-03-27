@@ -46,11 +46,11 @@ body {
     padding: 20px 10px;
 }
 
-.sidebar.collapsed ~ div .topbar {
+.sidebar.collapsed~div .topbar {
     left: 80px;
 }
 
-.sidebar.collapsed ~ div .main-content {
+.sidebar.collapsed~div .main-content {
     margin-left: 80px;
 }
 
@@ -197,6 +197,17 @@ body {
     color: #4b5563;
     position: relative;
     transition: color 0.2s;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background-color: #E74C3C;
+    border-radius: 50%;
+    border: 2px solid white;
 }
 
 .topbar-icon:hover {
@@ -348,11 +359,11 @@ body {
     padding: 20px 10px;
 }
 
-.sidebar.collapsed ~ div .topbar {
+.sidebar.collapsed~div .topbar {
     left: 80px;
 }
 
-.sidebar.collapsed ~ div .main-content {
+.sidebar.collapsed~div .main-content {
     margin-left: 80px;
 }
 
@@ -607,6 +618,7 @@ body {
     .dashboard {
         flex-direction: column;
     }
+
     .sidebar {
         gap: 16px;
         width: 100%;
@@ -614,10 +626,12 @@ body {
         overflow-x: auto;
         flex-direction: row;
     }
+
     .aside {
         flex-wrap: wrap;
         flex-direction: row;
     }
+
     .main-content {
         padding-left: 15px;
         padding-right: 15px;
@@ -842,6 +856,7 @@ body {
     .edit-form-grid {
         grid-template-columns: 1fr;
     }
+
     .edit-photo-section {
         flex-direction: column;
         align-items: flex-start;
@@ -854,6 +869,7 @@ body {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -861,8 +877,13 @@ body {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .edit-profile-wrapper {
@@ -903,7 +924,7 @@ body {
     background-color: #2ecc71;
     border-radius: 50%;
     border: 2px solid white;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 
@@ -923,10 +944,12 @@ body {
     gap: 51px;
 
     background: #EEF2F7;
-    padding: 6px;                 /* قللنا الارتفاع */
+    padding: 6px;
+    /* قللنا الارتفاع */
     border-radius: 16px;
 
-    width: 672px;                /* كبرنا العرض */
+    width: 672px;
+    /* كبرنا العرض */
     margin: 0 auto 30px;
 
     border: 1px solid #E2E8F0;
@@ -939,7 +962,8 @@ body {
     justify-content: center;
     gap: 10px;
 
-    padding: 10px 42px;          /* عرض أكبر + ارتفاع أقل */
+    padding: 10px 42px;
+    /* عرض أكبر + ارتفاع أقل */
     border-radius: 14px;
 
     font-size: 15px;
@@ -959,10 +983,11 @@ body {
     color: #1E88E5;
     font-weight: 600;
 
-    padding: 12px 48px;          /* أكبر من الباقي */
+    padding: 12px 48px;
+    /* أكبر من الباقي */
     border-radius: 14px;
 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     width: 221px;
     height: 45px;
 }
@@ -1097,12 +1122,12 @@ body {
     border: 1px solid #E6EBF1;
     padding: 24px 18px 18px;
     text-align: center;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
     transition: all 0.25s ease;
 }
 
 .doctor-card:hover {
-    box-shadow: 0 10px 30px rgba(30,136,229,0.15);
+    box-shadow: 0 10px 30px rgba(30, 136, 229, 0.15);
     transform: translateY(-5px);
 }
 
@@ -1211,7 +1236,7 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: 0.2s;
-    box-shadow: 0 4px 10px rgba(30,136,229,0.25);
+    box-shadow: 0 4px 10px rgba(30, 136, 229, 0.25);
 }
 
 .book-btn:hover {
@@ -1235,7 +1260,9 @@ body {
 }
 
 @media (max-width: 900px) {
-    .pending-grid { grid-template-columns: 1fr; }
+    .pending-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* ---- Pending Card ---- */
@@ -1244,7 +1271,7 @@ body {
     border-radius: 16px;
     border: 1px solid #f0f0f5;
     padding: 24px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -1253,7 +1280,7 @@ body {
 }
 
 .pending-card:hover {
-    box-shadow: 0 8px 28px rgba(29,137,228,0.1);
+    box-shadow: 0 8px 28px rgba(29, 137, 228, 0.1);
     transform: translateY(-2px);
 }
 
@@ -1318,7 +1345,8 @@ body {
     border-radius: 10px;
     padding: 10px 14px;
     line-height: 1.6;
-    padding-right: 290px; /* مساحة لزر الإلغاء */
+    padding-right: 290px;
+    /* مساحة لزر الإلغاء */
 
 }
 
@@ -1451,3 +1479,306 @@ body {
     border-color: #cbd5e1;
 }
 
+/* =========================================
+   Patient Profile Custom Styles
+   ========================================= */
+.patient-profile-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    margin-bottom: 24px;
+}
+
+.patient-avatar-wrap {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    flex-shrink: 0;
+}
+
+.patient-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.patient-status-dot {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    background-color: #2ECC71;
+    border: 3px solid #fff;
+    border-radius: 50%;
+}
+
+.patient-details {
+    flex: 1;
+}
+
+.patient-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1A1C1E;
+    margin-bottom: 8px;
+}
+
+.patient-contact {
+    display: flex;
+    gap: 24px;
+    color: #6B7280;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.patient-contact span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.medical-summary-box {
+    color: #4B5563;
+}
+
+.medical-summary-box h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #4B5563;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+
+.medical-summary-box p {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #6B7280;
+    padding-right: 120px;
+}
+
+.requests-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.request-stat-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 30px 24px 24px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.req-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.req-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1A1C1E;
+}
+
+.req-count {
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.req-count.blue {
+    color: #1E88E5;
+}
+
+.req-count.green {
+    color: #2ECC71;
+}
+
+.req-count.gold {
+    color: #C08A37;
+}
+
+.req-progress {
+    height: 8px;
+    background: #F1F5F9;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+
+.req-fill {
+    height: 100%;
+    border-radius: 20px;
+}
+
+.req-fill.bg-blue {
+    background: #1E88E5;
+}
+
+.req-fill.bg-green {
+    background: #2ECC71;
+}
+
+.req-fill.bg-gold {
+    background: #C08A37;
+}
+
+.req-progress.track-blue {
+    background: #F1F5F9;
+    height: 12px;
+}
+
+.req-progress.track-green {
+    background: #F1F5F9;
+    height: 12px;
+}
+
+.req-progress.track-gold {
+    background: #F1F5F9;
+    height: 12px;
+}
+
+.req-footer {
+    font-size: 11px;
+    color: #94A3B8;
+}
+
+.bottom-section {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+}
+
+.profile-wallet-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.wallet-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+}
+
+.wallet-title-area h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1A1C1E;
+    margin-bottom: 6px;
+}
+
+.wallet-title-area p {
+    font-size: 13px;
+    color: #6B7280;
+}
+
+.wallet-icon-btn {
+    width: 44px;
+    height: 44px;
+    background: #F0F7FF;
+    color: #1E88E5;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+}
+
+.wallet-balance-box {
+    background: #F8FAFC;
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.balance-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6B7280;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.balance-amount {
+    font-size: 40px;
+    font-weight: 800;
+    color: #1A1C1E;
+}
+
+.stats-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.small-stat-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.icon-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+}
+
+.icon-blue {
+    background: #F0F7FF;
+    color: #1E88E5;
+}
+
+.icon-green {
+    background: #E8F8F5;
+    color: #2ECC71;
+}
+
+.icon-orange {
+    background: #FFF3E0;
+    color: #EA580C;
+}
+
+.small-stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.small-stat-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #6B7280;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.small-stat-count {
+    font-size: 24px;
+    font-weight: 800;
+    color: #1A1C1E;
+}

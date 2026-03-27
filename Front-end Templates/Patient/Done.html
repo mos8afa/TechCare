@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,7 +12,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
-<body>  
+
+<body>
     <div class="dashboard">
 
         <!-- Sidebar -->
@@ -20,7 +22,7 @@
                 <div class="logo">
                     <span class="logo-icon">
                         <img src="../img/logo.png" alt="">
-                    </span>                
+                    </span>
                     <div>
                         <h2>TechCare</h2>
                         <p>Medical Portal</p>
@@ -57,7 +59,7 @@
 
 
         <div style="flex:1; display:flex; flex-direction:column;">
-        
+
             <!-- Top Navbar -->
             <div class="topbar">
                 <h2 class="topbar-title">Requests</h2>
@@ -114,9 +116,12 @@
 
                     <!-- Status Tabs -->
                     <div class="status-tabs">
-                        <button class="status-tab" data-status="booking" onclick="window.location.href='Booking.html'">Booking</button>
-                        <button class="status-tab" data-status="pending" onclick="window.location.href='pending.html'">Pending</button>
-                        <button class="status-tab" data-status="accepted" onclick="window.location.href='accepted.html'">Accepted</button>
+                        <button class="status-tab" data-status="requests"
+                            onclick="window.location.href='Requests.html'">Booking</button>
+                        <button class="status-tab" data-status="pending"
+                            onclick="window.location.href='pending.html'">Pending</button>
+                        <button class="status-tab" data-status="accepted"
+                            onclick="window.location.href='accepted.html'">Accepted</button>
                         <button class="status-tab active">Done</button>
                     </div>
 
@@ -157,5 +162,6 @@
 
     </div>
 </body>
-    <script src="../JS/Board.js"></script>
+<script src="../JS/Board.js"></script>
+
 </html>

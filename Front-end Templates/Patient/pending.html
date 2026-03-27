@@ -114,11 +114,14 @@
 
                         <!-- Status Tabs -->
                         <div class="status-tabs">
-                            <button class="status-tab" onclick="window.location.href='Booking.html'">Booking</button>
-                            <button class="status-tab active">Pending</button>
-                            <button class="status-tab" onclick="window.location.href='accepted.html'">Accepted</button>
-                            <button class="status-tab" onclick="window.location.href='done.html'">Done</button>
-                        </div>
+                        <button class="status-tab" data-status="requests"
+                            onclick="window.location.href='Requests.html'">Booking</button>
+                        <button class="status-tab active">Pending</button>
+                        <button class="status-tab" data-status="accepted"
+                            onclick="window.location.href='accepted.html'">Accepted</button>
+                        <button class="status-tab" data-status="done"
+                            onclick="window.location.href='done.html'">Done</button>
+                    </div>
 
                         <!-- Search & Filters -->
                         <div class="search-bar">
