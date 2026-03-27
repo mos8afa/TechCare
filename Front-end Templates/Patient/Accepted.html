@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,7 +12,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
-<body>  
+
+<body>
     <div class="dashboard">
 
         <!-- Sidebar -->
@@ -20,7 +22,7 @@
                 <div class="logo">
                     <span class="logo-icon">
                         <img src="../img/logo.png" alt="">
-                    </span>                
+                    </span>
                     <div>
                         <h2>TechCare</h2>
                         <p>Medical Portal</p>
@@ -57,10 +59,10 @@
 
 
         <div style="flex:1; display:flex; flex-direction:column;">
-        
+
             <!-- Top Navbar -->
             <div class="topbar">
-                <h2 class="topbar-title">Requests</h2>
+                <h2 class="topbar-title">Patient Profile</h2>
 
                 <div class="topbar-right">
                     <div class="topbar-icon" id="notificationBtn">
@@ -104,7 +106,7 @@
                         <button class="cat-tab active">
                             <i class="ri-stethoscope-line"></i> Doctor
                         </button>
-                        <button class="cat-tab" data-status="pending" onclick="window.location.href='nurse.html'">
+                        <button class="cat-tab" data-status="pending" onclick="window.location.href='Nurse_Book_Appointment.html'">
                             <i class="ri-nurse-line"></i> Nurse
                         </button>
                         <button class="cat-tab">
@@ -123,42 +125,137 @@
                             onclick="window.location.href='done.html'">Done</button>
                     </div>
 
-                    <!-- Search & Filters -->
-                    <div class="search-bar">
-                        <div class="search-input-wrap">
-                            <i class="bi bi-card-text" style="font-size:18px; color:#aab0bc;"></i>
-                            <input type="text" placeholder="Search by doctor..." />
-                        </div>
-                        <select class="filter-select">
-                            <option value="">Specialization</option>
-                            <option>Cardiologist</option>
-                            <option>Pediatrician</option>
-                            <option>Neurologist</option>
-                            <option>Dermatologist</option>
-                            <option>Orthopedic</option>
-                            <option>Psychiatrist</option>
-                        </select>
-                        <select class="filter-select">
-                            <option value="">Governorate</option>
-                            <option>Cairo</option>
-                            <option>Alexandria</option>
-                            <option>Giza</option>
-                        </select>
-                        <select class="filter-select">
-                            <option value="">Price Range</option>
-                            <option>0 - 300 EGP</option>
-                            <option>300 - 600 EGP</option>
-                            <option>600+ EGP</option>
-                        </select>
-                    </div>
+                    <div class="accepted-cards-container">
+                        <!-- Card 1 -->
+                        <div class="accepted-card">
+                            <div class="ac-header">
+                                <div class="ac-doc-info">
+                                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Dr. Sarah Miller"
+                                        class="ac-avatar">
+                                    <div>
+                                        <h3 class="ac-doc-name">Dr. Sarah Miller</h3>
+                                        <p class="ac-doc-spec">Senior Cardiologist</p>
+                                    </div>
+                                </div>
+                                <div class="ac-badge">Accepted</div>
+                            </div>
 
-                </div>
-                <!-- ===== END BOOKING SECTION ===== -->
+                            <div class="ac-details-grid">
+                                <div class="ac-detail-item">
+                                    <i class="ri-calendar-event-line ac-icon blue"></i>
+                                    <div>
+                                        <p class="ac-label">DATE AND TIME</p>
+                                        <p class="ac-value">Oct 24, 2023 • 10:30 AM</p>
+                                    </div>
+                                </div>
+                                <div class="ac-detail-item">
+                                    <i class="ri-phone-line ac-icon blue"></i>
+                                    <div>
+                                        <p class="ac-label">CONTACT INFO</p>
+                                        <p class="ac-value">+20 100 234 5678</p>
+                                    </div>
+                                </div>
+                                <div class="ac-detail-item">
+                                    <i class="ri-map-pin-line ac-icon blue"></i>
+                                    <div>
+                                        <p class="ac-label">REGION AND ADDRESS</p>
+                                        <p class="ac-value">Cairo, Maadi District</p>
+                                    </div>
+                                </div>
+                                <div class="ac-detail-item">
+                                    <i class="ri-shield-check-line ac-icon green"></i>
+                                    <div>
+                                        <p class="ac-label">STATUS</p>
+                                        <p class="ac-value text-green">Confirmed by Provider</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ac-description">
+                                <p class="ac-label">DESCRIPTION</p>
+                                <p class="ac-desc-text">Regular checkup for heart monitoring and ECG analysis. Patient
+                                    reported mild palpitations last week.</p>
+                            </div>
+
+                            <div class="ac-financial">
+                                <p class="ac-fin-label">FINANCIAL TOTAL</p>
+                                <p class="ac-fin-amount">$165.00</p>
+                            </div>
+
+                            <div class="ac-footer">
+                                <button class="ac-done-btn">Done</button>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="accepted-card">
+                            <div class="ac-header">
+                                <div class="ac-doc-info">
+                                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Dr. Sarah Miller"
+                                        class="ac-avatar">
+                                    <div>
+                                        <h3 class="ac-doc-name">Dr. Sarah Miller</h3>
+                                        <p class="ac-doc-spec">Senior Cardiologist</p>
+                                    </div>
+                                </div>
+                                <div class="ac-badge">Accepted</div>
+                            </div>
+
+                            <div class="ac-details-grid">
+                                <div class="ac-detail-item">
+                                    <i class="ri-calendar-event-line ac-icon blue"></i>
+                                    <div>
+                                        <p class="ac-label">DATE AND TIME</p>
+                                        <p class="ac-value">Oct 24, 2023 • 10:30 AM</p>
+                                    </div>
+                                </div>
+                                <div class="ac-detail-item">
+                                    <i class="ri-phone-line ac-icon blue"></i>
+                                    <div>
+                                        <p class="ac-label">CONTACT INFO</p>
+                                        <p class="ac-value">+20 100 234 5678</p>
+                                    </div>
+                                </div>
+                                <div class="ac-detail-item">
+                                    <i class="ri-map-pin-line ac-icon blue"></i>
+                                    <div>
+                                        <p class="ac-label">REGION AND ADDRESS</p>
+                                        <p class="ac-value">Cairo, Maadi District</p>
+                                    </div>
+                                </div>
+                                <div class="ac-detail-item">
+                                    <i class="ri-shield-check-line ac-icon green"></i>
+                                    <div>
+                                        <p class="ac-label">STATUS</p>
+                                        <p class="ac-value text-green">Confirmed by Provider</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ac-description">
+                                <p class="ac-label">DESCRIPTION</p>
+                                <p class="ac-desc-text">Regular checkup for heart monitoring and ECG analysis. Patient
+                                    reported mild palpitations last week.</p>
+                            </div>
+
+                            <div class="ac-financial">
+                                <p class="ac-fin-label">FINANCIAL TOTAL</p>
+                                <p class="ac-fin-amount">$165.00</p>
+                            </div>
+
+                            <div class="ac-footer">
+                                <button class="ac-done-btn">Done</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- ===== END BOOKING SECTION ===== -->
 
             </main>
         </div>
 
     </div>
 </body>
-    <script src="../JS/Board.js"></script>
+<script src="../JS/Board.js"></script>
+
 </html>
