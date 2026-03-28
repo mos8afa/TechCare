@@ -1,11 +1,12 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from accounts import validations
-from accounts.models import Nurse
+from accounts.models import Nurse, TimeSlots, get_provider_days_with_dates
 from django.db.models import Avg
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from.models import Service
 from decimal import Decimal
+from datetime import time
 
 
 @login_required
@@ -26,7 +27,7 @@ def nurse_dashboard(request):
     email = nurse.user.email 
 
     nurse_requests = nurse.nurse_requests.all()
-    pending = nurse_requests.filter(status='pending').count()
+    pending = nurse_requests.filter(status__in=['pending', 'edited']).count()
     completed = nurse_requests.filter(status='completed').count()
 
     services = nurse.nurse_services.all()
@@ -36,6 +37,27 @@ def nurse_dashboard(request):
         average_rating = round(average_rating)
     else:
         average_rating = 0
+
+    days = TimeSlots.objects.filter(nurse=nurse).values_list('day', flat=True).distinct()
+
+    days = get_provider_days_with_dates(days)
+
+    morning_slots = []
+    evening_slots = []
+
+    if request.method == 'POST':
+        input_day = request.POST.get('day')
+
+        slots = TimeSlots.objects.filter(
+            nurse=nurse,
+            day=input_day   
+        ).order_by('time')
+
+        for slot in slots:
+            if slot.time < time(12, 0):
+                morning_slots.append(slot)
+            else:
+                evening_slots.append(slot)
 
     return render(request, 'nurse/nurse_profile.html', {
         'name': name,
@@ -48,7 +70,10 @@ def nurse_dashboard(request):
         'profile_pic': profile_pic,
         'pending': pending,
         'completed': completed,
-        'services':services
+        'services':services,
+        'days':days,
+        'morning_slots':morning_slots,
+        'evening_slots':evening_slots,
     })
 
 
@@ -190,7 +215,6 @@ def add_services(request):
     
         return redirect('nurse:nurse_dashboard')
         
-
 def edit_service(request, service_id):
     nurse = Nurse.objects.get(user=request.user)
 
@@ -213,3 +237,50 @@ def delete_service(request, service_id):
     service.delete()
 
     return redirect('nurse:nurse_dashboard')
+
+@login_required
+def edit_time_slots(request):
+    if request.user.role != 'nurse':
+        return redirect('login')
+    
+    nurse = Nurse.objects.get(user = request.user)
+    days = TimeSlots.objects.filter(nurse=nurse).values_list('day', flat=True).distinct()
+
+    days = get_provider_days_with_dates(days)
+
+    morning_slots = []
+    evening_slots = []
+
+    if request.method == 'POST':
+        input_day = request.POST.get('day')
+        input_time = request.POST.get('time')
+
+        slots = TimeSlots.objects.filter(
+            nurse=nurse,
+            day=input_day   
+        ).order_by('time')
+
+        exists = TimeSlots.objects.filter(
+            nurse=nurse,
+            day=input_day,
+            time=input_time
+        ).exists()
+
+        if not exists:
+            TimeSlots.objects.create(
+            nurse=nurse,
+            day=input_day,
+            time=input_time
+            )            
+
+        for slot in slots:
+            if slot.time < time(12, 0):
+                morning_slots.append(slot)
+            else:
+                evening_slots.append(slot)
+
+    return render(request, 'nurse/edit_slots.html', {
+    'days': days,
+    'morning_slots': morning_slots,
+    'evening_slots': evening_slots,
+})

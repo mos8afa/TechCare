@@ -6,6 +6,7 @@ STATUS = (
     ("accepted", "Accepted"),
     ("rejected", "Rejected"),
     ("completed", "Completed"),
+    ("edited", "Edited"),
 )
 
 class Service(models.Model):

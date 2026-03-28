@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Requests</title>
+
+    <link rel="stylesheet" href="Patient.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">
+                        <img src="../img/logo.png" alt="">
+                    </span>
+                    <div>
+                        <h2>TechCare</h2>
+                        <p>Medical Portal</p>
+                    </div>
+                    <button class="sidebar-toggle">
+                        <i class="bi bi-layout-sidebar-inset-reverse"></i>
+                    </button>
+                </div>
+            </div>
+
+            <aside class="aside">
+                <a href="Profile.html" class="aside-item active">
+                    <i class="bi bi-person"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="Requests.html" class="aside-item">
+                    <i class="ri-file-list-line"></i>
+                    <span>Requests</span>
+                </a>
+                <a href="Notifications.html" class="aside-item">
+                    <i class="fa-regular fa-bell"></i>
+                    <span>Notifications</span>
+                </a>
+                <a href="Wallet.html" class="aside-item">
+                    <i class="ri-wallet-3-line"></i>
+                    <span>Wallet</span>
+                </a>
+                <a href="Complaints.html" class="aside-item">
+                    <i class="ri-error-warning-line"></i>
+                    <span>Complaints</span>
+                </a>
+            </aside>
+        </aside>
+
+
+        <div style="flex:1; display:flex; flex-direction:column;">
+
+            <!-- Top Navbar -->
+            <div class="topbar">
+                <h2 class="topbar-title">Patient Profile</h2>
+
+                <div class="topbar-right">
+                    <div class="topbar-icon" id="notificationBtn">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-badge"></span>
+                        <div class="inbox" id="notificationBox">
+                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg">
+                                <div class="notification-content">
+                                    <h4>Ahmed Ali</h4>
+                                    <p>New Consultation Request</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
+                                <img src="https://randomuser.me/api/portraits/women/12.jpg">
+                                <div class="notification-content">
+                                    <h4>Sara Mohamed</h4>
+                                    <p>Appointment Confirmed</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="line">
+                    <div class="topbar-profile" onclick="window.location.href='Profile.html'">
+                        <div class="topbar-user-info">
+                            <h4>Menna Ali</h4>
+                        </div>
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Doctor">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Patient Profile Card -->
+                <div class="patient-profile-card">
+                    <div class="patient-avatar-wrap">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Menna Ali"
+                            class="patient-avatar">
+                        <div class="patient-status-dot"></div>
+                    </div>
+                    <div class="patient-details">
+                        <h2 class="patient-name">Menna Ali</h2>
+                            <hr class="dc111-divider">
+                        <div class="profile-info">
+                                <div class="info-item">
+                                    <div><i class="ri-mail-line"></i></div>
+                                    <div>
+                                        <p class="info-label">Email Address</p>
+                                        <p class="info-value">sarah@techcare.com</p>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <div><i class="ri-phone-line"></i></div>
+                                    <div>
+                                        <p class="info-label">Phone Number</p>
+                                        <p class="info-value-phone">+1 (555) 234-5678</p>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <div><i class="ri-map-pin-2-line"></i></div>
+                                    <div>
+                                        <p class="info-label">Governorate</p>
+                                        <p class="info-value">Central District</p>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <div><i class="ri-home-4-line"></i></div>
+                                    <div>
+                                        <p class="info-label">Address</p>
+                                        <p class="info-value">123 Healthcare St, Medical City</p>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="patient-actions"
+                        style="align-self: flex-end; margin-left: auto; margin-right: 32px; margin-bottom: -4px;">
+                        <button class="btn-primary-edit" onclick="window.location.href='Edit_Profile.html'">
+                            Edit Profile
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Requests Grid -->
+                <div class="requests-grid">
+                    <div class="request-stat-card">
+                        <div class="req-header">
+                            <span class="req-title">Doctor Requests</span>
+                            <span class="req-count blue">12</span>
+                        </div>
+                        <div class="req-progress track-blue">
+                            <div class="req-fill bg-blue" style="width: 60%;"></div>
+                        </div>
+                        <div class="req-footer">60% of monthly average</div>
+                    </div>
+                    <div class="request-stat-card">
+                        <div class="req-header">
+                            <span class="req-title">Nurse Requests</span>
+                            <span class="req-count green">8</span>
+                        </div>
+                        <div class="req-progress track-green">
+                            <div class="req-fill bg-green" style="width: 40%;"></div>
+                        </div>
+                        <div class="req-footer">40% of monthly average</div>
+                    </div>
+                    <div class="request-stat-card">
+                        <div class="req-header">
+                            <span class="req-title">Pharmacy Requests</span>
+                            <span class="req-count gold">15</span>
+                        </div>
+                        <div class="req-progress track-gold">
+                            <div class="req-fill bg-gold" style="width: 75%;"></div>
+                        </div>
+                        <div class="req-footer">75% of monthly average</div>
+                    </div>
+                </div>
+
+                <!-- Bottom Section Layout -->
+                <div class="bottom-section">
+                    <!-- Wallet Card -->
+                    <div class="profile-wallet-card">
+                        <div class="wallet-header-flex">
+                            <div class="wallet-title-area">
+                                <h3>TechCare Wallet</h3>
+                                <p>Easily manage your healthcare payments</p>
+                            </div>
+                            <div class="wallet-icon-btn">
+                                <i class="ri-wallet-3-line"></i>
+                            </div>
+                        </div>
+                        <div class="wallet-balance-box">
+                            <span class="balance-label">AVAILABLE BALANCE</span>
+                            <div class="balance-amount">$1,240.50</div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Column -->
+                    <div class="stats-column">
+                        <div class="small-stat-card">
+                            <div class="icon-circle icon-blue">
+                                <i class="ri-calendar-line"></i>
+                            </div>
+                            <div class="small-stat-info">
+                                <span class="small-stat-title">TOTAL APPOINTMENTS</span>
+                                <span class="small-stat-count">24</span>
+                            </div>
+                        </div>
+                        <div class="small-stat-card">
+                            <div class="icon-circle icon-green">
+                                <i class="ri-check-line"></i>
+                            </div>
+                            <div class="small-stat-info">
+                                <span class="small-stat-title">COMPLETED SESSIONS</span>
+                                <span class="small-stat-count">18</span>
+                            </div>
+                        </div>
+                        <div class="small-stat-card">
+                            <div class="icon-circle icon-orange">
+                                <i class="ri-article-line"></i>
+                            </div>
+                            <div class="small-stat-info">
+                                <span class="small-stat-title">PENDING REPORTS</span>
+                                <span class="small-stat-count">3</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+    </div>
+</body>
+<script src="../JS/Board.js"></script>
+
+</html>

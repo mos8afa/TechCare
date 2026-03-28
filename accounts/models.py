@@ -2,6 +2,7 @@ from project import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.text import slugify
+from datetime import datetime, timedelta
 
 
 # ----- static choices -----
@@ -188,6 +189,17 @@ RATE = (
     (5, "5"),
 )
 
+DAY = (
+    ("saturday", "Saturday"),
+    ("sunday", "Sunday"),
+    ("monday", "Monday"),
+    ("tuesday", "Tuesday"),
+    ("wednesday", "Wednesday"),
+    ("thursday", "Thursday"),
+    ("friday", "Friday"),
+)
+
+
 #----- user -----
 class CustomUser(AbstractUser):
     role = models.CharField(max_length=10, choices=ROLES)
@@ -295,6 +307,37 @@ class Donor(models.Model):
     address = models.TextField()
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
 
-class certificate(models.Model):
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='certificates')
-    certificate_file = models.FileField(upload_to='doctors/certificates/')
+class TimeSlots(models.Model):
+    time = models.TimeField()
+    day = models.CharField(choices=DAY,max_length=10)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, null=True, blank=True, related_name='slots')
+    nurse = models.ForeignKey(Nurse, on_delete=models.CASCADE, null=True, blank=True, related_name='slots')
+
+def get_provider_days_with_dates(provider_days):
+    today = datetime.today()
+
+    start_of_week = today - timedelta(days=today.weekday())
+
+    days_map = {
+        'monday': 0,
+        'tuesday': 1,
+        'wednesday': 2,
+        'thursday': 3,
+        'friday': 4,
+        'saturday': 5,
+        'sunday': 6,
+    }
+
+    result = []
+
+    for day in provider_days:
+        day_index = days_map[day]
+
+        date = start_of_week + timedelta(days=day_index)
+
+        result.append({
+            "day": day,
+            "date": date.date(),
+        })
+
+    return result

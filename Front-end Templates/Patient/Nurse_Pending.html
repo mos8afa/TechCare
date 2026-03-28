@@ -1,0 +1,243 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Requests</title>
+
+        <link rel="stylesheet" href="Patient.css">
+        <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    </head>
+    <body>  
+        <div class="dashboard">
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <div class="logo">
+                        <span class="logo-icon">
+                            <img src="../img/logo.png" alt="">
+                        </span>                
+                        <div>
+                            <h2>TechCare</h2>
+                            <p>Medical Portal</p>
+                        </div>
+                        <button class="sidebar-toggle">
+                            <i class="bi bi-layout-sidebar-inset-reverse"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <aside class="aside">
+                    <a href="Profile.html" class="aside-item">
+                        <i class="bi bi-person"></i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="Requests.html" class="aside-item active">
+                        <i class="ri-file-list-line"></i>
+                        <span>Requests</span>
+                    </a>
+                    <a href="Notifications.html" class="aside-item">
+                        <i class="fa-regular fa-bell"></i>
+                        <span>Notifications</span>
+                    </a>
+                    <a href="Wallet.html" class="aside-item">
+                        <i class="ri-wallet-3-line"></i>
+                        <span>Wallet</span>
+                    </a>
+                    <a href="Complaints.html" class="aside-item">
+                        <i class="ri-error-warning-line"></i>
+                        <span>Complaints</span>
+                    </a>
+                </aside>
+            </aside>
+
+
+            <div style="flex:1; display:flex; flex-direction:column;">
+            
+                <!-- Top Navbar -->
+                <div class="topbar">
+                    <h2 class="topbar-title">Patient Profile</h2>
+
+                    <div class="topbar-right">
+                        <div class="topbar-icon" id="notificationBtn">
+                            <i class="fa-regular fa-bell"></i>
+                            <div class="inbox" id="notificationBox">
+                                <div class="notification-item" onclick="window.location.href='Notifications.html'">
+                                    <img src="https://randomuser.me/api/portraits/men/32.jpg">
+                                    <div class="notification-content">
+                                        <h4>Ahmed Ali</h4>
+                                        <p>New Consultation Request</p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="notification-item" onclick="window.location.href='Notifications.html'">
+                                    <img src="https://randomuser.me/api/portraits/women/12.jpg">
+                                    <div class="notification-content">
+                                        <h4>Sara Mohamed</h4>
+                                        <p>Appointment Confirmed</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="line">
+                        <div class="topbar-profile" onclick="window.location.href='Profile.html'">
+                            <div class="topbar-user-info">
+                                <h4>Menna Ali</h4>
+                            </div>
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Doctor">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <main class="main-content">
+
+                    <!-- ===== BOOKING SECTION ===== -->
+                    <div class="booking-wrapper">
+
+                    <!-- Category Tabs -->
+                    <div class="category-tabs">
+                        <button class="cat-tab" onclick="window.location.href='Requests.html'">
+                            <i class="ri-stethoscope-line"></i> Doctor
+                        </button>
+                        <button class="cat-tab active" data-status="pending" onclick="window.location.href='Book_nurse.html'">
+                            <i class="ri-nurse-line"></i> Nurse
+                        </button>
+                        <button class="cat-tab">
+                            <i class="ri-medicine-bottle-line"></i> Medicine
+                        </button>
+                    </div>
+
+                    <!-- Status Tabs -->
+                    <div class="status-tabs">
+                        <button class="status-tab" data-status="booking" onclick="window.location.href='Book_nurse.html'">Booking</button>
+                        <button class="status-tab active">Pending</button>
+                        <button class="status-tab" data-status="accepted" onclick="window.location.href='Nurse_accepted.html'">Accepted</button>
+                        <button class="status-tab" data-status="done" onclick="window.location.href='Nurse_done.html'">Done</button>
+                    </div>
+
+                        <!-- ===== PENDING CARDS ===== -->
+                        <div class="npc-grid">
+
+                            <!-- Card 1 -->
+                            <div class="npc-card">
+                                <div class="npc-header">
+                                    <div class="npc-avatar-wrap">
+                                        <img src="https://randomuser.me/api/portraits/men/46.jpg" alt="Dr. Michael Miller" class="npc-avatar">
+                                        <div class="npc-dot"></div>
+                                    </div>
+                                    <div class="npc-info-col">
+                                        <div class="npc-title-row">
+                                            <h3 class="npc-name">Michael Miller</h3>
+                                            <span class="npc-badge badge-rescheduled"><i class="ri-restart-line"></i> Rescheduled</span>
+                                        </div>
+                                        <div class="npc-date">
+                                            <i class="ri-calendar-event-line"></i> Oct 28, 2023 | 02:00 PM
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="npc-body">
+                                    <div class="npc-section-title">REQUESTED SERVICES</div>
+                                    <div class="npc-service">
+                                        <span class="npc-service-name">Insulin Injection (SC)</span>
+                                        <span class="npc-service-price">150 EGP</span>
+                                    </div>
+                                    <div class="npc-service">
+                                        <span class="npc-service-name">Vital Signs Monitoring</span>
+                                        <span class="npc-service-price">200 EGP</span>
+                                    </div>
+                                    
+                                    <hr class="npc-divider">
+                                    
+                                    <div class="npc-details-grid">
+                                        <div class="npc-col">
+                                            <span class="npc-detail-label">LOCATION DETAILS</span>
+                                            <div class="npc-detail-val"><i class="ri-map-pin-2-line"></i> Manhattan Region</div>
+                                            <div class="npc-detail-sub">123 Health Blvd, Suite 400, NY 10001</div>
+                                        </div>
+                                        <div class="npc-col">
+                                            <span class="npc-detail-label">CONTACT INFORMATION</span>
+                                            <div class="npc-detail-val"><i class="ri-phone-line"></i> +1 (555) 012-3456</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="npc-footer">
+                                    <div>
+                                        <span class="npc-price-label">TOTAL PRICE</span>
+                                        <span class="npc-price-amount">450 EGP</span>
+                                    </div>
+                                    <div class="npc-actions">
+                                        <button class="npc-btn-accept">Accept</button>
+                                        <button class="npc-btn-cancel">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 2 -->
+                            <div class="npc-card">
+                                <div class="npc-header">
+                                    <div class="npc-avatar-wrap">
+                                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Mansour" class="npc-avatar">
+                                        <div class="npc-dot"></div>
+                                    </div>
+                                    <div class="npc-info-col">
+                                        <div class="npc-title-row">
+                                            <h3 class="npc-name">Sarah Mansour</h3>
+                                            <span class="npc-badge badge-pending-bg">PENDING</span>
+                                        </div>
+                                        <div class="npc-date">
+                                            <i class="ri-calendar-event-line"></i> Oct 29, 2023 | 09:30 AM
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="npc-body">
+                                    <div class="npc-section-title">REQUESTED SERVICES</div>
+                                    <div class="npc-service">
+                                        <span class="npc-service-name">Blood Pressure Check</span>
+                                        <span class="npc-service-price">100 EGP</span>
+                                    </div>
+                                    <div class="npc-service">
+                                        <span class="npc-service-name">Nebulizer Session</span>
+                                        <span class="npc-service-price">250 EGP</span>
+                                    </div>
+                                    
+                                    <hr class="npc-divider">
+                                    
+                                    <div class="npc-details-grid">
+                                        <div class="npc-col">
+                                            <span class="npc-detail-label">LOCATION DETAILS</span>
+                                            <div class="npc-detail-val"><i class="ri-map-pin-2-line"></i> Downtown Hub</div>
+                                            <div class="npc-detail-sub">456 Oak Ave, Jersey City, NJ 07302</div>
+                                        </div>
+                                        <div class="npc-col">
+                                            <span class="npc-detail-label">CONTACT INFORMATION</span>
+                                            <div class="npc-detail-val"><i class="ri-phone-line"></i> +1 (555) 987-6543</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="npc-footer">
+                                    <div>
+                                        <span class="npc-price-label">TOTAL PRICE</span>
+                                        <span class="npc-price-amount">450 EGP</span>
+                                    </div>
+                                    <div class="npc-actions">
+                                        <button class="npc-btn-accept">Accept</button>
+                                        <button class="npc-btn-cancel">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ===== END PENDING CARDS ===== -->
+                    </div>
+
+                </main>
+            </div>
+
+        </div>
+    </body>
+        <script src="../JS/Board.js"></script>
+    </html>

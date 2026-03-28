@@ -1,10 +1,10 @@
 from django.shortcuts import redirect, render
 from accounts import validations
-from accounts.models import Doctor
+from accounts.models import Doctor, get_provider_days_with_dates, TimeSlots
 from django.db.models import Avg
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-
+from datetime import time
 
 @login_required
 def doctor_dashboard(request):    
@@ -23,7 +23,7 @@ def doctor_dashboard(request):
     phone_num = doctor.phone_number
 
     doctor_requests = doctor.doctor_requests.all()
-    pending = doctor_requests.filter(status='pending').count()
+    pending = doctor_requests.filter(status__in=['pending', 'edited']).count()
     completed = doctor_requests.filter(status='completed').count()
 
     if doctor.rates.exists():
@@ -32,12 +32,26 @@ def doctor_dashboard(request):
     else:
         average_rating = 0
 
-    
-    certificates = []
+    days = TimeSlots.objects.filter(doctor=doctor).values_list('day', flat=True).distinct()
 
-    for cert in [doctor.excellence_certificate, doctor.syndicate_card, doctor.practice_permit, doctor.graduation_certificate]:
-        if cert:
-            certificates.append(cert)
+    days = get_provider_days_with_dates(days)
+
+    morning_slots = []
+    evening_slots = []
+
+    if request.method == 'POST':
+        input_day = request.POST.get('day')
+
+        slots = TimeSlots.objects.filter(
+            doctor=doctor,
+            day=input_day   
+        ).order_by('time')
+
+        for slot in slots:
+            if slot.time < time(12, 0):
+                morning_slots.append(slot)
+            else:
+                evening_slots.append(slot)
 
     return render(request, 'doctor/doctor_profile.html', {
         'name': name,
@@ -50,9 +64,11 @@ def doctor_dashboard(request):
         'profile_pic': profile_pic,
         'pending': pending,
         'completed': completed,
-        'certificates': certificates,
         'phone_number':phone_num,
-        'email':email
+        'email':email,
+        'days':days,
+        'morning_slots':morning_slots,
+        'evening_slots':evening_slots,
     })
 
 @login_required
@@ -155,6 +171,7 @@ def doctor_requests(request, type):
     doctor_requests = doctor.doctor_requests.all()
 
     pending = doctor_requests.filter(status='pending').order_by('-date', '-time')
+    edited = doctor_requests.filter(status='edited').order_by('-date', '-time')
     accepted = doctor_requests.filter(status='accepted').order_by('-date', '-time')
     completed = doctor_requests.filter(status='completed').order_by('-date', '-time')
 
@@ -165,10 +182,11 @@ def doctor_requests(request, type):
         "specification": specification,
     }
 
-    if type == 'pending' or type is None:
+    if type == 'pending' or 'edited' or type is None:
         return render(request, 'doctor/requests_pending.html', {
             **context_base,
             "pending": pending,
+            "edited": edited,
         })
     elif type == 'accepted':
         return render(request, 'doctor/requests_accepted.html', {
@@ -183,3 +201,50 @@ def doctor_requests(request, type):
 
     else:
         return redirect('doctor:doctor_dashboard')
+
+@login_required
+def edit_time_slots(request):
+    if request.user.role != 'doctor':
+        return redirect('login')
+    
+    doctor = Doctor.objects.get(user = request.user)
+    days = TimeSlots.objects.filter(doctor=doctor).values_list('day', flat=True).distinct()
+
+    days = get_provider_days_with_dates(days)
+
+    morning_slots = []
+    evening_slots = []
+
+    if request.method == 'POST':
+        input_day = request.POST.get('day')
+        input_time = request.POST.get('time')
+
+        slots = TimeSlots.objects.filter(
+            doctor=doctor,
+            day=input_day   
+        ).order_by('time')
+
+        exists = TimeSlots.objects.filter(
+            doctor=doctor,
+            day=input_day,
+            time=input_time
+        ).exists()
+
+        if not exists:
+            TimeSlots.objects.create(
+            doctor=doctor,
+            day=input_day,
+            time=input_time
+            )            
+
+        for slot in slots:
+            if slot.time < time(12, 0):
+                morning_slots.append(slot)
+            else:
+                evening_slots.append(slot)
+
+    return render(request, 'doctor/edit_slots.html', {
+    'days': days,
+    'morning_slots': morning_slots,
+    'evening_slots': evening_slots,
+})
