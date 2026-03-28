@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Requests</title>
+
+    <link rel="stylesheet" href="Patient.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">
+                        <img src="../img/logo.png" alt="">
+                    </span>
+                    <div>
+                        <h2>TechCare</h2>
+                        <p>Medical Portal</p>
+                    </div>
+                    <button class="sidebar-toggle">
+                        <i class="bi bi-layout-sidebar-inset-reverse"></i>
+                    </button>
+                </div>
+            </div>
+
+            <aside class="aside">
+                <a href="Profile.html" class="aside-item">
+                    <i class="bi bi-person"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="Requests.html" class="aside-item active">
+                    <i class="ri-file-list-line"></i>
+                    <span>Requests</span>
+                </a>
+                <a href="Notifications.html" class="aside-item">
+                    <i class="fa-regular fa-bell"></i>
+                    <span>Notifications</span>
+                </a>
+                <a href="Wallet.html" class="aside-item">
+                    <i class="ri-wallet-3-line"></i>
+                    <span>Wallet</span>
+                </a>
+                <a href="Complaints.html" class="aside-item">
+                    <i class="ri-error-warning-line"></i>
+                    <span>Complaints</span>
+                </a>
+            </aside>
+        </aside>
+
+
+        <div style="flex:1; display:flex; flex-direction:column;">
+
+            <!-- Top Navbar -->
+            <div class="topbar">
+                <h2 class="topbar-title">Patient Profile</h2>
+
+                <div class="topbar-right">
+                    <div class="topbar-icon" id="notificationBtn">
+                        <i class="fa-regular fa-bell"></i>
+                        <div class="inbox" id="notificationBox">
+                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg">
+                                <div class="notification-content">
+                                    <h4>Ahmed Ali</h4>
+                                    <p>New Consultation Request</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
+                                <img src="https://randomuser.me/api/portraits/women/12.jpg">
+                                <div class="notification-content">
+                                    <h4>Sara Mohamed</h4>
+                                    <p>Appointment Confirmed</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="line">
+                    <div class="topbar-profile" onclick="window.location.href='Profile.html'">
+                        <div class="topbar-user-info">
+                            <h4>Menna Ali</h4>
+                        </div>
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Doctor">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="main-content">
+
+                <!-- ===== BOOKING SECTION ===== -->
+                <div class="booking-wrapper">
+
+                    <!-- Category Tabs -->
+                    <div class="category-tabs">
+                        <button class="cat-tab" onclick="window.location.href='Book_Appointment.html'">
+                            <i class="ri-stethoscope-line"></i> Doctor
+                        </button>
+                        <button class="cat-tab active" data-status="pending" onclick="window.location.href='Book_nurse.html'">
+                            <i class="ri-nurse-line"></i> Nurse
+                        </button>
+                        <button class="cat-tab">
+                            <i class="ri-medicine-bottle-line"></i> Medicine
+                        </button>
+                    </div>
+
+                    <!-- Status Tabs -->
+                    <div class="status-tabs">
+                        <button class="status-tab active">Booking</button>
+                        <button class="status-tab" data-status="pending" onclick="window.location.href='Nurse_Pending.html'">Pending</button>
+                        <button class="status-tab" data-status="accepted" onclick="window.location.href='Nurse_accepted.html'">Accepted</button>
+                        <button class="status-tab" data-status="done" onclick="window.location.href='Nurse_done.html'">Done</button>
+                    </div>
+
+                    <!-- Search & Filters -->
+                    <div class="search-bar" style="margin-top: 25px;">
+                        <div class="search-input-wrap">
+                            <i class="bi bi-card-text" style="font-size:18px; color:#aab0bc;"></i>
+                            <input type="text" placeholder="Search by Nurse..." />
+                        </div>
+                        <select class="filter-select">
+                            <option value="">Service Type</option>
+                            <option>Wound Care</option>
+                            <option>IV Therapy</option>
+                            <option>Post-Op Care</option>
+                        </select>
+                        <select class="filter-select">
+                            <option value="">Governorate</option>
+                            <option>Cairo</option>
+                            <option>Alexandria</option>
+                            <option>Giza</option>
+                        </select>
+                        <select class="filter-select">
+                            <option value="">Price Range</option>
+                            <option>0 - 300 EGP</option>
+                            <option>300 - 600 EGP</option>
+                            <option>600+ EGP</option>
+                        </select>
+                    </div>
+
+                    <!-- Nurse Cards Grid -->
+                    <div class="nbs-grid">
+
+                        <!-- Card 1 -->
+                        <div class="nbs-card">
+                            <div class="nbs-header">
+                                <div class="nbs-avatar-wrap">
+                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Omar Hassan" class="nbs-avatar">
+                                    <div class="nbs-dot"></div>
+                                </div>
+                                <div class="nbs-info-col">
+                                    <div class="nbs-title-row">
+                                        <h3 class="nbs-name">Omar Hassan</h3>
+                                        <div class="nbs-rating">
+                                            <span class="nbs-stars">★★★★★</span>
+                                            <span>(4.9/5)</span>
+                                        </div>
+                                    </div>
+                                    <div class="nbs-spec">Critical Care & Post-Op<br>Nursing</div>
+                                    <div class="nbs-location"><i class="ri-map-pin-2-line"></i> Giza, Sheikh Zayed</div>
+                                    <hr class="nbs-divider">
+                                </div>
+                            </div>
+                            
+                            <div class="nbs-section-title">REQUESTED SERVICES</div>
+                            <div class="nbs-service">
+                                <span class="nbs-service-name">Insulin Injection (SC)</span>
+                                <span class="nbs-service-price">150 EGP</span>
+                            </div>
+                            <div class="nbs-service">
+                                <span class="nbs-service-name">Vital Signs Monitoring</span>
+                                <span class="nbs-service-price">200 EGP</span>
+                            </div>
+                            
+                            <div class="nbs-footer">
+                                <div>
+                                    <span class="nbs-price-label">STARTING FROM</span>
+                                    <span class="nbs-price-amount">350 <span style="font-size: 14px;">EGP</span></span>
+                                </div>
+                                <button class="nbs-btn-book" onclick="window.location.href='Nurse_Book_Appointment.html'">Book Now</button>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="nbs-card">
+                            <div class="nbs-header">
+                                <div class="nbs-avatar-wrap">
+                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Omar Hassan" class="nbs-avatar">
+                                    <div class="nbs-dot"></div>
+                                </div>
+                                <div class="nbs-info-col">
+                                    <div class="nbs-title-row">
+                                        <h3 class="nbs-name">Omar Hassan</h3>
+                                        <div class="nbs-rating">
+                                            <span class="nbs-stars">★★★★★</span>
+                                            <span>(4.9/5)</span>
+                                        </div>
+                                    </div>
+                                    <div class="nbs-spec">Critical Care & Post-Op<br>Nursing</div>
+                                    <div class="nbs-location"><i class="ri-map-pin-2-line"></i> Giza, Sheikh Zayed</div>
+                                    <hr class="nbs-divider">
+                                </div>
+                            </div>
+                            
+                            <div class="nbs-section-title">REQUESTED SERVICES</div>
+                            <div class="nbs-service">
+                                <span class="nbs-service-name">Insulin Injection (SC)</span>
+                                <span class="nbs-service-price">150 EGP</span>
+                            </div>
+                            <div class="nbs-service">
+                                <span class="nbs-service-name">Vital Signs Monitoring</span>
+                                <span class="nbs-service-price">200 EGP</span>
+                            </div>
+                            
+                            <div class="nbs-footer">
+                                <div>
+                                    <span class="nbs-price-label">STARTING FROM</span>
+                                    <span class="nbs-price-amount">350 <span style="font-size: 14px;">EGP</span></span>
+                                </div>
+                                <button class="nbs-btn-book" onclick="window.location.href='Nurse_Book_Appointment.html'">Book Now</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Card 3 -->
+                        <div class="nbs-card">
+                            <div class="nbs-header">
+                                <div class="nbs-avatar-wrap">
+                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Omar Hassan" class="nbs-avatar">
+                                    <div class="nbs-dot"></div>
+                                </div>
+                                <div class="nbs-info-col">
+                                    <div class="nbs-title-row">
+                                        <h3 class="nbs-name">Omar Hassan</h3>
+                                        <div class="nbs-rating">
+                                            <span class="nbs-stars">★★★★★</span>
+                                            <span>(4.9/5)</span>
+                                        </div>
+                                    </div>
+                                    <div class="nbs-spec">Critical Care & Post-Op<br>Nursing</div>
+                                    <div class="nbs-location"><i class="ri-map-pin-2-line"></i> Giza, Sheikh Zayed</div>
+                                    <hr class="nbs-divider">
+                                </div>
+                            </div>
+                            
+                            <div class="nbs-section-title">REQUESTED SERVICES</div>
+                            <div class="nbs-service">
+                                <span class="nbs-service-name">Insulin Injection (SC)</span>
+                                <span class="nbs-service-price">150 EGP</span>
+                            </div>
+                            <div class="nbs-service">
+                                <span class="nbs-service-name">Vital Signs Monitoring</span>
+                                <span class="nbs-service-price">200 EGP</span>
+                            </div>
+                            
+                            <div class="nbs-footer">
+                                <div>
+                                    <span class="nbs-price-label">STARTING FROM</span>
+                                    <span class="nbs-price-amount">350 <span style="font-size: 14px;">EGP</span></span>
+                                </div>
+                                <button class="nbs-btn-book" onclick="window.location.href='Nurse_Book_Appointment.html'">Book Now</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Card 4 -->
+                        <div class="nbs-card">
+                            <div class="nbs-header">
+                                <div class="nbs-avatar-wrap">
+                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Omar Hassan" class="nbs-avatar">
+                                    <div class="nbs-dot"></div>
+                                </div>
+                                <div class="nbs-info-col">
+                                    <div class="nbs-title-row">
+                                        <h3 class="nbs-name">Omar Hassan</h3>
+                                        <div class="nbs-rating">
+                                            <span class="nbs-stars">★★★★★</span>
+                                            <span>(4.9/5)</span>
+                                        </div>
+                                    </div>
+                                    <div class="nbs-spec">Critical Care & Post-Op<br>Nursing</div>
+                                    <div class="nbs-location"><i class="ri-map-pin-2-line"></i> Giza, Sheikh Zayed</div>
+                                    <hr class="nbs-divider">
+                                </div>
+                            </div>
+                            
+                            <div class="nbs-section-title">REQUESTED SERVICES</div>
+                            <div class="nbs-service">
+                                <span class="nbs-service-name">Insulin Injection (SC)</span>
+                                <span class="nbs-service-price">150 EGP</span>
+                            </div>
+                            <div class="nbs-service">
+                                <span class="nbs-service-name">Vital Signs Monitoring</span>
+                                <span class="nbs-service-price">200 EGP</span>
+                            </div>
+                            
+                            <div class="nbs-footer">
+                                <div>
+                                    <span class="nbs-price-label">STARTING FROM</span>
+                                    <span class="nbs-price-amount">350 <span style="font-size: 14px;">EGP</span></span>
+                                </div>
+                                <button class="nbs-btn-book" onclick="window.location.href='Nurse_Book_Appointment.html'">Book Now</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                </div>
+            </main>
+        </div>
+
+    </div>
+</body>
+<script src="../JS/Board.js"></script>
+
+</html>
