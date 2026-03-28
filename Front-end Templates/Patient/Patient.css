@@ -3161,3 +3161,599 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* ===== ACCEPTED CARDS (NURSE) ===== */
+.accepted-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(430px, 1fr));
+    gap: 24px;
+    margin-top: 0px;
+}
+
+@media (max-width: 900px) {
+    .accepted-cards-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.accepted-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #E2E8F0;
+    display: flex;
+    flex-direction: column;
+}
+
+.ac-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.ac-doc-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.ac-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.ac-doc-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1c1e;
+}
+
+.ac-badge {
+    background-color: #E6F3FF;
+    color: var(--primary-color);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 20px;
+}
+
+.ac-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 4px;
+}
+
+.ac-detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.ac-icon {
+    font-size: 18px;
+    margin-top: 2px;
+}
+
+.ac-icon.blue {
+    color: var(--primary-color);
+}
+
+.ac-icon.green {
+    color: #2ED47A;
+}
+
+.ac-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: #718096;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.ac-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a1c1e;
+}
+
+.ac-value.text-green {
+    color: #2ED47A;
+}
+
+.ac-services {
+    margin-bottom: 14px;
+}
+
+.ac-section-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #4b5563;
+    margin-bottom: 16px;
+    letter-spacing: 0.5px;
+}
+
+.ac-service-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.ac-service-item:last-of-type {
+    margin-bottom: 0px;
+}
+
+.ac-service-name {
+    font-size: 14px;
+    color: #4b5563;
+    font-weight: 600;
+}
+
+.ac-service-price {
+    font-size: 14px;
+    font-weight: 800;
+    color: #1a1c1e;
+}
+
+.ac-financial-box {
+    background-color: #F4F7FC; 
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 9px;
+}
+
+.ac-fin-label {
+    font-size: 14px;
+    font-weight: 800;
+    color: #4b5563;
+    letter-spacing: 0.5px;
+}
+
+.ac-fin-amount {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+.ac-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.ac-done-btn {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 32px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(29, 137, 228, 0.2);
+    transition: 0.2s;
+}
+
+.ac-done-btn:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+/* ===== NURSE BOOKING CARDS ===== */
+.nbs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 24px;
+    margin-top: 30px;
+}
+
+.nbs-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 24px 28px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1.5px solid #94A3B8;
+    width: 536px;
+    height: 326px;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.nbs-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.nbs-header {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 0px;
+}
+
+.nbs-avatar-wrap {
+    position: relative;
+    width: 115px;
+    height: 115px;
+    flex-shrink: 0;
+    margin-top: 5px;
+}
+
+.nbs-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.24);
+}
+
+.nbs-dot {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 18px;
+    height: 18px;
+    background-color: #2ED47A;
+    border: 3px solid white;
+    border-radius: 50%;
+}
+
+.nbs-info-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.nbs-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.nbs-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1c1e;
+    margin-bottom: 2px;
+}
+
+.nbs-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: #A0AEC0;
+    font-weight: 500;
+}
+
+.nbs-stars {
+    color: #F59E0B;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.nbs-spec {
+    font-size: 14px;
+    color: var(--primary-color);
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+
+.nbs-location {
+    font-size: 13px;
+    color: #718096;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.nbs-divider {
+    border: none;
+    border-top: 1.5px dotted #cbd5e1;
+    margin: 14px 0 0 0;
+    width: 100%;
+}
+
+.nbs-section-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #4b5563;
+    margin-top: 20px;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+    margin-left: 99px;
+
+}
+
+.nbs-service {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3px;
+    margin-left: 102px;
+
+}
+
+.nbs-service:last-of-type {
+    margin-bottom: 24px;
+}
+
+.nbs-service-name {
+    font-size: 15px;
+    color: #4b5563;
+    font-weight: 500;
+}
+
+.nbs-service-price {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1c1e;
+}
+
+.nbs-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 13px;
+}
+
+.nbs-price-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: #4b5563;
+    letter-spacing: 1px;
+    margin-bottom: -2px;
+    margin-left: 102px;
+
+}
+
+.nbs-price-amount {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-left: 102px;
+}
+
+.nbs-price-amount span {
+    font-size: 14px;
+    color: var(--primary-color);
+}
+
+.nbs-btn-book {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(29, 137, 228, 0.2);
+    transition: 0.2s;
+}
+
+.nbs-btn-book:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 900px) {
+    .nbs-grid {
+        grid-template-columns: 1fr;
+    }
+} 
+
+/* ===== DONE CARDS (NURSE) ===== */
+.done-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(430px, 1fr));
+    gap: 24px;
+    margin-top: 0px;
+}
+
+@media (max-width: 900px) {
+    .done-cards-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.done-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #E2E8F0;
+    display: flex;
+    flex-direction: column;
+}
+
+.dc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dc-doc-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.dc-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.dc-doc-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1c1e;
+}
+
+.dc-badge {
+    background-color: #D1FAE5;
+    color: #059669;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 6px 14px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dc-divider {
+    border: none;
+    border-top: 1px solid #F3F4F6;
+    margin: 24px 0;
+}
+
+.dc-details-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dc-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dc-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #718096;
+}
+
+.dc-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a1c1e;
+}
+
+
+
+.dc-label-uppercase {
+    font-size: 14px;
+    font-weight: 800;
+    color: #4b5563;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+
+.dc-services {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dc-service-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dc-service-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #718096;
+}
+
+.dc-service-price {
+    font-size: 14px;
+    font-weight: 800;
+    color: #1a1c1e;
+}
+
+.dc-financial {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.dc-fin-label {
+    font-size: 14px;
+    font-weight: 800;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dc-fin-amount {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+/* =========================================
+   ANIMATIONS & TRANSITIONS (All Patient Pages)
+   ========================================= */
+
+/* Smooth Fade and Slide Up Effect */
+@keyframes fadeInSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Apply base animation to the main dashboard content area */
+.main-content {
+    opacity: 0;
+    animation: fadeInSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Apply staggered animation to specific card elements */
+.done-card, .accepted-card, .npc-card, .nbs-card, .appoint-card, .service-card {
+    opacity: 0;
+    animation: fadeInSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Stagger calculation to create a cascading load effect */
+.done-card:nth-child(1), .accepted-card:nth-child(1), .npc-card:nth-child(1), .nbs-card:nth-child(1) { animation-delay: 0.1s; }
+.done-card:nth-child(2), .accepted-card:nth-child(2), .npc-card:nth-child(2), .nbs-card:nth-child(2) { animation-delay: 0.2s; }
+.done-card:nth-child(3), .accepted-card:nth-child(3), .npc-card:nth-child(3), .nbs-card:nth-child(3) { animation-delay: 0.3s; }
+.done-card:nth-child(4), .accepted-card:nth-child(4), .npc-card:nth-child(4), .nbs-card:nth-child(4) { animation-delay: 0.4s; }
+.done-card:nth-child(5), .accepted-card:nth-child(5), .npc-card:nth-child(5), .nbs-card:nth-child(5) { animation-delay: 0.5s; }
+.done-card:nth-child(6), .accepted-card:nth-child(6), .npc-card:nth-child(6), .nbs-card:nth-child(6) { animation-delay: 0.6s; }
+
+/* Micro-interactions for tabs and buttons */
+.cat-tab, .status-tab {
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Subtle scale click effect on tabs */
+.cat-tab:active, .status-tab:active {
+    transform: scale(0.97);
+}
+
+/* Sidebar transition setup */
+.aside-item {
+    transition: background-color 0.3s ease, color 0.3s ease, padding-left 0.3s ease;
+}
+
+.aside-item:hover {
+    padding-left: 28px; /* Slight indent on hover for sidebar */
+}
