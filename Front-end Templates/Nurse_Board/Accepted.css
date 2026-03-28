@@ -50,7 +50,7 @@ body {
 }
 
 .sidebar.collapsed ~ div .main-content,
-.sidebar.collapsed ~ div .main-content-nurse-requst {
+.sidebar.collapsed ~  {
     margin-left: 80px;
 }
 
@@ -297,11 +297,11 @@ body {
 }
 
 /* ===== Main Content ===== */
-.main-content {
+.main-content,
+.main-content-nurse-requst {
     flex: 1;
     padding: 32px;
-    margin-left: 250px;
-    margin-top: 80px;
+
     transition: 0.3s ease;
 }
 
@@ -389,11 +389,11 @@ body {
 .request-card-item {
     display: flex;
     flex-direction: column;
-    padding: 28px;
+    padding: 24px;
     background: white;
     border-radius: 20px;
-    border: 1px solid #E8EDF4;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid #F0F4F8;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
 .card-top-section {
@@ -469,8 +469,8 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 16px;
-    margin-top: 12px;
+    margin-bottom: 9px;
+    margin-top: 14px;
 }
 
 .Condition label {
@@ -485,16 +485,14 @@ body {
 .accepted-tag {
     font-size: 13px;
     font-weight: 600;
-    padding: 6px 14px;
     border-radius: 20px;
     color: var(--primary-color);
-    background: rgba(0, 133, 255, 0.1);
 }
 
 .description-box-accepted {
     font-size: 13px;
     color: #4A5568;
-    margin-bottom: 18px;
+    margin-bottom: 4px;
     line-height: 1.6;
 }
 
@@ -542,28 +540,33 @@ body {
 
 .total-row {
     margin-top: 8px;
-}
-
-.total-row label {
-    font-weight: 700;
-    color: #1A202C;
-    font-size: 15px;
+    align-items: center;
 }
 
 .total-row p {
     font-weight: 700;
     font-size: 15px;
     color: var(--primary-color);
+    margin: 0;
 }
 
-.footer-content {
+.price-action-group {
+    display: none; /* Removed as per correction */
+}
+
+.request-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 18px;
+    width: 100%;
+}
+
+.footer-action-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 12px;
-    margin-top: 16px;
-    padding-top: 14px;
-    border-top: 1px solid #F0F4F8;
+    width: 100%;
 }
 
 .phone-display {
@@ -583,42 +586,37 @@ body {
 .user-confirmed-banner {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 8px 12px;
-    border-radius: 20px;
-    font-size: 10px;
+    justify-content: left;
+        gap: 6px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: 11px;
     font-weight: 700;
     background: #f0fdf4;
     color: #16a34a;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
-    white-space: nowrap;
-    flex-shrink: 0;
+    letter-spacing: 0.5px;
+    width: 100%;
+    margin-bottom: 16px;
+
 }
 
 .user-confirmed-banner i {
     font-size: 14px;
 }
 
-.done-btn {
-    display: flex;
-    justify-content: flex-end;
-    padding-top: 4%;
-}
-
 .btn-done {
     background: var(--primary-color);
     color: white;
     border: none;
-    padding: 10px 32px;
-    border-radius: 25px;
+    padding: 8px 20px;
+    border-radius: 20px;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 13px;
     cursor: pointer;
     transition: 0.3s;
-    margin-top: 12px;
-    margin-left: auto;
+    white-space: nowrap;
+    
 }
 
 .btn-done:hover {

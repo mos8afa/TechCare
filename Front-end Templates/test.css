@@ -1,3 +1,4 @@
+
 /* ===== 1. Global Variables & Reset ===== */
 :root {
     --bg-light: #F4F7FC;
@@ -1890,8 +1891,9 @@ body {
 .edit-ts-session-card {
     background: #ffffff;
     border-radius: 20px;
-    padding: 32px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    padding: 32px 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+    margin-bottom: 24px;
 }
 
 .edit-ts-session-header {
@@ -1942,19 +1944,19 @@ body {
 .edit-ts-pill {
     padding: 13px 24px;
     background: #f1f5f9;
-    color: #64748b;
+    color: #475569;
     font-size: 14px;
     font-weight: 700;
     border-radius: 100px;
     cursor: pointer;
     position: relative;
     border: 2px solid transparent;
-    width: 170px;
+    width: 180px;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .edit-ts-pill.active {
@@ -1983,9 +1985,6 @@ body {
     z-index: 10;
 }
 
-.edit-ts-pill-remove:hover {
-    transform: scale(1.1);
-}
 
 .edit-ts-pill.dashed {
     background: transparent;
