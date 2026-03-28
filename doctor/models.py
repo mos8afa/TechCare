@@ -7,6 +7,7 @@ STATUS = (
     ("accepted", "Accepted"),
     ("rejected", "Rejected"),
     ("completed", "Completed"),
+    ("edited", "Edited"),
 )
 
 class DoctorRequest(models.Model):
