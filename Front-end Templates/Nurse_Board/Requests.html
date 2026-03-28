@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,7 +14,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
-<body>  
+
+<body>
     <div class="dashboard">
 
         <!-- Sidebar -->
@@ -22,7 +24,7 @@
                 <div class="logo">
                     <span class="logo-icon">
                         <img src="../img/logo.png" alt="">
-                    </span>                
+                    </span>
                     <div>
                         <h2>TechCare</h2>
                         <p>Medical Portal</p>
@@ -57,14 +59,10 @@
             </aside>
         </aside>
 
-        <!--
-            KEY FIX: .content-wrapper replaces the old inline-style div.
-            It owns margin-left (sidebar offset) and min-width:0 (prevents overflow).
-            See Nurse_Board.css section 4 for details.
-        -->
+
         <div class="content-wrapper">
 
-            <!-- Topbar -->
+            <!-- Top Navbar -->
             <div class="topbar">
                 <h2 class="topbar-title">Requests</h2>
 
@@ -72,9 +70,10 @@
                     <div class="topbar-icon" id="notificationBtn">
                         <i class="fa-regular fa-bell"></i>
 
+
                         <div class="inbox" id="notificationBox">
                             <div class="notification-item" onclick="window.location.href='Notifications.html'">
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Ahmed Ali">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg">
                                 <div class="notification-content">
                                     <h4>Ahmed Ali</h4>
                                     <p>New Consultation Request</p>
@@ -82,7 +81,7 @@
                             </div>
                             <hr>
                             <div class="notification-item" onclick="window.location.href='Notifications.html'">
-                                <img src="https://randomuser.me/api/portraits/women/12.jpg" alt="Sara Mohamed">
+                                <img src="https://randomuser.me/api/portraits/women/12.jpg">
                                 <div class="notification-content">
                                     <h4>Sara Mohamed</h4>
                                     <p>Appointment Confirmed</p>
@@ -96,7 +95,7 @@
                             <h4>Nurse Sarah Mansour</h4>
                             <span>Cardiologist</span>
                         </div>
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Nurse Sarah">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Doctor">
                     </div>
                 </div>
             </div>
@@ -118,9 +117,12 @@
                     </div>
 
                     <div class="tabs-navigation">
-                        <button class="tab-link active" data-status="pending" onclick="window.location.href='Requests.html'">Pending</button>
-                        <button class="tab-link" data-status="accepted" onclick="window.location.href='Accepted.html'">Accepted</button>
-                        <button class="tab-link" data-status="done" onclick="window.location.href='Done.html'">Done</button>
+                        <button class="tab-link active" data-status="pending"
+                            onclick="window.location.href='Requests.html'">Pending</button>
+                        <button class="tab-link" data-status="accepted"
+                            onclick="window.location.href='Accepted.html'">Accepted</button>
+                        <button class="tab-link" data-status="done"
+                            onclick="window.location.href='Done.html'">Done</button>
                     </div>
                 </div>
 
@@ -168,40 +170,59 @@
                         <div class="discription-service">
                             <label>Diabetes Management &amp; Care</label>
                             <div class="description-box">
-                                Patient requires regular glucose monitoring and insulin administration assistance. Occasional foot care and wound inspection needed.
+                                Patient requires regular glucose monitoring and insulin administration assistance.
+                                Occasional foot care and wound inspection needed.
                             </div>
                         </div>
 
-                        <div class="services-total">
-                            <label>SERVICES REQUESTED</label>
-                            <div class="services-each">
-                                <label>Home Visit Consultation</label>
-                                <p>200 EGP</p>
+                        <div class="services-card">
+                            <div class="services-card__header">
+                                Services Requested
                             </div>
-                            <div class="services-each">
-                                <label>Wound Dressing (Small)</label>
-                                <p>100 EGP</p>
+                            
+                            <div class="services-card__list">
+                                <div class="services-card__item">
+                                    <span class="services-card__name">Home Visit Consultation</span>
+                                    <span class="services-card__price">200 EGP</span>
+                                </div>
+                                <div class="services-card__item">
+                                    <span class="services-card__name">Wound Dressing (Small)</span>
+                                    <span class="services-card__price">100 EGP</span>
+                                </div>
+                                <div class="services-card__item">
+                                    <span class="services-card__name">Glucose Check</span>
+                                    <span class="services-card__price">50 EGP</span>
+                                </div>
                             </div>
-                            <div class="services-each">
-                                <label>Glucose Check</label>
-                                <p>50 EGP</p>
+
+                            <div class="services-card__total-row">
+                                <span class="services-card__total-label">Total Price</span>
+                                <span class="services-card__total-value">350 EGP</span>
                             </div>
                         </div>
 
                         <hr class="hr">
 
-                        <div class="edit-input">
-                            <div class="price-input-section">
-                                <label>DELIVERY PRICE</label>
-                                <input type="text" placeholder="Enter price...">
-                            </div>
-                            <div class="price-input-section">
-                                <label>DATE</label>
-                                <input type="date">
-                            </div>
-                            <div class="price-input-section">
-                                <label>TIME</label>
-                                <input type="time">
+                        <div class="timeslots-header1">
+                            <h3>Time Slots</h3>
+                        </div>
+
+                        <!-- Available Time Slots Section -->
+                        <div class="timeslots-card1">
+                            <div class="timeslots-container1">
+                                <button class="timeslot-nav-btn" id="prevSlot">
+                                    <i class="fas fa-angle-left"></i>
+                                </button>
+                                <div class="timeslots-grid" id="timeslotsGrid">
+                                    <div class="timeslot-item1">04:30 PM</div>
+                                    <div class="timeslot-item1 active-slot">11:30 AM</div>
+                                    <div class="timeslot-item1">02:00 PM</div>
+                                    <div class="timeslot-item1">04:30 PM</div>
+                                    <div class="timeslot-item1">06:00 PM</div>
+                                </div>
+                                <button class="timeslot-nav-btn" id="nextSlot">
+                                    <i class="fas fa-angle-right"></i>
+                                </button>
                             </div>
                         </div>
 
@@ -219,4 +240,5 @@
     </div>
     <script src="../JS/Board.js"></script>
 </body>
+
 </html>

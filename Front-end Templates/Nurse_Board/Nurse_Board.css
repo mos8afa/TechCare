@@ -180,7 +180,7 @@ body {
     transition: left 0.3s ease;
 }
 
-.sidebar.collapsed ~ .content-wrapper .topbar {
+.sidebar.collapsed~.content-wrapper .topbar {
     left: var(--sidebar-collapsed-width);
 }
 
@@ -306,7 +306,7 @@ body {
     transition: margin-left 0.3s ease;
 }
 
-.sidebar.collapsed ~ .content-wrapper {
+.sidebar.collapsed~.content-wrapper {
     margin-left: var(--sidebar-collapsed-width);
 }
 
@@ -395,46 +395,69 @@ body {
     margin: 20px 0;
 }
 
+/* ---- Profile Info Grid (زي الصورة) ---- */
 .profile-info {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px 40px;
+    gap: 28px 60px;
+    /* مسافات زي الصورة */
+    margin-top: 10px;
 }
 
+/* كل عنصر */
 .info-item {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
+    align-items: flex-start;
+    gap: 14px;
 }
 
-.info-item .info-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--text-gray);
+/* الأيقونة */
+.info-item i {
+    font-size: 22px;
+    color: #94a3b8;
+    /* رمادي فاتح */
+    margin-top: 2px;
+}
+
+/* العنوان (Email Address) */
+.info-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 1px;
     text-transform: uppercase;
+    margin-bottom: 2px;
 }
 
-.info-item .info-value {
+/* القيمة */
+.info-value,
+.info-value-phone {
+    font-size: 16px;
     font-weight: 500;
+    color: #1e293b;
+    line-height: 1.4;
 }
 
-.info-item .info-value-phone {
-    font-weight: 500;
-    white-space: nowrap;
-}
-
+/* ---- About Section ---- */
 .margin {
-    margin-top: 30px;
+    margin-top: 35px;
 }
 
 .margin strong {
-    font-weight: normal;
-    color: var(--text-gray);
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 1px;
+    text-transform: uppercase;
     margin-bottom: 10px;
+}
+
+.margin p {
+    font-size: 16px;
+    color: #475569;
+    line-height: 1.8;
+    max-width: 95%;
 }
 
 .specialization-tags span {
@@ -564,7 +587,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 100%; /* تأكد أن الحاوية تأخذ العرض الكامل */
+    width: 100%;
+    /* تأكد أن الحاوية تأخذ العرض الكامل */
 }
 
 .stat-card i {
@@ -810,6 +834,47 @@ body {
     transform: scale(1.15);
 }
 
+.empty-slot {
+    border: 2px dashed #CBD5E1;
+    background-color: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 150px;
+    box-shadow: none;
+}
+
+.empty-slot:hover {
+    background-color: #F8FAFC;
+    border-color: var(--primary-color);
+    box-shadow: none;
+    transform: none;
+}
+
+.empty-placeholder {
+    color: #94A3B8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.3s ease;
+}
+
+.empty-slot:hover .empty-placeholder {
+    color: var(--primary-color);
+}
+
+.empty-placeholder i {
+    font-size: 24px;
+}
+
+.empty-placeholder p {
+    margin: 0;
+    font-weight: 500;
+}
+
 /* ===== 7. Requests Page ===== */
 .requests-sticky {
     position: sticky;
@@ -904,9 +969,17 @@ body {
     animation: fadeInUp 0.5s ease-out forwards;
 }
 
-.request-card-item:nth-child(1) { animation-delay: 0.1s; }
-.request-card-item:nth-child(2) { animation-delay: 0.2s; }
-.request-card-item:nth-child(3) { animation-delay: 0.3s; }
+.request-card-item:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.request-card-item:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.request-card-item:nth-child(3) {
+    animation-delay: 0.3s;
+}
 
 .card-top-section {
     display: flex;
@@ -971,12 +1044,12 @@ body {
     color: var(--primary-color);
 }
 
-.pending-time-date div > span {
+.pending-time-date div>span {
     font-size: 15px;
     color: var(--text-gray);
 }
 
-.pending-time-date div > p {
+.pending-time-date div>p {
     font-size: 15px;
     font-weight: bold;
 }
@@ -985,7 +1058,7 @@ body {
     margin-top: -10px;
 }
 
-.discription-service > label {
+.discription-service>label {
     font-size: 13px;
     font-weight: bold;
 }
@@ -1002,7 +1075,7 @@ body {
     border-radius: 15px;
 }
 
-.services-total > label {
+.services-total>label {
     font-size: 13px;
     font-weight: bold;
     letter-spacing: 2px;
@@ -1016,12 +1089,12 @@ body {
     margin-top: 5px;
 }
 
-.services-each > label {
+.services-each>label {
     font-size: 15px;
     color: #4b5563;
 }
 
-.services-each > p {
+.services-each>p {
     font-size: 15px;
     font-weight: bold;
 }
@@ -1071,7 +1144,7 @@ body {
 .btn-action {
     padding: 10px 18px;
     border: none;
-    border-radius: 10px;
+    border-radius: 21px;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
@@ -1170,6 +1243,7 @@ body {
         opacity: 0;
         transform: translateX(-30px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -1181,6 +1255,7 @@ body {
         opacity: 0;
         transform: translateX(30px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -1191,15 +1266,19 @@ body {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
 }
 
 @keyframes scalePulse {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.02);
     }
@@ -1210,8 +1289,160 @@ body {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Time Slots Section */
+.timeslots-card {
+    width: 100%;
+    background: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.timeslots-card1 {
+    width: 100%;
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+}
+
+.timeslots-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.timeslots-container1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.timeslots-container1 .timeslots-grid {
+    gap: 24px;
+}
+
+.timeslot-nav-btn {
+    width: 36px;
+    height: 36px;
+    background: white;
+    border: 0px solid #e1e6ec00;
+    border-radius: 50%;
+    color: var(--primary-color);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+
+.timeslot-nav-btn1:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.timeslot-nav-btn:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.timeslots-grid {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    flex: 1;
+    min-width: 0;
+    margin: 0 auto;
+    scroll-snap-type: x mandatory;
+    /* الالتصاق الأفقي */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.timeslots-grid::-webkit-scrollbar {
+    display: none;
+}
+
+.timeslot-item {
+    flex-shrink: 0;
+    width: 120px;
+    /* عرض ثابت حسب التصميم */
+    text-align: center;
+    padding: 10px 0;
+    border-radius: 49px;
+    background-color: var(--bg-light);
+    font-size: 15px;
+    font-weight: 600;
+    color: #4b5563;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    scroll-snap-align: start;
+    /* يبدأ العنصر من الحافة اليسرى */
+}
+
+.timeslot-item1 {
+    flex-shrink: 0;
+    width: 120px;
+    /* عرض ثابت حسب التصميم */
+    text-align: center;
+    padding: 10px 0;
+    border-radius: 49px;
+    background-color: transparent;
+    border: rgb(214, 214, 214) solid 2px;
+    border-radius: 15px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #4b5563;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    scroll-snap-align: start;
+    /* يبدأ العنصر من الحافة اليسرى */
+}
+
+
+
+.timeslot-item1:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background-color: #F0F7FF;
+}
+
+.timeslot-item1.active-slot {
+    border-color: var(--primary-color);
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.timeslots-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.timeslots-header1 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.timeslots-header1 h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-color);
 }

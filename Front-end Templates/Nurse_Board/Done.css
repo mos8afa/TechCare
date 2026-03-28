@@ -296,8 +296,7 @@ body {
     display: flex;
     flex-direction: column;
     padding: 32px;
-    margin-top: 80px;
-    margin-left: 250px;
+    min-width: 0;
     transition: 0.3s ease;
 }
 

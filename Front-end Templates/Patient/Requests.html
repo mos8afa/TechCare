@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Requests</title>
+
+    <link rel="stylesheet" href="Patient.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">
+                        <img src="../img/logo.png" alt="">
+                    </span>
+                    <div>
+                        <h2>TechCare</h2>
+                        <p>Medical Portal</p>
+                    </div>
+                    <button class="sidebar-toggle">
+                        <i class="bi bi-layout-sidebar-inset-reverse"></i>
+                    </button>
+                </div>
+            </div>
+
+            <aside class="aside">
+                <a href="Profile.html" class="aside-item">
+                    <i class="bi bi-person"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="Requests.html" class="aside-item active">
+                    <i class="ri-file-list-line"></i>
+                    <span>Requests</span>
+                </a>
+                <a href="Notifications.html" class="aside-item">
+                    <i class="fa-regular fa-bell"></i>
+                    <span>Notifications</span>
+                </a>
+                <a href="Wallet.html" class="aside-item">
+                    <i class="ri-wallet-3-line"></i>
+                    <span>Wallet</span>
+                </a>
+                <a href="Complaints.html" class="aside-item">
+                    <i class="ri-error-warning-line"></i>
+                    <span>Complaints</span>
+                </a>
+            </aside>
+        </aside>
+
+
+        <div style="flex:1; display:flex; flex-direction:column;">
+
+            <!-- Top Navbar -->
+            <div class="topbar">
+                <h2 class="topbar-title">Requests</h2>
+
+                <div class="topbar-right">
+                    <div class="topbar-icon" id="notificationBtn">
+                        <i class="fa-regular fa-bell"></i>
+                        <div class="inbox" id="notificationBox">
+                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg">
+                                <div class="notification-content">
+                                    <h4>Ahmed Ali</h4>
+                                    <p>New Consultation Request</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
+                                <img src="https://randomuser.me/api/portraits/women/12.jpg">
+                                <div class="notification-content">
+                                    <h4>Sara Mohamed</h4>
+                                    <p>Appointment Confirmed</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="line">
+                    <div class="topbar-profile" onclick="window.location.href='Profile.html'">
+                        <div class="topbar-user-info">
+                            <h4>Menna Ali</h4>
+                        </div>
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Doctor">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="main-content">
+
+                <!-- ===== BOOKING SECTION ===== -->
+                <div class="booking-wrapper">
+
+                    <!-- Category Tabs -->
+                    <div class="category-tabs">
+                        <button class="cat-tab active">
+                            <i class="ri-stethoscope-line"></i> Doctor
+                        </button>
+                        <button class="cat-tab" data-status="pending" onclick="window.location.href='Nurse_Book_Appointment.html'">
+                            <i class="ri-nurse-line"></i> Nurse
+                        </button>
+                        <button class="cat-tab">
+                            <i class="ri-medicine-bottle-line"></i> Pharmacy
+                        </button>
+                    </div>
+
+                    <!-- Status Tabs -->
+                    <div class="status-tabs">
+                        <button class="status-tab active">Booking</button>
+                        <button class="status-tab" data-status="pending"
+                            onclick="window.location.href='pending.html'">Pending</button>
+                        <button class="status-tab" data-status="accepted"
+                            onclick="window.location.href='accepted.html'">Accepted</button>
+                        <button class="status-tab" data-status="done"
+                            onclick="window.location.href='done.html'">Done</button>
+                    </div>
+
+                    <!-- Search & Filters -->
+                    <div class="search-bar">
+                        <div class="search-input-wrap">
+                            <i class="bi bi-card-text" style="font-size:18px; color:#aab0bc;"></i>
+                            <input type="text" placeholder="Search by doctor..." />
+                        </div>
+                        <select class="filter-select">
+                            <option value="">Specialization</option>
+                            <option>Cardiologist</option>
+                            <option>Pediatrician</option>
+                            <option>Neurologist</option>
+                            <option>Dermatologist</option>
+                            <option>Orthopedic</option>
+                            <option>Psychiatrist</option>
+                        </select>
+                        <select class="filter-select">
+                            <option value="">Governorate</option>
+                            <option>Cairo</option>
+                            <option>Alexandria</option>
+                            <option>Giza</option>
+                        </select>
+                        <select class="filter-select">
+                            <option value="">Price Range</option>
+                            <option>0 - 300 EGP</option>
+                            <option>300 - 600 EGP</option>
+                            <option>600+ EGP</option>
+                        </select>
+                    </div>
+
+                    <!-- Doctor Cards Grid -->
+                    <div class="doctors-grid">
+
+                        <div class="doctor-card">
+                            <div class="doctor-avatar-wrap">
+                                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Dr. Ahmed Salem"
+                                    class="doctor-avatar-img">
+                                <span class="online-dot"></span>
+                            </div>
+                            <h3 class="doctor-name">Dr. Ahmed Salem</h3>
+                            <p class="doctor-spec">Senior Cardiologist</p>
+                            <p class="doctor-location"><i class="bi bi-geo-alt"></i> Cairo, Maadi</p>
+                            <div class="doctor-rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="rating-val">(4.9/5)</span>
+                            </div>
+                            <div class="fee-row">
+                                <span class="fee-label">CONSULTATION FEE</span>
+                                <span class="fee-val">450 <small>EGP</small></span>
+                            </div>
+                            <button class="book-btn" onclick="window.location.href='Book_Appointment.html'">Book Now</button>
+                        </div>
+
+                        <div class="doctor-card">
+                            <div class="doctor-avatar-wrap">
+                                <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Dr. Sarah Hassan"
+                                    class="doctor-avatar-img">
+                                <span class="online-dot"></span>
+                            </div>
+                            <h3 class="doctor-name">Dr. Sarah Hassan</h3>
+                            <p class="doctor-spec">Pediatrician</p>
+                            <p class="doctor-location"><i class="bi bi-geo-alt"></i> Alexandria, Smouha</p>
+                            <div class="doctor-rating">
+                                <span class="stars">★★★★☆</span>
+                                <span class="rating-val">(4.2/5)</span>
+                            </div>
+                            <div class="fee-row">
+                                <span class="fee-label">CONSULTATION FEE</span>
+                                <span class="fee-val">350 <small>EGP</small></span>
+                            </div>
+                            <button class="book-btn" onclick="window.location.href='Book_Appointment.html'">Book Now</button>
+                        </div>
+
+                        <div class="doctor-card">
+                            <div class="doctor-avatar-wrap">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Dr. Omar Farid"
+                                    class="doctor-avatar-img">
+                                <span class="online-dot"></span>
+                            </div>
+                            <h3 class="doctor-name">Dr. Omar Farid</h3>
+                            <p class="doctor-spec">Neurologist</p>
+                            <p class="doctor-location"><i class="bi bi-geo-alt"></i> Giza, Dokki</p>
+                            <div class="doctor-rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="rating-val">(5.0/5)</span>
+                            </div>
+                            <div class="fee-row">
+                                <span class="fee-label">CONSULTATION FEE</span>
+                                <span class="fee-val">600 <small>EGP</small></span>
+                            </div>
+                            <button class="book-btn" onclick="window.location.href='Book_Appointment.html'">Book Now</button>
+                        </div>
+
+                        <div class="doctor-card">
+                            <div class="doctor-avatar-wrap">
+                                <img src="https://randomuser.me/api/portraits/women/50.jpg" alt="Dr. Laila Ibrahim"
+                                    class="doctor-avatar-img">
+                                <span class="online-dot"></span>
+                            </div>
+                            <h3 class="doctor-name">Dr. Laila Ibrahim</h3>
+                            <p class="doctor-spec">Dermatologist</p>
+                            <p class="doctor-location"><i class="bi bi-geo-alt"></i> Cairo, Heliopolis</p>
+                            <div class="doctor-rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="rating-val">(4.8/5)</span>
+                            </div>
+                            <div class="fee-row">
+                                <span class="fee-label">CONSULTATION FEE</span>
+                                <span class="fee-val">400 <small>EGP</small></span>
+                            </div>
+                            <button class="book-btn" onclick="window.location.href='Book_Appointment.html'">Book Now</button>
+                        </div>
+
+                        <div class="doctor-card">
+                            <div class="doctor-avatar-wrap">
+                                <img src="https://randomuser.me/api/portraits/men/55.jpg" alt="Dr. Khaled Nour"
+                                    class="doctor-avatar-img">
+                                <span class="online-dot"></span>
+                            </div>
+                            <h3 class="doctor-name">Dr. Khaled Nour</h3>
+                            <p class="doctor-spec">Orthopedic</p>
+                            <p class="doctor-location"><i class="bi bi-geo-alt"></i> Giza, Sheikh Zayed</p>
+                            <div class="doctor-rating">
+                                <span class="stars">★★★★☆</span>
+                                <span class="rating-val">(4.5/5)</span>
+                            </div>
+                            <div class="fee-row">
+                                <span class="fee-label">CONSULTATION FEE</span>
+                                <span class="fee-val">500 <small>EGP</small></span>
+                            </div>
+                            <button class="book-btn" onclick="window.location.href='Book_Appointment.html'">Book Now</button>
+                        </div>
+
+                        <div class="doctor-card">
+                            <div class="doctor-avatar-wrap">
+                                <img src="https://randomuser.me/api/portraits/women/72.jpg" alt="Dr. Mona Zaki"
+                                    class="doctor-avatar-img">
+                                <span class="online-dot"></span>
+                            </div>
+                            <h3 class="doctor-name">Dr. Mona Zaki</h3>
+                            <p class="doctor-spec">Psychiatrist</p>
+                            <p class="doctor-location"><i class="bi bi-geo-alt"></i> Cairo, Nasr City</p>
+                            <div class="doctor-rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="rating-val">(4.7/5)</span>
+                            </div>
+                            <div class="fee-row">
+                                <span class="fee-label">CONSULTATION FEE</span>
+                                <span class="fee-val">550 <small>EGP</small></span>
+                            </div>
+                            <button class="book-btn" onclick="window.location.href='Book_Appointment.html'">Book Now</button>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- ===== END BOOKING SECTION ===== -->
+
+            </main>
+        </div>
+
+    </div>
+</body>
+<script src="../JS/Board.js"></script>
+
+</html>
