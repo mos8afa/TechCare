@@ -48,8 +48,7 @@ body {
     left: 80px;
 }
 
-.sidebar.collapsed ~ div .main-content,
-.sidebar.collapsed ~ div .main-content-nurse-requst {
+.sidebar.collapsed ~ div .main-content {
     margin-left: 80px;
 }
 
