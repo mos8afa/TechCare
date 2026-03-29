@@ -3,253 +3,294 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profile</title>
+    <title>Time Slots</title>
 
     <link rel="stylesheet" href="../Css/animations.css">
     <link rel="stylesheet" href="../Css/Dr_Board.css">
+
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <!-- Fonts -->
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
 </head>
+
 <body>  
-    <div class="dashboard">
+<div class="dashboard">
 
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <span class="logo-icon">
-                        <img src="../img/logo.png" alt="">
-                    </span>                
-                    <div>
-                        <h2>TechCare</h2>
-                        <p>Medical Portal</p>
-                    </div>
-                    <button class="sidebar-toggle">
-                        <i class="bi bi-layout-sidebar-inset-reverse"></i>
-                    </button>
+    <!-- Sidebar (Doctor) -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">
+                    <img src="../img/logo.png" alt="">
+                </span>                
+                <div>
+                    <h2>TechCare</h2>
+                    <p>Medical Portal</p>
                 </div>
+                <button class="sidebar-toggle">
+                    <i class="bi bi-layout-sidebar-inset-reverse"></i>
+                </button>
             </div>
-
-            <aside class="aside">
-                <a href="../Dr_Board/Profile.html" class="aside-item active">
-                    <i class="bi bi-person"></i>
-                    <span>Profile</span>
-                </a>
-                <a href="../Dr_Board/Requests.html" class="aside-item">
-                    <i class="ri-file-list-line"></i>
-                    <span>Requests</span>
-                </a>
-                <a href="../Dr_Board/Notifications.html" class="aside-item">
-                    <i class="fa-regular fa-bell"></i>
-                    <span>Notifications</span>
-                </a>
-                <a href="../Dr_Board/Wallet.html" class="aside-item">
-                    <i class="ri-wallet-3-line"></i>
-                    <span>Wallet</span>
-                </a>
-                <a href="../Dr_Board/Complaints.html" class="aside-item">
-                    <i class="ri-error-warning-line"></i>
-                    <span>Complaints</span>
-                </a>
-            </aside>
-        </aside>
-
-
-        <div style="flex:1; display:flex; flex-direction:column;">
-        
-            <!-- Top Navbar -->
-            <div class="topbar">
-                <h2 class="topbar-title">Profile</h2>
-
-                <div class="topbar-right">
-                    <div class="topbar-icon" id="notificationBtn">
-                        <i class="fa-regular fa-bell"></i>
-                        
-
-                        <div class="inbox" id="notificationBox">
-                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg">
-                                <div class="notification-content">
-                                    <h4>Ahmed Ali</h4>
-                                    <p>New Consultation Request</p>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
-                                <img src="https://randomuser.me/api/portraits/women/12.jpg">
-                                <div class="notification-content">
-                                    <h4>Sara Mohamed</h4>
-                                    <p>Appointment Confirmed</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr class="line">
-                    <div class="topbar-profile" onclick="window.location.href='Profile.html'">
-                        <div class="topbar-user-info">
-                            <h4>Dr. Sarah Mansour</h4>
-                            <span>Cardiologist</span>
-                        </div>
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Doctor">
-                    </div>
-                </div>
-            </div>
-        
-            <!-- Main Content -->
-            <main class="main-content">
-
-                <div class="edit-profile-wrapper">
-                    <div class="edit-profile-card">
-                    
-                        <!-- Header -->
-                        <div class="edit-header">
-                            <div>
-                                <h2>Edit Time Slots</h2>
-                                <p style="font-size:14px; color:var(--text-gray); margin-top:4px;">
-                                    Customize your working hours and appointment slots.
-                                </p>
-                            </div>
-                            <div style="display:flex; gap:12px; align-items:center;">
-                                <button class="btn-light-edit" onclick="window.location.href='Profile.html'">Cancel</button>
-                                <button class="btn-primary-edit">Save Changes</button>
-                            </div>
-                        </div>
-                    
-                        <!-- Weekly Schedule -->
-                        <p class="slots-section-label" style="margin-top:8px;">WEEKLY SCHEDULE</p>
-                        <div class="days-carousel" style="margin-bottom:32px;">
-                            <div class="days-track" id="daysTrack">
-                                <div class="day-btn" onclick="selectDay(this)">
-                                    <span class="day-name">MON</span>
-                                    <span class="day-num">14</span>
-                                </div>
-                                <div class="day-btn" onclick="selectDay(this)">
-                                    <span class="day-name">TUE</span>
-                                    <span class="day-num">15</span>
-                                </div>
-                                <div class="day-btn active" onclick="selectDay(this)">
-                                    <span class="day-name">WED</span>
-                                    <span class="day-num">16</span>
-                                </div>
-                                <div class="day-btn" onclick="selectDay(this)">
-                                    <span class="day-name">THU</span>
-                                    <span class="day-num">17</span>
-                                </div>
-                                <div class="day-btn" onclick="selectDay(this)">
-                                    <span class="day-name">FRI</span>
-                                    <span class="day-num">18</span>
-                                </div>
-                                <div class="day-btn day-btn--off" onclick="selectDay(this)">
-                                    <span class="day-name">SAT</span>
-                                    <span class="day-num">19</span>
-                                </div>
-                                <div class="day-btn day-btn--off" onclick="selectDay(this)">
-                                    <span class="day-name">SUN</span>
-                                    <span class="day-num">20</span>
-                                </div>
-                            </div>
-                        </div>
-                    
-                        <!-- Morning Sessions -->
-                        <div class="session-block">
-                            <div class="session-header">
-                                <div class="session-icon morning-icon">
-                                    <i class="bi bi-brightness-high"></i>
-                                </div>
-                                <div>
-                                    <h4 class="session-title">Morning Sessions</h4>
-                                    <p class="session-sub">Recommended: 08:00 AM - 12:00 PM</p>
-                                </div>
-                            </div>
-                            <div class="slots-grid" id="morningSlots">
-                                <!-- <div class="slot-pill-edit" onclick="toggleSlot(this)">09:00 AM</div>
-                                <div class="slot-pill-edit active" onclick="toggleSlot(this)">
-                                    09:30 AM
-                                    <span class="slot-remove">×</span>
-                                </div>
-                                <div class="slot-pill-edit" onclick="toggleSlot(this)">10:00 AM</div> -->
-                                <div class="slot-pill-edit slot-pill-add" onclick="addSlot('morningSlots')">
-                                    <i class="bi bi-plus-circle"></i>
-                                </div>
-                            </div>
-                        </div>
-                    
-                        <hr style="margin: 24px 0; border-color: #E2E8F0;">
-                    
-                        <!-- Evening Sessions -->
-                        <div class="session-block">
-                            <div class="session-header">
-                                <div class="session-icon evening-icon">
-                                    <i class="bi bi-moon-stars"></i>
-                                </div>
-                                <div>
-                                    <h4 class="session-title">Evening Sessions</h4>
-                                    <p class="session-sub">Recommended: 04:00 PM - 09:00 PM</p>
-                                </div>
-                            </div>
-                            <div class="slots-grid" id="eveningSlots">
-                                <div class="slot-pill-edit" onclick="toggleSlot(this)">06:00 PM</div>
-                                <div class="slot-pill-edit" onclick="toggleSlot(this)">07:00 PM</div>
-                                <div class="slot-pill-edit" onclick="toggleSlot(this)">07:30 PM</div>
-                                <div class="slot-pill-edit slot-pill-add" onclick="addSlot('eveningSlots')">
-                                    <i class="bi bi-plus-circle"></i>
-                                </div>
-                            </div>
-                        </div>
-                    
-                    </div>
-                </div>
-                
-            </main>
         </div>
+
+        <aside class="aside">
+            <a href="../Dr_Board/Profile.html" class="aside-item active">
+                <i class="bi bi-person"></i>
+                <span>Profile</span>
+            </a>
+            <a href="../Dr_Board/Requests.html" class="aside-item">
+                <i class="ri-file-list-line"></i>
+                <span>Requests</span>
+            </a>
+            <a href="../Dr_Board/Notifications.html" class="aside-item">
+                <i class="fa-regular fa-bell"></i>
+                <span>Notifications</span>
+            </a>
+            <a href="../Dr_Board/Wallet.html" class="aside-item">
+                <i class="ri-wallet-3-line"></i>
+                <span>Wallet</span>
+            </a>
+            <a href="../Dr_Board/Complaints.html" class="aside-item">
+                <i class="ri-error-warning-line"></i>
+                <span>Complaints</span>
+            </a>
+        </aside>
+    </aside>
+
+    <div style="flex:1; display:flex; flex-direction:column;">
+
+        <!-- Topbar (Doctor) -->
+        <div class="topbar">
+            <h2 class="topbar-title">Time Slots</h2>
+
+            <div class="topbar-right">
+                <div class="topbar-icon" id="notificationBtn">
+                    <i class="fa-regular fa-bell"></i>
+
+                    <div class="inbox" id="notificationBox">
+                        <div class="notification-item" onclick="window.location.href='Notifications.html'">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg">
+                            <div class="notification-content">
+                                <h4>Ahmed Ali</h4>
+                                <p>New Consultation Request</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="notification-item" onclick="window.location.href='Notifications.html'">
+                            <img src="https://randomuser.me/api/portraits/women/12.jpg">
+                            <div class="notification-content">
+                                <h4>Sara Mohamed</h4>
+                                <p>Appointment Confirmed</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="line">
+
+                <div class="topbar-profile" onclick="window.location.href='Profile.html'">
+                    <div class="topbar-user-info">
+                        <h4>Dr. Sarah Mansour</h4>
+                        <span>Cardiologist</span>
+                    </div>
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Doctor">
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <div class="edit-ts-container">
+                <!-- Header Row -->
+                <div class="edit-ts-header-row">
+                    <div class="edit-ts-title-col">
+                        <h2 class="edit-ts-title">Edit Time Slots</h2>
+                        <p class="edit-ts-subtitle">Customize your working hours and appointment slots.</p>
+                    </div>
+                    <div class="edit-ts-action-col" style="display: flex; gap: 15px;">
+                        <button class="edit-ts-btn-cancel" onclick="window.location.href='Profile.html'">Cancel</button>
+                        <button class="edit-ts-btn-save" onclick="saveChanges()">Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- Weekly Schedule -->
+                <div class="edit-ts-weekly-section">
+                    <h4 class="edit-ts-section-title">WEEKLY SCHEDULE</h4>
+                    <div class="edit-ts-days-row">
+                        <div class="edit-ts-day-card" onclick="selectDay(this)">
+                            <span class="edit-ts-day">MON</span>
+                            <span class="edit-ts-date">14</span>
+                        </div>
+                        <div class="edit-ts-day-card" onclick="selectDay(this)">
+                            <span class="edit-ts-day">TUE</span>
+                            <span class="edit-ts-date">15</span>
+                        </div>
+                        <div class="edit-ts-day-card active" onclick="selectDay(this)">
+                            <span class="edit-ts-day">WED</span>
+                            <span class="edit-ts-date">16</span>
+                        </div>
+                        <div class="edit-ts-day-card" onclick="selectDay(this)">
+                            <span class="edit-ts-day">THU</span>
+                            <span class="edit-ts-date">17</span>
+                        </div>
+                        <div class="edit-ts-day-card" onclick="selectDay(this)">
+                            <span class="edit-ts-day">FRI</span>
+                            <span class="edit-ts-date">18</span>
+                        </div>
+                        <div class="edit-ts-day-card" onclick="selectDay(this)">
+                            <span class="edit-ts-day">SAT</span>
+                            <span class="edit-ts-date">19</span>
+                        </div>
+                        <div class="edit-ts-day-card" onclick="selectDay(this)">
+                            <span class="edit-ts-day">SUN</span>
+                            <span class="edit-ts-date">20</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Grids -->
+                <div class="edit-ts-bottom-grid">
+                    <!-- Left Column: Sessions -->
+                    <div class="edit-ts-sessions-col">
+                        <!-- Morning Sessions -->
+                        <div class="edit-ts-session-card">
+                            <div class="edit-ts-session-header">
+                                <div class="edit-ts-session-icon sun"><i class="ri-sun-fill"></i></div>
+                                <div class="edit-ts-session-info">
+                                    <h3>Morning Sessions</h3>
+                                    <p>Recommended: 08:00 AM - 12:00 PM</p>
+                                </div>
+                            </div>
+                            <div class="edit-ts-time-pills">
+                                <div class="edit-ts-pill" onclick="togglePill(this)">09:00 AM</div>
+                                <div class="edit-ts-pill active" onclick="togglePill(this)">
+                                    09:30 AM
+                                    <span class="edit-ts-pill-remove" onclick="removePill(event, this)">×</span>
+                                </div>
+                                <div class="edit-ts-pill" onclick="togglePill(this)">10:00 AM</div>
+                                <div class="edit-ts-pill dashed" onclick="openAddTimeModal()"><i class="bi bi-plus-circle"></i></div>
+                            </div>
+                        </div>
+
+                        <!-- Evening Sessions -->
+                        <div class="edit-ts-session-card">
+                            <div class="edit-ts-session-header">
+                                <div class="edit-ts-session-icon moon"><i class="ri-moon-fill"></i></div>
+                                <div class="edit-ts-session-info">
+                                    <h3>Evening Sessions</h3>
+                                    <p>Recommended: 04:00 PM - 09:00 PM</p>
+                                </div>
+                            </div>
+                            <div class="edit-ts-time-pills">
+                                <div class="edit-ts-pill" onclick="togglePill(this)">06:00 PM</div>
+                                <div class="edit-ts-pill" onclick="togglePill(this)">07:00 PM</div>
+                                <div class="edit-ts-pill" onclick="togglePill(this)">07:30 PM</div>
+                                <div class="edit-ts-pill dashed" onclick="openAddTimeModal()"><i class="bi bi-plus-circle"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </main>
     </div>
-</body>
-    <script src="../JS/Board.js"></script>
+</div>
+
+<!-- Add Time Slot Modal -->
+<div id="addTimeModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeAddTime">&times;</span>
+        <h3 id="modalTitle">Add New Time Slot</h3>
+        <form id="addTimeForm">
+            <div class="form-group">
+                <label for="newSlotTime">Select Time</label>
+                <input type="time" id="newSlotTime" required />
+            </div>
+            <button type="submit" class="btn-primary">Add Slot</button>
+            <button type="button" class="btn-secondary" id="cancelSlot" style="background: #f1f5f9; color: #475569; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-left: 10px;">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<script src="../JS/Board.js"></script>
+
 <script>
-    function selectDay(el) {
-    document.querySelectorAll('.day-btn').forEach(d => d.classList.remove('active'));
-    el.classList.add('active');
-}
-
-function toggleSlot(el) {
-    if (el.classList.contains('slot-pill-add')) return;
-    el.classList.toggle('active');
-    
-    const removeBtn = el.querySelector('.slot-remove');
-    if (el.classList.contains('active')) {
-        if (!removeBtn) {
-            const span = document.createElement('span');
-            span.className = 'slot-remove';
-            span.textContent = '×';
-            span.onclick = (e) => {
-                e.stopPropagation();
-                el.classList.remove('active');
-                span.remove();
-            };
-            el.appendChild(span);
-        }
-    } else {
-        if (removeBtn) removeBtn.remove();
+    // Functions for the time slots page
+    function selectDay(dayElement) {
+        document.querySelectorAll('.edit-ts-day-card').forEach(day => day.classList.remove('active'));
+        dayElement.classList.add('active');
     }
-}
 
-function addSlot(containerId) {
-    const time = prompt('Enter time slot (e.g. 10:30 AM):');
-    if (!time) return;
+    function togglePill(pillElement) {
+        if (pillElement.classList.contains('dashed')) return;
+        pillElement.classList.toggle('active');
+    }
 
-    const container = document.getElementById(containerId);
-    const addBtn = container.querySelector('.slot-pill-add');
+    function removePill(event, removeBtn) {
+        event.stopPropagation();
+        const pill = removeBtn.closest('.edit-ts-pill');
+        if (pill) {
+            pill.remove();
+        }
+    }
 
-    const slot = document.createElement('div');
-    slot.className = 'slot-pill-edit';
-    slot.textContent = time;
-    slot.onclick = () => toggleSlot(slot);
+    function openAddTimeModal() {
+        document.getElementById('addTimeModal').classList.add('active');
+    }
 
-    container.insertBefore(slot, addBtn);
-}
+    function closeAddTimeModal() {
+        document.getElementById('addTimeModal').classList.remove('active');
+    }
+
+    document.getElementById('closeAddTime').addEventListener('click', closeAddTimeModal);
+    document.getElementById('cancelSlot').addEventListener('click', closeAddTimeModal);
+
+    window.addEventListener('click', (event) => {
+        const modal = document.getElementById('addTimeModal');
+        if (event.target === modal) {
+            closeAddTimeModal();
+        }
+    });
+
+    document.getElementById('addTimeForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const time = document.getElementById('newSlotTime').value;
+        if(time) {
+            const newPill = document.createElement('div');
+            newPill.className = 'edit-ts-pill';
+            newPill.setAttribute('onclick', 'togglePill(this)');
+            newPill.innerText = formatTime(time);
+            
+            const removeSpan = document.createElement('span');
+            removeSpan.className = 'edit-ts-pill-remove';
+            removeSpan.innerHTML = '×';
+            removeSpan.onclick = function(event) { removePill(event, this); };
+            newPill.appendChild(removeSpan);
+            
+            const morningPills = document.querySelector('.edit-ts-session-card:first-child .edit-ts-time-pills');
+            const addButton = morningPills.querySelector('.edit-ts-pill.dashed');
+            morningPills.insertBefore(newPill, addButton);
+            
+            alert('New slot added: ' + formatTime(time));
+            closeAddTimeModal();
+        }
+    });
+
+    function formatTime(timeValue) {
+        const [hours, minutes] = timeValue.split(':');
+        let period = 'AM';
+        let hour = parseInt(hours);
+        if (hour >= 12) {
+            period = 'PM';
+            if (hour > 12) hour -= 12;
+        }
+        if (hour === 0) hour = 12;
+        return `${hour.toString().padStart(2, '0')}:${minutes} ${period}`;
+    }
 </script>
+
+</body>
 </html>
