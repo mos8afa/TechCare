@@ -149,8 +149,8 @@
                                 <p>Cairo</p>
                             </div>
                             <div class="info-group">
-                                <label>Address</label>
-                                <p>Maadi street 15</p>
+                                <label>Total Price</label>
+                                <p>150 EGP</p>
                             </div>
                         </div>
                     
@@ -162,18 +162,23 @@
                         </div>
                     
                         <div class="edit-input">
-                            <div class="price-input-section">
-                                <label>DELIVERY PRICE</label>
-                                <input type="text" placeholder="Enter price...">
+                            <label>Time Slots</label>
+
+                            <div class="time-slots-carousel">
+                                <button class="slot-nav prev-slot" onclick="slideSlots(-1, this)">&#8249;</button>
+                                <div class="slots-viewport">
+                                    <div class="slots-track" id="slotsTrack">
+                                        <button class="time-slot-btn" onclick="selectSlot(this)">09:00 AM</button>
+                                        <button class="time-slot-btn" onclick="selectSlot(this)">10:30 AM</button>
+                                        <button class="time-slot-btn active" onclick="selectSlot(this)">12:00 PM</button>
+                                        <button class="time-slot-btn" onclick="selectSlot(this)">01:30 PM</button>
+                                        <button class="time-slot-btn" onclick="selectSlot(this)">03:00 PM</button>
+                                        <button class="time-slot-btn" onclick="selectSlot(this)">04:30 PM</button>
+                                    </div>
+                                </div>
+                                <button class="slot-nav next-slot" onclick="slideSlots(1, this)">&#8250;</button>
                             </div>
-                            <div class="price-input-section">
-                                <label>DATE</label>
-                                <input type="date" placeholder="Enter Date...">
-                            </div>
-                            <div class="price-input-section">
-                                <label>TIME</label>
-                                <input type="time" placeholder="Enter Time...">
-                            </div>
+
                         </div>
                     
                         <div class="card-footer-actions">
@@ -191,4 +196,29 @@
     </div>
 </body>
     <script src="../JS/Board.js"></script>
+    <script>
+        // Time Slots Carousel
+        function selectSlot(el) {
+            const track = el.closest('.slots-track');
+            track.querySelectorAll('.time-slot-btn').forEach(btn => btn.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function slideSlots(dir, btn) {
+            const carousel = btn.closest('.time-slots-carousel');
+            const track = carousel.querySelector('.slots-track');
+            const viewport = carousel.querySelector('.slots-viewport');
+
+            const btnWidth = 100 + 8; // نفس الـ width في الـ CSS + gap
+            const viewportWidth = viewport.clientWidth;
+            const totalBtns = track.querySelectorAll('.time-slot-btn').length;
+            const maxOffset = Math.max(0, totalBtns - Math.floor(viewportWidth / btnWidth));
+
+            let current = parseInt(track.dataset.offset || 0);
+            current = Math.min(Math.max(current + dir, 0), maxOffset);
+
+            track.dataset.offset = current;
+            track.style.transform = `translateX(-${current * btnWidth}px)`;
+        }
+    </script>
 </html>

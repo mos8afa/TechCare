@@ -129,7 +129,17 @@
                                 </span>
                                 <span class="info-item">
                                     <i class="bi bi-geo-alt"></i>
-                                    Location<strong>New Cairo, Cairo Governorate</strong>
+                                    Location: <strong>New Cairo, Cairo Governorate</strong>
+                                </span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-item">
+                                    <i class="ri-phone-line"></i>
+                                    Phone: <strong>+20 115 547 7057</strong>
+                                </span>
+                                <span class="info-item">
+                                    <i class="bi bi-envelope"></i>
+                                    Email: <strong>dr.sarah@techcare.com</strong>
                                 </span>
                             </div>
 
@@ -164,26 +174,70 @@
 
                     <!-- Certifications & Courses -->
                     <div class="info-card animate slide-up-2">
-                        <div class="card-header">   
+                        <div class="card-header">
                             <h3>
-                                <i class="bi bi-patch-check"></i>
-                                Certifications & Courses
+                                <i class="bi bi-clock"></i>
+                                Available Time Slots
                             </h3>
-                            <div class="certificate-actions">
-                                <i class="bi bi-scissors scissors-tool" id="scissorsTool" ></i>
-                                <label class="add-certificate-btn">
-                                    <i class="bi bi-plus-circle"></i>
-                                    Add Certificate
-                                    <input type="file" id="certificateUpload" accept="image/*" hidden>
-                                </label>
+                            <button class="add-certificate-btn" onclick="window.location.href='Edit_Slots.html'">
+                                <i class="bi bi-plus-circle"></i>
+                                Edit Time Slots
+                            </button>
+                        </div>
+
+                        <!-- Days Carousel -->
+                        <div class="days-carousel">
+                            <div class="days-track" id="daysTrack">
+                                <div class="day-btn active" onclick="selectDay(this)">
+                                    <span class="day-name">MON</span>
+                                    <span class="day-num">14</span>
+                                </div>
+                                <div class="day-btn" onclick="selectDay(this)">
+                                    <span class="day-name">TUE</span>
+                                    <span class="day-num">15</span>
+                                </div>
+                                <div class="day-btn" onclick="selectDay(this)">
+                                    <span class="day-name">WED</span>
+                                    <span class="day-num">16</span>
+                                </div>
+                                <div class="day-btn" onclick="selectDay(this)">
+                                    <span class="day-name">THU</span>
+                                    <span class="day-num">17</span>
+                                </div>
+                                <div class="day-btn" onclick="selectDay(this)">
+                                    <span class="day-name">FRI</span>
+                                    <span class="day-num">18</span>
+                                </div>
+                                <div class="day-btn" onclick="selectDay(this)">
+                                    <span class="day-name">SAT</span>
+                                    <span class="day-num">19</span>
+                                </div>
                             </div>
                         </div>
-                    
-                        <div class="certificate-board" id="certificateBoard"></div>
-                    </div>
 
-                    <div class="certificate-viewer" id="certificateViewer">
-                        <img id="viewerImage">
+                        <!-- Morning Slots -->
+                        <p class="slots-section-label">MORNING SLOTS</p>
+                        <div class="slots-grid">
+                            <button class="slot-pill active">09:00 AM</button>
+                            <button class="slot-pill">09:30 AM</button>
+                            <button class="slot-pill">10:00 AM</button>
+                            <button class="slot-pill">10:30 AM</button>
+                            <button class="slot-pill">11:00 AM</button>
+                            <button class="slot-pill">11:30 AM</button>
+                        </div>
+
+                        <!-- Evening Slots -->
+                        <p class="slots-section-label">EVENING SLOTS</p>
+                        <div class="slots-grid">
+                            <button class="slot-pill">04:00 PM</button>
+                            <button class="slot-pill">04:30 PM</button>
+                            <button class="slot-pill">05:00 PM</button>
+                            <button class="slot-pill">05:30 PM</button>
+                            <button class="slot-pill">06:00 PM</button>
+                            <button class="slot-pill">06:30 PM</button>
+                            <button class="slot-pill">07:00 PM</button>
+                            <button class="slot-pill">07:30 PM</button>
+                        </div>
                     </div>
 
 
@@ -227,72 +281,13 @@
     <script src="../JS/Board.js"></script>
 
     <script>
-        const scissors = document.getElementById("scissorsTool");
-        const uploadInput = document.getElementById("certificateUpload");
-        const board = document.getElementById("certificateBoard");
-        const viewer = document.getElementById("certificateViewer");
-        const viewerImg = document.getElementById("viewerImage");
+function selectDay(el) {
+    document.querySelectorAll('.day-btn').forEach(d => d.classList.remove('active'));
+    el.classList.add('active');
+}
 
-        // Upload
-        uploadInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-        
-            const reader = new FileReader();
-            reader.onload = (event) => createCertificateFrame(event.target.result);
-            reader.readAsDataURL(file);
-            uploadInput.value = ''; 
-        });
-
-        // HTML Tags
-        function createCertificateFrame(src) {
-            const frame = document.createElement('div');
-            frame.className = 'certificate-frame';
-        
-            const stringRight = document.createElement('span');
-            stringRight.className = 'string-right';
-            frame.appendChild(stringRight);
-        
-            const img = document.createElement('img');
-            img.src = src;
-            frame.appendChild(img);
-        
-            img.addEventListener('click', (e) => {                          //<div id="viewer">
-                e.stopPropagation();                                       //     <img id="viewerImg">
-                viewerImg.src = img.src;                                  // </div>
-                viewer.classList.add('active');
-            });
-            board.appendChild(frame);                                         
-        }
-
-        viewer.addEventListener('click', () => {
-            viewer.classList.remove('active');
-        });
-
-        // Scissors
-        let scissorsActive = false;
-        scissors.setAttribute('draggable', 'true');
-
-        scissors.addEventListener('dragstart', (e) => {
-            scissorsActive = true;
-        });
-
-        board.addEventListener('dragover', (e) => e.preventDefault());
-
-        board.addEventListener('drop', (e) => {
-            e.preventDefault();
-            if (!scissorsActive) return; 
-        
-            const target = e.target.closest('.certificate-frame');
-            if (target) {
-                target.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-                target.style.transform = 'scale(0) rotate(-10deg)';
-                target.style.opacity = '0';
-                setTimeout(() => target.remove(), 300);
-            }
-        
-            scissorsActive = false;
-        });
-
+function selectSlotPill(el) {
+    el.classList.toggle('active');
+}
     </script>
 </html>
