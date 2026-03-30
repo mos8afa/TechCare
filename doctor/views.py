@@ -4,7 +4,7 @@ from accounts.models import Doctor, get_provider_days_with_dates, TimeSlots
 from django.db.models import Avg
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from datetime import time
+from datetime import date, time, timedelta
 
 @login_required
 def doctor_dashboard(request):    
@@ -217,6 +217,31 @@ def doctor_requests(request, type):
     else:
         return redirect('doctor:doctor_dashboard')
 
+def get_ordered_week_days():
+    today = date.today()
+
+    days_map = [
+        'monday', 'tuesday', 'wednesday',
+        'thursday', 'friday', 'saturday', 'sunday'
+    ]
+
+    today_index = today.weekday()
+
+    ordered_days = []
+
+    for i in range(7):
+        day_index = (today_index + i) % 7
+        day_name = days_map[day_index]
+
+        day_date = today + timedelta(days=i)
+
+        ordered_days.append({
+            'day': day_name,
+            'date': day_date
+        })
+
+    return ordered_days
+
 @login_required
 def edit_time_slots(request):
     if request.user.role != 'doctor':
@@ -224,63 +249,64 @@ def edit_time_slots(request):
 
     doctor = Doctor.objects.get(user=request.user)
 
-    days = TimeSlots.objects.filter(doctor=doctor).values_list('day', flat=True).distinct()
-
-    days = get_provider_days_with_dates(days)
-
-    if request.method == 'POST':
-        selected_day = request.POST.get('day')
-        input_time =request.POST.get('slot_time')
-
-        exists = TimeSlots.objects.filter(
-        doctor=doctor,
-        day=selected_day,
-        time=input_time
-        ).exists()
-
-        if not exists:
-            TimeSlots.objects.create(
-            doctor=doctor,
-            day=selected_day,
-            time=input_time
-        )
-        
-        return redirect(request.path)
+    days = get_ordered_week_days()
 
     selected_day = request.GET.get('day')
+
+    if not selected_day:
+        selected_day = days[0]['day']
+
+    slots = TimeSlots.objects.filter(
+        doctor=doctor,
+        day=selected_day
+    ).order_by('time')
 
     morning_slots = []
     evening_slots = []
 
-    if selected_day:
-        slots = TimeSlots.objects.filter(
+    for slot in slots:
+        if slot.time < time(12, 0):
+            morning_slots.append(slot)
+        else:
+            evening_slots.append(slot)
+
+    if request.method == 'POST':
+        input_day = request.POST.get('day')
+        input_time = request.POST.get('time')
+
+        exists = TimeSlots.objects.filter(
             doctor=doctor,
-            day=selected_day
-        ).order_by('time')
+            day=input_day,
+            time=input_time
+        ).exists()
 
-        for slot in slots:
-            if slot.time < time(12, 0):
-                morning_slots.append(slot)
-            else:
-                evening_slots.append(slot)
+        if not exists:
+            TimeSlots.objects.create(
+                doctor=doctor,
+                day=input_day,
+                time=input_time
+            )
 
-    if not selected_day and days:
-        selected_day = days[0]['day']
-
-        slots = TimeSlots.objects.filter(
-            doctor=doctor,
-            day=selected_day
-        ).order_by('time')
-
-        for slot in slots:
-            if slot.time < time(12, 0):
-                morning_slots.append(slot)
-            else:
-                evening_slots.append(slot)
+        return redirect(f'?day={input_day}')
 
     return render(request, 'doctor/time_slots.html', {
         'days': days,
+        'selected_day': selected_day,
         'morning_slots': morning_slots,
         'evening_slots': evening_slots,
-        'selected_day': selected_day,
     })
+
+@login_required
+def delete_time_slot(request, slot_id):
+    if request.user.role != 'doctor':
+        return redirect('login')
+
+    doctor = Doctor.objects.get(user=request.user)
+
+    try:
+        slot = TimeSlots.objects.get(id=slot_id, doctor=doctor)
+        slot.delete()
+    except TimeSlots.DoesNotExist:
+        pass
+
+    return redirect(request.path)
