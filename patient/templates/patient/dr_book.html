@@ -1,0 +1,130 @@
+{% extends 'patient/patient_base.html' %}
+
+{% block sidebar %}
+<aside class="aside">
+    <a href="{% url 'patient:patient_dashboard' %}" class="aside-item">
+        <i class="bi bi-person"></i>
+        <span>Profile</span>
+    </a>
+    <a href="{% url 'patient:patient_requests' 'doctor' 'booking' %}" class="aside-item active">
+        <i class="ri-file-list-line"></i>
+        <span>Requests</span>
+    </a>
+    <a href="#" class="aside-item">
+        <i class="fa-regular fa-bell"></i>
+        <span>Notifications</span>
+    </a>
+    <a href="#" class="aside-item">
+        <i class="ri-wallet-3-line"></i>
+        <span>Wallet</span>
+    </a>
+    <a href="#" class="aside-item">
+        <i class="ri-error-warning-line"></i>
+        <span>Complaints</span>
+    </a>
+</aside>
+{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <div class="booking-wrapper">
+
+        <!-- Category Tabs -->
+        <div class="category-tabs">
+            <button class="cat-tab active">
+                <i class="ri-stethoscope-line"></i> Doctor
+            </button>
+            <button class="cat-tab">
+                <i class="ri-nurse-line"></i> Nurse
+            </button>
+            <button class="cat-tab">
+                <i class="ri-medicine-bottle-line"></i> Pharmacy
+            </button>
+        </div>
+
+        <!-- Status Tabs -->
+        <div class="status-tabs">
+            <button class="status-tab active">Booking</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'doctor' 'pending' %}'">Pending</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'doctor' 'accepted' %}'">Accepted</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'doctor' 'done' %}'">Done</button>
+        </div>
+
+        <!-- Search & Filters -->
+        <div class="search-bar">
+            <div class="search-input-wrap">
+                <i class="bi bi-card-text" style="font-size:18px; color:#aab0bc;"></i>
+                <input type="text" id="searchInput" placeholder="Search by doctor..." oninput="filterDoctors()"/>
+            </div>
+            <select class="filter-select" id="specFilter" onchange="filterDoctors()">
+                <option value="">Specialization</option>
+                <option>Cardiologist</option>
+                <option>Pediatrician</option>
+                <option>Neurologist</option>
+                <option>Dermatologist</option>
+                <option>Orthopedic</option>
+                <option>Psychiatrist</option>
+            </select>
+            <select class="filter-select" id="govFilter" onchange="filterDoctors()">
+                <option value="">Governorate</option>
+                <option>Cairo</option>
+                <option>Alexandria</option>
+                <option>Giza</option>
+            </select>
+        </div>
+
+        <!-- Doctors Grid -->
+        <div class="doctors-grid" id="doctorsGrid">
+            {% for doctor in doctors %}
+            <div class="doctor-card animate slide-up"
+                 data-name="Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}"
+                 data-spec="{{ doctor.get_specification_display }}"
+                 data-gov="{{ doctor.get_governorate_display }}">
+
+                <div class="doctor-avatar-wrap">
+                    <img src="{{ doctor.profile_pic.url }}" alt="Dr. {{ doctor.user.first_name }}" class="doctor-avatar">
+                    <div class="doctor-online-dot"></div>
+                </div>
+
+                <h3 class="doctor-name">Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h3>
+                <p class="doctor-spec">{{ doctor.get_specification_display }}</p>
+                <p class="doctor-location">
+                    <i class="bi bi-geo-alt"></i>
+                    {{ doctor.get_governorate_display }}{% if doctor.address %}, {{ doctor.address }}{% endif %}
+                </p>
+
+                <div class="doctor-fee-row">
+                    <span class="fee-label-sm">CONSULTATION FEE</span>
+                    <span class="fee-amount-sm"><strong>{{ doctor.price }}</strong> EGP</span>
+                </div>
+
+                <a href="{% url 'patient:book_appointment' doctor.id %}" class="book-now-btn">Book Now</a>
+            </div>
+            {% empty %}
+            <div class="no-requests-placeholder">
+                <h3>No Doctors Available</h3>
+                <p>There are no doctors registered yet. Please check back later.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</main>
+
+<script>
+function filterDoctors() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const spec = document.getElementById('specFilter').value.toLowerCase();
+    const gov = document.getElementById('govFilter').value.toLowerCase();
+    const cards = document.querySelectorAll('.doctor-card');
+    cards.forEach(card => {
+        const name = card.dataset.name.toLowerCase();
+        const cardSpec = card.dataset.spec.toLowerCase();
+        const cardGov = card.dataset.gov.toLowerCase();
+        const matchSearch = !search || name.includes(search);
+        const matchSpec = !spec || cardSpec.includes(spec);
+        const matchGov = !gov || cardGov.includes(gov);
+        card.style.display = (matchSearch && matchSpec && matchGov) ? '' : 'none';
+    });
+}
+</script>
+{% endblock %}
