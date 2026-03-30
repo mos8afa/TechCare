@@ -1,0 +1,212 @@
+{% extends "doctor_base.html" %}
+{% block title %}
+    <title>Profile</title>
+{% endblock title %}
+
+{% block sidebar %}
+        <aside class="aside">
+            <a href="{% url "doctor:doctor_dashboard" %}" class="aside-item active">
+                <i class="bi bi-person"></i>
+                <span>Profile</span>
+            </a>
+            <a href="{% url "doctor:doctor_requests" 'pending' %}" class="aside-item">
+                <i class="ri-file-list-line"></i>
+                <span>Requests</span>
+            </a>
+            <a href="../Dr_Board/Notifications.html" class="aside-item">
+                <i class="fa-regular fa-bell"></i>
+                <span>Notifications</span>
+            </a>
+            <a href="../Dr_Board/Wallet.html" class="aside-item">
+                <i class="ri-wallet-3-line"></i>
+                <span>Wallet</span>
+            </a>
+            <a href="../Dr_Board/Complaints.html" class="aside-item">
+                <i class="ri-error-warning-line"></i>
+                <span>Complaints</span>
+            </a>
+        </aside>
+    </aside>
+{% endblock sidebar %}
+
+        
+{% block topbar_title %}
+    <h2 class="topbar-title">Time Slots</h2>
+{% endblock topbar_title %}
+
+{% block main %}
+        <main class="main-content">
+
+            <div class="edit-ts-container">
+                <!-- Header Row -->
+                <div class="edit-ts-header-row">
+                    <div class="edit-ts-title-col">
+                        <h2 class="edit-ts-title">Edit Time Slots</h2>
+                        <p class="edit-ts-subtitle">Customize your working hours and appointment slots.</p>
+                    </div>
+                    <div class="edit-ts-action-col" style="display: flex; gap: 15px;">
+                        <button class="edit-ts-btn-cancel" onclick="window.location.href='Profile.html'">Cancel</button>
+                        <button class="edit-ts-btn-save" onclick="saveChanges()">Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- Weekly Schedule -->
+                <div class="edit-ts-weekly-section">
+                    <h4 class="edit-ts-section-title">WEEKLY SCHEDULE</h4>
+                    <div class="edit-ts-days-row">
+                        <div class="edit-ts-day-card" onclick="selectDay(this)">
+                            <span class="edit-ts-day">MON</span>
+                            <span class="edit-ts-date">14</span>
+                        </div>
+                        <div class="edit-ts-day-card" onclick="selectDay(this)">
+                            <span class="edit-ts-day">TUE</span>
+                            <span class="edit-ts-date">15</span>
+                        </div>
+                        <div class="edit-ts-day-card active" onclick="selectDay(this)">
+                            <span class="edit-ts-day">WED</span>
+                            <span class="edit-ts-date">16</span>
+                        </div>
+                        <div class="edit-ts-day-card" onclick="selectDay(this)">
+                            <span class="edit-ts-day">THU</span>
+                            <span class="edit-ts-date">17</span>
+                        </div>
+                        <div class="edit-ts-day-card" onclick="selectDay(this)">
+                            <span class="edit-ts-day">FRI</span>
+                            <span class="edit-ts-date">18</span>
+                        </div>
+                        <div class="edit-ts-day-card" onclick="selectDay(this)">
+                            <span class="edit-ts-day">SAT</span>
+                            <span class="edit-ts-date">19</span>
+                        </div>
+                        <div class="edit-ts-day-card" onclick="selectDay(this)">
+                            <span class="edit-ts-day">SUN</span>
+                            <span class="edit-ts-date">20</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Grids -->
+                <div class="edit-ts-bottom-grid">
+                    <!-- Left Column: Sessions -->
+                    <div class="edit-ts-sessions-col">
+                        <!-- Morning Sessions -->
+                        <div class="edit-ts-session-card">
+                            <div class="edit-ts-session-header">
+                                <div class="edit-ts-session-icon sun"><i class="ri-sun-fill"></i></div>
+                                <div class="edit-ts-session-info">
+                                    <h3>Morning Sessions</h3>
+                                    <p>Recommended: 08:00 AM - 12:00 PM</p>
+                                </div>
+                            </div>
+                            <div class="edit-ts-time-pills">
+                                <div class="edit-ts-pill" onclick="togglePill(this)">09:00 AM</div>
+                                <div class="edit-ts-pill active" onclick="togglePill(this)">
+                                    09:30 AM
+                                    <span class="edit-ts-pill-remove" onclick="removePill(event, this)">×</span>
+                                </div>
+                                <div class="edit-ts-pill" onclick="togglePill(this)">10:00 AM</div>
+                                <div class="edit-ts-pill dashed" onclick="openAddTimeModal()"><i class="bi bi-plus-circle"></i></div>
+                            </div>
+                        </div>
+
+                        <!-- Evening Sessions -->
+                        <div class="edit-ts-session-card">
+                            <div class="edit-ts-session-header">
+                                <div class="edit-ts-session-icon moon"><i class="ri-moon-fill"></i></div>
+                                <div class="edit-ts-session-info">
+                                    <h3>Evening Sessions</h3>
+                                    <p>Recommended: 04:00 PM - 09:00 PM</p>
+                                </div>
+                            </div>
+                            <div class="edit-ts-time-pills">
+                                <div class="edit-ts-pill" onclick="togglePill(this)">06:00 PM</div>
+                                <div class="edit-ts-pill" onclick="togglePill(this)">07:00 PM</div>
+                                <div class="edit-ts-pill" onclick="togglePill(this)">07:30 PM</div>
+                                <div class="edit-ts-pill dashed" onclick="openAddTimeModal()"><i class="bi bi-plus-circle"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </main>
+{% endblock main %}
+
+{% block script %}
+
+<script>
+    // Functions for the time slots page
+    function selectDay(dayElement) {
+        document.querySelectorAll('.edit-ts-day-card').forEach(day => day.classList.remove('active'));
+        dayElement.classList.add('active');
+    }
+
+    function togglePill(pillElement) {
+        if (pillElement.classList.contains('dashed')) return;
+        pillElement.classList.toggle('active');
+    }
+
+    function removePill(event, removeBtn) {
+        event.stopPropagation();
+        const pill = removeBtn.closest('.edit-ts-pill');
+        if (pill) {
+            pill.remove();
+        }
+    }
+
+    function openAddTimeModal() {
+        document.getElementById('addTimeModal').classList.add('active');
+    }
+
+    function closeAddTimeModal() {
+        document.getElementById('addTimeModal').classList.remove('active');
+    }
+
+    document.getElementById('closeAddTime').addEventListener('click', closeAddTimeModal);
+    document.getElementById('cancelSlot').addEventListener('click', closeAddTimeModal);
+
+    window.addEventListener('click', (event) => {
+        const modal = document.getElementById('addTimeModal');
+        if (event.target === modal) {
+            closeAddTimeModal();
+        }
+    });
+
+    document.getElementById('addTimeForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const time = document.getElementById('newSlotTime').value;
+        if(time) {
+            const newPill = document.createElement('div');
+            newPill.className = 'edit-ts-pill';
+            newPill.setAttribute('onclick', 'togglePill(this)');
+            newPill.innerText = formatTime(time);
+            
+            const removeSpan = document.createElement('span');
+            removeSpan.className = 'edit-ts-pill-remove';
+            removeSpan.innerHTML = '×';
+            removeSpan.onclick = function(event) { removePill(event, this); };
+            newPill.appendChild(removeSpan);
+            
+            const morningPills = document.querySelector('.edit-ts-session-card:first-child .edit-ts-time-pills');
+            const addButton = morningPills.querySelector('.edit-ts-pill.dashed');
+            morningPills.insertBefore(newPill, addButton);
+            
+            alert('New slot added: ' + formatTime(time));
+            closeAddTimeModal();
+        }
+    });
+
+    function formatTime(timeValue) {
+        const [hours, minutes] = timeValue.split(':');
+        let period = 'AM';
+        let hour = parseInt(hours);
+        if (hour >= 12) {
+            period = 'PM';
+            if (hour > 12) hour -= 12;
+        }
+        if (hour === 0) hour = 12;
+        return `${hour.toString().padStart(2, '0')}:${minutes} ${period}`;
+    }
+</script>
+
+{% endblock script %}

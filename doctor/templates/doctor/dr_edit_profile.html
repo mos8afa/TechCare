@@ -1,29 +1,38 @@
 {% extends 'doctor_base.html' %}
+
+{% block title %}<title>Edit Profile</title>{% endblock %}
+
 {% block sidebar %}
-            <aside class="aside">
-                            <a href="{% url 'doctor:doctor_dashboard' %}" class="aside-item active">
-                                <i class="bi bi-person"></i>
-                                <span>Profile</span>
-                            </a>
-                            <a href="{% url 'doctor:doctor_requests' 'pending' %}" class="aside-item">
-                                <i class="ri-file-list-line"></i>
-                                <span>Requests</span>
-                            </a>
-                            <a href="../Dr_Board/Notifications.html" class="aside-item">
-                                <i class="fa-regular fa-bell"></i>
-                                <span>Notifications</span>
-                            </a>
-                            <a href="../Dr_Board/Wallet.html" class="aside-item">
-                                <i class="ri-wallet-3-line"></i>
-                                <span>Wallet</span>
-                            </a>
-                            <a href="../Dr_Board/Complaints.html" class="aside-item">
-                                <i class="ri-error-warning-line"></i>
-                                <span>Complaints</span>
-                            </a>
-                        </aside>
+    <aside class="aside">
+        <a href="{% url 'doctor:doctor_dashboard' %}" class="aside-item active">
+            <i class="bi bi-person"></i>
+            <span>Profile</span>
+        </a>
+        <a href="{% url 'doctor:doctor_requests' 'pending' %}" class="aside-item">
+            <i class="ri-file-list-line"></i>
+            <span>Requests</span>
+        </a>
+        <a href="../Dr_Board/Notifications.html" class="aside-item">
+            <i class="fa-regular fa-bell"></i>
+            <span>Notifications</span>
+        </a>
+        <a href="../Dr_Board/Wallet.html" class="aside-item">
+            <i class="ri-wallet-3-line"></i>
+            <span>Wallet</span>
+        </a>
+        <a href="../Dr_Board/Complaints.html" class="aside-item">
+            <i class="ri-error-warning-line"></i>
+            <span>Complaints</span>
+        </a>
+    </aside>
+</aside>
 {% endblock sidebar %}
-{% block content %}
+
+{% block topbar_title %}
+    <h2 class="topbar-title">Edit Profile</h2>
+{% endblock topbar_title %}
+
+{% block main %}
             <!-- Main Content -->
             <main class="main-content animate slide-up">
 
@@ -143,3 +152,4 @@
         </div>
     </div>            
 {% endblock %}
+{% block script %}{% endblock script %}

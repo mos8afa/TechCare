@@ -1,244 +1,216 @@
-{% extends 'doctor_base.html' %}
+{% extends "doctor_base.html" %}
+{% block title %}
+    <title>Profile</title>
+{% endblock title %}
+
 {% block sidebar %}
-            <aside class="aside">
-                            <a href="{% url 'doctor:doctor_dashboard' %}" class="aside-item active">
-                                <i class="bi bi-person"></i>
-                                <span>Profile</span>
-                            </a>
-                            <a href="{% url 'doctor:doctor_requests' 'pending' %}" class="aside-item">
-                                <i class="ri-file-list-line"></i>
-                                <span>Requests</span>
-                            </a>
-                            <a href="../Dr_Board/Notifications.html" class="aside-item">
-                                <i class="fa-regular fa-bell"></i>
-                                <span>Notifications</span>
-                            </a>
-                            <a href="../Dr_Board/Wallet.html" class="aside-item">
-                                <i class="ri-wallet-3-line"></i>
-                                <span>Wallet</span>
-                            </a>
-                            <a href="../Dr_Board/Complaints.html" class="aside-item">
-                                <i class="ri-error-warning-line"></i>
-                                <span>Complaints</span>
-                            </a>
-                        </aside>
-        {% endblock sidebar %}
-        {% block content %}
-            <!-- Main Content -->
-            <main class="main-content">
-                <!-- Profile Header Card -->
-                <div class="profile-card animate slide-up" >
-                    <div class="profile-row">
-                        <!-- Avatar & badges -->
-                        <div class="profile-avatar">
-                            <img src="{{ profile_pic.url }}" alt="{{ name }}" />
-                            <span class="verified-badge">
-                                <i class="fas fa-check"></i>
-                            </span>
-                        </div>
+        <aside class="aside">
+            <a href="{% url "doctor:doctor_dashboard" %}" class="aside-item active">
+                <i class="bi bi-person"></i>
+                <span>Profile</span>
+            </a>
+            <a href="{% url "doctor:doctor_requests" 'pending' %}" class="aside-item">
+                <i class="ri-file-list-line"></i>
+                <span>Requests</span>
+            </a>
+            <a href="../Dr_Board/Notifications.html" class="aside-item">
+                <i class="fa-regular fa-bell"></i>
+                <span>Notifications</span>
+            </a>
+            <a href="../Dr_Board/Wallet.html" class="aside-item">
+                <i class="ri-wallet-3-line"></i>
+                <span>Wallet</span>
+            </a>
+            <a href="../Dr_Board/Complaints.html" class="aside-item">
+                <i class="ri-error-warning-line"></i>
+                <span>Complaints</span>
+            </a>
+        </aside>
+    </aside>
+{% endblock sidebar %}
 
-                        <!-- Info -->
-                        <div class="profile-info">
-                            <div class="name-tag">
-                                <h1>{{name}}</h1>
-                                <span class="verified-tag">
-                                    <i class="fas fa-check-circle"></i>
-                                    Verified Doctor
-                                </span>
-                            </div>
-                            <p class="job-title">{{ specification }}</p>
+        
+{% block topbar_title %}
+    <h2 class="topbar-title">Profile</h2>
+{% endblock topbar_title %}
 
-                            <div class="info-row">
-                                <span class="info-item">
-                                    <i class="bi bi-cash-stack"></i>
-                                    Consultation: <strong> {{ price }} EGP </strong>
-                                </span>
-                                <span class="info-item">
-                                    <i class="bi bi-geo-alt"></i>
-                                    Location<strong>{{ address }}, {{ governorate }}</strong>
-                                </span>
-                            </div>
-                            <div class="info-row">
-                                <span class="info-item">
-                                    <i class="ri-phone-line"></i>
-                                    Phone: <strong>{{ phone_number }}</strong>
-                                </span>
-                                <span class="info-item">
-                                    <i class="ri-mail-line"></i>
-                                    Email: <strong>{{ email }}</strong>
-                                </span>
-                            </div>
-                            <p class="bio">
-                                {{ brief }}
-                            </p>
-                        </div>
-                        
-                        
-                        <div class="side-actions">
-                            <!-- Rating فوق -->
-                            <div class="rating-box">
-                                <div class="rating-stars">
-                                    {% for i in "12345" %}
-                                        {% if forloop.counter <= average_rating %}
-                                            <i class="ri-star-fill"></i>
-                                        {% else %}
-                                            <i class="ri-star-line"></i>
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
-                                <span class="rating-text">{{ average_rating }} Reviews</span>
-                            </div>
-                        
-                            <!-- Button تحت -->
-                            <button class="edit-button" onclick="window.location.href='{% url 'doctor:edit_doctor_profile'%}'">
-                                <i class="fas fa-edit"></i>
-                                Edit Profile
-                            </button>
-                        </div>
+                
+{% block main %}
+    <main class="main-content">
 
-                    </div>
+        <div class="profile-card animate slide-up">
+            <div class="profile-row">
+
+                <div class="profile-avatar">
+                    <img src="{{profile_pic.url}}" alt="{{name}}" />
+                    <span class="verified-badge">
+                        <i class="fas fa-check"></i>
+                    </span>
                 </div>
 
-                <!-- Bottom Grid -->
-                <div class="grid-2">
-                    <div class="info-card animate slide-up-2">
-                        <div class="card-header">   
-                            <h3>
-                                <i class="bi bi-patch-check"></i>
-                                Certifications & Courses
-                            </h3>
-                            <div class="certificate-actions">
-                                <i class="bi bi-scissors scissors-tool" id="scissorsTool"></i>
-                                <label class="add-certificate-btn">
-                                    <i class="bi bi-plus-circle"></i>
-                                    Add Certificate
-                                    <input name="certificate" type="file" id="certificateUpload" accept="image/*" hidden>
-                                </label>
-                            </div>
-                        </div>
-                    
-                        <div class="certificate-board" id="certificateBoard">
-                        {% if certificates %}
-                            {% for certificate in certificates %}
-                            <div class="certificate-frame">
+                <div class="profile-info">
+                    <div class="name-tag">
+                        <h1>{{name}}</h1>
+                        <span class="verified-tag">
+                            <i class="fas fa-check-circle"></i>
+                            Verified Doctor
+                        </span>
+                    </div>
+                    <p class="job-title">{{specification}}</p>
 
-                            <span class="string-right"></span>
-
-                            <img src="{{ certificate.url }}" />
-
-                            </div>
-                            {% endfor %}
-                        {% endif %}
-                        </div>
+                    <div class="info-row">
+                        <span class="info-item">
+                            <i class="bi bi-cash-stack"></i>
+                            Consultation: <strong>{{price}} EGP</strong>
+                        </span>
+                        <span class="info-item">
+                            <i class="bi bi-geo-alt"></i>
+                            Location: <strong>{{address}}, {{governorate}} Governorate</strong>
+                        </span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-item">
+                            <i class="ri-phone-line"></i>
+                            Phone: <strong>{{phone_number}}</strong>
+                        </span>
+                        <span class="info-item">
+                            <i class="bi bi-envelope"></i>
+                            Email: <strong>{{email}}</strong>
+                        </span>
                     </div>
 
-                    <div class="certificate-viewer" id="certificateViewer">
-                        <img id="viewerImage">
+                    <p class="bio">
+                        {{brief}}
+                    </p>
+                </div>
+                
+
+                <div class="side-actions">
+                    <!-- Rating فوق -->
+                    <div class="rating-box">
+                        <div class="rating-stars">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= average_rating %}
+                                    <i class="ri-star-fill"></i>
+                                {% else %}
+                                    <i class="ri-star-line"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <span class="rating-text">{{ average_rating }} Reviews</span>
                     </div>
                 
-                    <!-- Financials & Activity Card -->
-                    <div class="info-card animate slide-up-2">
-                        <div class="card-header">
-                            <h3>
-                                <i class="fa-solid fa-chart-line"></i>
-                                Financials & Activity
-                            </h3>
-                            <a href="../Dr_Board/Wallet.html" class="view-link">View History</a>
-                        </div>
-                    
-                        <div class="balance-card">
-                            <p>Total Wallet Balance</p>
-                            <p class="balance-amount">12,450.00 EGP</p>
-                        </div>
-                    
-                        <div class="mini-stats">
-                            <div class="stat-card Approved">
-                                <p class="stat-label">Completed Requests</p>
-                                <div>
-                                    <i class="bi bi-check2-circle"></i>
-                                    <p class="stat-value">{{ completed }}</p>
+                    <!-- Button تحت -->
+                    <button class="edit-button" onclick="window.location.href='{% url 'doctor:edit_doctor_profile' %}'">
+                        <i class="fas fa-edit"></i>
+                        Edit Profile
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="grid-2">
+
+            <div class="info-card animate slide-up-2">
+                <div class="card-header">
+                    <h3>
+                        <i class="bi bi-clock"></i>
+                        Available Time Slots
+                    </h3>
+                    <button class="add-certificate-btn" onclick="window.location.href='{% url "doctor:edit_time_slots" %}'">
+                        <i class="bi bi-plus-circle"></i>
+                        Edit Time Slots
+                    </button>
+                </div>
+
+                <!-- Days Carousel -->
+                <div class="days-carousel">
+                    <div class="days-track" id="daysTrack">
+                        {% if days %}
+                            {% for d in days %}
+                                <div class="day-btn {% if d.day == selected_day %}active{% endif %}"
+                                    onclick="window.location.href='?day={{ d.day }}'">
+
+                                    <span class="day-name">{{ d.day|slice:":3"|upper }}</span>
+                                    <span class="day-num">{{ d.date|date:"d" }}</span>
                                 </div>
-                            </div>
-                            <div class="stat-card Pending">
-                                <p class="stat-label">Pending Requests</p>
-                                <div>
-                                    <i class="ri-survey-line"></i>
-                                    <p class="stat-value">{{ pending }}</p>
-                                </div>
-                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Morning Slots -->
+                <p class="slots-section-label">MORNING SLOTS</p>
+                <div class="slots-grid">
+                    {% for slot in morning_slots %}
+                        <button class="slot-pill">
+                            {{ slot.time|time:"h:i A" }}
+                        </button>
+                    {% empty %}
+                        <p>No slots available</p>
+                    {% endfor %}
+                </div>
+
+                <!-- Evening Slots -->
+                <p class="slots-section-label">EVENING SLOTS</p>
+                <div class="slots-grid">
+                    {% for slot in evening_slots %}
+                        <button class="slot-pill">
+                            {{ slot.time|time:"h:i A" }}
+                        </button>
+                    {% empty %}
+                        <p>No slots available</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+
+            <!-- Financials & Activity Card -->
+            <div class="info-card animate slide-up-2">
+                <div class="card-header">
+                    <h3>
+                        <i class="fa-solid fa-chart-line"></i>
+                        Financials & Activity
+                    </h3>
+                    <a href="../Dr_Board/Wallet.html" class="view-link">View History</a>
+                </div>
+            
+                <div class="balance-card">
+                    <p>Total Wallet Balance</p>
+                    <p class="balance-amount">12,450.00 EGP</p>
+                </div>
+            
+                <div class="mini-stats">
+                    <div class="stat-card Approved">
+                        <p class="stat-label">Completed Requests</p>
+                        <div>
+                            <i class="bi bi-check2-circle"></i>
+                            <p class="stat-value">{{ completed }}</p>
+                        </div>
+                    </div>
+                    <div class="stat-card Pending">
+                        <p class="stat-label">Pending Requests</p>
+                        <div>
+                            <i class="ri-survey-line"></i>
+                            <p class="stat-value">{{ pending }}</p>
                         </div>
                     </div>
                 </div>
-            </main>
+            </div>
         </div>
-    </div>
+    </main>
+{% endblock main %}
+
+{% block script %}
     <script>
-        const scissors = document.getElementById("scissorsTool");
-        const uploadInput = document.getElementById("certificateUpload");
-        const board = document.getElementById("certificateBoard");
-        const viewer = document.getElementById("certificateViewer");
-        const viewerImg = document.getElementById("viewerImage");
+function selectDay(el) {
+    document.querySelectorAll('.day-btn').forEach(d => d.classList.remove('active'));
+    el.classList.add('active');
+}
 
-        // Upload
-        uploadInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-        
-            const reader = new FileReader();
-            reader.onload = (event) => createCertificateFrame(event.target.result);
-            reader.readAsDataURL(file);
-            uploadInput.value = ''; 
-        });
-
-        // HTML Tags
-        function createCertificateFrame(src) {
-            const frame = document.createElement('div');
-            frame.className = 'certificate-frame';
-        
-            const stringRight = document.createElement('span');
-            stringRight.className = 'string-right';
-            frame.appendChild(stringRight);
-        
-            const img = document.createElement('img');
-            img.src = src;
-            frame.appendChild(img);
-        
-            img.addEventListener('click', (e) => {                          //<div id="viewer">
-                e.stopPropagation();                                       //     <img id="viewerImg">
-                viewerImg.src = img.src;                                  // </div>
-                viewer.classList.add('active');
-            });
-            board.appendChild(frame);                                         
-        }
-
-        viewer.addEventListener('click', () => {
-            viewer.classList.remove('active');
-        });
-
-        // Scissors
-        let scissorsActive = false;
-        scissors.setAttribute('draggable', 'true');
-
-        scissors.addEventListener('dragstart', (e) => {
-            scissorsActive = true;
-        });
-
-        board.addEventListener('dragover', (e) => e.preventDefault());
-
-        board.addEventListener('drop', (e) => {
-            e.preventDefault();
-            if (!scissorsActive) return; 
-        
-            const target = e.target.closest('.certificate-frame');
-            if (target) {
-                target.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-                target.style.transform = 'scale(0) rotate(-10deg)';
-                target.style.opacity = '0';
-                setTimeout(() => target.remove(), 300);
-            }
-        
-            scissorsActive = false;
-        });
-
+function selectSlotPill(el) {
+    el.classList.toggle('active');
+}
     </script>
-{% endblock %}
+{% endblock script %}

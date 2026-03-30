@@ -1,121 +1,103 @@
 {% extends 'doctor_base.html' %}
+
+{% block title %}<title>Done Requests</title>{% endblock %}
+
 {% block sidebar %}
-            <aside class="aside">
-                            <a href="{% url 'doctor:doctor_dashboard' %}" class="aside-item">
-                                <i class="bi bi-person"></i>
-                                <span>Profile</span>
-                            </a>
-                            <a href="{% url 'doctor:doctor_requests' 'pending' %}" class="aside-item active">
-                                <i class="ri-file-list-line"></i>
-                                <span>Requests</span>
-                            </a>
-                            <a href="../Dr_Board/Notifications.html" class="aside-item">
-                                <i class="fa-regular fa-bell"></i>
-                                <span>Notifications</span>
-                            </a>
-                            <a href="../Dr_Board/Wallet.html" class="aside-item">
-                                <i class="ri-wallet-3-line"></i>
-                                <span>Wallet</span>
-                            </a>
-                            <a href="../Dr_Board/Complaints.html" class="aside-item">
-                                <i class="ri-error-warning-line"></i>
-                                <span>Complaints</span>
-                            </a>
-                        </aside>
-        {% endblock sidebar %}
+    <aside class="aside">
+        <a href="{% url 'doctor:doctor_dashboard' %}" class="aside-item">
+            <i class="bi bi-person"></i><span>Profile</span>
+        </a>
+        <a href="{% url 'doctor:doctor_requests' 'pending' %}" class="aside-item active">
+            <i class="ri-file-list-line"></i><span>Requests</span>
+        </a>
+        <a href="../Dr_Board/Notifications.html" class="aside-item">
+            <i class="fa-regular fa-bell"></i><span>Notifications</span>
+        </a>
+        <a href="../Dr_Board/Wallet.html" class="aside-item">
+            <i class="ri-wallet-3-line"></i><span>Wallet</span>
+        </a>
+        <a href="../Dr_Board/Complaints.html" class="aside-item">
+            <i class="ri-error-warning-line"></i><span>Complaints</span>
+        </a>
+    </aside>
+</aside>
+{% endblock %}
 
-    {% block content %}
-            <!-- Main Content -->
-            <main class="main-content">
-                
-                <div class="requests-sticky">
-                    <div class="requests-header">
-                        <div class="header-text">
-                            <h2>Requests</h2>
-                            <p>Manage incoming consultation requests</p>
-                        </div>
-                        <button class="filter-button">
-                            <b><i class="bi bi-funnel"></i> Filter</b>
-                        </button>
-                    </div>
+{% block topbar_title %}
+    <h2 class="topbar-title">Requests</h2>
+{% endblock %}
 
-                    <div class="tabs-navigation">
-                        <button class="tab-link" data-status="pending" onclick="window.location.href='{% url 'doctor:doctor_requests' 'pending' %}'">Pending</button>
-                        <button class="tab-link" data-status="accepted" onclick="window.location.href='{% url 'doctor:doctor_requests' 'accepted' %}'">Accepted</button>
-                        <button class="tab-link active" data-status="done" onclick="window.location.href='{% url 'doctor:doctor_requests' 'completed' %}'">Done</button>
-                    </div>
-                </div>
-                <div class="requests-grid">
-                {% if completed %}
-                {% for request in completed %}
-                    <div class="request-card-item">
-                        <!-- Top Section -->
-                        <div class="card-top-section">
-                            <div class="patient-meta">
-                                <div class="patient-avatar-mini">
-                                    <i class="bi bi-person-circle"></i>
-                                </div>
-                            
-                                <div class="patient-name-info">
-                                    <h3>{{ request.patient.user.first_name }} {{ request.patient.user.last_name }}</h3>
-                                    <p>
-                                        <i class="bi bi-calendar3"></i> {{ request.date }}
-                                        &nbsp; • &nbsp;
-                                        <i class="bi bi-clock"></i> {{ request.time }}  
-                                    </p>
-                                </div>
-                            </div>
-                            <span class="status-pill Approved">DONE</span>
-                        
+{% block main %}
+<main class="main-content">
+
+    <div class="requests-sticky">
+        <div class="requests-header">
+            <div class="header-text">
+                <h2>Requests</h2>
+                <p>Manage incoming consultation requests</p>
+            </div>
+            <button class="filter-button">
+                <b><i class="bi bi-funnel"></i> Filter</b>
+            </button>
+        </div>
+        <div class="tabs-navigation">
+            <button class="tab-link" data-status="pending" onclick="window.location.href='{% url 'doctor:doctor_requests' 'pending' %}'">Pending</button>
+            <button class="tab-link" data-status="accepted" onclick="window.location.href='{% url 'doctor:doctor_requests' 'accepted' %}'">Accepted</button>
+            <button class="tab-link active" data-status="done" onclick="window.location.href='{% url 'doctor:doctor_requests' 'completed' %}'">Done</button>
+        </div>
+    </div>
+
+    <div class="requests-grid">
+        {% if completed %}
+            {% for c in completed %}
+            <div class="request-card-item animate slide-up">
+
+                <div class="card-top-section">
+                    <div class="patient-meta">
+                        <div class="patient-avatar-mini">
+                            <i class="bi bi-person-circle"></i>
                         </div>
-                    
-                        <!-- Address -->
-                        <div class="info-group location-info">
+                        <div class="patient-name-info">
+                            <h3>{{ c.patient.user.first_name }} {{ c.patient.user.last_name }}</h3>
                             <p>
-                                <i class="bi bi-geo-alt"></i>
-                                {{ request.patient.get_governorate_display }} / {{ request.patient.address }}
+                                <i class="bi bi-calendar3"></i> {{ c.date }}
+                                &nbsp; • &nbsp;
+                                <i class="bi bi-clock"></i> {{ c.time }}
                             </p>
                         </div>
-                        <hr style="margin:15px 0; border:1px solid #F0F4F8;">
-                    
-                        <!-- Condition -->
-                        <div class="Condition">
-                            <label>Condition</label>
-                            <span class="condition-pill">Chest Pain</span>
-                        </div>
-                        <div class="description-box">
-                            {{ request.disease_description }}
-                        </div>
-                    
-                        <!-- Price Section -->
-                        <div class="price-summary">
-                            <div>
-                                <label>Total Price</label>
-                                <p class="total-price">{{ request.total_price }} EGP</p>
-                            </div>
-                            <div class="net-income-box">
-                                <label>Net Income</label>
-                                <p class="net-income">{{ request.net_income }} EGP</p>
-                            </div>
-                        </div>
-                    
-                        <!-- Footer Actions -->
-                        <div class="card-footer-actions details-footer">
-                            <button class="btn-action edit">
-                                <i class="bi bi-download"></i> Download Report
-                            </button>
-                        </div>
                     </div>
-                {% endfor %}
-                {% else %}
-                    <div class="no-requests-placeholder">
-                        <h3>No Completed Requests</h3>
-                        <p>Once you complete consultations, they will appear here.</p>
-                    </div>
-                {% endif %}
+                    <span class="status-pill Approved">DONE</span>
                 </div>
-            </main>
-        </div>
 
+                <div class="info-group location-info">
+                    <p><i class="bi bi-geo-alt"></i> {{ c.governorate }} / {{ c.address }}</p>
+                </div>
+                <hr style="margin:15px 0; border:1px solid #F0F4F8;">
+
+                <div class="disease-section">
+                    <label>DESCRIPTION</label>
+                </div>
+                <div class="description-box">
+                    {{ c.disease_description }}
+                </div>
+
+                <div class="price-summary">
+                    <div>
+                        <label>Total Price</label>
+                        <p class="total-price">{{ c.total_price }} EGP</p>
+                    </div>
+                    <div class="net-income-box">
+                        <label>Net Income</label>
+                        <p class="net-income">{{ c.net_income }} EGP</p>
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No completed requests.</p>
+        {% endif %}
     </div>
-{% endblock content %}
+
+</main>
+{% endblock %}

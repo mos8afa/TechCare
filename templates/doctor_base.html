@@ -4,7 +4,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TECH CARE</title>
+
+    {% block title %}
+
+    {% endblock title %}
 
     <link rel="stylesheet" href="{% static 'Css/animations.css' %}">
     <link rel="stylesheet" href="{% static 'Css/Dr_Board.css' %}">
@@ -17,40 +20,39 @@
 </head>
 <body>  
     <div class="dashboard">
-
-        <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="logo">
                     <span class="logo-icon">
-                        <img src="{% static 'img/logo.png' %}" alt="">
+                        <img src="{% static 'img/logo.png' %}" alt="logo">
                     </span>                
                     <div>
                         <h2>TechCare</h2>
-                        <p>Care is near, nothing to fear.</p>
+                        <p>Medical Portal</p>
                     </div>
                     <button class="sidebar-toggle">
                         <i class="bi bi-layout-sidebar-inset-reverse"></i>
                     </button>
                 </div>
             </div>
+        {% block sidebar %}
+        
+        {% endblock sidebar %}
 
-            {% block sidebar %}
-            
-            {% endblock %}
-        </aside>
 
         <div style="flex:1; display:flex; flex-direction:column;">
         
             <!-- Top Navbar -->
             <div class="topbar">
-                <h2 class="topbar-title">Profile</h2>
+                {% block topbar_title %}
+                
+                {% endblock topbar_title %}
 
                 <div class="topbar-right">
+
+                    {% comment %} notificatin {% endcomment %}
                     <div class="topbar-icon" id="notificationBtn">
                         <i class="fa-regular fa-bell"></i>
-                        
-
                         <div class="inbox" id="notificationBox">
                             <div class="notification-item" onclick="window.location.href='Notifications.html'">
                                 <img src="https://randomuser.me/api/portraits/men/32.jpg">
@@ -68,22 +70,29 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
+
                     <hr class="line">
-                    <div class="topbar-profile" onclick="window.location.href='{% url "doctor:doctor_dashboard"%}'">
+                    <div class="topbar-profile" onclick="window.location.href='{% url "doctor:doctor_dashboard"%}' ">
                         <div class="topbar-user-info">
                             <h4>{{name}}</h4>
-                            <span>{{ specification }}</span>
+                            <span>{{specification}}</span>
                         </div>
-                        <img src="{{ profile_pic.url }}" alt="Doctor">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="{{name}}">
                     </div>
                 </div>
             </div>
-            {% block content %}
+        
+            {% block main %}
             
-            {% endblock %}
+            {% endblock main %}
         </div>
     </div>
 </body>
     <script src="{% static 'JS/Board.js' %}"></script>
 </html>
+
+{% block script %}
+
+{% endblock script %}

@@ -25,7 +25,7 @@ class CustomUserAdmin(UserAdmin):
 
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ('user', 'gender', 'phone_number', 'governorate')
+    list_display = ('user', 'gender', 'phone_number')
 
 @admin.register(Doctor)
 class DoctorAdmin(admin.ModelAdmin):

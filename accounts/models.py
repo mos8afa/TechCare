@@ -340,4 +340,6 @@ def get_provider_days_with_dates(provider_days):
             "date": date.date(),
         })
 
+        result.sort(key=lambda x: x['date'])
+
     return result

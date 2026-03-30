@@ -36,15 +36,29 @@ def doctor_dashboard(request):
 
     days = get_provider_days_with_dates(days)
 
+    selected_day = request.GET.get('day')
+
     morning_slots = []
     evening_slots = []
 
-    if request.method == 'POST':
-        input_day = request.POST.get('day')
+    if selected_day:
+        slots = TimeSlots.objects.filter(
+            doctor=doctor,
+            day=selected_day
+        ).order_by('time')
+
+        for slot in slots:
+            if slot.time < time(12, 0):
+                morning_slots.append(slot)
+            else:
+                evening_slots.append(slot)
+
+    if not selected_day and days:
+        selected_day = days[0]['day']
 
         slots = TimeSlots.objects.filter(
             doctor=doctor,
-            day=input_day   
+            day=selected_day
         ).order_by('time')
 
         for slot in slots:
@@ -67,6 +81,7 @@ def doctor_dashboard(request):
         'phone_number':phone_num,
         'email':email,
         'days':days,
+        'selected_day': selected_day,
         'morning_slots':morning_slots,
         'evening_slots':evening_slots,
     })
@@ -182,7 +197,7 @@ def doctor_requests(request, type):
         "specification": specification,
     }
 
-    if type == 'pending' or 'edited' or type is None:
+    if type in ('pending', 'edited') or type is None:
         return render(request, 'doctor/requests_pending.html', {
             **context_base,
             "pending": pending,
@@ -206,36 +221,42 @@ def doctor_requests(request, type):
 def edit_time_slots(request):
     if request.user.role != 'doctor':
         return redirect('login')
-    
-    doctor = Doctor.objects.get(user = request.user)
+
+    doctor = Doctor.objects.get(user=request.user)
+
     days = TimeSlots.objects.filter(doctor=doctor).values_list('day', flat=True).distinct()
 
     days = get_provider_days_with_dates(days)
 
-    morning_slots = []
-    evening_slots = []
-
     if request.method == 'POST':
-        input_day = request.POST.get('day')
-        input_time = request.POST.get('time')
-
-        slots = TimeSlots.objects.filter(
-            doctor=doctor,
-            day=input_day   
-        ).order_by('time')
+        selected_day = request.POST.get('day')
+        input_time =request.POST.get('slot_time')
 
         exists = TimeSlots.objects.filter(
-            doctor=doctor,
-            day=input_day,
-            time=input_time
+        doctor=doctor,
+        day=selected_day,
+        time=input_time
         ).exists()
 
         if not exists:
             TimeSlots.objects.create(
             doctor=doctor,
-            day=input_day,
+            day=selected_day,
             time=input_time
-            )            
+        )
+        
+        return redirect(request.path)
+
+    selected_day = request.GET.get('day')
+
+    morning_slots = []
+    evening_slots = []
+
+    if selected_day:
+        slots = TimeSlots.objects.filter(
+            doctor=doctor,
+            day=selected_day
+        ).order_by('time')
 
         for slot in slots:
             if slot.time < time(12, 0):
@@ -243,8 +264,23 @@ def edit_time_slots(request):
             else:
                 evening_slots.append(slot)
 
-    return render(request, 'doctor/edit_slots.html', {
-    'days': days,
-    'morning_slots': morning_slots,
-    'evening_slots': evening_slots,
-})
+    if not selected_day and days:
+        selected_day = days[0]['day']
+
+        slots = TimeSlots.objects.filter(
+            doctor=doctor,
+            day=selected_day
+        ).order_by('time')
+
+        for slot in slots:
+            if slot.time < time(12, 0):
+                morning_slots.append(slot)
+            else:
+                evening_slots.append(slot)
+
+    return render(request, 'doctor/time_slots.html', {
+        'days': days,
+        'morning_slots': morning_slots,
+        'evening_slots': evening_slots,
+        'selected_day': selected_day,
+    })
