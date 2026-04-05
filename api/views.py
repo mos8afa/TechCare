@@ -1,4 +1,3 @@
-from email import errors
 import random
 from cryptography.fernet import Fernet
 import json
@@ -10,9 +9,14 @@ from django.core.mail import send_mail
 from project.settings import EMAIL_HOST_USER, FERNET_KEY
 from rest_framework_simplejwt.tokens import RefreshToken
 import accounts.validations
-from accounts.models import Nurse, Patient, PendingUser, Doctor, Donor , Pharmacist
+from accounts.models import Nurse, Patient, PendingUser, Doctor, Donor , Pharmacist, get_provider_days_with_dates, TimeSlots
+
 from django.contrib.auth.hashers import make_password
 from rest_framework.permissions import IsAuthenticated
+
+from django.db.models import Avg
+from datetime import date, time, timedelta
+
 
 User = get_user_model()
 
@@ -513,3 +517,307 @@ def resend_otp(request):
             return Response({"error": "User not found"}, status=404)
 
     return Response({"error": "Invalid source"}, status=400)
+
+
+########################################################
+####################### DOCTOR #########################
+########################################################
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def doctor_dashboard(request):
+    if request.user.role != "doctor":
+        return Response({"error": "Unauthorized"}, status=401)
+
+    doctor = Doctor.objects.get(user=request.user)
+
+    name = "Dr. " + doctor.user.first_name + " " + doctor.user.last_name
+    specification = doctor.get_specification_display()
+    price = doctor.price
+    governorate = doctor.get_governorate_display()
+    address = doctor.address
+    brief = doctor.brief
+    profile_pic = doctor.profile_pic.url if doctor.profile_pic else None
+    email = doctor.user.email
+    phone_num = doctor.phone_number
+
+    doctor_requests = doctor.doctor_requests.all()
+    pending = doctor_requests.filter(status__in=['pending', 'edited']).count()
+    completed = doctor_requests.filter(status='completed').count()
+
+    if doctor.rates.exists():
+        average_rating = doctor.rates.aggregate(Avg('rate'))['rate__avg'] or 0
+        average_rating = round(average_rating)
+    else:
+        average_rating = 0
+
+    days = TimeSlots.objects.filter(doctor=doctor).values_list('day', flat=True).distinct()
+    days = get_provider_days_with_dates(days)
+
+    selected_day = request.GET.get('day')
+
+    morning_slots = []
+    evening_slots = []
+
+    def build_slot(slot):
+        return {
+            "id": slot.id,
+            "time": slot.time.strftime("%H:%M"),
+            "day": slot.day,
+        }
+
+    if selected_day:
+        slots = TimeSlots.objects.filter(doctor=doctor, day=selected_day).order_by('time')
+        for slot in slots:
+            if slot.time < time(12, 0):
+                morning_slots.append(build_slot(slot))
+            else:
+                evening_slots.append(build_slot(slot))
+
+    if not selected_day and days:
+        selected_day = days[0]['day']
+        slots = TimeSlots.objects.filter(doctor=doctor, day=selected_day).order_by('time')
+        for slot in slots:
+            if slot.time < time(12, 0):
+                morning_slots.append(build_slot(slot))
+            else:
+                evening_slots.append(build_slot(slot))
+
+    return Response({
+        "name": name,
+        "specification": specification,
+        "price": price,
+        "governorate": governorate,
+        "address": address,
+        "average_rating": average_rating,
+        "brief": brief,
+        "profile_pic": profile_pic,
+        "pending": pending,
+        "completed": completed,
+        "phone_number": phone_num,
+        "email": email,
+        "days": [{"day": d["day"], "date": str(d["date"])} for d in days],
+        "selected_day": selected_day,
+        "morning_slots": morning_slots,
+        "evening_slots": evening_slots,
+    }, status=200)
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def edit_doctor_profile(request):
+    doctor = Doctor.objects.get(user=request.user)
+
+    name = "Dr. " + doctor.user.first_name + " " + doctor.user.last_name
+    specification = doctor.get_specification_display()
+    profile_pic = doctor.profile_pic.url if doctor.profile_pic else None
+
+    if request.method == 'GET':
+        return Response({
+            "name": name,
+            "specification": specification,
+            "profile_pic": profile_pic,
+            "username": doctor.user.username,
+            "phone_number": doctor.phone_number,
+            "address": doctor.address,
+            "brief": doctor.brief,
+            "price": doctor.price,
+            "governorate": doctor.governorate,
+        }, status=200)
+
+    User = get_user_model()
+
+    phone_number = request.data.get('phone_number')
+    address = request.data.get('address')
+    brief = request.data.get('brief')
+    username = request.data.get('username')
+    price = request.data.get('price')
+    governorate = request.data.get('governorate')
+
+    if User.objects.filter(username=username).exclude(id=request.user.id).exists():
+        return Response({"error": "Username already exists"}, status=400)
+
+    if not validations.validate_username(username):
+        return Response({"error": "Username must be lowercase, allowed letters, numbers, _ or ., and cannot contain forbidden words."}, status=400)
+
+    if not validations.validate_phone(phone_number):
+        return Response({"error": "Phone number must start with 0 or 1."}, status=400)
+
+    if not validations.validate_address(address):
+        return Response({"error": "can't use <,> or forbidden words"}, status=400)
+
+    if not validations.validate_address(brief):
+        return Response({"error": "Brief can't contain forbidden words."}, status=400)
+
+    doctor.user.username = username
+    doctor.phone_number = phone_number
+    doctor.address = address
+    doctor.brief = brief
+    doctor.price = price
+    doctor.governorate = governorate
+    doctor.profile_pic = request.FILES.get('profile_pic') or doctor.profile_pic
+    doctor.user.save()
+    doctor.save()
+
+    return Response({"message": "Profile updated successfully"}, status=200)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def doctor_requests(request, type):
+    if request.user.role != 'doctor':
+        return Response({"error": "Unauthorized"}, status=401)
+
+    doctor = Doctor.objects.get(user=request.user)
+
+    name = "Dr. " + doctor.user.first_name + " " + doctor.user.last_name
+    specification = doctor.get_specification_display()
+    profile_pic = doctor.profile_pic.url if doctor.profile_pic else None
+
+    all_requests = doctor.doctor_requests.all()
+
+    def serialize_request(req):
+        return {
+            "id": req.id,
+            "status": req.status,
+            "date": str(req.date),
+            "time": str(req.time),
+        }
+
+    base = {
+        "name": name,
+        "specification": specification,
+        "profile_pic": profile_pic,
+    }
+
+    if type in ('pending', 'edited') or type is None:
+        pending = list(map(serialize_request, all_requests.filter(status='pending').order_by('-date', '-time')))
+        edited = list(map(serialize_request, all_requests.filter(status='edited').order_by('-date', '-time')))
+        return Response({**base, "pending": pending, "edited": edited}, status=200)
+
+    elif type == 'accepted':
+        accepted = list(map(serialize_request, all_requests.filter(status='accepted').order_by('-date', '-time')))
+        return Response({**base, "accepted": accepted}, status=200)
+
+    elif type == 'completed':
+        completed = list(map(serialize_request, all_requests.filter(status='completed').order_by('-date', '-time')))
+        return Response({**base, "completed": completed}, status=200)
+
+    else:
+        return Response({"error": "Invalid request type"}, status=400)
+
+
+def get_ordered_week_days():
+    today = date.today()
+
+    days_map = [
+        'monday', 'tuesday', 'wednesday',
+        'thursday', 'friday', 'saturday', 'sunday'
+    ]
+
+    today_index = today.weekday()
+    ordered_days = []
+
+    for i in range(7):
+        day_index = (today_index + i) % 7
+        day_name = days_map[day_index]
+        day_date = today + timedelta(days=i)
+        ordered_days.append({
+            'day': day_name,
+            'date': day_date
+        })
+
+    return ordered_days
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def edit_time_slots(request):
+    if request.user.role != 'doctor':
+        return Response({"error": "Unauthorized"}, status=401)
+
+    doctor = Doctor.objects.get(user=request.user)
+    days = get_ordered_week_days()
+
+    selected_day = request.GET.get('day') or days[0]['day']
+
+    def build_slot(slot):
+        return {
+            "id": slot.id,
+            "time": slot.time.strftime("%H:%M"),
+            "day": slot.day,
+        }
+
+    if request.method == 'POST':
+        input_day = request.data.get('day')
+        input_time = request.data.get('time')
+
+        if not input_day:
+            return Response({"error": "Day is required"}, status=400)
+
+        if not input_time:
+            return Response({"error": "Time is required"}, status=400)
+
+        exists = TimeSlots.objects.filter(
+            doctor=doctor,
+            day=input_day,
+            time=input_time
+        ).exists()
+
+        if not exists:
+            TimeSlots.objects.create(
+                doctor=doctor,
+                day=input_day,
+                time=input_time
+            )
+
+        slots = TimeSlots.objects.filter(doctor=doctor, day=input_day).order_by('time')
+        morning_slots = []
+        evening_slots = []
+
+        for slot in slots:
+            if slot.time < time(12, 0):
+                morning_slots.append(build_slot(slot))
+            else:
+                evening_slots.append(build_slot(slot))
+
+        return Response({
+            "message": "Time slot added successfully",
+            "selected_day": input_day,
+            "morning_slots": morning_slots,
+            "evening_slots": evening_slots,
+        }, status=201)
+
+    slots = TimeSlots.objects.filter(doctor=doctor, day=selected_day).order_by('time')
+    morning_slots = []
+    evening_slots = []
+
+    for slot in slots:
+        if slot.time < time(12, 0):
+            morning_slots.append(build_slot(slot))
+        else:
+            evening_slots.append(build_slot(slot))
+
+    return Response({
+        "days": [{"day": d["day"], "date": str(d["date"])} for d in days],
+        "selected_day": selected_day,
+        "morning_slots": morning_slots,
+        "evening_slots": evening_slots,
+    }, status=200)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_time_slot(request, slot_id):
+    if request.user.role != 'doctor':
+        return Response({"error": "Unauthorized"}, status=401)
+
+    doctor = Doctor.objects.get(user=request.user)
+
+    try:
+        slot = TimeSlots.objects.get(id=slot_id, doctor=doctor)
+        slot.delete()
+        return Response({"message": "Time slot deleted successfully"}, status=200)
+    except TimeSlots.DoesNotExist:
+        return Response({"error": "Time slot not found"}, status=404)
