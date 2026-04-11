@@ -13,6 +13,7 @@ import 'Form/donor_form_screen.dart';
 import 'Form/pharmacy_form_screen.dart';
 
 import 'Doctor/doctor_profile_screen.dart';
+import 'Nurse/nurse_profile_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
           error: const Color(0xFFE53E3E),
         ),
       ),
-      initialRoute: '/doctor-profile',
+      initialRoute: '/nurse-profile',
       routes: {
         '/login':             (context) => const LoginScreen(),
         '/register':          (context) => const RegisterScreen(),
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
         '/home':             (context) => const Scaffold(body: Center(child: Text('Home - Coming Soon'))),
 
         '/doctor-profile':   (context) => const DoctorProfileScreen(),
+        '/nurse-profile':    (context) => const NurseProfileScreen(),
       },
     );
   }
