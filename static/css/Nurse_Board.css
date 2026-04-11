@@ -180,7 +180,7 @@ body {
     transition: left 0.3s ease;
 }
 
-.sidebar.collapsed ~ .content-wrapper .topbar {
+.sidebar.collapsed~.content-wrapper .topbar {
     left: var(--sidebar-collapsed-width);
 }
 
@@ -306,7 +306,7 @@ body {
     transition: margin-left 0.3s ease;
 }
 
-.sidebar.collapsed ~ .content-wrapper {
+.sidebar.collapsed~.content-wrapper {
     margin-left: var(--sidebar-collapsed-width);
 }
 
@@ -317,6 +317,7 @@ body {
     align-items: center;
     padding: 32px;
     min-width: 0;
+    background-color: #f8fafc;
 }
 
 .main-content-nurse-requst {
@@ -395,46 +396,69 @@ body {
     margin: 20px 0;
 }
 
+/* ---- Profile Info Grid (زي الصورة) ---- */
 .profile-info {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px 40px;
+    gap: 28px 60px;
+    /* مسافات زي الصورة */
+    margin-top: 10px;
 }
 
+/* كل عنصر */
 .info-item {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
+    align-items: flex-start;
+    gap: 14px;
 }
 
-.info-item .info-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--text-gray);
+/* الأيقونة */
+.info-item i {
+    font-size: 22px;
+    color: #94a3b8;
+    /* رمادي فاتح */
+    margin-top: 2px;
+}
+
+/* العنوان (Email Address) */
+.info-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 1px;
     text-transform: uppercase;
+    margin-bottom: 2px;
 }
 
-.info-item .info-value {
+/* القيمة */
+.info-value,
+.info-value-phone {
+    font-size: 16px;
     font-weight: 500;
+    color: #1e293b;
+    line-height: 1.4;
 }
 
-.info-item .info-value-phone {
-    font-weight: 500;
-    white-space: nowrap;
-}
-
+/* ---- About Section ---- */
 .margin {
-    margin-top: 30px;
+    margin-top: 35px;
 }
 
 .margin strong {
-    font-weight: normal;
-    color: var(--text-gray);
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 1px;
+    text-transform: uppercase;
     margin-bottom: 10px;
+}
+
+.margin p {
+    font-size: 16px;
+    color: #475569;
+    line-height: 1.8;
+    max-width: 95%;
 }
 
 .specialization-tags span {
@@ -564,7 +588,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 100%; /* تأكد أن الحاوية تأخذ العرض الكامل */
+    width: 100%;
+    /* تأكد أن الحاوية تأخذ العرض الكامل */
 }
 
 .stat-card i {
@@ -810,6 +835,47 @@ body {
     transform: scale(1.15);
 }
 
+.empty-slot {
+    border: 2px dashed #CBD5E1;
+    background-color: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 150px;
+    box-shadow: none;
+}
+
+.empty-slot:hover {
+    background-color: #F8FAFC;
+    border-color: var(--primary-color);
+    box-shadow: none;
+    transform: none;
+}
+
+.empty-placeholder {
+    color: #94A3B8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.3s ease;
+}
+
+.empty-slot:hover .empty-placeholder {
+    color: var(--primary-color);
+}
+
+.empty-placeholder i {
+    font-size: 24px;
+}
+
+.empty-placeholder p {
+    margin: 0;
+    font-weight: 500;
+}
+
 /* ===== 7. Requests Page ===== */
 .requests-sticky {
     position: sticky;
@@ -904,9 +970,17 @@ body {
     animation: fadeInUp 0.5s ease-out forwards;
 }
 
-.request-card-item:nth-child(1) { animation-delay: 0.1s; }
-.request-card-item:nth-child(2) { animation-delay: 0.2s; }
-.request-card-item:nth-child(3) { animation-delay: 0.3s; }
+.request-card-item:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.request-card-item:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.request-card-item:nth-child(3) {
+    animation-delay: 0.3s;
+}
 
 .card-top-section {
     display: flex;
@@ -971,12 +1045,12 @@ body {
     color: var(--primary-color);
 }
 
-.pending-time-date div > span {
+.pending-time-date div>span {
     font-size: 15px;
     color: var(--text-gray);
 }
 
-.pending-time-date div > p {
+.pending-time-date div>p {
     font-size: 15px;
     font-weight: bold;
 }
@@ -985,7 +1059,7 @@ body {
     margin-top: -10px;
 }
 
-.discription-service > label {
+.discription-service>label {
     font-size: 13px;
     font-weight: bold;
 }
@@ -1002,7 +1076,7 @@ body {
     border-radius: 15px;
 }
 
-.services-total > label {
+.services-total>label {
     font-size: 13px;
     font-weight: bold;
     letter-spacing: 2px;
@@ -1016,12 +1090,12 @@ body {
     margin-top: 5px;
 }
 
-.services-each > label {
+.services-each>label {
     font-size: 15px;
     color: #4b5563;
 }
 
-.services-each > p {
+.services-each>p {
     font-size: 15px;
     font-weight: bold;
 }
@@ -1071,7 +1145,7 @@ body {
 .btn-action {
     padding: 10px 18px;
     border: none;
-    border-radius: 10px;
+    border-radius: 21px;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
@@ -1090,6 +1164,158 @@ body {
 
 .btn-action.accept:hover {
     background: var(--secondary-color);
+}
+
+/* ===== AVAILABLE TIME SLOTS NEW CARD ===== */
+.ats-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 24px 30px;
+    border: 1px solid #F1F5F9;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    margin-bottom: 30px;
+}
+
+.ats-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.ats-icon {
+    width: 36px;
+    height: 36px;
+    background-color: #EFF6FF;
+    color: #3B82F6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.ats-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #334155;
+    margin: 0;
+}
+
+.ats-dates-container {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+}
+
+.ats-dates-container::-webkit-scrollbar {
+    height: 4px;
+}
+.ats-dates-container::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+    border-radius: 4px;
+}
+.ats-dates-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1; 
+    border-radius: 4px;
+}
+
+.ats-date-card {
+    min-width: 65px;
+    height: 85px;
+    border-radius: 12px;
+    border: 1px solid #F1F5F9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #FFFFFF;
+}
+
+.ats-date-card.active, .ats-date-card:hover {
+    background-color: #3B82F6;
+    border-color: #3B82F6;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.25);
+}
+
+.ats-day {
+    font-size: 11px;
+    font-weight: 700;
+    color: #94A3B8;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.ats-date {
+    font-size: 20px;
+    font-weight: 700;
+    color: #475569;
+}
+
+.ats-date-card.active .ats-day,
+.ats-date-card.active .ats-date,
+.ats-date-card:hover .ats-day,
+.ats-date-card:hover .ats-date {
+    color: #FFFFFF;
+}
+
+.ats-times-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+    max-width: 600px;
+}
+
+.ats-time-btn {
+    padding: 10px 10px;
+    background-color: #F8FAFC;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.ats-time-btn.active, .ats-time-btn:hover {
+    background-color: #3B82F6;
+    color: #FFFFFF;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.25);
+}
+
+.ats-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -45px; /* Pull the button up to align visually with the second row if possible, or just keep it below */
+}
+
+.ats-edit-btn {
+    padding: 10px 24px;
+    background-color: #FFFFFF;
+    border: 1.5px solid #3B82F6;
+    color: #3B82F6;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.ats-edit-btn:hover {
+    background-color: #EFF6FF;
+}
+
+.ats-edit-btn i {
+    font-size: 16px;
 }
 
 /* ===== 8. Responsive Design ===== */
@@ -1170,6 +1396,7 @@ body {
         opacity: 0;
         transform: translateX(-30px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -1181,6 +1408,7 @@ body {
         opacity: 0;
         transform: translateX(30px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -1191,15 +1419,19 @@ body {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
 }
 
 @keyframes scalePulse {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.02);
     }
@@ -1210,8 +1442,637 @@ body {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Time Slots Section */
+.timeslots-card {
+    width: 100%;
+    background: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.timeslots-card1 {
+    width: 100%;
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+}
+
+.timeslots-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.timeslots-container1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.timeslots-container1 .timeslots-grid {
+    gap: 24px;
+}
+
+.timeslot-nav-btn {
+    width: 36px;
+    height: 36px;
+    background: white;
+    border: 0px solid #e1e6ec00;
+    border-radius: 50%;
+    color: var(--primary-color);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+
+.timeslot-nav-btn1:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.timeslot-nav-btn:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.timeslots-grid {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    flex: 1;
+    min-width: 0;
+    margin: 0 auto;
+    scroll-snap-type: x mandatory;
+    /* الالتصاق الأفقي */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.timeslots-grid::-webkit-scrollbar {
+    display: none;
+}
+
+.timeslot-item {
+    flex-shrink: 0;
+    width: 120px;
+    /* عرض ثابت حسب التصميم */
+    text-align: center;
+    padding: 10px 0;
+    border-radius: 49px;
+    background-color: var(--bg-light);
+    font-size: 15px;
+    font-weight: 600;
+    color: #4b5563;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    scroll-snap-align: start;
+    /* يبدأ العنصر من الحافة اليسرى */
+}
+
+.timeslot-item1 {
+    flex-shrink: 0;
+    width: 120px;
+    /* عرض ثابت حسب التصميم */
+    text-align: center;
+    padding: 10px 0;
+    border-radius: 49px;
+    background-color: transparent;
+    border: rgb(214, 214, 214) solid 2px;
+    border-radius: 15px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #4b5563;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    scroll-snap-align: start;
+    /* يبدأ العنصر من الحافة اليسرى */
+}
+
+
+
+.timeslot-item1:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background-color: #F0F7FF;
+}
+
+.timeslot-item1.active-slot {
+    border-color: var(--primary-color);
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.timeslots-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.timeslots-header1 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.timeslots-header1 h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* ===== AVAILABLE TIME SLOTS (Profile Page) ===== */
+.ats-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    width: 100%;
+}
+
+.ats-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.ats-icon {
+    width: 32px;
+    height: 32px;
+    background-color: #E6F3FF;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--primary-color);
+}
+
+.ats-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1c1e;
+}
+
+.ats-dates-container {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 40px;
+    overflow-x: auto;
+    padding-bottom: 8px; /* Room for scrollbar */
+    scrollbar-width: none; /* Hide scrollbar Firefox */
+}
+.ats-dates-container::-webkit-scrollbar {
+    display: none; /* Hide scrollbar Chrome */
+}
+
+.ats-date-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 65px;
+    height: 75px;
+    border-radius: 12px;
+    border: 1px solid #E2E8F0;
+    background: #ffffff;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: 0.2s;
+}
+
+.ats-date-card:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.ats-day {
+    font-size: 12px;
+    font-weight: 600;
+    color: #718096;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+}
+
+.ats-date {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1c1e;
+}
+
+/* Make sure active state overrides perfectly */
+.ats-date-card.active, .ats-date-card[style*="background-color: var(--primary-color)"] {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(29, 137, 228, 0.2);
+}
+
+.ats-date-card.active .ats-day,
+.ats-date-card.active .ats-date {
+    color: #ffffff !important;
+}
+
+
+.ats-bottom-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.ats-times-container {
+    display: flex;
+    gap: 23px;
+    flex-wrap: wrap;
+    max-width: 70%;
+}
+
+.ats-time-btn {
+    padding: 10px 22px;
+    border-radius: 20px;
+    background: #F4F7FC;
+    color: #4b5563;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.ats-time-btn:hover {
+    background-color:var(--primary-color);
+}
+
+.ats-time-btn.active {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(29, 137, 228, 0.2);
+}
+
+.ats-edit-btn {
+    padding: 10px 24px;
+    border-radius: 20px;
+    border: 1.5px solid var(--primary-color);
+    background: transparent;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+    height: 42px; /* Ensure button aligns nicely */
+}
+
+.ats-edit-btn:hover {
+    background: #E6F3FF;
+}
+
+/* ===== EDIT TIME SLOTS PAGE ===== */
+.edit-ts-container {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.edit-ts-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 40px;
+}
+
+.edit-ts-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #1a1c1e;
+    margin-bottom: 8px;
+}
+
+.edit-ts-subtitle {
+    font-size: 15px;
+    color: #718096;
+}
+
+.edit-ts-action-col {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.edit-ts-btn-cancel {
+    background: transparent;
+    border: none;
+    color: #4b5563;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.edit-ts-btn-cancel:hover {
+    color: #1a1c1e;
+}
+
+.edit-ts-btn-save {
+    background: #0085FF;
+    border: none;
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 4px 14px rgba(0, 133, 255, 0.3);
+}
+
+.edit-ts-btn-save:hover {
+    background: #0070d6;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0, 133, 255, 0.4);
+}
+
+/* Weekly Schedule */
+.edit-ts-weekly-section {
+    margin-bottom: 40px;
+}
+
+.edit-ts-section-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: #94a3b8;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.edit-ts-days-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.edit-ts-day-card {
+    width: 82px;
+    height: 100px;
+    background: #f1f5f9;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.edit-ts-day-card:hover:not(.active) {
+    background: #e2e8f0;
+}
+
+.edit-ts-day-card.active {
+    background: #0085FF;
+    box-shadow: 0 8px 16px rgba(0, 133, 255, 0.15);
+}
+
+.edit-ts-day-card .edit-ts-day {
+    font-size: 11px;
+    font-weight: 800;
+    color: #64748b;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.edit-ts-day-card .edit-ts-date {
+    font-size: 18px;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.edit-ts-day-card.active .edit-ts-day,
+.edit-ts-day-card.active .edit-ts-date {
+    color: #ffffff;
+}
+
+/* Bottom Grid layout */
+.edit-ts-bottom-grid {
+    display: flex;
+    gap: 40px;
+}
+
+.edit-ts-sessions-col {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+
+/* Session Card */
+.edit-ts-session-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+}
+
+.edit-ts-session-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.edit-ts-session-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+}
+
+.edit-ts-session-icon.sun {
+    background: #feeddf;
+    color: #f59e0b;
+}
+
+.edit-ts-session-icon.moon {
+    background: #e0f2fe;
+    color: #0ea5e9;
+}
+
+.edit-ts-session-info h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.edit-ts-session-info p {
+    font-size: 13px;
+    color: #64748b;
+}
+
+.edit-ts-time-pills {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.edit-ts-pill {
+    padding: 13px 24px;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 100px;
+    cursor: pointer;
+    position: relative;
+    border: 2px solid transparent;
+    width: 170px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.edit-ts-pill.active {
+    background: #ffffff;
+    border: 2px solid #0085FF;
+    color: #0085FF;
+    box-shadow: 0 4px 12px rgba(0, 133, 255, 0.08);
+}
+
+.edit-ts-pill-remove {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    width: 24px;
+    height: 24px;
+    background: #b91c1c;
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+.edit-ts-pill-remove:hover {
+    transform: scale(1.1);
+}
+
+.edit-ts-pill.dashed {
+    background: transparent;
+    border: 2px dashed #cbd5e1;
+    color: #94a3b8;
+    padding: 10px 24px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border-radius: 100px;
+}
+
+.edit-ts-pill.dashed:hover {
+    background: #f8fafc;
+    border-color: #0085FF;
+    color: #0085FF;
+}
+
+/* Settings Card */ 
+
+.edit-ts-toggle-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 35px;
+    padding-top: 25px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.edit-ts-toggle-info h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.edit-ts-toggle-info p {
+    font-size: 12px;
+    color: #64748b;
+    max-width: 160px;
+    line-height: 1.4;
+}
+
+.edit-ts-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.edit-ts-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.edit-ts-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #cbd5e1;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.edit-ts-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .edit-ts-slider {
+    background-color: var(--primary-color);
+}
+
+input:checked + .edit-ts-slider:before {
+    transform: translateX(20px);
 }
