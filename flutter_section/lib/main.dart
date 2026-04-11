@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
           error: const Color(0xFFE53E3E),
         ),
       ),
-      initialRoute: '/nurse-profile',
+      initialRoute: '/login',
       routes: {
         '/login':             (context) => const LoginScreen(),
         '/register':          (context) => const RegisterScreen(),

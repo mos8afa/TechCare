@@ -1,4 +1,4 @@
-from api.views import delete_time_slot, doctor_dashboard, doctor_requests, edit_time_slots, login, Verify_OTP_login, register, verify_OTP_register, patient_register, doctor_register, nurse_register, donor_register, pharmacist_register , forget_password, verify_OTP_forget_password, reset_password, resend_otp, edit_doctor_profile
+from api.views import delete_time_slot, doctor_dashboard, doctor_requests, edit_time_slots, login, Verify_OTP_login, register, verify_OTP_register, patient_register, doctor_register, nurse_register, donor_register, pharmacist_register , forget_password, verify_OTP_forget_password, reset_password, resend_otp, edit_doctor_profile , get_user_role
 from django.urls import path
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
@@ -22,6 +22,7 @@ urlpatterns = [
     path('auth/reset-password/', reset_password, name='reset_password'),
     path('auth/resend-otp/', resend_otp, name='resend_otp'),
 #################################################################################################
+    path('auth/user-role/', get_user_role, name='get_user_role'),
     path('dashboard/', doctor_dashboard, name='doctor_dashboard'),
     path('profile/edit/', edit_doctor_profile, name='edit_doctor_profile'),
     path('requests/<str:type>/',doctor_requests, name='doctor_requests'),

@@ -5,8 +5,8 @@ import '../Doctor/doctor_requests_screen.dart';
 import '../Doctor/doctor_notifications.dart';
 import '../Doctor/doctor_wallet.dart';
 import '../Doctor/doctor_complaints.dart';
+import '../services/api_service.dart';
 
-// ─── Color Palette (matching the web CSS variables) ───────────────────────
 const Color kPrimary = Color(0xFF1D89E4);
 const Color kSecondary = Color(0xFF2179C2);
 const Color kBgLight = Color(0xFFF4F7FC);
@@ -16,7 +16,6 @@ const Color kGreen = Color(0xFF10B981);
 const Color kAmber = Color(0xFFF59E0B);
 const Color kDarkText = Color(0xFF1A1C1E);
 
-// ─── Doctor Profile Screen ─────────────────────────────────────────────────
 class DoctorProfileScreen extends StatefulWidget {
   const DoctorProfileScreen({super.key});
 
@@ -25,36 +24,33 @@ class DoctorProfileScreen extends StatefulWidget {
 }
 
 class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
+  Map<String, dynamic>? _dashboardData;
+  bool _isLoading = true;
+  String? _error;
   int _selectedDayIndex = 0;
 
-  final List<Map<String, String>> _days = [
-    {'name': 'MON', 'num': '14'},
-    {'name': 'TUE', 'num': '15'},
-    {'name': 'WED', 'num': '16'},
-    {'name': 'THU', 'num': '17'},
-    {'name': 'FRI', 'num': '18'},
-    {'name': 'SAT', 'num': '19'},
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadDashboard();
+  }
 
-  final List<String> _morningSlots = [
-    '09:00 AM',
-    '09:30 AM',
-    '10:00 AM',
-    '10:30 AM',
-    '11:00 AM',
-    '11:30 AM',
-  ];
-
-  final List<String> _eveningSlots = [
-    '04:00 PM',
-    '04:30 PM',
-    '05:00 PM',
-    '05:30 PM',
-    '06:00 PM',
-    '06:30 PM',
-    '07:00 PM',
-    '07:30 PM',
-  ];
+  Future<void> _loadDashboard({String? day}) async {
+    setState(() => _isLoading = true);
+    final result = await ApiService.getDoctorDashboard(day: day);
+    if (result.success) {
+      setState(() {
+        _dashboardData = result.data;
+        _isLoading = false;
+        _error = null;
+      });
+    } else {
+      setState(() {
+        _error = result.error;
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,21 +58,43 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
       backgroundColor: kBgLight,
       appBar: _buildAppBar(context),
       drawer: _buildDrawer(context),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            _buildProfileCard(),
-            const SizedBox(height: 20),
-            _buildBottomGrid(context),
-          ],
-        ),
-      ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator(color: kPrimary))
+          : _error != null
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(_error!, style: const TextStyle(color: Colors.red)),
+                      const SizedBox(height: 12),
+                      ElevatedButton(
+                        onPressed: () => _loadDashboard(),
+                        style: ElevatedButton.styleFrom(backgroundColor: kPrimary),
+                        child: const Text('Retry', style: TextStyle(color: Colors.white)),
+                      ),
+                    ],
+                  ),
+                )
+              : RefreshIndicator(
+                  onRefresh: () => _loadDashboard(),
+                  color: kPrimary,
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        _buildProfileCard(),
+                        const SizedBox(height: 20),
+                        _buildBottomGrid(context),
+                      ],
+                    ),
+                  ),
+                ),
     );
   }
 
-  // ── AppBar ──────────────────────────────────────────────────────────────
   PreferredSizeWidget _buildAppBar(BuildContext context) {
+    final profilePic = _dashboardData?['profile_pic'];
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -88,34 +106,19 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
           onPressed: () => Scaffold.of(ctx).openDrawer(),
         ),
       ),
-      title: const Text(
-        'Profile',
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-          color: kDarkText,
-        ),
-      ),
+      title: const Text('Profile',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kDarkText)),
       actions: [
-        _AppBarNotification(),
+        const _AppBarNotification(),
         const SizedBox(width: 12),
-        const VerticalDivider(
-          width: 1,
-          thickness: 1,
-          color: kBorderColor,
-          indent: 16,
-          endIndent: 16,
-        ),
+        const VerticalDivider(width: 1, thickness: 1, color: kBorderColor, indent: 16, endIndent: 16),
         const SizedBox(width: 12),
-        // Avatar only — no name/specialty
-        GestureDetector(
-          onTap: () {},
-          child: const CircleAvatar(
-            radius: 20,
-            backgroundImage: NetworkImage(
-              'https://randomuser.me/api/portraits/women/44.jpg',
-            ),
-          ),
+        CircleAvatar(
+          radius: 20,
+          backgroundImage: (profilePic != null && profilePic.isNotEmpty)
+              ? NetworkImage(ApiService.buildMediaUrl(profilePic)) as ImageProvider
+              : const NetworkImage('https://ui-avatars.com/api/?name=Doctor&background=1D89E4&color=fff'),
+          backgroundColor: kBgLight,
         ),
         const SizedBox(width: 16),
       ],
@@ -126,30 +129,13 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
     );
   }
 
-  // ── Drawer ──────────────────────────────────────────────────────────────
   Widget _buildDrawer(BuildContext context) {
     final items = [
-      {
-        'icon': Icons.person_outline_rounded,
-        'label': 'Profile',
-        'active': true,
-      },
+      {'icon': Icons.person_outline_rounded, 'label': 'Profile', 'active': true},
       {'icon': Icons.list_alt_rounded, 'label': 'Requests', 'active': false},
-      {
-        'icon': Icons.notifications_none_rounded,
-        'label': 'Notifications',
-        'active': false,
-      },
-      {
-        'icon': Icons.account_balance_wallet_outlined,
-        'label': 'Wallet',
-        'active': false,
-      },
-      {
-        'icon': Icons.warning_amber_rounded,
-        'label': 'Complaints',
-        'active': false,
-      },
+      {'icon': Icons.notifications_none_rounded, 'label': 'Notifications', 'active': false},
+      {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet', 'active': false},
+      {'icon': Icons.warning_amber_rounded, 'label': 'Complaints', 'active': false},
     ];
 
     return Drawer(
@@ -164,29 +150,14 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(
-                      'img/logo.png',
-                      width: 44,
-                      height: 44,
-                      fit: BoxFit.cover,
-                    ),
+                    child: Image.asset('img/logo.png', width: 44, height: 44, fit: BoxFit.cover),
                   ),
                   const SizedBox(width: 12),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
-                      Text(
-                        'TechCare',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: kPrimary,
-                        ),
-                      ),
-                      Text(
-                        'Medical Portal',
-                        style: TextStyle(fontSize: 12, color: kTextGray),
-                      ),
+                      Text('TechCare', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: kPrimary)),
+                      Text('Medical Portal', style: TextStyle(fontSize: 12, color: kTextGray)),
                     ],
                   ),
                 ],
@@ -202,35 +173,21 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(15),
                       onTap: () {
-                        final label = item['label'] as String;
                         Navigator.pop(context);
-                        _navigateToPage(context, label);
+                        _navigateToPage(context, item['label'] as String);
                       },
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 13,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
                         child: Row(
                           children: [
-                            Icon(
-                              item['icon'] as IconData,
-                              color: isActive
-                                  ? Colors.white
-                                  : const Color(0xFF4B5563),
-                              size: 22,
-                            ),
+                            Icon(item['icon'] as IconData,
+                                color: isActive ? Colors.white : const Color(0xFF4B5563), size: 22),
                             const SizedBox(width: 12),
-                            Text(
-                              item['label'] as String,
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                color: isActive
-                                    ? Colors.white
-                                    : const Color(0xFF4B5563),
-                              ),
-                            ),
+                            Text(item['label'] as String,
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    color: isActive ? Colors.white : const Color(0xFF4B5563))),
                           ],
                         ),
                       ),
@@ -245,25 +202,29 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
     );
   }
 
-  // ── Profile Card ─────────────────────────────────────────────────────────
   Widget _buildProfileCard() {
+    final data = _dashboardData!;
+    final name = data['name'] ?? '';
+    final specification = data['specification'] ?? '';
+    final price = data['price']?.toString() ?? '';
+    final phone = data['phone_number'] ?? '';
+    final email = data['email'] ?? '';
+    final governorate = data['governorate'] ?? '';
+    final address = data['address'] ?? '';
+    final brief = data['brief'] ?? '';
+    final profilePic = data['profile_pic'];
+    final avgRating = data['average_rating'] ?? 0;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x0A000000),
-            blurRadius: 10,
-            offset: Offset(0, 2),
-          ),
-        ],
+        boxShadow: const [BoxShadow(color: Color(0x0A000000), blurRadius: 10, offset: Offset(0, 2))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Row 1: Avatar (left) + Rating (right) ────────────────────
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -271,181 +232,104 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                 children: [
                   CircleAvatar(
                     radius: 52,
-                    backgroundImage: const NetworkImage(
-                      'https://randomuser.me/api/portraits/women/44.jpg',
-                    ),
+                    backgroundImage: (profilePic != null && profilePic.isNotEmpty)
+                      ? NetworkImage(ApiService.buildMediaUrl(profilePic)) as ImageProvider
+                      : const NetworkImage('https://ui-avatars.com/api/?name=Doctor&background=1D89E4&color=fff'),
                     backgroundColor: kBgLight,
                   ),
                   Positioned(
-                    right: 4,
-                    bottom: 4,
+                    right: 4, bottom: 4,
                     child: Container(
                       padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
-                        color: kGreen,
-                        shape: BoxShape.circle,
+                        color: kGreen, shape: BoxShape.circle,
                         border: Border.all(color: Colors.white, width: 2.5),
                       ),
-                      child: const Icon(
-                        Icons.check,
-                        color: Colors.white,
-                        size: 10,
-                      ),
+                      child: const Icon(Icons.check, color: Colors.white, size: 10),
                     ),
                   ),
                 ],
               ),
               const Spacer(),
-              // Rating — top right
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFCFBDC),
-                  borderRadius: BorderRadius.circular(12),
+                  color: const Color(0xFFFCFBDC), borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    ...List.generate(
-                      5,
-                      (_) => const Icon(
-                        Icons.star_border_rounded,
-                        color: kAmber,
-                        size: 18,
-                      ),
-                    ),
+                    ...List.generate(5, (i) => Icon(
+                      i < avgRating ? Icons.star_rounded : Icons.star_border_rounded,
+                      color: kAmber, size: 18,
+                    )),
                     const SizedBox(width: 8),
-                    const Text(
-                      '0 Reviews',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: kAmber,
-                      ),
-                    ),
+                    Text('$avgRating Reviews',
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kAmber)),
                   ],
                 ),
               ),
             ],
           ),
           const SizedBox(height: 16),
-
-          // ── Name + Verified tag ───────────────────────────────────────
           Wrap(
             spacing: 10,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              const Text(
-                'Dr. Sarah Mansour',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  color: kDarkText,
-                ),
-              ),
+              Text(name,
+                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: kDarkText)),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 5,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                 decoration: BoxDecoration(
-                  color: kPrimary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(30),
+                  color: kPrimary.withOpacity(0.1), borderRadius: BorderRadius.circular(30),
                 ),
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.check_circle_rounded, size: 13, color: kPrimary),
                     SizedBox(width: 5),
-                    Text(
-                      'Verified Doctor',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: kPrimary,
-                      ),
-                    ),
+                    Text('Verified Doctor',
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kPrimary)),
                   ],
                 ),
               ),
             ],
           ),
           const SizedBox(height: 4),
-
-          // ── Specialty ─────────────────────────────────────────────────
-          const Text(
-            'Senior Cardiologist | Heart Specialist',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: kPrimary,
-            ),
-          ),
+          Text(specification,
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: kPrimary)),
           const SizedBox(height: 16),
-
-          // ── 4 Info items ──────────────────────────────────────────────
           Wrap(
-            spacing: 32,
-            runSpacing: 8,
+            spacing: 32, runSpacing: 8,
             children: [
-              _infoItem(Icons.payments_outlined, 'Consultation:', '500 EGP'),
-              _infoItem(Icons.phone_outlined, 'Phone:', '+20 115 547 7057'),
-              _infoItem(
-                Icons.email_outlined,
-                'Email:',
-                'dr.sarah@techcare.com',
-              ),
-              _infoItem(
-                Icons.location_on_outlined,
-                'Location:',
-                'New Cairo, Cairo Governorate',
-              ),
+              _infoItem(Icons.payments_outlined, 'Consultation:', '$price EGP'),
+              _infoItem(Icons.phone_outlined, 'Phone:', phone),
+              _infoItem(Icons.email_outlined, 'Email:', email),
+              _infoItem(Icons.location_on_outlined, 'Location:', '$address, $governorate'),
             ],
           ),
-          const SizedBox(height: 16),
-
-          // ── Bio ───────────────────────────────────────────────────────
-          const Text(
-            'Dedicated cardiologist with over 12 years of clinical experience '
-            'specializing in non-invasive cardiovascular imaging and preventive '
-            'heart health. Committed to providing compassionate, evidence-based '
-            'care to improve patients\' quality of life.',
-            style: TextStyle(
-              fontSize: 13,
-              color: Color(0xFF6B7280),
-              height: 1.6,
-            ),
-          ),
+          if (brief.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Text(brief,
+                style: const TextStyle(fontSize: 13, color: Color(0xFF6B7280), height: 1.6)),
+          ],
           const SizedBox(height: 20),
-
-          // ── Edit button — right aligned ────────────────────────────
           Align(
             alignment: Alignment.centerRight,
             child: ElevatedButton.icon(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const DoctorEditProfileScreen(),
-                ),
-              ),
+              onPressed: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const DoctorEditProfileScreen()),
+                );
+                _loadDashboard();
+              },
               icon: const Icon(Icons.edit_rounded, size: 16),
-              label: const Text(
-                'Edit Profile',
-                style: TextStyle(fontWeight: FontWeight.w700),
-              ),
+              label: const Text('Edit Profile', style: TextStyle(fontWeight: FontWeight.w700)),
               style: ElevatedButton.styleFrom(
-                backgroundColor: kPrimary,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 22,
-                  vertical: 13,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
+                backgroundColor: kPrimary, foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 13),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                 elevation: 0,
               ),
             ),
@@ -461,28 +345,15 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
       children: [
         Icon(icon, size: 16, color: kPrimary),
         const SizedBox(width: 6),
-        Text(
-          '$label ',
-          style: const TextStyle(fontSize: 13, color: Color(0xFF374151)),
-        ),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
-            color: kDarkText,
-          ),
-        ),
+        Text('$label ', style: const TextStyle(fontSize: 13, color: Color(0xFF374151))),
+        Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText)),
       ],
     );
   }
 
-  // ── Bottom Grid (Time Slots + Financials) ─────────────────────────────────
   Widget _buildBottomGrid(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final isWide = width > 800;
-
-    if (isWide) {
+    if (width > 800) {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -501,25 +372,22 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
     );
   }
 
-  // ── Time Slots Card ───────────────────────────────────────────────────────
   Widget _buildTimeSlotsCard() {
+    final data = _dashboardData!;
+    final days = (data['days'] as List?) ?? [];
+    final morningSlots = (data['morning_slots'] as List?) ?? [];
+    final eveningSlots = (data['evening_slots'] as List?) ?? [];
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x0A000000),
-            blurRadius: 10,
-            offset: Offset(0, 2),
-          ),
-        ],
+        boxShadow: const [BoxShadow(color: Color(0x0A000000), blurRadius: 10, offset: Offset(0, 2))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -527,163 +395,124 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                 children: [
                   Icon(Icons.access_time_rounded, color: kPrimary, size: 20),
                   SizedBox(width: 8),
-                  Text(
-                    'Available Time Slots',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: kDarkText,
-                    ),
-                  ),
+                  Text('Available Time Slots',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: kDarkText)),
                 ],
               ),
               OutlinedButton.icon(
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const DoctorEditTimeSlotsScreen(),
-                  ),
-                ),
+                onPressed: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const DoctorEditTimeSlotsScreen()),
+                  );
+                  _loadDashboard();
+                },
                 icon: const Icon(Icons.edit_calendar_outlined, size: 14),
-                label: const Text(
-                  'Edit Slots',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                ),
+                label: const Text('Edit Slots',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: kPrimary,
-                  side: const BorderSide(
-                    color: kPrimary,
-                    style: BorderStyle.solid,
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  side: const BorderSide(color: kPrimary),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 20),
-
-          // Days carousel (still interactive — selecting the day)
-          SizedBox(
-            height: 72,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: _days.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 10),
-              itemBuilder: (_, i) {
-                final active = _selectedDayIndex == i;
-                return GestureDetector(
-                  onTap: () => setState(() => _selectedDayIndex = i),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    width: 60,
-                    decoration: BoxDecoration(
-                      color: active ? kPrimary : kBgLight,
-                      borderRadius: BorderRadius.circular(12),
+          if (days.isNotEmpty)
+            SizedBox(
+              height: 72,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: days.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 10),
+                itemBuilder: (_, i) {
+                  final active = _selectedDayIndex == i;
+                  final dayData = days[i] as Map;
+                  final dayName = (dayData['day'] as String).substring(0, 3).toUpperCase();
+                  final dateStr = dayData['date'] as String;
+                  final dayNum = dateStr.split('-').last;
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() => _selectedDayIndex = i);
+                      _loadDashboard(day: dayData['day'] as String);
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      width: 60,
+                      decoration: BoxDecoration(
+                        color: active ? kPrimary : kBgLight,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(dayName,
+                              style: TextStyle(
+                                  fontSize: 11, fontWeight: FontWeight.w700,
+                                  color: active ? Colors.white : kTextGray)),
+                          const SizedBox(height: 4),
+                          Text(dayNum,
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w800,
+                                  color: active ? Colors.white : kDarkText)),
+                        ],
+                      ),
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          _days[i]['name']!,
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: active ? Colors.white : kTextGray,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          _days[i]['num']!,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800,
-                            color: active ? Colors.white : kDarkText,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
           const SizedBox(height: 20),
-
-          // Morning slots — display only, no interaction
           _sectionLabel('MORNING SLOTS'),
           const SizedBox(height: 10),
-          _buildReadOnlySlots(_morningSlots),
+          morningSlots.isEmpty
+              ? const Text('No morning slots', style: TextStyle(color: kTextGray, fontSize: 13))
+              : _buildReadOnlySlots(morningSlots.map((s) => s['time'] as String).toList()),
           const SizedBox(height: 16),
-
-          // Evening slots — display only, no interaction
           _sectionLabel('EVENING SLOTS'),
           const SizedBox(height: 10),
-          _buildReadOnlySlots(_eveningSlots),
+          eveningSlots.isEmpty
+              ? const Text('No evening slots', style: TextStyle(color: kTextGray, fontSize: 13))
+              : _buildReadOnlySlots(eveningSlots.map((s) => s['time'] as String).toList()),
         ],
       ),
     );
   }
 
   Widget _sectionLabel(String text) {
-    return Text(
-      text,
-      style: const TextStyle(
-        fontSize: 11,
-        fontWeight: FontWeight.w800,
-        color: kTextGray,
-        letterSpacing: 1.2,
-      ),
-    );
+    return Text(text,
+        style: const TextStyle(
+            fontSize: 11, fontWeight: FontWeight.w800, color: kTextGray, letterSpacing: 1.2));
   }
 
-  // Read-only slots — no GestureDetector, no active state
   Widget _buildReadOnlySlots(List<String> slots) {
     return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: slots
-          .map(
-            (slot) => Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              decoration: BoxDecoration(
-                color: kBgLight,
-                border: Border.all(color: kBorderColor),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Text(
-                slot,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF4B5563),
-                ),
-              ),
-            ),
-          )
-          .toList(),
+      spacing: 8, runSpacing: 8,
+      children: slots.map((slot) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: kBgLight, border: Border.all(color: kBorderColor),
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Text(slot,
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF4B5563))),
+      )).toList(),
     );
   }
 
-  // ── Financials Card ───────────────────────────────────────────────────────
   Widget _buildFinancialsCard() {
+    final data = _dashboardData!;
+    final pending = data['pending'] ?? 0;
+    final completed = data['completed'] ?? 0;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x0A000000),
-            blurRadius: 10,
-            offset: Offset(0, 2),
-          ),
-        ],
+        boxShadow: const [BoxShadow(color: Color(0x0A000000), blurRadius: 10, offset: Offset(0, 2))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -695,85 +524,52 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                 children: [
                   Icon(Icons.show_chart_rounded, color: kPrimary, size: 20),
                   SizedBox(width: 8),
-                  Text(
-                    'Financials & Activity',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: kDarkText,
-                    ),
-                  ),
+                  Text('Financials & Activity',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: kDarkText)),
                 ],
               ),
               GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const DoctorWalletScreen(),
-                    ),
-                  );
-                },
-                child: const Text(
-                  'View History',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: kPrimary,
-                  ),
+                onTap: () => Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => const DoctorWalletScreen()),
                 ),
+                child: const Text('View History',
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: kPrimary)),
               ),
             ],
           ),
           const SizedBox(height: 20),
-
-          // Balance card
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-            decoration: BoxDecoration(
-              color: kBgLight,
-              borderRadius: BorderRadius.circular(16),
-            ),
+            decoration: BoxDecoration(color: kBgLight, borderRadius: BorderRadius.circular(16)),
             child: const Column(
               children: [
-                Text(
-                  'Total Wallet Balance',
-                  style: TextStyle(fontSize: 13, color: Color(0xFF6B7280)),
-                ),
+                Text('Total Wallet Balance',
+                    style: TextStyle(fontSize: 13, color: Color(0xFF6B7280))),
                 SizedBox(height: 8),
-                Text(
-                  '12,450.00 EGP',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w800,
-                    color: kPrimary,
-                  ),
-                ),
+                Text('— EGP',
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: kPrimary)),
               ],
             ),
           ),
           const SizedBox(height: 16),
-
           Row(
             children: [
               Expanded(
                 child: _buildStatCard(
                   label: 'Completed\nRequests',
-                  value: '1,248',
+                  value: completed.toString(),
                   icon: Icons.check_circle_outline_rounded,
-                  color: kGreen,
-                  bgColor: const Color(0xFFE6F7E6),
+                  color: kGreen, bgColor: const Color(0xFFE6F7E6),
                 ),
               ),
               const SizedBox(width: 14),
               Expanded(
                 child: _buildStatCard(
                   label: 'Pending\nRequests',
-                  value: '14',
+                  value: pending.toString(),
                   icon: Icons.article_outlined,
-                  color: kAmber,
-                  bgColor: const Color(0xFFFFFBEB),
+                  color: kAmber, bgColor: const Color(0xFFFFFBEB),
                 ),
               ),
             ],
@@ -784,44 +580,29 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
   }
 
   Widget _buildStatCard({
-    required String label,
-    required String value,
-    required IconData icon,
-    required Color color,
-    required Color bgColor,
+    required String label, required String value,
+    required IconData icon, required Color color, required Color bgColor,
   }) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
+        color: bgColor, borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: color.withOpacity(0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              color: kTextGray,
-              height: 1.4,
-            ),
-          ),
+          Text(label,
+              style: const TextStyle(
+                  fontSize: 11, fontWeight: FontWeight.w700, color: kTextGray, height: 1.4)),
           const SizedBox(height: 12),
           Row(
             children: [
               Icon(icon, color: color, size: 26),
               const SizedBox(width: 8),
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: kDarkText,
-                ),
-              ),
+              Text(value,
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w800, color: kDarkText)),
             ],
           ),
         ],
@@ -829,56 +610,37 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
     );
   }
 
-  // ── Navigation Helper ───────────────────────────────────────────────────
   void _navigateToPage(BuildContext context, String pageLabel) {
     switch (pageLabel) {
-      case 'Profile':
-        // Already on Profile page
-        break;
+      case 'Profile': break;
       case 'Requests':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const DoctorRequestsScreen()),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const DoctorRequestsScreen()));
         break;
       case 'Notifications':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const DoctorNotificationsScreen()),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const DoctorNotificationsScreen()));
         break;
       case 'Wallet':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const DoctorWalletScreen()),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const DoctorWalletScreen()));
         break;
       case 'Complaints':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const DoctorComplaintsScreen()),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (_) => const DoctorComplaintsScreen()));
         break;
     }
   }
 }
 
-// ─── AppBar Notification Widget ────────────────────────────────────────────
 class _AppBarNotification extends StatelessWidget {
+  const _AppBarNotification();
+
   @override
   Widget build(BuildContext context) {
     return IconButton(
       icon: Stack(
         clipBehavior: Clip.none,
         children: const [
-          Icon(
-            Icons.notifications_none_rounded,
-            color: Color(0xFF4B5563),
-            size: 24,
-          ),
+          Icon(Icons.notifications_none_rounded, color: Color(0xFF4B5563), size: 24),
           Positioned(
-            right: -2,
-            top: -2,
+            right: -2, top: -2,
             child: CircleAvatar(radius: 5, backgroundColor: Color(0xFFEF4444)),
           ),
         ],

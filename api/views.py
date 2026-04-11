@@ -526,6 +526,11 @@ def resend_otp(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+def get_user_role(request):
+    return Response({"role": request.user.role}, status=200)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def doctor_dashboard(request):
     if request.user.role != "doctor":
         return Response({"error": "Unauthorized"}, status=401)
@@ -638,16 +643,16 @@ def edit_doctor_profile(request):
     if User.objects.filter(username=username).exclude(id=request.user.id).exists():
         return Response({"error": "Username already exists"}, status=400)
 
-    if not validations.validate_username(username):
+    if not accounts.validations.validate_username(username):
         return Response({"error": "Username must be lowercase, allowed letters, numbers, _ or ., and cannot contain forbidden words."}, status=400)
 
-    if not validations.validate_phone(phone_number):
+    if not accounts.validations.validate_phone(phone_number):
         return Response({"error": "Phone number must start with 0 or 1."}, status=400)
 
-    if not validations.validate_address(address):
+    if not accounts.validations.validate_address(address):
         return Response({"error": "can't use <,> or forbidden words"}, status=400)
 
-    if not validations.validate_address(brief):
+    if not accounts.validations.validate_address(brief):
         return Response({"error": "Brief can't contain forbidden words."}, status=400)
 
     doctor.user.username = username

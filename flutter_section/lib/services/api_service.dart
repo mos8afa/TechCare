@@ -53,6 +53,14 @@ class ApiService {
     }
   }
 
+
+  static String buildMediaUrl(String? path) {
+    if (path == null || path.isEmpty) return '';
+    if (path.startsWith('http')) return path;
+    return 'http://10.0.2.2:8000$path';
+  }
+
+
   // ==================== VERIFY OTP LOGIN ====================
   static Future<ApiResult> verifyOtpLogin({
     required String username,
@@ -522,6 +530,181 @@ class ApiService {
       return ApiResult.error('Connection error: $e');
     }
   }
+
+  // ==================== GET USER ROLE ====================
+  static Future<ApiResult> getUserRole() async {
+    try {
+      final token = await getAccessToken();
+      final response = await http.get(
+        Uri.parse('$baseUrl/auth/user-role/'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return ApiResult.success(data);
+      }
+      return ApiResult.error(data['error'] ?? 'Failed to get role');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  // ==================== DOCTOR DASHBOARD ====================
+  static Future<ApiResult> getDoctorDashboard({String? day}) async {
+    try {
+      final token = await getAccessToken();
+      final uri = day != null
+          ? Uri.parse('$baseUrl/dashboard/?day=$day')
+          : Uri.parse('$baseUrl/dashboard/');
+      final response = await http.get(uri, headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  // ==================== DOCTOR EDIT PROFILE GET ====================
+  static Future<ApiResult> getDoctorProfile() async {
+    try {
+      final token = await getAccessToken();
+      final response = await http.get(
+        Uri.parse('$baseUrl/profile/edit/'),
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
+      );
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  // ==================== DOCTOR EDIT PROFILE POST ====================
+  static Future<ApiResult> updateDoctorProfile({
+    required String username,
+    required String phoneNumber,
+    required String address,
+    required String brief,
+    required String price,
+    required String governorate,
+    File? profilePic,
+  }) async {
+    try {
+      final token = await getAccessToken();
+      final request = http.MultipartRequest('POST', Uri.parse('$baseUrl/profile/edit/'));
+      request.headers['Authorization'] = 'Bearer $token';
+      request.fields['username'] = username;
+      request.fields['phone_number'] = phoneNumber;
+      request.fields['address'] = address;
+      request.fields['brief'] = brief;
+      request.fields['price'] = price;
+      request.fields['governorate'] = governorate;
+      if (profilePic != null) {
+        request.files.add(await http.MultipartFile.fromPath('profile_pic', profilePic.path));
+      }
+      final streamed = await request.send();
+      final response = await http.Response.fromStream(streamed);
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  // ==================== DOCTOR TIME SLOTS GET ====================
+  static Future<ApiResult> getTimeSlots({String? day}) async {
+    try {
+      final token = await getAccessToken();
+      final uri = day != null
+          ? Uri.parse('$baseUrl/time-slots/?day=$day')
+          : Uri.parse('$baseUrl/time-slots/');
+      final response = await http.get(uri, headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  // ==================== DOCTOR TIME SLOTS ADD ====================
+  static Future<ApiResult> addTimeSlot({
+    required String day,
+    required String time,
+  }) async {
+    try {
+      final token = await getAccessToken();
+      final response = await http.post(
+        Uri.parse('$baseUrl/time-slots/'),
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
+        body: jsonEncode({'day': day, 'time': time}),
+      );
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 201) return ApiResult.success(data);
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  // ==================== DOCTOR TIME SLOTS DELETE ====================
+  static Future<ApiResult> deleteTimeSlot(int slotId) async {
+    try {
+      final token = await getAccessToken();
+      final response = await http.delete(
+        Uri.parse('$baseUrl/time-slots/$slotId/delete/'),
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
+      );
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  // ==================== DOCTOR REQUESTS ====================
+  static Future<ApiResult> getDoctorRequests(String type) async {
+    try {
+      final token = await getAccessToken();
+      final response = await http.get(
+        Uri.parse('$baseUrl/requests/$type/'),
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
+      );
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 // ==================== ApiResult Helper ====================
