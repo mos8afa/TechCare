@@ -581,7 +581,7 @@ class _DoctorFormStep2State extends State<DoctorFormStep2> {
     setState(() => _isLoading = false);
 
     if (result.success) {
-      if (mounted) Navigator.pushReplacementNamed(context, '/home');
+      if (mounted) Navigator.pushReplacementNamed(context, '/doctor-profile');
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.error ?? 'Error'), backgroundColor: const Color(0xFFE53E3E)));

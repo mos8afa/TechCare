@@ -298,7 +298,21 @@ class _OtpFormState extends State<OtpForm> {
       result = await ApiService.verifyOtpLogin(username: username, otp: otp);
       if (result.success) {
         await AuthStorage.clearSession();
-        if (mounted) Navigator.pushReplacementNamed(context, '/home');
+        // جيب الـ role بعد الـ login
+        final roleResult = await ApiService.getUserRole();
+        if (mounted) {
+          final role = roleResult.success ? (roleResult.data['role'] ?? '') : '';
+          switch (role.toLowerCase()) {
+            case 'doctor':
+              Navigator.pushReplacementNamed(context, '/doctor-profile');
+              break;
+            case 'nurse':
+              Navigator.pushReplacementNamed(context, '/nurse-profile');
+              break;
+            default:
+              Navigator.pushReplacementNamed(context, '/home');
+          }
+        }
       }
     } else if (widget.source == 'signup') {
       final pendingUserId = await AuthStorage.getPendingUserId() ?? '';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../services/api_service.dart';
 
-// ─── Color Palette ────────────────────────────────────────────────────────
 const Color kPrimary = Color(0xFF1D89E4);
 const Color kBgLight = Color(0xFFF4F7FC);
 const Color kTextGray = Color(0xFF718096);
@@ -9,77 +9,101 @@ const Color kDarkText = Color(0xFF1A1C1E);
 const Color kAmber = Color(0xFFF59E0B);
 const Color kSky = Color(0xFF0EA5E9);
 
-// ─── Edit Time Slots Screen ───────────────────────────────────────────────
 class DoctorEditTimeSlotsScreen extends StatefulWidget {
   const DoctorEditTimeSlotsScreen({super.key});
 
   @override
-  State<DoctorEditTimeSlotsScreen> createState() =>
-      _DoctorEditTimeSlotsScreenState();
+  State<DoctorEditTimeSlotsScreen> createState() => _DoctorEditTimeSlotsScreenState();
 }
 
-class _DoctorEditTimeSlotsScreenState
-    extends State<DoctorEditTimeSlotsScreen> {
-  int _selectedDayIndex = 2; // WED default
+class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
+  int _selectedDayIndex = 0;
+  bool _isLoadingDays = true;   // loading أول مرة بس
+  bool _isLoadingSlots = false; // loading الـ slots لما بتغير اليوم
+  String? _error;
 
-  final List<Map<String, String>> _days = [
-    {'name': 'MON', 'num': '14'},
-    {'name': 'TUE', 'num': '15'},
-    {'name': 'WED', 'num': '16'},
-    {'name': 'THU', 'num': '17'},
-    {'name': 'FRI', 'num': '18'},
-    {'name': 'SAT', 'num': '19'},
-    {'name': 'SUN', 'num': '20'},
-  ];
+  List<Map<String, dynamic>> _days = [];
+  List<Map<String, dynamic>> _morningSlots = [];
+  List<Map<String, dynamic>> _eveningSlots = [];
 
-  // Morning slots: Map<label, isActive>
-  final List<Map<String, dynamic>> _morningSlots = [
-    {'time': '09:00 AM', 'active': false},
-    {'time': '09:30 AM', 'active': true},
-    {'time': '10:00 AM', 'active': false},
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadInitial();
+  }
 
-  // Evening slots
-  final List<Map<String, dynamic>> _eveningSlots = [
-    {'time': '06:00 PM', 'active': false},
-    {'time': '07:00 PM', 'active': false},
-    {'time': '07:30 PM', 'active': false},
-  ];
+  // أول تحميل — بيجيب الأيام والـ slots مع بعض
+  Future<void> _loadInitial() async {
+    setState(() => _isLoadingDays = true);
+    final result = await ApiService.getTimeSlots();
+    if (result.success) {
+      final data = result.data;
+      setState(() {
+        _days = List<Map<String, dynamic>>.from(data['days'] ?? []);
+        _morningSlots = List<Map<String, dynamic>>.from(data['morning_slots'] ?? []);
+        _eveningSlots = List<Map<String, dynamic>>.from(data['evening_slots'] ?? []);
+        _isLoadingDays = false;
+        _error = null;
+      });
+    } else {
+      setState(() { _error = result.error; _isLoadingDays = false; });
+    }
+  }
+
+  // تغيير اليوم — بيحدث الـ slots بس من غير ما يعمل rebuild للأيام
+  Future<void> _loadSlotsForDay(String day) async {
+    setState(() => _isLoadingSlots = true);
+    final result = await ApiService.getTimeSlots(day: day);
+    if (result.success) {
+      final data = result.data;
+      setState(() {
+        _morningSlots = List<Map<String, dynamic>>.from(data['morning_slots'] ?? []);
+        _eveningSlots = List<Map<String, dynamic>>.from(data['evening_slots'] ?? []);
+        _isLoadingSlots = false;
+      });
+    } else {
+      setState(() => _isLoadingSlots = false);
+    }
+  }
+
+  String get _selectedDay {
+    if (_days.isEmpty) return '';
+    return _days[_selectedDayIndex]['day'] as String;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBgLight,
       appBar: _buildAppBar(context),
-      drawer: _buildDrawer(context),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeaderRow(context),
-            const SizedBox(height: 32),
-            _buildWeeklySchedule(),
-            const SizedBox(height: 32),
-            _buildSessionCard(
-              isMorning: true,
-              slots: _morningSlots,
-            ),
-            const SizedBox(height: 20),
-            _buildSessionCard(
-              isMorning: false,
-              slots: _eveningSlots,
-            ),
-            const SizedBox(height: 32),
-            _buildBottomActions(context),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
+      body: _isLoadingDays
+          ? const Center(child: CircularProgressIndicator(color: kPrimary))
+          : _error != null
+              ? Center(child: Text(_error!, style: const TextStyle(color: Colors.red)))
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildHeaderRow(),
+                      const SizedBox(height: 32),
+                      _buildWeeklySchedule(),
+                      const SizedBox(height: 32),
+                      // لو بيحمل slots بيحط progress indicator خفيف فوق الـ cards
+                      if (_isLoadingSlots)
+                        const LinearProgressIndicator(color: kPrimary, backgroundColor: kBgLight),
+                      const SizedBox(height: 8),
+                      _buildSessionCard(isMorning: true, slots: _morningSlots),
+                      const SizedBox(height: 20),
+                      _buildSessionCard(isMorning: false, slots: _eveningSlots),
+                      const SizedBox(height: 32),
+                      _buildBottomActions(context),
+                    ],
+                  ),
+                ),
     );
   }
 
-  // ── AppBar ──────────────────────────────────────────────────────────────
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
@@ -92,43 +116,7 @@ class _DoctorEditTimeSlotsScreenState
         ),
       ),
       title: const Text('Time Slots',
-          style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w700, color: kDarkText)),
-      actions: [
-        IconButton(
-          icon: Stack(
-            clipBehavior: Clip.none,
-            children: const [
-              Icon(Icons.notifications_none_rounded,
-                  color: Color(0xFF4B5563), size: 24),
-              Positioned(
-                right: -2,
-                top: -2,
-                child: CircleAvatar(
-                    radius: 5, backgroundColor: Color(0xFFEF4444)),
-              ),
-            ],
-          ),
-          onPressed: () {},
-        ),
-        const SizedBox(width: 4),
-        const VerticalDivider(
-            width: 1,
-            thickness: 1,
-            color: kBorderColor,
-            indent: 16,
-            endIndent: 16),
-        const SizedBox(width: 12),
-        GestureDetector(
-          onTap: () {},
-          child: const CircleAvatar(
-            radius: 20,
-            backgroundImage: NetworkImage(
-                'https://randomuser.me/api/portraits/women/44.jpg'),
-          ),
-        ),
-        const SizedBox(width: 16),
-      ],
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kDarkText)),
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
         child: Container(color: kBorderColor, height: 1),
@@ -136,101 +124,12 @@ class _DoctorEditTimeSlotsScreenState
     );
   }
 
-  // ── Drawer ──────────────────────────────────────────────────────────────
-  Widget _buildDrawer(BuildContext context) {
-    final items = [
-      {'icon': Icons.person_outline_rounded, 'label': 'Profile', 'active': true},
-      {'icon': Icons.list_alt_rounded, 'label': 'Requests', 'active': false},
-      {'icon': Icons.notifications_none_rounded, 'label': 'Notifications', 'active': false},
-      {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet', 'active': false},
-      {'icon': Icons.warning_amber_rounded, 'label': 'Complaints', 'active': false},
-    ];
-
-    return Drawer(
-      backgroundColor: Colors.white,
-      child: SafeArea(
-        child: Padding(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.asset('img/logo.png',
-                        width: 44, height: 44, fit: BoxFit.cover),
-                  ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text('TechCare',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: kPrimary)),
-                      Text('Medical Portal',
-                          style:
-                              TextStyle(fontSize: 12, color: kTextGray)),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32),
-              ...items.map((item) {
-                final isActive = item['active'] as bool;
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 8),
-                  child: Material(
-                    color: isActive ? kPrimary : Colors.transparent,
-                    borderRadius: BorderRadius.circular(15),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(15),
-                      onTap: () => Navigator.pop(context),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 13),
-                        child: Row(
-                          children: [
-                            Icon(item['icon'] as IconData,
-                                color: isActive
-                                    ? Colors.white
-                                    : const Color(0xFF4B5563),
-                                size: 22),
-                            const SizedBox(width: 12),
-                            Text(item['label'] as String,
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                    color: isActive
-                                        ? Colors.white
-                                        : const Color(0xFF4B5563))),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // ── Header Row (title + subtitle only) ───────────────────────────────────
-  Widget _buildHeaderRow(BuildContext context) {
-    return Column(
+  Widget _buildHeaderRow() {
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
+      children: [
         Text('Edit Time Slots',
-            style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.w800,
-                color: kDarkText)),
+            style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: kDarkText)),
         SizedBox(height: 6),
         Text('Customize your working hours and appointment slots.',
             style: TextStyle(fontSize: 14, color: kTextGray)),
@@ -238,107 +137,99 @@ class _DoctorEditTimeSlotsScreenState
     );
   }
 
-  // ── Bottom Actions (Cancel / Save) ────────────────────────────────────────
+  // ── Save & Back buttons ──────────────────────────────────────────────────
   Widget _buildBottomActions(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        TextButton(
+        OutlinedButton(
           onPressed: () => Navigator.pop(context),
-          style: TextButton.styleFrom(
+          style: OutlinedButton.styleFrom(
             foregroundColor: const Color(0xFF4B5563),
+            side: const BorderSide(color: kBorderColor),
+            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 13),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
-          child: const Text('Cancel',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+          child: const Text('Back', style: TextStyle(fontWeight: FontWeight.w600)),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 12),
         ElevatedButton(
           onPressed: () {
-            // TODO: save to API
+            // الـ slots اتحفظت على طول مع كل add/delete
+            // زرار Save بس بيقفل الصفحة ويرجع
             Navigator.pop(context);
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: kPrimary,
             foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 13),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10)),
-            elevation: 2,
-            shadowColor: kPrimary.withOpacity(0.4),
+            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 13),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            elevation: 0,
           ),
-          child: const Text('Save Changes',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+          child: const Text('Save Changes', style: TextStyle(fontWeight: FontWeight.w600)),
         ),
       ],
     );
   }
 
-  // ── Weekly Schedule ───────────────────────────────────────────────────────
   Widget _buildWeeklySchedule() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text('WEEKLY SCHEDULE',
-            style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w800,
-                color: kTextGray,
-                letterSpacing: 1.5)),
+            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: kTextGray, letterSpacing: 1.5)),
         const SizedBox(height: 16),
         SizedBox(
           height: 88,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: _days.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 14),
-            itemBuilder: (_, i) {
-              final active = _selectedDayIndex == i;
-              return GestureDetector(
-                onTap: () => setState(() => _selectedDayIndex = i),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 220),
-                  width: 76,
-                  decoration: BoxDecoration(
-                    color: active ? kPrimary : const Color(0xFFF1F5F9),
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: active
-                        ? [
-                            BoxShadow(
-                                color: kPrimary.withOpacity(0.25),
-                                blurRadius: 12,
-                                offset: const Offset(0, 6))
-                          ]
-                        : [],
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(_days[i]['name']!,
-                          style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 0.5,
-                              color: active ? Colors.white : kTextGray)),
-                      const SizedBox(height: 6),
-                      Text(_days[i]['num']!,
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800,
-                              color: active
-                                  ? Colors.white
-                                  : kDarkText)),
-                    ],
-                  ),
+          child: _days.isEmpty
+              ? const Center(child: Text('No days available', style: TextStyle(color: kTextGray)))
+              : ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _days.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 14),
+                  itemBuilder: (_, i) {
+                    final active = _selectedDayIndex == i;
+                    final dayData = _days[i];
+                    final dayName = (dayData['day'] as String).substring(0, 3).toUpperCase();
+                    final dateStr = dayData['date'] as String;
+                    final dayNum = dateStr.split('-').last;
+                    return GestureDetector(
+                      onTap: () {
+                        if (_selectedDayIndex == i) return; // نفس اليوم → ماتعملش حاجه
+                        setState(() => _selectedDayIndex = i);
+                        _loadSlotsForDay(dayData['day'] as String);
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 220),
+                        width: 76,
+                        decoration: BoxDecoration(
+                          color: active ? kPrimary : const Color(0xFFF1F5F9),
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: active
+                              ? [BoxShadow(color: kPrimary.withOpacity(0.25), blurRadius: 12, offset: const Offset(0, 6))]
+                              : [],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(dayName,
+                                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
+                                    letterSpacing: 0.5, color: active ? Colors.white : kTextGray)),
+                            const SizedBox(height: 6),
+                            Text(dayNum,
+                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800,
+                                    color: active ? Colors.white : kDarkText)),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
         ),
       ],
     );
   }
 
-  // ── Session Card (Morning / Evening) ─────────────────────────────────────
   Widget _buildSessionCard({
     required bool isMorning,
     required List<Map<String, dynamic>> slots,
@@ -348,83 +239,48 @@ class _DoctorEditTimeSlotsScreenState
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
-          BoxShadow(
-              color: Color(0x08000000),
-              blurRadius: 24,
-              offset: Offset(0, 8)),
-        ],
+        boxShadow: const [BoxShadow(color: Color(0x08000000), blurRadius: 24, offset: Offset(0, 8))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
           Row(
             children: [
               Container(
-                width: 44,
-                height: 44,
+                width: 44, height: 44,
                 decoration: BoxDecoration(
-                  color: isMorning
-                      ? const Color(0xFFFEEDDF)
-                      : const Color(0xFFE0F2FE),
+                  color: isMorning ? const Color(0xFFFEEDDF) : const Color(0xFFE0F2FE),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
-                  isMorning
-                      ? Icons.wb_sunny_rounded
-                      : Icons.nightlight_round,
-                  color: isMorning ? kAmber : kSky,
-                  size: 22,
-                ),
+                child: Icon(isMorning ? Icons.wb_sunny_rounded : Icons.nightlight_round,
+                    color: isMorning ? kAmber : kSky, size: 22),
               ),
               const SizedBox(width: 14),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(isMorning ? 'Morning Sessions' : 'Evening Sessions',
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: kDarkText)),
                   Text(
-                    isMorning ? 'Morning Sessions' : 'Evening Sessions',
-                    style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: kDarkText),
-                  ),
-                  Text(
-                    isMorning
-                        ? 'Recommended: 08:00 AM – 12:00 PM'
-                        : 'Recommended: 04:00 PM – 09:00 PM',
-                    style: const TextStyle(
-                        fontSize: 12, color: kTextGray),
+                    isMorning ? 'Recommended: 08:00 AM – 12:00 PM' : 'Recommended: 04:00 PM – 09:00 PM',
+                    style: const TextStyle(fontSize: 12, color: kTextGray),
                   ),
                 ],
               ),
             ],
           ),
           const SizedBox(height: 22),
-
-          // Pills
           Wrap(
-            spacing: 10,
-            runSpacing: 10,
+            spacing: 10, runSpacing: 10,
             children: [
-              // Existing slots
               ...slots.asMap().entries.map((entry) {
-                final i = entry.key;
                 final slot = entry.value;
-                final isActive = slot['active'] as bool;
                 return _buildPill(
                   label: slot['time'] as String,
-                  isActive: isActive,
-                  onTap: () => setState(() {
-                    slot['active'] = !isActive;
-                  }),
-                  onRemove: () => setState(() => slots.removeAt(i)),
+                  onRemove: () => _deleteSlot(slot['id'] as int),
                 );
               }),
-              // Add button
-              _buildAddPill(
-                onTap: () => _showAddSlotModal(slots),
-              ),
+              _buildAddPill(onTap: () => _showAddSlotModal(isMorning)),
             ],
           ),
         ],
@@ -432,56 +288,31 @@ class _DoctorEditTimeSlotsScreenState
     );
   }
 
-  Widget _buildPill({
-    required String label,
-    required bool isActive,
-    required VoidCallback onTap,
-    required VoidCallback onRemove,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        decoration: BoxDecoration(
-          color: isActive ? Colors.white : const Color(0xFFF1F5F9),
-          border: Border.all(
-            color: isActive ? kPrimary : Colors.transparent,
-            width: 2,
-          ),
-          borderRadius: BorderRadius.circular(100),
-        ),
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: isActive ? kPrimary : const Color(0xFF64748B),
+  Widget _buildPill({required String label, required VoidCallback onRemove}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: kPrimary, width: 2),
+        borderRadius: BorderRadius.circular(100),
+      ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Text(label,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: kPrimary)),
+          Positioned(
+            top: -18, right: -18,
+            child: GestureDetector(
+              onTap: onRemove,
+              child: Container(
+                width: 22, height: 22,
+                decoration: const BoxDecoration(color: Color(0xFFB91C1C), shape: BoxShape.circle),
+                child: const Icon(Icons.close_rounded, color: Colors.white, size: 13),
               ),
             ),
-            if (isActive)
-              Positioned(
-                top: -18,
-                right: -18,
-                child: GestureDetector(
-                  onTap: onRemove,
-                  child: Container(
-                    width: 22,
-                    height: 22,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFB91C1C),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.close_rounded,
-                        color: Colors.white, size: 13),
-                  ),
-                ),
-              ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -493,107 +324,89 @@ class _DoctorEditTimeSlotsScreenState
         width: 170,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         decoration: BoxDecoration(
-          border: Border.all(
-              color: const Color(0xFFCBD5E1),
-              width: 2,
-              style: BorderStyle.solid),
+          border: Border.all(color: const Color(0xFFCBD5E1), width: 2),
           borderRadius: BorderRadius.circular(100),
-          color: Colors.transparent,
         ),
         child: const Row(
-          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.add_circle_outline_rounded,
-                size: 18, color: Color(0xFF94A3B8)),
+            Icon(Icons.add_circle_outline_rounded, size: 18, color: Color(0xFF94A3B8)),
             SizedBox(width: 6),
-            Text('Add Slot',
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF94A3B8))),
+            Text('Add Slot', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF94A3B8))),
           ],
         ),
       ),
     );
   }
 
-  // ── Add Slot Modal ────────────────────────────────────────────────────────
-  void _showAddSlotModal(List<Map<String, dynamic>> targetList) {
-    TimeOfDay selectedTime = TimeOfDay.now();
+  Future<void> _deleteSlot(int slotId) async {
+    final result = await ApiService.deleteTimeSlot(slotId);
+    if (result.success) {
+      // حدّث الـ slots بس من غير ما تحمّل الأيام تاني
+      await _loadSlotsForDay(_selectedDay);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.error ?? 'Failed to delete'), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
+  void _showAddSlotModal(bool isMorning) {
+    TimeOfDay selectedTime = isMorning
+        ? const TimeOfDay(hour: 9, minute: 0)
+        : const TimeOfDay(hour: 16, minute: 0);
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (ctx) {
         return Padding(
           padding: EdgeInsets.only(
-            left: 24,
-            right: 24,
-            top: 24,
+            left: 24, right: 24, top: 24,
             bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Handle
               Center(
                 child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: kBorderColor,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
+                  width: 40, height: 4,
+                  decoration: BoxDecoration(color: kBorderColor, borderRadius: BorderRadius.circular(2)),
                 ),
               ),
               const SizedBox(height: 20),
               const Text('Add New Time Slot',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: kDarkText)),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kDarkText)),
               const SizedBox(height: 20),
-              // Time picker trigger
               StatefulBuilder(builder: (context, setModalState) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text('Select Time',
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF374151))),
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF374151))),
                     const SizedBox(height: 8),
                     GestureDetector(
                       onTap: () async {
                         final picked = await showTimePicker(
                           context: context,
                           initialTime: selectedTime,
-                          builder: (context, child) {
-                            return Theme(
-                              data: Theme.of(context).copyWith(
-                                colorScheme: const ColorScheme.light(
-                                  primary: kPrimary,
-                                ),
-                              ),
-                              child: child!,
-                            );
-                          },
+                          builder: (context, child) => Theme(
+                            data: Theme.of(context).copyWith(
+                              colorScheme: const ColorScheme.light(primary: kPrimary),
+                            ),
+                            child: child!,
+                          ),
                         );
-                        if (picked != null) {
-                          setModalState(() => selectedTime = picked);
-                        }
+                        if (picked != null) setModalState(() => selectedTime = picked);
                       },
                       child: Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 14),
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
                         decoration: BoxDecoration(
                           color: const Color(0xFFF8FAFC),
                           borderRadius: BorderRadius.circular(12),
@@ -601,16 +414,10 @@ class _DoctorEditTimeSlotsScreenState
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.access_time_rounded,
-                                color: kTextGray, size: 20),
+                            const Icon(Icons.access_time_rounded, color: kTextGray, size: 20),
                             const SizedBox(width: 10),
-                            Text(
-                              selectedTime.format(context),
-                              style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: kDarkText),
-                            ),
+                            Text(selectedTime.format(context),
+                                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: kDarkText)),
                           ],
                         ),
                       ),
@@ -622,46 +429,43 @@ class _DoctorEditTimeSlotsScreenState
                           child: OutlinedButton(
                             onPressed: () => Navigator.pop(ctx),
                             style: OutlinedButton.styleFrom(
-                              foregroundColor:
-                                  const Color(0xFF4B5563),
-                              side:
-                                  const BorderSide(color: kBorderColor),
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 13),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(12)),
+                              foregroundColor: const Color(0xFF4B5563),
+                              side: const BorderSide(color: kBorderColor),
+                              padding: const EdgeInsets.symmetric(vertical: 13),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             ),
-                            child: const Text('Cancel',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600)),
+                            child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.w600)),
                           ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: () {
-                              final label =
-                                  selectedTime.format(context);
-                              setState(() {
-                                targetList.add(
-                                    {'time': label, 'active': true});
-                              });
+                            onPressed: () async {
                               Navigator.pop(ctx);
+                              final h = selectedTime.hour.toString().padLeft(2, '0');
+                              final m = selectedTime.minute.toString().padLeft(2, '0');
+                              final result = await ApiService.addTimeSlot(
+                                day: _selectedDay,
+                                time: '$h:$m',
+                              );
+                              if (result.success) {
+                                // حدّث الـ slots بس
+                                await _loadSlotsForDay(_selectedDay);
+                              } else {
+                                if (mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(result.error ?? 'Failed to add'), backgroundColor: Colors.red),
+                                  );
+                                }
+                              }
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: kPrimary,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 13),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(12)),
+                              backgroundColor: kPrimary, foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 13),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                               elevation: 0,
                             ),
-                            child: const Text('Add Slot',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600)),
+                            child: const Text('Add Slot', style: TextStyle(fontWeight: FontWeight.w600)),
                           ),
                         ),
                       ],
