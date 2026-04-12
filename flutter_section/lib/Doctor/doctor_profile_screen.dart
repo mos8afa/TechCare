@@ -26,8 +26,12 @@ class DoctorProfileScreen extends StatefulWidget {
 class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
   Map<String, dynamic>? _dashboardData;
   bool _isLoading = true;
+  bool _isLoadingSlots = false;
   String? _error;
   int _selectedDayIndex = 0;
+
+  List<Map<String, dynamic>> _morningSlots = [];
+  List<Map<String, dynamic>> _eveningSlots = [];
 
   @override
   void initState() {
@@ -35,20 +39,46 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
     _loadDashboard();
   }
 
-  Future<void> _loadDashboard({String? day}) async {
+  Future<void> _loadDashboard() async {
     setState(() => _isLoading = true);
-    final result = await ApiService.getDoctorDashboard(day: day);
+    final result = await ApiService.getDoctorDashboard();
     if (result.success) {
+      final data = result.data as Map<String, dynamic>;
       setState(() {
-        _dashboardData = result.data;
+        _dashboardData = data;
+        _morningSlots = List<Map<String, dynamic>>.from(data['morning_slots'] ?? []);
+        _eveningSlots = List<Map<String, dynamic>>.from(data['evening_slots'] ?? []);
+        _selectedDayIndex = 0;
         _isLoading = false;
         _error = null;
       });
     } else {
+      if (result.error == 'Session expired') {
+        await ApiService.clearTokens();
+        if (mounted) {
+          Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
+        }
+        return;
+      }
       setState(() {
         _error = result.error;
         _isLoading = false;
       });
+    }
+  }
+
+  Future<void> _loadSlotsForDay(String day) async {
+    setState(() => _isLoadingSlots = true);
+    final result = await ApiService.getDoctorDashboard(day: day);
+    if (result.success) {
+      final data = result.data as Map<String, dynamic>;
+      setState(() {
+        _morningSlots = List<Map<String, dynamic>>.from(data['morning_slots'] ?? []);
+        _eveningSlots = List<Map<String, dynamic>>.from(data['evening_slots'] ?? []);
+        _isLoadingSlots = false;
+      });
+    } else {
+      setState(() => _isLoadingSlots = false);
     }
   }
 
@@ -68,7 +98,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                       Text(_error!, style: const TextStyle(color: Colors.red)),
                       const SizedBox(height: 12),
                       ElevatedButton(
-                        onPressed: () => _loadDashboard(),
+                        onPressed: _loadDashboard,
                         style: ElevatedButton.styleFrom(backgroundColor: kPrimary),
                         child: const Text('Retry', style: TextStyle(color: Colors.white)),
                       ),
@@ -76,7 +106,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                   ),
                 )
               : RefreshIndicator(
-                  onRefresh: () => _loadDashboard(),
+                  onRefresh: _loadDashboard,
                   color: kPrimary,
                   child: SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
@@ -95,6 +125,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     final profilePic = _dashboardData?['profile_pic'];
+    final picUrl = ApiService.buildMediaUrl(profilePic);
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -111,14 +142,16 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
       actions: [
         const _AppBarNotification(),
         const SizedBox(width: 12),
-        const VerticalDivider(width: 1, thickness: 1, color: kBorderColor, indent: 16, endIndent: 16),
+        const VerticalDivider(
+            width: 1, thickness: 1, color: kBorderColor, indent: 16, endIndent: 16),
         const SizedBox(width: 12),
         CircleAvatar(
           radius: 20,
-          backgroundImage: (profilePic != null && profilePic.isNotEmpty)
-              ? NetworkImage(ApiService.buildMediaUrl(profilePic)) as ImageProvider
-              : const NetworkImage('https://ui-avatars.com/api/?name=Doctor&background=1D89E4&color=fff'),
           backgroundColor: kBgLight,
+          backgroundImage: picUrl.isNotEmpty
+              ? NetworkImage(picUrl) as ImageProvider
+              : const NetworkImage(
+                  'https://ui-avatars.com/api/?name=Doctor&background=1D89E4&color=fff'),
         ),
         const SizedBox(width: 16),
       ],
@@ -150,14 +183,18 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: Image.asset('img/logo.png', width: 44, height: 44, fit: BoxFit.cover),
+                    child: Image.asset('img/logo.png',
+                        width: 44, height: 44, fit: BoxFit.cover),
                   ),
                   const SizedBox(width: 12),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
-                      Text('TechCare', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: kPrimary)),
-                      Text('Medical Portal', style: TextStyle(fontSize: 12, color: kTextGray)),
+                      Text('TechCare',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w700, color: kPrimary)),
+                      Text('Medical Portal',
+                          style: TextStyle(fontSize: 12, color: kTextGray)),
                     ],
                   ),
                 ],
@@ -177,17 +214,23 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                         _navigateToPage(context, item['label'] as String);
                       },
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 13),
                         child: Row(
                           children: [
                             Icon(item['icon'] as IconData,
-                                color: isActive ? Colors.white : const Color(0xFF4B5563), size: 22),
+                                color: isActive
+                                    ? Colors.white
+                                    : const Color(0xFF4B5563),
+                                size: 22),
                             const SizedBox(width: 12),
                             Text(item['label'] as String,
                                 style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
-                                    color: isActive ? Colors.white : const Color(0xFF4B5563))),
+                                    color: isActive
+                                        ? Colors.white
+                                        : const Color(0xFF4B5563))),
                           ],
                         ),
                       ),
@@ -213,14 +256,17 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
     final address = data['address'] ?? '';
     final brief = data['brief'] ?? '';
     final profilePic = data['profile_pic'];
-    final avgRating = data['average_rating'] ?? 0;
+    final avgRating = (data['average_rating'] ?? 0) as int;
+    final picUrl = ApiService.buildMediaUrl(profilePic);
 
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: const [BoxShadow(color: Color(0x0A000000), blurRadius: 10, offset: Offset(0, 2))],
+        boxShadow: const [
+          BoxShadow(color: Color(0x0A000000), blurRadius: 10, offset: Offset(0, 2))
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -232,17 +278,20 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                 children: [
                   CircleAvatar(
                     radius: 52,
-                    backgroundImage: (profilePic != null && profilePic.isNotEmpty)
-                      ? NetworkImage(ApiService.buildMediaUrl(profilePic)) as ImageProvider
-                      : const NetworkImage('https://ui-avatars.com/api/?name=Doctor&background=1D89E4&color=fff'),
                     backgroundColor: kBgLight,
+                    backgroundImage: picUrl.isNotEmpty
+                        ? NetworkImage(picUrl) as ImageProvider
+                        : const NetworkImage(
+                            'https://ui-avatars.com/api/?name=Doctor&background=1D89E4&color=fff&size=200'),
                   ),
                   Positioned(
-                    right: 4, bottom: 4,
+                    right: 4,
+                    bottom: 4,
                     child: Container(
                       padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
-                        color: kGreen, shape: BoxShape.circle,
+                        color: kGreen,
+                        shape: BoxShape.circle,
                         border: Border.all(color: Colors.white, width: 2.5),
                       ),
                       child: const Icon(Icons.check, color: Colors.white, size: 10),
@@ -254,18 +303,28 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFCFBDC), borderRadius: BorderRadius.circular(12),
+                  color: const Color(0xFFFCFBDC),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    ...List.generate(5, (i) => Icon(
-                      i < avgRating ? Icons.star_rounded : Icons.star_border_rounded,
-                      color: kAmber, size: 18,
-                    )),
+                    ...List.generate(
+                      5,
+                      (i) => Icon(
+                        i < avgRating
+                            ? Icons.star_rounded
+                            : Icons.star_border_rounded,
+                        color: kAmber,
+                        size: 18,
+                      ),
+                    ),
                     const SizedBox(width: 8),
                     Text('$avgRating Reviews',
-                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kAmber)),
+                        style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: kAmber)),
                   ],
                 ),
               ),
@@ -277,11 +336,16 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Text(name,
-                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: kDarkText)),
+                  style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      color: kDarkText)),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                 decoration: BoxDecoration(
-                  color: kPrimary.withOpacity(0.1), borderRadius: BorderRadius.circular(30),
+                  color: kPrimary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(30),
                 ),
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
@@ -289,7 +353,10 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                     Icon(Icons.check_circle_rounded, size: 13, color: kPrimary),
                     SizedBox(width: 5),
                     Text('Verified Doctor',
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kPrimary)),
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: kPrimary)),
                   ],
                 ),
               ),
@@ -297,21 +364,29 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
           ),
           const SizedBox(height: 4),
           Text(specification,
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: kPrimary)),
+              style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: kPrimary)),
           const SizedBox(height: 16),
           Wrap(
-            spacing: 32, runSpacing: 8,
+            spacing: 32,
+            runSpacing: 8,
             children: [
               _infoItem(Icons.payments_outlined, 'Consultation:', '$price EGP'),
               _infoItem(Icons.phone_outlined, 'Phone:', phone),
               _infoItem(Icons.email_outlined, 'Email:', email),
-              _infoItem(Icons.location_on_outlined, 'Location:', '$address, $governorate'),
+              _infoItem(Icons.location_on_outlined, 'Location:',
+                  '$address, $governorate'),
             ],
           ),
           if (brief.isNotEmpty) ...[
             const SizedBox(height: 16),
             Text(brief,
-                style: const TextStyle(fontSize: 13, color: Color(0xFF6B7280), height: 1.6)),
+                style: const TextStyle(
+                    fontSize: 13,
+                    color: Color(0xFF6B7280),
+                    height: 1.6)),
           ],
           const SizedBox(height: 20),
           Align(
@@ -320,16 +395,21 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
               onPressed: () async {
                 await Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const DoctorEditProfileScreen()),
+                  MaterialPageRoute(
+                      builder: (_) => const DoctorEditProfileScreen()),
                 );
                 _loadDashboard();
               },
               icon: const Icon(Icons.edit_rounded, size: 16),
-              label: const Text('Edit Profile', style: TextStyle(fontWeight: FontWeight.w700)),
+              label: const Text('Edit Profile',
+                  style: TextStyle(fontWeight: FontWeight.w700)),
               style: ElevatedButton.styleFrom(
-                backgroundColor: kPrimary, foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 13),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                backgroundColor: kPrimary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 22, vertical: 13),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14)),
                 elevation: 0,
               ),
             ),
@@ -345,8 +425,13 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
       children: [
         Icon(icon, size: 16, color: kPrimary),
         const SizedBox(width: 6),
-        Text('$label ', style: const TextStyle(fontSize: 13, color: Color(0xFF374151))),
-        Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText)),
+        Text('$label ',
+            style: const TextStyle(fontSize: 13, color: Color(0xFF374151))),
+        Text(value,
+            style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: kDarkText)),
       ],
     );
   }
@@ -375,15 +460,15 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
   Widget _buildTimeSlotsCard() {
     final data = _dashboardData!;
     final days = (data['days'] as List?) ?? [];
-    final morningSlots = (data['morning_slots'] as List?) ?? [];
-    final eveningSlots = (data['evening_slots'] as List?) ?? [];
 
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: const [BoxShadow(color: Color(0x0A000000), blurRadius: 10, offset: Offset(0, 2))],
+        boxShadow: const [
+          BoxShadow(color: Color(0x0A000000), blurRadius: 10, offset: Offset(0, 2))
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -396,30 +481,39 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                   Icon(Icons.access_time_rounded, color: kPrimary, size: 20),
                   SizedBox(width: 8),
                   Text('Available Time Slots',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: kDarkText)),
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: kDarkText)),
                 ],
               ),
               OutlinedButton.icon(
                 onPressed: () async {
                   await Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const DoctorEditTimeSlotsScreen()),
+                    MaterialPageRoute(
+                        builder: (_) => const DoctorEditTimeSlotsScreen()),
                   );
                   _loadDashboard();
                 },
                 icon: const Icon(Icons.edit_calendar_outlined, size: 14),
                 label: const Text('Edit Slots',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                    style:
+                        TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: kPrimary,
                   side: const BorderSide(color: kPrimary),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 8),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 20),
+
+          // ── Days carousel ─────────────────────────────────────────
           if (days.isNotEmpty)
             SizedBox(
               height: 72,
@@ -430,13 +524,16 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                 itemBuilder: (_, i) {
                   final active = _selectedDayIndex == i;
                   final dayData = days[i] as Map;
-                  final dayName = (dayData['day'] as String).substring(0, 3).toUpperCase();
+                  final dayName = (dayData['day'] as String)
+                      .substring(0, 3)
+                      .toUpperCase();
                   final dateStr = dayData['date'] as String;
                   final dayNum = dateStr.split('-').last;
                   return GestureDetector(
                     onTap: () {
+                      if (_selectedDayIndex == i) return;
                       setState(() => _selectedDayIndex = i);
-                      _loadDashboard(day: dayData['day'] as String);
+                      _loadSlotsForDay(dayData['day'] as String);
                     },
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
@@ -450,13 +547,16 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                         children: [
                           Text(dayName,
                               style: TextStyle(
-                                  fontSize: 11, fontWeight: FontWeight.w700,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
                                   color: active ? Colors.white : kTextGray)),
                           const SizedBox(height: 4),
                           Text(dayNum,
                               style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w800,
-                                  color: active ? Colors.white : kDarkText)),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
+                                  color:
+                                      active ? Colors.white : kDarkText)),
                         ],
                       ),
                     ),
@@ -465,17 +565,33 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
               ),
             ),
           const SizedBox(height: 20),
+
+          // ── Slots loading indicator ───────────────────────────────
+          if (_isLoadingSlots)
+            const Padding(
+              padding: EdgeInsets.only(bottom: 12),
+              child: LinearProgressIndicator(
+                  color: kPrimary, backgroundColor: kBgLight),
+            ),
+
+          // ── Morning slots ─────────────────────────────────────────
           _sectionLabel('MORNING SLOTS'),
           const SizedBox(height: 10),
-          morningSlots.isEmpty
-              ? const Text('No morning slots', style: TextStyle(color: kTextGray, fontSize: 13))
-              : _buildReadOnlySlots(morningSlots.map((s) => s['time'] as String).toList()),
+          _morningSlots.isEmpty
+              ? const Text('No morning slots',
+                  style: TextStyle(color: kTextGray, fontSize: 13))
+              : _buildReadOnlySlots(
+                  _morningSlots.map((s) => s['time'] as String).toList()),
           const SizedBox(height: 16),
+
+          // ── Evening slots ─────────────────────────────────────────
           _sectionLabel('EVENING SLOTS'),
           const SizedBox(height: 10),
-          eveningSlots.isEmpty
-              ? const Text('No evening slots', style: TextStyle(color: kTextGray, fontSize: 13))
-              : _buildReadOnlySlots(eveningSlots.map((s) => s['time'] as String).toList()),
+          _eveningSlots.isEmpty
+              ? const Text('No evening slots',
+                  style: TextStyle(color: kTextGray, fontSize: 13))
+              : _buildReadOnlySlots(
+                  _eveningSlots.map((s) => s['time'] as String).toList()),
         ],
       ),
     );
@@ -484,21 +600,32 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
   Widget _sectionLabel(String text) {
     return Text(text,
         style: const TextStyle(
-            fontSize: 11, fontWeight: FontWeight.w800, color: kTextGray, letterSpacing: 1.2));
+            fontSize: 11,
+            fontWeight: FontWeight.w800,
+            color: kTextGray,
+            letterSpacing: 1.2));
   }
 
   Widget _buildReadOnlySlots(List<String> slots) {
     return Wrap(
-      spacing: 8, runSpacing: 8,
-      children: slots.map((slot) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        decoration: BoxDecoration(
-          color: kBgLight, border: Border.all(color: kBorderColor),
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: Text(slot,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF4B5563))),
-      )).toList(),
+      spacing: 8,
+      runSpacing: 8,
+      children: slots
+          .map((slot) => Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 14, vertical: 8),
+                decoration: BoxDecoration(
+                  color: kBgLight,
+                  border: Border.all(color: kBorderColor),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Text(slot,
+                    style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF4B5563))),
+              ))
+          .toList(),
     );
   }
 
@@ -512,7 +639,9 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: const [BoxShadow(color: Color(0x0A000000), blurRadius: 10, offset: Offset(0, 2))],
+        boxShadow: const [
+          BoxShadow(color: Color(0x0A000000), blurRadius: 10, offset: Offset(0, 2))
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -525,15 +654,23 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                   Icon(Icons.show_chart_rounded, color: kPrimary, size: 20),
                   SizedBox(width: 8),
                   Text('Financials & Activity',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: kDarkText)),
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: kDarkText)),
                 ],
               ),
               GestureDetector(
                 onTap: () => Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => const DoctorWalletScreen()),
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const DoctorWalletScreen()),
                 ),
                 child: const Text('View History',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: kPrimary)),
+                    style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: kPrimary)),
               ),
             ],
           ),
@@ -541,14 +678,20 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-            decoration: BoxDecoration(color: kBgLight, borderRadius: BorderRadius.circular(16)),
+            decoration: BoxDecoration(
+                color: kBgLight,
+                borderRadius: BorderRadius.circular(16)),
             child: const Column(
               children: [
                 Text('Total Wallet Balance',
-                    style: TextStyle(fontSize: 13, color: Color(0xFF6B7280))),
+                    style:
+                        TextStyle(fontSize: 13, color: Color(0xFF6B7280))),
                 SizedBox(height: 8),
                 Text('— EGP',
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, color: kPrimary)),
+                    style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w800,
+                        color: kPrimary)),
               ],
             ),
           ),
@@ -560,7 +703,8 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                   label: 'Completed\nRequests',
                   value: completed.toString(),
                   icon: Icons.check_circle_outline_rounded,
-                  color: kGreen, bgColor: const Color(0xFFE6F7E6),
+                  color: kGreen,
+                  bgColor: const Color(0xFFE6F7E6),
                 ),
               ),
               const SizedBox(width: 14),
@@ -569,7 +713,8 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                   label: 'Pending\nRequests',
                   value: pending.toString(),
                   icon: Icons.article_outlined,
-                  color: kAmber, bgColor: const Color(0xFFFFFBEB),
+                  color: kAmber,
+                  bgColor: const Color(0xFFFFFBEB),
                 ),
               ),
             ],
@@ -580,13 +725,17 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
   }
 
   Widget _buildStatCard({
-    required String label, required String value,
-    required IconData icon, required Color color, required Color bgColor,
+    required String label,
+    required String value,
+    required IconData icon,
+    required Color color,
+    required Color bgColor,
   }) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: bgColor, borderRadius: BorderRadius.circular(15),
+        color: bgColor,
+        borderRadius: BorderRadius.circular(15),
         border: Border.all(color: color.withOpacity(0.2)),
       ),
       child: Column(
@@ -594,7 +743,10 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
         children: [
           Text(label,
               style: const TextStyle(
-                  fontSize: 11, fontWeight: FontWeight.w700, color: kTextGray, height: 1.4)),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: kTextGray,
+                  height: 1.4)),
           const SizedBox(height: 12),
           Row(
             children: [
@@ -602,7 +754,9 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
               const SizedBox(width: 8),
               Text(value,
                   style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.w800, color: kDarkText)),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: kDarkText)),
             ],
           ),
         ],
@@ -612,18 +766,27 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
 
   void _navigateToPage(BuildContext context, String pageLabel) {
     switch (pageLabel) {
-      case 'Profile': break;
+      case 'Profile':
+        break;
       case 'Requests':
-        Navigator.push(context, MaterialPageRoute(builder: (_) => const DoctorRequestsScreen()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const DoctorRequestsScreen()));
         break;
       case 'Notifications':
-        Navigator.push(context, MaterialPageRoute(builder: (_) => const DoctorNotificationsScreen()));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => const DoctorNotificationsScreen()));
         break;
       case 'Wallet':
-        Navigator.push(context, MaterialPageRoute(builder: (_) => const DoctorWalletScreen()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const DoctorWalletScreen()));
         break;
       case 'Complaints':
-        Navigator.push(context, MaterialPageRoute(builder: (_) => const DoctorComplaintsScreen()));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => const DoctorComplaintsScreen()));
         break;
     }
   }
@@ -638,10 +801,13 @@ class _AppBarNotification extends StatelessWidget {
       icon: Stack(
         clipBehavior: Clip.none,
         children: const [
-          Icon(Icons.notifications_none_rounded, color: Color(0xFF4B5563), size: 24),
+          Icon(Icons.notifications_none_rounded,
+              color: Color(0xFF4B5563), size: 24),
           Positioned(
-            right: -2, top: -2,
-            child: CircleAvatar(radius: 5, backgroundColor: Color(0xFFEF4444)),
+            right: -2,
+            top: -2,
+            child: CircleAvatar(
+                radius: 5, backgroundColor: Color(0xFFEF4444)),
           ),
         ],
       ),
