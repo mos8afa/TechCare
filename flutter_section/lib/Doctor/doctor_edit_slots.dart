@@ -271,7 +271,7 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
           ),
           const SizedBox(height: 22),
           Wrap(
-            spacing: 10, runSpacing: 10,
+            spacing: 0, runSpacing: 0,
             children: [
               ...slots.asMap().entries.map((entry) {
                 final slot = entry.value;
@@ -289,25 +289,32 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
   }
 
   Widget _buildPill({required String label, required VoidCallback onRemove}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: kPrimary, width: 2),
-        borderRadius: BorderRadius.circular(100),
-      ),
+    return Padding(
+      padding: const EdgeInsets.only(top: 10, right: 10),
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Text(label,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: kPrimary)),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: kPrimary, width: 2),
+              borderRadius: BorderRadius.circular(100),
+            ),
+            child: Text(label,
+                style: const TextStyle(
+                    fontSize: 14, fontWeight: FontWeight.w700, color: kPrimary)),
+          ),
           Positioned(
-            top: -18, right: -18,
+            top: -8,
+            right: -8,
             child: GestureDetector(
               onTap: onRemove,
               child: Container(
-                width: 22, height: 22,
-                decoration: const BoxDecoration(color: Color(0xFFB91C1C), shape: BoxShape.circle),
+                width: 22,
+                height: 22,
+                decoration: const BoxDecoration(
+                    color: Color(0xFFB91C1C), shape: BoxShape.circle),
                 child: const Icon(Icons.close_rounded, color: Colors.white, size: 13),
               ),
             ),
@@ -318,22 +325,25 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
   }
 
   Widget _buildAddPill({required VoidCallback onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 170,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xFFCBD5E1), width: 2),
-          borderRadius: BorderRadius.circular(100),
-        ),
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.add_circle_outline_rounded, size: 18, color: Color(0xFF94A3B8)),
-            SizedBox(width: 6),
-            Text('Add Slot', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF94A3B8))),
-          ],
+    return Padding(
+      padding: const EdgeInsets.only(top: 10, right: 10),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 170,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: const Color(0xFFCBD5E1), width: 2),
+            borderRadius: BorderRadius.circular(100),
+          ),
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.add_circle_outline_rounded, size: 18, color: Color(0xFF94A3B8)),
+              SizedBox(width: 6),
+              Text('Add Slot', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF94A3B8))),
+            ],
+          ),
         ),
       ),
     );

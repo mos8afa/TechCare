@@ -189,10 +189,10 @@ class _DoctorEditProfileScreenState extends State<DoctorEditProfileScreen> {
     ImageProvider img;
     if (_pickedImage != null) {
       img = FileImage(_pickedImage!);
-    } else if (_profilePicUrl != null) {
-      img = NetworkImage(_profilePicUrl!);
+    } else if (_profilePicUrl != null && _profilePicUrl!.isNotEmpty) {
+      img = NetworkImage(ApiService.buildMediaUrl(_profilePicUrl));
     } else {
-      img = const AssetImage('img/default_avatar.png');
+      img = const NetworkImage('https://ui-avatars.com/api/?name=Doctor&background=1D89E4&color=fff&size=200');
     }
 
     return Row(
