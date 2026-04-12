@@ -2076,3 +2076,132 @@ input:checked + .edit-ts-slider {
 input:checked + .edit-ts-slider:before {
     transform: translateX(20px);
 }
+
+
+/* ===== Available Time Slots Section (Profile Page) ===== */
+.ats-card-v2 {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid #f8fafc;
+    margin-top: 30px;
+}
+
+.header-icon-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: #eff6ff;
+    color: #3b82f6;
+    border-radius: 50%;
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.days-carousel {
+    margin: 25px 0;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.days-carousel::-webkit-scrollbar { display: none; }
+
+.days-track {
+    display: flex;
+    gap: 12px;
+}
+
+.day-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 65px;
+    height: 85px;
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.day-btn .day-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: #94a3b8;
+    margin-bottom: 6px;
+}
+
+.day-btn .day-num {
+    font-size: 18px;
+    font-weight: 700;
+    color: #334155;
+}
+
+.day-btn.active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.day-btn.active .day-name { color: rgba(255, 255, 255, 0.8); }
+.day-btn.active .day-num  { color: #ffffff; }
+
+.slots-container { margin-top: 10px; }
+
+.slots-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.slot-pill {
+    padding: 10px 24px;
+    background: #f1f5f9;
+    border: none;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 110px;
+}
+
+.slot-pill:hover { background: #e2e8f0; }
+
+.slot-pill.active {
+    background: #3b82f6;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2);
+}
+
+.ats-card-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.edit-slots-btn-hollow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: #ffffff;
+    border: 1.5px solid #3b82f6;
+    border-radius: 50px;
+    color: #3b82f6;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.edit-slots-btn-hollow:hover {
+    background: #eff6ff;
+    transform: translateY(-1px);
+}

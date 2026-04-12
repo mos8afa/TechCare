@@ -1,12 +1,20 @@
+import json
 from django.shortcuts import redirect, render, get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 from accounts import validations
 from accounts.models import Nurse, TimeSlots, get_provider_days_with_dates
 from django.db.models import Avg
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from.models import Service
+from .models import Service, NurseRequest
 from decimal import Decimal
 from datetime import time
+
+
+def _nurse_name(nurse):
+    prefix = "Mr. " if nurse.gender == 'male' else "Mrs. "
+    return prefix + nurse.user.first_name + " " + nurse.user.last_name
 
 
 @login_required
@@ -15,126 +23,80 @@ def nurse_dashboard(request):
         return redirect("login")
 
     nurse = Nurse.objects.get(user=request.user)
-    if nurse.gender == 'male':
-        name = "Mr. " + nurse.user.first_name + " " + nurse.user.last_name
-    else:
-        name = "Mrs. " + nurse.user.first_name + " " + nurse.user.last_name
-    governorate = nurse.get_governorate_display()
-    address = nurse.address
-    brief = nurse.brief
-    profile_pic = nurse.profile_pic
-    phone_num = nurse.phone_number
-    email = nurse.user.email 
+    name = _nurse_name(nurse)
 
-    nurse_requests = nurse.nurse_requests.all()
-    pending = nurse_requests.filter(status__in=['pending', 'edited']).count()
-    completed = nurse_requests.filter(status='completed').count()
+    nurse_reqs = nurse.nurse_requests.all()
+    pending   = nurse_reqs.filter(status__in=['pending', 'edited']).count()
+    completed = nurse_reqs.filter(status='completed').count()
+    services  = nurse.nurse_services.all()
 
-    services = nurse.nurse_services.all()
+    average_rating = round(nurse.rates.aggregate(Avg('rate'))['rate__avg'] or 0) if nurse.rates.exists() else 0
 
-    if nurse.rates.exists():
-        average_rating = nurse.rates.aggregate(Avg('rate'))['rate__avg'] or 0
-        average_rating = round(average_rating)
-    else:
-        average_rating = 0
+    days = list(get_provider_days_with_dates(
+        TimeSlots.objects.filter(nurse=nurse).values_list('day', flat=True).distinct()
+    ))
 
-    days = TimeSlots.objects.filter(nurse=nurse).values_list('day', flat=True).distinct()
-
-    days = get_provider_days_with_dates(days)
-
-    time_slots = []
-
-    if request.method == 'POST':
-        input_day = request.POST.get('day')
-
-        slots = TimeSlots.objects.filter(
-            nurse=nurse,
-            day=input_day   
-        ).order_by('time')
-
-        for slot in slots:
-            time_slots.append(slot)
+    selected_day = request.GET.get('day') or (days[0]['day'] if days else None)
+    time_slots = list(TimeSlots.objects.filter(nurse=nurse, day=selected_day).order_by('time')) if selected_day else []
 
     return render(request, 'nurse/nurse_profile.html', {
         'name': name,
-        'governorate': governorate,
-        'address': address,
-        'phone_number': phone_num,
-        'email':email,
+        'governorate': nurse.get_governorate_display(),
+        'address': nurse.address,
+        'phone_number': nurse.phone_number,
+        'email': nurse.user.email,
         'average_rating': average_rating,
-        'brief': brief,
-        'profile_pic': profile_pic,
+        'brief': nurse.brief,
+        'profile_pic': nurse.profile_pic,
         'pending': pending,
         'completed': completed,
-        'services':services,
-        'days':days,
+        'services': services,
+        'days': days,
         'time_slots': time_slots,
+        'selected_day': selected_day,
     })
 
 
 @login_required
 def edit_nurse_profile(request):
     errors = {}
-
     if request.user.role != "nurse":
         return redirect("login")
 
     nurse = Nurse.objects.get(user=request.user)
-    if nurse.gender == 'male':
-        name = "Mr. " + nurse.user.first_name + " " + nurse.user.last_name
-    else:
-        name = "Mrs. " + nurse.user.first_name + " " + nurse.user.last_name
-
+    name = _nurse_name(nurse)
     profile_pic = nurse.profile_pic
-
     User = get_user_model()
 
     if request.method == 'POST':
         phone_number = request.POST.get('phone_number')
-        address = request.POST.get('address')
-        brief = request.POST.get('brief')
-        username = request.POST.get('username')
+        address      = request.POST.get('address')
+        brief        = request.POST.get('brief')
+        username     = request.POST.get('username')
 
         if User.objects.filter(username=username).exclude(id=request.user.id).exists():
             errors['exist_username'] = "Username already exists"
-            return render(request, 'nurse/nurse_edit_profile.html',
-                {'errors': errors, 'nurse': nurse, 'name': name, 'profile_pic': profile_pic})
-
-        if not validations.validate_username(username):
+        elif not validations.validate_username(username):
             errors['username'] = "Username must be lowercase, allowed letters, numbers, _ or ., and cannot contain forbidden words."
-            return render(request, 'nurse/nurse_edit_profile.html',
-                {'errors': errors, 'nurse': nurse, 'name': name, 'profile_pic': profile_pic})
-
-        if not validations.validate_phone(phone_number):
+        elif not validations.validate_phone(phone_number):
             errors['phone_invalid'] = "Phone number must start with 0 or 1."
-            return render(request, 'nurse/nurse_edit_profile.html',
-                {'errors': errors, 'nurse': nurse, 'name': name, 'profile_pic': profile_pic})
-
-        if not validations.validate_address(address):
+        elif not validations.validate_address(address):
             errors['address'] = "Can't use <,> or forbidden words"
-            return render(request, 'nurse/nurse_edit_profile.html',
-                {'errors': errors, 'nurse': nurse, 'name': name, 'profile_pic': profile_pic})
-
-        if not validations.validate_address(brief):
+        elif not validations.validate_address(brief):
             errors['brief'] = "Brief can't contain forbidden words."
-            return render(request, 'nurse/nurse_edit_profile.html',
-                {'errors': errors, 'nurse': nurse, 'name': name, 'profile_pic': profile_pic})
-
-        nurse.user.username = username
-        nurse.phone_number = phone_number
-        nurse.address = address
-        nurse.brief = brief
-        nurse.governorate = request.POST.get('governorate')
-        nurse.profile_pic = request.FILES.get('profile_pic') or nurse.profile_pic
-        nurse.user.save()
-        nurse.save()
-        return redirect('nurse:nurse_dashboard')
+        else:
+            nurse.user.username = username
+            nurse.phone_number  = phone_number
+            nurse.address       = address
+            nurse.brief         = brief
+            nurse.governorate   = request.POST.get('governorate')
+            nurse.profile_pic   = request.FILES.get('profile_pic') or nurse.profile_pic
+            nurse.user.save()
+            nurse.save()
+            return redirect('nurse:nurse_dashboard')
 
     return render(request, 'nurse/nurse_edit_profile.html', {
-        'nurse': nurse,
-        'errors': errors,
-        'name': name,
-        'profile_pic': profile_pic,
+        'nurse': nurse, 'errors': errors, 'name': name, 'profile_pic': profile_pic,
     })
 
 
@@ -144,138 +106,164 @@ def nurse_requests(request, type):
         return redirect("login")
 
     nurse = Nurse.objects.get(user=request.user)
-
-    if nurse.gender == 'male':
-        name = "Mr. " + nurse.user.first_name + " " + nurse.user.last_name
-    else:
-        name = "Mrs. " + nurse.user.first_name + " " + nurse.user.last_name
-
+    name = _nurse_name(nurse)
     profile_pic = nurse.profile_pic
+    context_base = {'name': name, 'profile_pic': profile_pic}
 
-    all_requests = nurse.nurse_requests.all()
-
-    pending = all_requests.filter(status='pending').order_by('-date', '-time')
-    accepted = all_requests.filter(status='accepted').order_by('-date', '-time')
-    completed = all_requests.filter(status='completed').order_by('-date', '-time')
-
-    context_base = {
-        'name': name,
-        'profile_pic': profile_pic,
-    }
+    all_reqs = nurse.nurse_requests.all()
 
     if type == 'pending' or type is None:
-        return render(request, 'nurse/requests_pending.html', {
-            **context_base,
-            'pending': pending,
-        })
+        pending_qs = list(all_reqs.filter(status='pending').order_by('-date', '-time'))
+        # attach nurse's slots for the day of each request
+        for req in pending_qs:
+            req_day = req.date.strftime('%A').lower()
+            req.nurse_slots = TimeSlots.objects.filter(nurse=nurse, day=req_day).order_by('time')
+        return render(request, 'nurse/requests_pending.html', {**context_base, 'pending': pending_qs})
+
     elif type == 'accepted':
-        return render(request, 'nurse/requests_accepted.html', {
-            **context_base,
-            'accepted': accepted,
-        })
+        accepted = all_reqs.filter(status='accepted').order_by('-date', '-time')
+        return render(request, 'nurse/requests_accepted.html', {**context_base, 'accepted': accepted})
+
     elif type == 'completed':
-        return render(request, 'nurse/requests_completed.html', {
-            **context_base,
-            'completed': completed,
-        })
-    else:
-        return redirect('nurse:nurse_dashboard')
-    
-
-def add_services(request):
-    errors={}
-    nurse = Nurse.objects.get(user=request.user)
-
-    name = request.POST.get('name')
-    description = request.POST.get('description')
-    price = request.POST.get('price')
-
-    if not validations.validate_address(description):
-            errors['description'] = "Description can't contain forbidden words."
-            return render(request, 'nurse/nurse_dashboard.html',
-                {'errors': errors})
-    try:
-        price = Decimal(price)
-    except:
-        errors['price'] = "Price must be a valid number."
-        return render(request, 'nurse/nurse_dashboard.html',
-                {'errors': errors})
-
-    if request.method =='POST':
-        nurse.nurse_services.create(
-            name = name,
-            description = description,
-            price = price
-        )
-    
-        return redirect('nurse:nurse_dashboard')
-        
-def edit_service(request, service_id):
-    nurse = Nurse.objects.get(user=request.user)
-
-    service = get_object_or_404(Service, id=service_id, nurse=nurse)
-
-    if request.method == "POST":
-        service.name = request.POST.get('name')
-        service.description = request.POST.get('description')
-        service.price = request.POST.get('price')
-
-        service.save()
-
-        return redirect('nurse:nurse_dashboard')
-
-def delete_service(request, service_id):
-    nurse = Nurse.objects.get(user=request.user)
-
-    service = get_object_or_404(Service, id=service_id, nurse=nurse)
-
-    service.delete()
+        completed = all_reqs.filter(status='completed').order_by('-date', '-time')
+        return render(request, 'nurse/requests_completed.html', {**context_base, 'completed': completed})
 
     return redirect('nurse:nurse_dashboard')
+
+
+@login_required
+@require_POST
+def request_action(request, request_id):
+    if request.user.role != 'nurse':
+        return redirect('login')
+
+    nurse = Nurse.objects.get(user=request.user)
+    req = get_object_or_404(NurseRequest, id=request_id, nurse=nurse)
+    action = request.POST.get('action')
+
+    if action == 'reject':
+        req.status = 'rejected'
+        req.save()
+    elif action == 'accept':
+        selected_time = request.POST.get('selected_time')
+        if selected_time:
+            try:
+                h, m = selected_time.split(':')
+                new_t = time(int(h), int(m))
+                if new_t != req.time:
+                    req.time = new_t
+                    req.status = 'edited'
+                else:
+                    req.status = 'accepted'
+                req.save()
+            except (ValueError, AttributeError):
+                req.status = 'accepted'
+                req.save()
+        else:
+            req.status = 'accepted'
+            req.save()
+
+    return redirect('nurse:nurse_requests', type='pending')
+
+
+@login_required
+@require_POST
+def mark_done(request, request_id):
+    if request.user.role != 'nurse':
+        return redirect('login')
+
+    nurse = Nurse.objects.get(user=request.user)
+    req = get_object_or_404(NurseRequest, id=request_id, nurse=nurse, status='accepted')
+    req.status = 'completed'
+    req.save()
+    return redirect('nurse:nurse_requests', type='accepted')
+
+
+@login_required
+def add_services(request):
+    if request.method == 'POST':
+        nurse = Nurse.objects.get(user=request.user)
+        service_name = request.POST.get('name')
+        description  = request.POST.get('description')
+        price        = request.POST.get('price')
+        try:
+            price = Decimal(price)
+            nurse.nurse_services.create(name=service_name, description=description, price=price)
+        except Exception:
+            pass
+    return redirect('nurse:nurse_dashboard')
+
+
+@login_required
+def edit_service(request, service_id):
+    nurse   = Nurse.objects.get(user=request.user)
+    service = get_object_or_404(Service, id=service_id, nurse=nurse)
+    if request.method == 'POST':
+        service.name        = request.POST.get('name')
+        service.description = request.POST.get('description')
+        service.price       = Decimal(request.POST.get('price', 0))
+        service.save()
+    return redirect('nurse:nurse_dashboard')
+
+
+@login_required
+def delete_service(request, service_id):
+    nurse   = Nurse.objects.get(user=request.user)
+    service = get_object_or_404(Service, id=service_id, nurse=nurse)
+    if request.method == 'POST':
+        service.delete()
+    return redirect('nurse:nurse_dashboard')
+
 
 @login_required
 def edit_time_slots(request):
     if request.user.role != 'nurse':
         return redirect('login')
-    
-    nurse = Nurse.objects.get(user = request.user)
-    days = TimeSlots.objects.filter(nurse=nurse).values_list('day', flat=True).distinct()
 
-    days = get_provider_days_with_dates(days)
+    nurse = Nurse.objects.get(user=request.user)
 
-    morning_slots = []
-    evening_slots = []
+    from doctor.views import get_ordered_week_days
+    days = get_ordered_week_days()
+    selected_day = request.GET.get('day') or days[0]['day']
 
-    if request.method == 'POST':
-        input_day = request.POST.get('day')
-        input_time = request.POST.get('time')
-
-        slots = TimeSlots.objects.filter(
-            nurse=nurse,
-            day=input_day   
-        ).order_by('time')
-
-        exists = TimeSlots.objects.filter(
-            nurse=nurse,
-            day=input_day,
-            time=input_time
-        ).exists()
-
-        if not exists:
-            TimeSlots.objects.create(
-            nurse=nurse,
-            day=input_day,
-            time=input_time
-            )            
-
-        for slot in slots:
-            if slot.time < time(12, 0):
-                morning_slots.append(slot)
-            else:
-                evening_slots.append(slot)
+    slots = TimeSlots.objects.filter(nurse=nurse, day=selected_day).order_by('time')
+    morning_slots = [s for s in slots if s.time < time(12, 0)]
+    evening_slots = [s for s in slots if s.time >= time(12, 0)]
 
     return render(request, 'nurse/edit_slots.html', {
-    'days': days,
-    'morning_slots': morning_slots,
-    'evening_slots': evening_slots,
-})
+        'days': days,
+        'selected_day': selected_day,
+        'morning_slots': morning_slots,
+        'evening_slots': evening_slots,
+        'name': _nurse_name(nurse),
+        'profile_pic': nurse.profile_pic,
+    })
+
+
+@login_required
+@require_POST
+def save_time_slots(request):
+    if request.user.role != 'nurse':
+        return JsonResponse({'error': 'Forbidden'}, status=403)
+
+    nurse = Nurse.objects.get(user=request.user)
+
+    try:
+        data  = json.loads(request.body)
+        day   = data.get('day')
+        times = data.get('times', [])
+    except (json.JSONDecodeError, AttributeError):
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+    if not day:
+        return JsonResponse({'error': 'Missing day'}, status=400)
+
+    TimeSlots.objects.filter(nurse=nurse, day=day).delete()
+    for t_str in times:
+        try:
+            h, m = t_str.split(':')
+            TimeSlots.objects.create(nurse=nurse, day=day, time=time(int(h), int(m)))
+        except (ValueError, AttributeError):
+            continue
+
+    return JsonResponse({'success': True})

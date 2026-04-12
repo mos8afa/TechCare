@@ -5,197 +5,136 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Requests</title>
-
-    <link rel="stylesheet" href="{% static 'Css/Done.css' %}">
+    <link rel="stylesheet" href="{% static 'Css/Nurse_Board.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
 </head>
-<body>  
-    <div class="dashboard">
+<body>
+<div class="dashboard">
 
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <span class="logo-icon">
-                        <img src="{% static 'img/logo.png' %}" alt="">
-                    </span>                
-                    <div>
-                        <h2>TechCare</h2>
-                        <p>Care is near, nothing to fear.</p>
-                    </div>
-                    <button class="sidebar-toggle">
-                        <i class="bi bi-layout-sidebar-inset-reverse"></i>
-                    </button>
-                </div>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon"><img src="{% static 'img/logo.png' %}" alt=""></span>
+                <div><h2>TechCare</h2><p>Medical Portal</p></div>
+                <button class="sidebar-toggle"><i class="bi bi-layout-sidebar-inset-reverse"></i></button>
             </div>
-
-            <aside class="aside">
-                <a href="{% url 'nurse:nurse_dashboard' %}" class="aside-item">
-                    <i class="bi bi-person"></i>
-                    <span>Profile</span>
-                </a>
-                <a href="{% url 'nurse:nurse_requests' 'completed' %}" class="aside-item active">
-                    <i class="ri-file-list-line"></i>
-                    <span>Requests</span>
-                </a>
-                <a href="Notifications.html" class="aside-item">
-                    <i class="fa-regular fa-bell"></i>
-                    <span>Notifications</span>
-                </a>
-                <a href="Wallet.html" class="aside-item">
-                    <i class="ri-wallet-3-line"></i>
-                    <span>Wallet</span>
-                </a>
-                <a href="Complaints.html" class="aside-item">
-                    <i class="ri-error-warning-line"></i>
-                    <span>Complaints</span>
-                </a>
-            </aside>
+        </div>
+        <aside class="aside">
+            <a href="{% url 'nurse:nurse_dashboard' %}" class="aside-item">
+                <i class="bi bi-person"></i><span>Profile</span>
+            </a>
+            <a href="{% url 'nurse:nurse_requests' 'pending' %}" class="aside-item active">
+                <i class="ri-file-list-line"></i><span>Requests</span>
+            </a>
+            <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
+            <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
+            <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
         </aside>
-        <div style="flex:1; display:flex; flex-direction:column;">
-        
-            <!-- Top Navbar -->
-            <div class="topbar">
-                <h2 class="topbar-title">Requests</h2>
+    </aside>
 
-                <div class="topbar-right">
-                    <div class="topbar-icon" id="notificationBtn">
-                        <i class="fa-regular fa-bell"></i>
-                        
+    <div class="content-wrapper">
 
-                        <div class="inbox" id="notificationBox">
-                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg">
-                                <div class="notification-content">
-                                    <h4>Ahmed Ali</h4>
-                                    <p>New Consultation Request</p>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
-                                <img src="https://randomuser.me/api/portraits/women/12.jpg">
-                                <div class="notification-content">
-                                    <h4>Sara Mohamed</h4>
-                                    <p>Appointment Confirmed</p>
-                                </div>
-                            </div>
+        <div class="topbar">
+            <h2 class="topbar-title">Requests</h2>
+            <div class="topbar-right">
+                <div class="topbar-icon" id="notificationBtn">
+                    <i class="fa-regular fa-bell"></i>
+                    <div class="inbox" id="notificationBox">
+                        <div class="notification-item">
+                            <div class="notification-content"><p>No new notifications</p></div>
                         </div>
-                    </div>
-                    <hr class="line">
-                    <div class="topbar-profile" onclick="window.location.href='Profile.html'">
-                        <div class="topbar-user-info">
-                            <h4>{{name}}</h4>
-                        </div>
-                        <img src="{{profile_pic.url}}" alt="{{name}}">
                     </div>
                 </div>
+                <hr class="line">
+                <div class="topbar-profile" onclick="window.location.href='{% url 'nurse:nurse_dashboard' %}'">
+                    <div class="topbar-user-info">
+                        <h4>{{ name }}</h4><span>Registered Nurse</span>
+                    </div>
+                    <img src="{{ profile_pic.url }}" alt="Nurse">
+                </div>
             </div>
-
-            <!-- Main Content -->
-                <main class="main-content-nurse-requst">
-
-                    <div class="requests-sticky">
-                        <div class="requests-header">
-                            <div class="header-text">
-                                <h2>Requests</h2>
-                                <p>Manage incoming consultation requests</p>
-                            </div>
-                            <button class="filter-button">
-                                <b><i class="bi bi-funnel"></i> Filter</b>
-                            </button>
-                        </div>
-
-                        <div class="tabs-navigation">
-                            <button class="tab-link" data-status="pending" onclick="window.location.href='{% url "nurse:nurse_requests" "pending" %}'">Pending</button>
-                            <button class="tab-link" data-status="accepted" onclick="window.location.href='{% url "nurse:nurse_requests" "accepted" %}'">Accepted</button>
-                            <button class="tab-link active" data-status="done" onclick="window.location.href='{% url "nurse:nurse_requests" "completed" %}'">Done</button>
-                    </div>
-                    </div>
-
-                    <div class="requests-grid">
-                    {% if completed %}
-                        {% for request in completed %}
-                        <div class="request-card-item">
-                            <div class="card-top-section">
-                                <div class="patient-meta">
-                                    <div class="patient-avatar-mini">
-                                        <i class="bi bi-person-circle"></i>
-                                    </div>
-                                    <div class="patient-name-info">
-                                    <h3>{{ request.patient.user.first_name }} {{ request.patient.user.last_name }}</h3>
-                                        <p>
-                                            <i class="ri-map-pin-2-line"></i>
-                                            {{request.governrate}}, {{request.address}}
-                                        </p>
-                                    </div>
-                                </div>
-                                <span class="status-pill done">DONE</span>
-                            </div>
-
-                            <hr class="hr">
-
-                            <div class="info-row">
-                                <div class="info-block">
-                                    <span class="info-label">DATE & TIME</span>
-                                    <span class="info-value">{{request.date}} | {{request.time}}</span>
-                                </div>
-                                <div class="info-block">
-                                    <span class="info-label">CONDITION</span>
-                                    <span class="info-value">Post-Operative Recovery</span>
-                                </div>
-                            </div>
-
-                            <hr class="hr">
-                            <label class="l1">DISEASE DESCRIPTION</label>
-                            <div class="disease-box">
-                                {{request.disease_description}}
-                            </div>
-
-                            <div class="services-total">
-                                <label>SERVICES REQUESTED</label>
-                                
-                                {% if request.service %}
-                                {% for service in request.service.all %}
-                                    <div class="services-each">
-                                        <label>{{ service.name }}</label>
-                                        <p>{{ service.price }} EGP</p>
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
-
-                                
-
-                                <hr class="hr">
-
-                                <div class="services-each">
-                                    <label>Total Price</label>
-                                    <p>800 EGP</p>
-                                </div>
-                                <div class="services-eachs earning-row">
-                                    <label>Your Earning</label>
-                                    <p class="earning">680 EGP</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-                    {% else %}
-                    <div class="no-requests-placeholder">
-                        <h3>No Completed Requests</h3>
-                        <p>Once you complete nursing services, they will appear here.</p>
-                    </div>
-                    {% endif %}
-            </main>
-
-            </main>
         </div>
 
+        <main class="main-content-nurse-requst">
+
+            <div class="requests-sticky">
+                <div class="requests-header">
+                    <div class="header-text">
+                        <h2>Requests</h2>
+                        <p>Manage incoming consultation requests</p>
+                    </div>
+                    <button class="filter-button"><b><i class="bi bi-funnel"></i> Filter</b></button>
+                </div>
+                <div class="tabs-navigation">
+                    <button class="tab-link" onclick="window.location.href='{% url 'nurse:nurse_requests' 'pending' %}'">Pending</button>
+                    <button class="tab-link" onclick="window.location.href='{% url 'nurse:nurse_requests' 'accepted' %}'">Accepted</button>
+                    <button class="tab-link active" onclick="window.location.href='{% url 'nurse:nurse_requests' 'completed' %}'">Done</button>
+                </div>
+            </div>
+
+            <div class="requests-grid">
+                {% for req in completed %}
+                <div class="request-card-item animate slide-up">
+
+                    <div class="card-top-section">
+                        <div class="patient-meta">
+                            <div class="patient-avatar-mini"><i class="bi bi-person-circle"></i></div>
+                            <div class="patient-name-info">
+                                <h3>{{ req.patient.user.first_name }} {{ req.patient.user.last_name }}</h3>
+                                <p>
+                                    <i class="ri-map-pin-2-line"></i>
+                                    {{ req.governrate }}, {{ req.address }}
+                                </p>
+                            </div>
+                        </div>
+                        <span class="status-pill done">DONE</span>
+                    </div>
+
+                    <hr class="hr">
+
+                    <div class="info-row">
+                        <div class="info-block">
+                            <span class="info-label">DATE & TIME</span>
+                            <span class="info-value">{{ req.date|date:"d M, Y" }} | {{ req.time|time:"h:i A" }}</span>
+                        </div>
+                    </div>
+
+                    <hr class="hr">
+
+                    <label class="l1">DISEASE DESCRIPTION</label>
+                    <div class="disease-box">{{ req.disease_description }}</div>
+
+                    <div class="services-total">
+                        <label>SERVICES REQUESTED</label>
+                        {% for svc in req.service.all %}
+                        <div class="services-each">
+                            <label>{{ svc.name }}</label>
+                            <p>{{ svc.price }} EGP</p>
+                        </div>
+                        {% endfor %}
+
+                        <hr class="hr">
+
+                        <div class="services-each">
+                            <label>Total Price</label>
+                            <p>{{ req.net_income }} EGP</p>
+                        </div>
+                    </div>
+
+                </div>
+                {% empty %}
+                <div style="grid-column:1/-1; text-align:center; padding:60px; color:#888;">
+                    <h3>No Completed Requests</h3>
+                </div>
+                {% endfor %}
+            </div>
+
+        </main>
     </div>
+</div>
+<script src="{% static 'JS/Board.js' %}"></script>
 </body>
-        <script src="{% static 'JS/Board.js' %}"></script>
 </html>

@@ -1,248 +1,229 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile</title>
-
     <link rel="stylesheet" href="{% static 'Css/Nurse_Board.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
-
 <body>
-    <div class="dashboard">
+<div class="dashboard">
 
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <span class="logo-icon">
-                        <img src="{% static 'img/logo.png' %}" alt="">
-                    </span>
-                    <div>
-                        <h2>TechCare</h2>
-                        <p>Medical Portal</p>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">
+                    <img src="{% static 'img/logo.png' %}" alt="">
+                </span>
+                <div>
+                    <h2>TechCare</h2>
+                    <p>Medical Portal</p>
+                </div>
+                <button class="sidebar-toggle">
+                    <i class="bi bi-layout-sidebar-inset-reverse"></i>
+                </button>
+            </div>
+        </div>
+
+        <aside class="aside">
+            <a href="{% url 'nurse:nurse_dashboard' %}" class="aside-item active">
+                <i class="bi bi-person"></i>
+                <span>Profile</span>
+            </a>
+            <a href="{% url 'nurse:nurse_requests' 'pending' %}" class="aside-item">
+                <i class="ri-file-list-line"></i>
+                <span>Requests</span>
+            </a>
+            <a href="#" class="aside-item">
+                <i class="fa-regular fa-bell"></i>
+                <span>Notifications</span>
+            </a>
+            <a href="#" class="aside-item">
+                <i class="ri-wallet-3-line"></i>
+                <span>Wallet</span>
+            </a>
+            <a href="#" class="aside-item">
+                <i class="ri-error-warning-line"></i>
+                <span>Complaints</span>
+            </a>
+        </aside>
+    </aside>
+
+    <div class="content-wrapper">
+
+        <!-- Top Navbar -->
+        <div class="topbar">
+            <h2 class="topbar-title">Profile</h2>
+            <div class="topbar-right">
+                <div class="topbar-icon" id="notificationBtn">
+                    <i class="fa-regular fa-bell"></i>
+                    <div class="inbox" id="notificationBox">
+                        <div class="notification-item">
+                            <div class="notification-content">
+                                <p>No new notifications</p>
+                            </div>
+                        </div>
                     </div>
-                    <button class="sidebar-toggle">
-                        <i class="bi bi-layout-sidebar-inset-reverse"></i>
+                </div>
+                <hr class="line">
+                <div class="topbar-profile" onclick="window.location.href='{% url 'nurse:nurse_dashboard' %}'">
+                    <div class="topbar-user-info">
+                        <h4>{{ name }}</h4>
+                        <span>Registered Nurse</span>
+                    </div>
+                    <img src="{{ profile_pic.url }}" alt="Nurse">
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content profile-main-content">
+
+            <!-- Row containing both cards -->
+            <div class="profile-financials-row">
+
+                <!-- Profile Card -->
+                <div class="card">
+                    <div class="profile-image-wrapper">
+                        <img id="profileImage" src="{{ profile_pic.url }}" alt="{{ name }}">
+                    </div>
+
+                    <div class="profile-details">
+                        <div>
+                            <h3>{{ name }}</h3>
+                            <p class="gray">Registered Nurse</p>
+                        </div>
+
+                        <hr class="hr">
+
+                        <div class="profile-info">
+                            <div class="info-item">
+                                <div><i class="ri-mail-line"></i></div>
+                                <div>
+                                    <p class="info-label">Email Address</p>
+                                    <p class="info-value">{{ email }}</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div><i class="ri-phone-line"></i></div>
+                                <div>
+                                    <p class="info-label">Phone Number</p>
+                                    <p class="info-value-phone">{{ phone_number }}</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div><i class="ri-map-pin-2-line"></i></div>
+                                <div>
+                                    <p class="info-label">Governorate</p>
+                                    <p class="info-value">{{ governorate }}</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div><i class="ri-home-4-line"></i></div>
+                                <div>
+                                    <p class="info-label">Address</p>
+                                    <p class="info-value">{{ address }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="margin">
+                            <strong>About</strong>
+                            <p>{{ brief }}</p>
+                        </div>
+                    </div>
+
+                    <div class="btn-edit">
+                        <button class="btn-outline" onclick="window.location.href='{% url 'nurse:edit_nurse_profile' %}'">Edit Profile</button>
+                    </div>
+                </div>
+
+                <!-- Financials & Activity Card -->
+                <div class="info-card">
+                    <div class="card-header">
+                        <h3>
+                            <i class="fa-solid fa-chart-line"></i>
+                            Financials & Activity
+                        </h3>
+                        <a href="#" class="view-link">View History</a>
+                    </div>
+
+                    <div class="balance-card">
+                        <p>Total Wallet Balance</p>
+                        <p class="balance-amount">12,450.00 EGP</p>
+                    </div>
+
+                    <div class="mini-stats">
+                        <div class="stat-card Approved">
+                            <p class="stat-label">Completed Requests</p>
+                            <div>
+                                <strong class="stat-value">{{ completed }}</strong>
+                                <i class="bi bi-check2-circle"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card Pending">
+                            <p class="stat-label">Pending Requests</p>
+                            <div>
+                                <strong class="stat-value">{{ pending }}</strong>
+                                <i class="ri-survey-line"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Available Time Slots Section -->
+            <div class="info-card ats-card-v2">
+                <div class="card-header">
+                    <h3>
+                        <span class="header-icon-circle"><i class="bi bi-clock"></i></span>
+                        Available Time Slots
+                    </h3>
+                </div>
+
+                <div class="days-carousel">
+                    <div class="days-track" id="daysTrack">
+                        {% for d in days %}
+                        <div class="day-btn {% if d.day == selected_day %}active{% endif %}"
+                            onclick="window.location.href='?day={{ d.day }}'">
+                            <span class="day-name">{{ d.day|slice:":3"|upper }}</span>
+                            <span class="day-num">{{ d.date|date:"d" }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="slots-container">
+                    <div class="slots-grid">
+                        {% for slot in time_slots %}
+                            <button class="slot-pill" onclick="selectSlotPill(this)">{{ slot.time|time:"h:i A" }}</button>
+                        {% empty %}
+                            <p style="color:#888;">No slots available for this day.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="ats-card-footer">
+                    <button class="edit-slots-btn-hollow" onclick="window.location.href='{% url 'nurse:edit_slots' %}'">
+                        <i class="bi bi-pencil-square"></i> Edit Time Slots
                     </button>
                 </div>
             </div>
 
-            <aside class="aside">
-                <a href="{% url 'nurse:nurse_dashboard' %}" class="aside-item active">
-                    <i class="bi bi-person"></i>
-                    <span>Profile</span>
-                </a>
-                <a href="{% url 'nurse:nurse_requests' 'pending' %}" class="aside-item">
-                    <i class="ri-file-list-line"></i>
-                    <span>Requests</span>
-                </a>
-                <a href="Notifications.html" class="aside-item">
-                    <i class="fa-regular fa-bell"></i>
-                    <span>Notifications</span>
-                </a>
-                <a href="Wallet.html" class="aside-item">
-                    <i class="ri-wallet-3-line"></i>
-                    <span>Wallet</span>
-                </a>
-                <a href="Complaints.html" class="aside-item">
-                    <i class="ri-error-warning-line"></i>
-                    <span>Complaints</span>
-                </a>
-            </aside>
-        </aside>
-
-        <div class="content-wrapper">
-
-            <!-- Top Navbar -->
-            <div class="topbar">
-                <h2 class="topbar-title">Profile</h2>
-
-                <div class="topbar-right">
-                    <div class="topbar-icon" id="notificationBtn">
-                        <i class="fa-regular fa-bell"></i>
-
-                        <div class="inbox" id="notificationBox">
-                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg">
-                                <div class="notification-content">
-                                    <h4>Ahmed Ali</h4>
-                                    <p>New Consultation Request</p>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
-                                <img src="https://randomuser.me/api/portraits/women/12.jpg">
-                                <div class="notification-content">
-                                    <h4>Sara Mohamed</h4>
-                                    <p>Appointment Confirmed</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr class="line">
-                    <div class="topbar-profile" onclick="window.location.href='{% url 'nurse:nurse_dashboard' %}'">
-                        <div class="topbar-user-info">
-                            <h4>{{name}}</h4>
-                            <span>Registered Nurse</span>
-                        </div>
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Nurse">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Main Content -->
-            <main class="main-content profile-main-content">
-
-                <!-- Row containing both cards -->
-                <div class="profile-financials-row">
-
-                    <!-- Profile Card -->
-                    <div class="card">
-                        <div class="profile-image-wrapper">
-                            <img id="profileImage" src="{{profile_pic.url}}" alt="{{name}}">
-                        </div>
-
-                        <div class="profile-details">
-                            <div>
-                                <h3>{{name}}, RN</h3>
-                                <p class="gray">Registered Nurse</p>
-                            </div>
-
-                            <hr class="hr">
-
-                            <div class="profile-info">
-                                <div class="info-item">
-                                    <div><i class="ri-mail-line"></i></div>
-                                    <div>
-                                        <p class="info-label">Email Address</p>
-                                        <p class="info-value">{{email}}</p>
-                                    </div>
-                                </div>
-                                <div class="info-item">
-                                    <div><i class="ri-phone-line"></i></div>
-                                    <div>
-                                        <p class="info-label">Phone Number</p>
-                                        <p class="info-value-phone">{{phone_number}}</p>
-                                    </div>
-                                </div>
-                                <div class="info-item">
-                                    <div><i class="ri-map-pin-2-line"></i></div>
-                                    <div>
-                                        <p class="info-label">Governorate</p>
-                                        <p class="info-value">{{governorate}}</p>
-                                    </div>
-                                </div>
-                                <div class="info-item">
-                                    <div><i class="ri-home-4-line"></i></div>
-                                    <div>
-                                        <p class="info-label">Address</p>
-                                        <p class="info-value">{{address}}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="margin">
-                                <strong>About</strong>
-                                <p>
-                                    {{brief}}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="btn-edit">
-                            <button class="btn-outline" onclick="window.location.href='{% url 'nurse:edit_nurse_profile' %}'">Edit
-                                Profile</button>
-                        </div>
-                    </div>
-
-                    <!-- Financials & Activity Card -->
-                    <div class="info-card">
-                        <div class="card-header">
-                            <h3>
-                                <i class="fa-solid fa-chart-line"></i>
-                                Financials & Activity
-                            </h3>
-                            <a href="Wallet.html" class="view-link">View History</a>
-                        </div>
-
-                        <div class="balance-card">
-                    <p>Total Wallet Balance</p>
-                    <p class="balance-amount">12,450.00 EGP</p>
-                </div>
-            
-                <div class="mini-stats">
-                    <div class="stat-card Approved">
-                        <p class="stat-label">Completed Requests</p>
-                        <div>
-                            <i class="bi bi-check2-circle"></i>
-                            <p class="stat-value">{{ completed }}</p>
-                        </div>
-                    </div>
-                    <div class="stat-card Pending">
-                        <p class="stat-label">Pending Requests</p>
-                        <div>
-                            <i class="ri-survey-line"></i>
-                            <p class="stat-value">{{ pending }}</p>
-                        </div>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Services Section -->
+            <div class="Services-Card">
+                <div class="services-header">
+                    <h3>My Services <span id="serviceCount" class="count-pill">({{ services|length }})</span></h3>
+                    <button class="btn-add-services" id="addServiceBtn">Add Services</button>
                 </div>
 
-                <!-- New Available Time Slots Section -->
-                <div class="ats-card">
-                    <div class="ats-header">
-                        <div class="ats-icon"><i class="ri-time-line"></i></div>
-                        <h3 class="ats-title">Available Time Slots</h3>
-                    </div>
-                    
-                    <div class="ats-dates-container">
-                        {% if days %}
-                            {% for d in days %}
-                                <div class="day-btn {% if d.day == selected_day %}active{% endif %}"
-                                    onclick="window.location.href='?day={{ d.day }}'">
-
-                                    <span class="day-name">{{ d.day|slice:":3"|upper }}</span>
-                                    <span class="day-num">{{ d.date|date:"d" }}</span>
-                                </div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    
-                    <div class="ats-bottom-wrapper">
-                        <div class="ats-times-container">
-                            {% for slot in time_slots %}
-                        <button class="slot-pill">
-                            {{ slot.time|time:"h:i A" }}
-                        </button>
-                            {% empty %}
-                                <p>No slots available</p>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="ats-footer">
-                            <button class="ats-edit-btn" onclick="window.location.href='{% url 'nurse:edit_slots' %}'">
-                                <i class="ri-add-line"></i> Edit Time Slots
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Services Section -->
-                <div class="Services-Card">
-                    <div class="services-header">
-                        <h3>My Services <span id="serviceCount">(0)</span></h3>
-                        <button class="btn-add-services" id="addServiceBtn">Add Services</button>
-                    </div>
-
-                    <!-- Modal for Add/Edit -->
+                <!-- Modal for Add/Edit -->
                     <div id="addServiceModal" class="modal">
                         <div class="modal-content">
                             <span class="close" id="closeAddService">&times;</span>
@@ -291,17 +272,8 @@
         </div>
 
     </div>
-    <script src="{% static 'JS/Board.js' %}"></script>
+
+<script src="{% static 'JS/Board.js' %}"></script>
 
 </body>
-<script>
-function selectDay(el) {
-    document.querySelectorAll('.day-btn').forEach(d => d.classList.remove('active'));
-    el.classList.add('active');
-}
-
-function selectSlotPill(el) {
-    el.classList.toggle('active');
-}
-</script>
 </html>

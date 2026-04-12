@@ -5,203 +5,143 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Requests</title>
-
-    <link rel="stylesheet" href="{% static 'Css/Accepted.css' %}">
+    <link rel="stylesheet" href="{% static 'Css/Nurse_Board.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
+    <style>.location-info i { color: var(--primary-color); }</style>
 </head>
-<body>  
-    <div class="dashboard">
+<body>
+<div class="dashboard">
 
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <span class="logo-icon">
-                        <img src="{% static 'img/logo.png' %}" alt="">
-                    </span>                
-                    <div>
-                        <h2>TechCare</h2>
-                        <p>Care is near, nothing to fear.</p>
-                    </div>
-                    <button class="sidebar-toggle">
-                        <i class="bi bi-layout-sidebar-inset-reverse"></i>
-                    </button>
-                </div>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon"><img src="{% static 'img/logo.png' %}" alt=""></span>
+                <div><h2>TechCare</h2><p>Medical Portal</p></div>
+                <button class="sidebar-toggle"><i class="bi bi-layout-sidebar-inset-reverse"></i></button>
             </div>
-
-            <aside class="aside">
-                <a href="{% url 'nurse:nurse_dashboard' %}" class="aside-item">
-                    <i class="bi bi-person"></i>
-                    <span>Profile</span>
-                </a>
-                <a href="{% url 'nurse:nurse_requests' 'accepted' %}" class="aside-item active">
-                    <i class="ri-file-list-line"></i>
-                    <span>Requests</span>
-                </a>
-                <a href="Notifications.html" class="aside-item">
-                    <i class="fa-regular fa-bell"></i>
-                    <span>Notifications</span>
-                </a>
-                <a href="Wallet.html" class="aside-item">
-                    <i class="ri-wallet-3-line"></i>
-                    <span>Wallet</span>
-                </a>
-                <a href="Complaints.html" class="aside-item">
-                    <i class="ri-error-warning-line"></i>
-                    <span>Complaints</span>
-                </a>
-            </aside>
+        </div>
+        <aside class="aside">
+            <a href="{% url 'nurse:nurse_dashboard' %}" class="aside-item">
+                <i class="bi bi-person"></i><span>Profile</span>
+            </a>
+            <a href="{% url 'nurse:nurse_requests' 'pending' %}" class="aside-item active">
+                <i class="ri-file-list-line"></i><span>Requests</span>
+            </a>
+            <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
+            <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
+            <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
         </aside>
+    </aside>
 
+    <div class="content-wrapper">
 
-        <div style="flex:1; display:flex; flex-direction:column;">
-        
-            <!-- Top Navbar -->
-            <div class="topbar">
-                <h2 class="topbar-title">Requests</h2>
-
-                <div class="topbar-right">
-                    <div class="topbar-icon" id="notificationBtn">
-                        <i class="fa-regular fa-bell"></i>
-                        
-
-                        <div class="inbox" id="notificationBox">
-                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg">
-                                <div class="notification-content">
-                                    <h4>Ahmed Ali</h4>
-                                    <p>New Consultation Request</p>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
-                                <img src="https://randomuser.me/api/portraits/women/12.jpg">
-                                <div class="notification-content">
-                                    <h4>Sara Mohamed</h4>
-                                    <p>Appointment Confirmed</p>
-                                </div>
-                            </div>
+        <div class="topbar">
+            <h2 class="topbar-title">Requests</h2>
+            <div class="topbar-right">
+                <div class="topbar-icon" id="notificationBtn">
+                    <i class="fa-regular fa-bell"></i>
+                    <div class="inbox" id="notificationBox">
+                        <div class="notification-item">
+                            <div class="notification-content"><p>No new notifications</p></div>
                         </div>
                     </div>
-                    <hr class="line">
-                    <div class="topbar-profile" onclick="window.location.href='{% url "nurse:nurse_dashboard" %}'">
-                        <div class="topbar-user-info">
-                            <h4>{{name}}</h4>
-                        </div>
-                        <img src="{{profile_pic.url}}" alt="{{name}}">
+                </div>
+                <hr class="line">
+                <div class="topbar-profile" onclick="window.location.href='{% url 'nurse:nurse_dashboard' %}'">
+                    <div class="topbar-user-info">
+                        <h4>{{ name }}</h4><span>Registered Nurse</span>
                     </div>
+                    <img src="{{ profile_pic.url }}" alt="Nurse">
                 </div>
             </div>
-
-            <!-- Main Content -->
-            <main class="main-content">
-                
-                <div class="requests-sticky">
-                    <div class="requests-header">
-                        <div class="header-text">
-                            <h2>Requests</h2>
-                            <p>Manage incoming consultation requests</p>
-                        </div>
-                        <button class="filter-button">
-                            <b><i class="bi bi-funnel"></i> Filter</b>
-                        </button>
-                    </div>
-
-                    <div class="tabs-navigation">
-                        <button class="tab-link" data-status="pending" onclick="window.location.href='{% url "nurse:nurse_requests" "pending" %}'">Pending</button>
-                        <button class="tab-link active" data-status="accepted" onclick="window.location.href='{% url "nurse:nurse_requests" "accepted" %}'">Accepted</button>
-                        <button class="tab-link" data-status="done" onclick="window.location.href='{% url "nurse:nurse_requests" "completed" %}'">Done</button>
-                    </div>
-                </div>
-
-                <div class="requests-grid">
-                {% if accepted %}
-                    {% for request in accepted %}
-                    <div class="request-card-item">
-                        <div class="card-top-section">
-                            <div class="patient-meta">
-                                <div class="patient-avatar-mini">
-                                    <i class="bi bi-person-circle"></i>
-                                </div>
-                                <div class="patient-name-info">
-                                    <h3>{{ request.patient.user.first_name }} {{ request.patient.user.last_name }}</h3>
-                                    <p>
-                                        <i class="bi bi-calendar3"></i>{{request.date}}
-                                        &nbsp; • &nbsp;
-                                        <i class="bi bi-clock"></i> {{request.time}}
-                                    </p>
-                                </div>
-                            </div>
-                            <span class="status-pill accepted">Accepted</span>
-                        </div>
-                    
-                        <div class="info-group location-info">
-                            <p>
-                                <i class="bi bi-geo-alt"></i>
-                                {{request.governrate}} / {{request.address}}
-                            </p>
-                        </div>
-                        <hr style="margin:15px 0; border:1px solid #F0F4F8;">
-                    
-                        <!-- Condition -->
-                        <div class="Condition">
-                            <label>Condition</label>
-                        </div>
-                        <div class="description-box-accepted">
-                            {{request.disease_description}}
-                        </div>
-
-                        <div class="services-total">
-                            <label>SERVICES REQUESTED</label>
-                            {% if request.service %}
-                            {% for service in request.service.all  %}
-                            <div class="services-each">
-                                <label>{{service.name}}</label>
-                                <p>${{service.price}}</p>
-                            </div>
-                            {% endfor %}
-                            {% endif %}
-                            
-                            <hr class="hr">
-
-                            <div class="services-each total-row">
-                                <label>Total Price</label>
-                                <p>$60.00</p>
-                            </div>
-
-                            <div class="footer-content">
-                                <div class="phone-display">
-                                    <i class="ri-phone-line"></i>
-                                    <span>{{request.patient.phone_number}}</span>
-                                </div>
-                                <div class="user-confirmed-banner">
-                                    <i class="ri-checkbox-circle-line"></i>
-                                    USER HAS CONFIRMED
-                                </div>
-                            </div>
-                        </hr>
-                    
-                        
-                    </div>
-                    <div class="done-btn"><button class="btn-done">Done</button></div>
-                    {% endfor %}
-                    {% else %}
-                    <div class="no-requests-placeholder">
-                        <h3>No Accepted Requests</h3>
-                        <p>Once patient accept any request, it will appear here.</p>
-                    </div>
-                    {% endif %}
-                </div>
-                
-            </main>
         </div>
 
+        <main class="main-content-nurse-requst">
+
+            <div class="requests-sticky">
+                <div class="requests-header">
+                    <div class="header-text">
+                        <h2>Requests</h2>
+                        <p>Manage incoming consultation requests</p>
+                    </div>
+                    <button class="filter-button"><b><i class="bi bi-funnel"></i> Filter</b></button>
+                </div>
+                <div class="tabs-navigation">
+                    <button class="tab-link" onclick="window.location.href='{% url 'nurse:nurse_requests' 'pending' %}'">Pending</button>
+                    <button class="tab-link active" onclick="window.location.href='{% url 'nurse:nurse_requests' 'accepted' %}'">Accepted</button>
+                    <button class="tab-link" onclick="window.location.href='{% url 'nurse:nurse_requests' 'completed' %}'">Done</button>
+                </div>
+            </div>
+
+            <div class="requests-grid">
+                {% for req in accepted %}
+                <div class="request-card-item animate slide-up">
+
+                    <div class="card-top-section">
+                        <div class="patient-meta">
+                            <div class="patient-avatar-mini"><i class="bi bi-person-circle"></i></div>
+                            <div class="patient-name-info">
+                                <h3>{{ req.patient.user.first_name }} {{ req.patient.user.last_name }}</h3>
+                                <p>
+                                    <i class="bi bi-calendar3"></i> {{ req.date|date:"M d, Y" }}
+                                    &nbsp;•&nbsp;
+                                    <i class="bi bi-clock"></i> {{ req.time|time:"h:i A" }}
+                                </p>
+                            </div>
+                        </div>
+                        <span class="status-pill accepted">Accepted</span>
+                    </div>
+
+                    <div class="info-group location-info">
+                        <p>
+                            <i class="bi bi-geo-alt"></i>
+                            {{ req.governrate }} / {{ req.address }}
+                        </p>
+                    </div>
+
+                    <div class="Condition">
+                        <span class="accepted-tag">Description</span>
+                    </div>
+                    <div class="description-box-accepted">{{ req.disease_description }}</div>
+
+                    <hr style="margin:15px 0; border:1px solid #F0F4F8;">
+
+                    <div class="services-each total-row">
+                        <label>Total Price</label>
+                        <p>{{ req.net_income }} EGP</p>
+                    </div>
+
+                    <div class="request-footer">
+                        <div class="user-confirmed-banner">
+                            <i class="ri-checkbox-circle-line"></i>
+                            User Has Confirmed Appointment
+                        </div>
+                        <div class="footer-action-row">
+                            <div class="phone-display">
+                                <i class="ri-phone-line"></i>
+                                <span>{{ req.patient.phone_number }}</span>
+                            </div>
+                            <form method="POST" action="{% url 'nurse:mark_done' req.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-done">Done</button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+                {% empty %}
+                <div style="grid-column:1/-1; text-align:center; padding:60px; color:#888;">
+                    <h3>No Accepted Requests</h3>
+                </div>
+                {% endfor %}
+            </div>
+
+        </main>
     </div>
+</div>
+<script src="{% static 'JS/Board.js' %}"></script>
 </body>
-        <script src="{% static 'JS/Board.js' %}"></script>
 </html>
