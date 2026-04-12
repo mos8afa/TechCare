@@ -33,11 +33,11 @@
                 </div>
 
                 <aside class="aside">
-                    <a href="{% url 'doctor:doctor_dashboard' %}" class="aside-item active">
+                    <a href="{% url 'nurse:nurse_dashboard' %}" class="aside-item active">
                         <i class="bi bi-person"></i>
                         <span>Profile</span>
                     </a>
-                    <a href="{% url 'doctor:doctor_requests' 'pending' %}" class="aside-item">
+                    <a href="{% url 'nurse:nurse_requests' 'pending' %}" class="aside-item">
                         <i class="ri-file-list-line"></i>
                         <span>Requests</span>
                     </a>
@@ -91,7 +91,7 @@
                             <h4>{{name}}</h4>
                             <span>Registered Nurse</span>
                         </div>
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="{{name}}">
+                        <img src="{{ profile_pic.url}}" alt="{{name}}">
                     </div>
                 </div>
             </div>
@@ -106,7 +106,7 @@
                             <p class="edit-ts-subtitle">Customize your working hours and appointment slots.</p>
                         </div>
                         <div class="edit-ts-action-col" style="display: flex; gap: 15px;">
-                            <button class="edit-ts-btn-cancel" onclick="window.location.href='Profile.html'">Cancel</button>
+                            <button class="edit-ts-btn-cancel" onclick="window.location.href='{% url 'nurse:nurse_dashboard' %}'">Cancel</button>
                             <button class="edit-ts-btn-save" onclick="saveChanges()">Save Changes</button>
                         </div>
                     </div>
@@ -302,7 +302,7 @@
         .then(r => r.json())
         .then(data => {
             if (data.success) {
-                window.location.href = '?day=' + SELECTED_DAY;
+                window.location.href = "{% url 'nurse:nurse_dashboard' %}";
             } else {
                 alert('Error saving changes.');
             }

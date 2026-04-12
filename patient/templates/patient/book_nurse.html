@@ -1,0 +1,271 @@
+{% extends 'patient_base.html' %}
+
+{% block sidebar %}
+<aside class="aside">
+    <a href="{% url 'patient:patient_dashboard' %}" class="aside-item">
+        <i class="bi bi-person"></i><span>Profile</span>
+    </a>
+    <a href="{% url 'patient:patient_requests' 'nurse' 'booking' %}" class="aside-item active">
+        <i class="ri-file-list-line"></i><span>Requests</span>
+    </a>
+    <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
+    <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
+    <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
+</aside>
+{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <div class="booking-wrapper">
+
+        <!-- Category Tabs -->
+        <div class="category-tabs">
+            <button class="cat-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'doctor' 'booking' %}'">
+                <i class="ri-stethoscope-line"></i> Doctor
+            </button>
+            <button class="cat-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'booking' %}'">
+                <i class="ri-nurse-line"></i> Nurse
+            </button>
+            <button class="cat-tab">
+                <i class="ri-medicine-bottle-line"></i> Pharmacy
+            </button>
+        </div>
+
+        <!-- Status Tabs -->
+        <div class="status-tabs">
+            <button class="status-tab active" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'booking' %}'">Booking</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'pending' %}'">Pending</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'accepted' %}'">Accepted</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'done' %}'">Done</button>
+        </div>
+
+        <div class="booking-page-header">
+            <h1>Book Appointment</h1>
+            <p>Select your preferred time for a consultation with our specialist.</p>
+        </div>
+
+        {% if errors %}
+            {% for key, msg in errors.items %}
+                <div style="color:red; margin-bottom:8px; padding:10px 14px; background:#fff0f0; border-radius:8px;">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="GET" id="dayForm">
+            <input type="hidden" name="day" id="dayInput">
+        </form>
+
+        <form method="POST" id="bookingForm">
+        {% csrf_token %}
+
+        <div class="booking-grid">
+            <!-- Left Column -->
+            <div class="booking-left">
+
+                <!-- Nurse Details Card -->
+                <div class="doc-card nurse-doc-card">
+                    <div class="doc-avatar-bg nurse-avatar-bg">
+                        <img src="{{ nurse.profile_pic.url }}" alt="{{ nurse.user.first_name }}" class="doc-avatar">
+                        <div class="online-indicator nurse-online-indicator"></div>
+                    </div>
+                    <div class="doc-info-wrapper nurse-info-wrapper">
+                        <div class="doc-info-main">
+                            <h2 class="doc-name">{{ nurse.user.first_name }} {{ nurse.user.last_name }}</h2>
+                            <p class="doc-title nurse-doc-title">Registered Nurse</p>
+                            <div class="nurse-tags nurse-tags-wrapper">
+                                <span class="nurse-tag-gray">{{ nurse.get_governorate_display }}</span>
+                                <span class="nurse-tag-gray">Home Visits</span>
+                                <span class="nurse-tag-gray">Verified Specialist</span>
+                            </div>
+                        </div>
+                        <div class="doc-fee nurse-doc-fee">
+                            <p class="fee-label nurse-fee-label">AVG RATING</p>
+                            <h3 class="fee-amount nurse-fee-amount">
+                                <i class="fa-solid fa-star" style="color:#f59e0b; font-size:16px;"></i> {{ nurse.avg_rating }}/5
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Services Selection (kept as-is) -->
+                <div class="booking-card symptoms-card">
+                    <div class="card-title">
+                        <i class="ri-service-line"></i> <span>Select Services</span>
+                    </div>
+                    {% if services %}
+                    <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+                        {% for svc in services %}
+                        <label style="display:flex; align-items:center; gap:10px; cursor:pointer; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+                            <input type="checkbox" name="services" value="{{ svc.id }}"
+                                   onchange="updateTotal()"
+                                   data-price="{{ svc.price }}"
+                                   data-name="{{ svc.name }}"
+                                   style="width:16px; height:16px;">
+                            <span style="flex:1; font-weight:500;">{{ svc.name }}</span>
+                            <span style="color:#0085FF; font-weight:600;">{{ svc.price }} EGP</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p style="color:#888; padding:10px 0;">This nurse has no services listed.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Symptoms Card -->
+                <div class="booking-card symptoms-card">
+                    <div class="card-title">
+                        <i class="ri-file-text-line"></i> <span>Describe Your Symptoms</span>
+                    </div>
+                    <textarea name="disease_description" placeholder="Please provide more details about how you are feeling..."></textarea>
+                </div>
+
+                <!-- Governorate -->
+                <div class="form-group-booking">
+                    <label class="booking-label">Governorate</label>
+                    <div class="custom-select-wrapper">
+                        <select class="booking-select" name="governorate">
+                            {% for val, label in governorates %}
+                                <option value="{{ val }}" {% if val == patient.governorate %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        <i class="ri-arrow-down-s-line"></i>
+                    </div>
+                </div>
+
+                <!-- Address -->
+                <div class="booking-card address-card">
+                    <div class="card-title"><span>Full Address</span></div>
+                    <div class="address-input-wrapper">
+                        <i class="ri-map-pin-line"></i>
+                        <textarea name="address" placeholder="Your full address...">{{ patient.address }}</textarea>
+                    </div>
+                </div>
+
+                <!-- Date & Time Card -->
+                <div class="booking-card datetime-card">
+                    <div class="card-title">
+                        <i class="ri-calendar-event-line"></i> <span>Select Date & Time</span>
+                    </div>
+
+                    <div class="date-scroll-container">
+                        {% for day in days %}
+                        <div class="date-item {% if selected_day == day.day_name %}active{% endif %}"
+                             onclick="selectDay(this, '{{ day.day_name }}', '{{ day.full_date }}')">
+                            <span class="date-day">{{ day.short_name }}</span>
+                            <span class="date-num">{{ day.date_num }}</span>
+                            <span class="date-month">{{ day.month_name }}</span>
+                        </div>
+                        {% empty %}
+                        <p style="color:#888; padding:10px;">No available days yet.</p>
+                        {% endfor %}
+                    </div>
+
+                    <input type="hidden" name="date" id="selectedDate" value="{{ selected_date|default:'' }}">
+                    <input type="hidden" name="time" id="selectedTime" value="">
+
+                    {% if morning_slots %}
+                    <div class="slots-section">
+                        <h5 class="slot-title">MORNING SLOTS</h5>
+                        <div class="slots-grid">
+                            {% for slot in morning_slots %}
+                            <button type="button" class="slot-btn" onclick="selectTime(this, '{{ slot.time|time:'H:i' }}')">
+                                {{ slot.time|time:"h:i A" }}
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if evening_slots %}
+                    <div class="slots-section nurse-evening-slots" style="margin-top:25px;">
+                        <h5 class="slot-title">EVENING SLOTS</h5>
+                        <div class="slots-grid">
+                            {% for slot in evening_slots %}
+                            <button type="button" class="slot-btn" onclick="selectTime(this, '{{ slot.time|time:'H:i' }}')">
+                                {{ slot.time|time:"h:i A" }}
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if not morning_slots and not evening_slots %}
+                    <p style="color:#888; padding:10px 0;">Select a day to see available time slots.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="booking-right">
+                <div class="booking-card payment-summary-card">
+                    <h3 class="summary-title nurse-summary-title">Payment Summary</h3>
+
+                    <div id="servicesSummary"></div>
+
+                    <hr class="summary-divider">
+
+                    <div class="summary-total-row nurse-total-row">
+                        <div class="total-label nurse-total-label">Total Price</div>
+                        <div class="total-value nurse-total-value" id="totalAmount">0 EGP</div>
+                    </div>
+
+                    <button type="submit" class="confirm-btn">Confirm Booking</button>
+
+                    <div class="secure-payment-text">
+                        <i class="ri-lock-2-line"></i> Secure encrypted payment
+                    </div>
+                </div>
+
+                <div class="booking-card help-card nurse-help-card">
+                    <h4 class="help-title nurse-help-title"><i class="ri-question-line"></i> Need Help?</h4>
+                    <p class="help-text nurse-help-text">Cancel or reschedule up to 24 hours before your appointment for a full refund.</p>
+                    <a href="#" class="help-link nurse-help-link">Read Refund Policy</a>
+                </div>
+            </div>
+        </div>
+
+        </form>
+    </div>
+</main>
+
+<script>
+function selectDay(el, dayName, fullDate) {
+    document.querySelectorAll('.date-item').forEach(d => d.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('selectedDate').value = fullDate;
+    document.getElementById('dayInput').value = dayName;
+    document.getElementById('dayForm').submit();
+}
+
+function selectTime(el, timeVal) {
+    document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('selectedTime').value = timeVal;
+}
+
+function updateTotal() {
+    const checkboxes = document.querySelectorAll('input[name="services"]:checked');
+    let total = 0;
+    let html = '';
+    checkboxes.forEach(cb => {
+        const price = parseFloat(cb.dataset.price);
+        const name  = cb.dataset.name;
+        total += price;
+        html += `<div class="summary-row"><span class="summary-label nurse-summary-label">${name}</span><span class="summary-value nurse-summary-value">${price.toFixed(2)} EGP</span></div>`;
+    });
+    document.getElementById('servicesSummary').innerHTML = html;
+    document.getElementById('totalAmount').textContent = total.toFixed(2) + ' EGP';
+}
+
+document.getElementById('bookingForm').addEventListener('submit', function(e) {
+    if (!document.querySelectorAll('input[name="services"]:checked').length) {
+        e.preventDefault(); alert('Please select at least one service.'); return;
+    }
+    if (!document.getElementById('selectedDate').value) {
+        e.preventDefault(); alert('Please select a day.'); return;
+    }
+    if (!document.getElementById('selectedTime').value) {
+        e.preventDefault(); alert('Please select a time slot.'); return;
+    }
+});
+</script>
+{% endblock %}

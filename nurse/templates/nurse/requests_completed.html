@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Requests</title>
     <link rel="stylesheet" href="{% static 'Css/Nurse_Board.css' %}">
+    <link rel="stylesheet" href="{% static 'Css/Done.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
@@ -76,17 +77,17 @@
             </div>
 
             <div class="requests-grid">
-                {% for req in completed %}
+                {% for c in completed %}
                 <div class="request-card-item animate slide-up">
 
                     <div class="card-top-section">
                         <div class="patient-meta">
                             <div class="patient-avatar-mini"><i class="bi bi-person-circle"></i></div>
                             <div class="patient-name-info">
-                                <h3>{{ req.patient.user.first_name }} {{ req.patient.user.last_name }}</h3>
+                                <h3>{{ c.patient.user.first_name }} {{ c.patient.user.last_name }}</h3>
                                 <p>
                                     <i class="ri-map-pin-2-line"></i>
-                                    {{ req.governrate }}, {{ req.address }}
+                                    {{ c.governrate }}, {{ c.address }}
                                 </p>
                             </div>
                         </div>
@@ -98,18 +99,18 @@
                     <div class="info-row">
                         <div class="info-block">
                             <span class="info-label">DATE & TIME</span>
-                            <span class="info-value">{{ req.date|date:"d M, Y" }} | {{ req.time|time:"h:i A" }}</span>
+                            <span class="info-value">{{ c.date|date:"d M, Y" }} | {{ c.time|time:"h:i A" }}</span>
                         </div>
                     </div>
 
                     <hr class="hr">
 
                     <label class="l1">DISEASE DESCRIPTION</label>
-                    <div class="disease-box">{{ req.disease_description }}</div>
+                    <div class="disease-box">{{ c.disease_description }}</div>
 
                     <div class="services-total">
                         <label>SERVICES REQUESTED</label>
-                        {% for svc in req.service.all %}
+                        {% for svc in c.service.all %}
                         <div class="services-each">
                             <label>{{ svc.name }}</label>
                             <p>{{ svc.price }} EGP</p>
@@ -120,7 +121,11 @@
 
                         <div class="services-each">
                             <label>Total Price</label>
-                            <p>{{ req.net_income }} EGP</p>
+                            <p>{{ c.net_income }} EGP</p>
+                        </div>
+                        <div class="services-eachs earning-row">
+                            <label>Your Earning</label>
+                            <p class="earning">{{ c.net_income }} EGP</p>
                         </div>
                     </div>
 

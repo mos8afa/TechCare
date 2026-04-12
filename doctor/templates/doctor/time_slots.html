@@ -42,7 +42,7 @@
                         <p class="edit-ts-subtitle">Customize your working hours and appointment slots.</p>
                     </div>
                     <div class="edit-ts-action-col" style="display: flex; gap: 15px;">
-                        <button class="edit-ts-btn-cancel" onclick="window.location.href='Profile.html'">Cancel</button>
+                        <button class="edit-ts-btn-cancel" onclick="window.location.href='{% url 'doctor:doctor_dashboard' %}'">Cancel</button>
                         <button class="edit-ts-btn-save" onclick="saveChanges()">Save Changes</button>
                     </div>
                 </div>
@@ -237,7 +237,7 @@
         .then(r => r.json())
         .then(data => {
             if (data.success) {
-                window.location.href = '?day=' + SELECTED_DAY;
+                window.location.href = "{% url 'doctor:doctor_dashboard' %}";
             } else {
                 alert('Error saving changes.');
             }

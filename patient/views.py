@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 from accounts import validations
-from accounts.models import Patient, Doctor, SPECIFICATIONS, GOVERNORATES
+from accounts.models import Patient, Doctor, Nurse, SPECIFICATIONS, GOVERNORATES
 from doctor.models import DoctorRequest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -13,18 +13,33 @@ def patient_dashboard(request):
         return redirect("login")
 
     patient = Patient.objects.get(user=request.user)
-    name = patient.user.first_name + " " + patient.user.last_name
+    name        = patient.user.first_name + " " + patient.user.last_name
     profile_pic = patient.profile_pic
-    email = patient.user.email
-    phone_num = patient.phone_number
+    email       = patient.user.email
+    phone_num   = patient.phone_number
     governorate = patient.get_governorate_display()
-    address = patient.address
+    address     = patient.address
 
-    patient_requests = patient.doctor_requests.all()
-    doctor_pending = patient_requests.filter(status__in=['pending', 'edited']).count()
-    doctor_completed = patient_requests.filter(status='completed').count()
-    doctor_accepted = patient_requests.filter(status='accepted').count()
-    doctor_total = patient_requests.count()
+    # Doctor requests
+    doctor_reqs       = patient.doctor_requests.all()
+    doctor_total      = doctor_reqs.count()
+    doctor_pending    = doctor_reqs.filter(status__in=['pending', 'edited']).count()
+    doctor_accepted   = doctor_reqs.filter(status='accepted').count()
+    doctor_completed  = doctor_reqs.filter(status='completed').count()
+
+    # Nurse requests
+    from nurse.models import NurseRequest
+    nurse_reqs      = patient.nurse_requests.all()
+    nurse_total     = nurse_reqs.count()
+    nurse_pending   = nurse_reqs.filter(status__in=['pending', 'edited']).count()
+    nurse_accepted  = nurse_reqs.filter(status='accepted').count()
+    nurse_completed = nurse_reqs.filter(status='completed').count()
+
+    # All combined
+    total_requests    = doctor_total + nurse_total
+    total_pending     = doctor_pending + nurse_pending
+    total_accepted    = doctor_accepted + nurse_accepted
+    total_completed   = doctor_completed + nurse_completed
 
     return render(request, 'patient/profile.html', {
         'name': name,
@@ -33,10 +48,21 @@ def patient_dashboard(request):
         'phone_number': phone_num,
         'governorate': governorate,
         'address': address,
-        'doctor_pending': doctor_pending,
-        'doctor_completed': doctor_completed,
-        'doctor_accepted': doctor_accepted,
+        # doctor
         'doctor_total': doctor_total,
+        'doctor_pending': doctor_pending,
+        'doctor_accepted': doctor_accepted,
+        'doctor_completed': doctor_completed,
+        # nurse
+        'nurse_total': nurse_total,
+        'nurse_pending': nurse_pending,
+        'nurse_accepted': nurse_accepted,
+        'nurse_completed': nurse_completed,
+        # combined
+        'total_requests': total_requests,
+        'total_pending': total_pending,
+        'total_accepted': total_accepted,
+        'total_completed': total_completed,
     })
 
 
@@ -131,7 +157,6 @@ def patient_requests(request, category, type):
 
         if type == 'booking':
             doctors = Doctor.objects.all()
-            # annotate avg rating on each doctor
             for doctor in doctors:
                 avg = doctor.rates.aggregate(Avg('rate'))['rate__avg'] or 0
                 doctor.avg_rating = round(avg)
@@ -161,6 +186,44 @@ def patient_requests(request, category, type):
         elif type == 'done':
             completed = all_requests.filter(status='completed').order_by('-date', '-time')
             return render(request, 'patient/doctor_done.html', {
+                **context_base,
+                'completed': completed,
+            })
+
+    if category == 'nurse':
+        from nurse.models import NurseRequest
+        all_nurse = patient.nurse_requests.all()
+
+        if type == 'booking':
+            nurses = Nurse.objects.all()
+            for nurse in nurses:
+                avg = nurse.rates.aggregate(Avg('rate'))['rate__avg'] or 0
+                nurse.avg_rating = round(avg)
+            return render(request, 'patient/nurse_booking.html', {
+                **context_base,
+                'nurses': nurses,
+                'governorates': GOVERNORATES,
+            })
+
+        elif type == 'pending':
+            pending = all_nurse.filter(status='pending').order_by('-date', '-time')
+            edited  = all_nurse.filter(status='edited').order_by('-date', '-time')
+            return render(request, 'patient/nurse_pending.html', {
+                **context_base,
+                'pending': pending,
+                'edited': edited,
+            })
+
+        elif type == 'accepted':
+            accepted = all_nurse.filter(status='accepted').order_by('-date', '-time')
+            return render(request, 'patient/nurse_accepted.html', {
+                **context_base,
+                'accepted': accepted,
+            })
+
+        elif type == 'done':
+            completed = all_nurse.filter(status='completed').order_by('-date', '-time')
+            return render(request, 'patient/nurse_done.html', {
                 **context_base,
                 'completed': completed,
             })
@@ -300,3 +363,137 @@ def mark_done(request, request_id):
         pass
 
     return redirect('patient:patient_requests', category='doctor', type='accepted')
+
+
+@login_required
+def book_nurse(request, nurse_id):
+    if request.user.role != 'patient':
+        return redirect('login')
+
+    from nurse.models import NurseRequest, Service
+    from accounts.models import TimeSlots, get_provider_days_with_dates
+    from datetime import time as time_type, datetime as dt
+
+    patient = Patient.objects.get(user=request.user)
+    nurse   = Nurse.objects.get(id=nurse_id)
+
+    avg = nurse.rates.aggregate(Avg('rate'))['rate__avg'] or 0
+    nurse.avg_rating = round(avg)
+
+    services = nurse.nurse_services.all()
+
+    raw_days = TimeSlots.objects.filter(nurse=nurse).values_list('day', flat=True).distinct()
+    days_with_dates = get_provider_days_with_dates(raw_days)
+    for d in days_with_dates:
+        d['day_name']   = d['day']
+        d['short_name'] = d['day'][:3].upper()
+        d['date_num']   = d['date'].strftime('%d')
+        d['month_name'] = d['date'].strftime('%b').upper()
+        d['full_date']  = d['date'].isoformat()
+
+    selected_day  = request.GET.get('day') or (days_with_dates[0]['day'] if days_with_dates else None)
+    selected_date = next((d['full_date'] for d in days_with_dates if d['day'] == selected_day), '')
+
+    morning_slots, evening_slots = [], []
+    if selected_day:
+        for slot in TimeSlots.objects.filter(nurse=nurse, day=selected_day).order_by('time'):
+            (morning_slots if slot.time < time_type(12, 0) else evening_slots).append(slot)
+
+    errors = {}
+
+    if request.method == 'POST':
+        service_ids         = request.POST.getlist('services')
+        disease_description = request.POST.get('disease_description', '').strip()
+        governorate         = request.POST.get('governorate', '').strip()
+        address             = request.POST.get('address', '').strip()
+        selected_date_post  = request.POST.get('date', '').strip()
+        selected_time_post  = request.POST.get('time', '').strip()
+
+        if not service_ids:
+            errors['services'] = 'Please select at least one service.'
+        if not selected_date_post:
+            errors['date'] = 'Please select a day.'
+        if not selected_time_post:
+            errors['time'] = 'Please select a time slot.'
+        if not disease_description:
+            errors['description'] = 'Please describe your condition.'
+
+        if not errors:
+            selected_services = Service.objects.filter(id__in=service_ids, nurse=nurse)
+            total = sum(s.price for s in selected_services)
+
+            req = NurseRequest.objects.create(
+                patient=patient,
+                nurse=nurse,
+                date=dt.fromisoformat(selected_date_post),
+                time=selected_time_post,
+                governrate=governorate,
+                address=address,
+                disease_description=disease_description,
+                net_income=total,
+                status='pending',
+            )
+            req.service.set(selected_services)
+            return redirect('patient:patient_requests', category='nurse', type='pending')
+
+    return render(request, 'patient/book_nurse.html', {
+        'nurse': nurse,
+        'patient': patient,
+        'services': services,
+        'days': days_with_dates,
+        'selected_day': selected_day,
+        'selected_date': selected_date,
+        'morning_slots': morning_slots,
+        'evening_slots': evening_slots,
+        'governorates': GOVERNORATES,
+        'errors': errors,
+        'name': patient.user.first_name + ' ' + patient.user.last_name,
+        'profile_pic': patient.profile_pic,
+    })
+
+
+@login_required
+def cancel_nurse_request(request, request_id):
+    if request.user.role != 'patient':
+        return redirect('login')
+    from nurse.models import NurseRequest
+    patient = Patient.objects.get(user=request.user)
+    try:
+        req = NurseRequest.objects.get(id=request_id, patient=patient)
+        req.status = 'rejected'
+        req.save()
+    except NurseRequest.DoesNotExist:
+        pass
+    return redirect('patient:patient_requests', category='nurse', type='pending')
+
+
+@login_required
+def accept_nurse_reschedule(request, request_id):
+    if request.user.role != 'patient':
+        return redirect('login')
+    from nurse.models import NurseRequest
+    patient = Patient.objects.get(user=request.user)
+    try:
+        req = NurseRequest.objects.get(id=request_id, patient=patient, status='edited')
+        req.status = 'accepted'
+        req.save()
+    except NurseRequest.DoesNotExist:
+        pass
+    return redirect('patient:patient_requests', category='nurse', type='pending')
+
+
+@login_required
+def mark_nurse_done(request, request_id):
+    if request.user.role != 'patient':
+        return redirect('login')
+    from nurse.models import NurseRequest
+    patient = Patient.objects.get(user=request.user)
+    try:
+        req = NurseRequest.objects.get(id=request_id, patient=patient, status='accepted')
+        req.patient_done = True
+        if req.nurse_done:
+            req.status = 'completed'
+        req.save()
+    except NurseRequest.DoesNotExist:
+        pass
+    return redirect('patient:patient_requests', category='nurse', type='accepted')

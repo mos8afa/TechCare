@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Requests</title>
     <link rel="stylesheet" href="{% static 'Css/Nurse_Board.css' %}">
+    <link rel="stylesheet" href="{% static 'Css/Accepted.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
@@ -77,18 +78,18 @@
             </div>
 
             <div class="requests-grid">
-                {% for req in accepted %}
+                {% for a in accepted %}
                 <div class="request-card-item animate slide-up">
 
                     <div class="card-top-section">
                         <div class="patient-meta">
                             <div class="patient-avatar-mini"><i class="bi bi-person-circle"></i></div>
                             <div class="patient-name-info">
-                                <h3>{{ req.patient.user.first_name }} {{ req.patient.user.last_name }}</h3>
+                                <h3>{{ a.patient.user.first_name }} {{ a.patient.user.last_name }}</h3>
                                 <p>
-                                    <i class="bi bi-calendar3"></i> {{ req.date|date:"M d, Y" }}
+                                    <i class="bi bi-calendar3"></i> {{ a.date|date:"M d, Y" }}
                                     &nbsp;•&nbsp;
-                                    <i class="bi bi-clock"></i> {{ req.time|time:"h:i A" }}
+                                    <i class="bi bi-clock"></i> {{ a.time|time:"h:i A" }}
                                 </p>
                             </div>
                         </div>
@@ -96,22 +97,29 @@
                     </div>
 
                     <div class="info-group location-info">
-                        <p>
-                            <i class="bi bi-geo-alt"></i>
-                            {{ req.governrate }} / {{ req.address }}
-                        </p>
+                        <p><i class="bi bi-geo-alt"></i> {{ a.governrate }} / {{ a.address }}</p>
                     </div>
 
                     <div class="Condition">
                         <span class="accepted-tag">Description</span>
                     </div>
-                    <div class="description-box-accepted">{{ req.disease_description }}</div>
+                    <div class="description-box-accepted">{{ a.disease_description }}</div>
 
                     <hr style="margin:15px 0; border:1px solid #F0F4F8;">
 
-                    <div class="services-each total-row">
-                        <label>Total Price</label>
-                        <p>{{ req.net_income }} EGP</p>
+                    <div class="services-total" style="margin-bottom:12px;">
+                        <label>SERVICES REQUESTED</label>
+                        {% for svc in a.service.all %}
+                        <div class="services-each">
+                            <label>{{ svc.name }}</label>
+                            <p>{{ svc.price }} EGP</p>
+                        </div>
+                        {% endfor %}
+                        <hr class="hr">
+                        <div class="services-each total-row">
+                            <label>Total Price</label>
+                            <p>{{ a.net_income }} EGP</p>
+                        </div>
                     </div>
 
                     <div class="request-footer">
@@ -122,12 +130,16 @@
                         <div class="footer-action-row">
                             <div class="phone-display">
                                 <i class="ri-phone-line"></i>
-                                <span>{{ req.patient.phone_number }}</span>
+                                <span>{{ a.patient.phone_number }}</span>
                             </div>
-                            <form method="POST" action="{% url 'nurse:mark_done' req.id %}">
-                                {% csrf_token %}
-                                <button type="submit" class="btn-done">Done</button>
-                            </form>
+                            {% if a.nurse_done %}
+                                <button class="btn-done" disabled style="opacity:0.5; cursor:not-allowed;">Waiting for Patient...</button>
+                            {% else %}
+                                <form method="POST" action="{% url 'nurse:mark_done' a.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-done">Done</button>
+                                </form>
+                            {% endif %}
                         </div>
                     </div>
 

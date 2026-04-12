@@ -437,6 +437,8 @@ body {
     font-weight: 500;
     color: #1e293b;
     line-height: 1.4;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 /* ---- About Section ---- */
@@ -825,14 +827,28 @@ body {
     animation: fadeIn 0.8s ease-out 0.6s both;
 }
 
-.service-actions a {
+.service-actions a,
+.service-actions .remove-service {
     color: var(--primary-color);
     text-decoration: none;
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     transition: transform 0.3s ease;
 }
 
-.service-actions a:hover {
+.service-actions a:hover,
+.service-actions .remove-service:hover {
     transform: scale(1.15);
+}
+
+.service-actions .remove-service {
+    color: var(--primary-color);
 }
 
 .empty-slot {

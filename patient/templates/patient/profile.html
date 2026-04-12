@@ -1,177 +1,203 @@
-{% extends 'patient_base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Patient Profile</title>
+    <link rel="stylesheet" href="{% static 'Css/Patient.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+<div class="dashboard">
 
-{% block sidebar %}
-<aside class="aside">
-    <a href="{% url 'patient:patient_dashboard' %}" class="aside-item active">
-        <i class="bi bi-person"></i>
-        <span>Profile</span>
-    </a>
-    <a href="{% url 'patient:patient_requests' 'doctor' 'booking' %}" class="aside-item">
-        <i class="ri-file-list-line"></i>
-        <span>Requests</span>
-    </a> 
-    <a href="#" class="aside-item">
-        <i class="fa-regular fa-bell"></i>
-        <span>Notifications</span>
-    </a>
-    <a href="#" class="aside-item">
-        <i class="ri-wallet-3-line"></i>
-        <span>Wallet</span>
-    </a>
-    <a href="#" class="aside-item">
-        <i class="ri-error-warning-line"></i>
-        <span>Complaints</span>
-    </a>
-</aside>
-{% endblock %}
-
-{% block content %}
-<main class="main-content">
-    <!-- Patient Profile Card -->
-    <div class="patient-profile-card animate slide-up">
-        <div class="patient-avatar-wrap">
-            <img src="{{ profile_pic.url }}" alt="{{ name }}" class="patient-avatar">
-            <div class="patient-status-dot"></div>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon"><img src="{% static 'img/logo.png' %}" alt=""></span>
+                <div><h2>TechCare</h2><p>Medical Portal</p></div>
+                <button class="sidebar-toggle"><i class="bi bi-layout-sidebar-inset-reverse"></i></button>
+            </div>
         </div>
-        <div class="patient-details">
-            <h2 class="patient-name">{{ name }}</h2>
-            <hr class="dc111-divider">
-            <div class="profile-info">
-                <div class="info-item">
-                    <div><i class="ri-mail-line"></i></div>
-                    <div>
-                        <p class="info-label">Email Address</p>
-                        <p class="info-value">{{ email }}</p>
+        <aside class="aside">
+            <a href="{% url 'patient:patient_dashboard' %}" class="aside-item active">
+                <i class="bi bi-person"></i><span>Profile</span>
+            </a>
+            <a href="{% url 'patient:patient_requests' 'doctor' 'booking' %}" class="aside-item">
+                <i class="ri-file-list-line"></i><span>Requests</span>
+            </a>
+            <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
+            <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
+            <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
+        </aside>
+    </aside>
+
+    <div style="flex:1; display:flex; flex-direction:column;">
+
+        <!-- Top Navbar -->
+        <div class="topbar">
+            <h2 class="topbar-title">Patient Profile</h2>
+            <div class="topbar-right">
+                <div class="topbar-icon" id="notificationBtn">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="notification-badge"></span>
+                    <div class="inbox" id="notificationBox">
+                        <div class="notification-item">
+                            <div class="notification-content"><p>No new notifications</p></div>
+                        </div>
                     </div>
                 </div>
-                <div class="info-item">
-                    <div><i class="ri-phone-line"></i></div>
-                    <div>
-                        <p class="info-label">Phone Number</p>
-                        <p class="info-value-phone">{{ phone_number }}</p>
-                    </div>
-                </div>
-                <div class="info-item">
-                    <div><i class="ri-map-pin-2-line"></i></div>
-                    <div>
-                        <p class="info-label">Governorate</p>
-                        <p class="info-value">{{ governorate }}</p>
-                    </div>
-                </div>
-                <div class="info-item">
-                    <div><i class="ri-home-4-line"></i></div>
-                    <div>
-                        <p class="info-label">Address</p>
-                        <p class="info-value">{{ address }}</p>
-                    </div>
+                <hr class="line">
+                <div class="topbar-profile" onclick="window.location.href='{% url 'patient:patient_dashboard' %}'">
+                    <div class="topbar-user-info"><h4>{{ name }}</h4></div>
+                    <img src="{{ profile_pic.url }}" alt="{{ name }}">
                 </div>
             </div>
         </div>
-        <div class="patient-actions" style="align-self: flex-end; margin-left: auto; margin-right: 32px; margin-bottom: -4px;">
-            <button class="btn-primary-edit" onclick="window.location.href='{% url 'patient:edit_patient_profile' %}'">
-                Edit Profile
-            </button>
-        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Patient Profile Card -->
+            <div class="patient-profile-card">
+                <div class="patient-avatar-wrap">
+                    <img src="{{ profile_pic.url }}" alt="{{ name }}" class="patient-avatar">
+                    <div class="patient-status-dot"></div>
+                </div>
+                <div class="patient-details">
+                    <h2 class="patient-name">{{ name }}</h2>
+                    <hr class="dc111-divider">
+                    <div class="profile-info">
+                        <div class="info-item">
+                            <div><i class="ri-mail-line"></i></div>
+                            <div>
+                                <p class="info-label">Email Address</p>
+                                <p class="info-value">{{ email }}</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div><i class="ri-phone-line"></i></div>
+                            <div>
+                                <p class="info-label">Phone Number</p>
+                                <p class="info-value-phone">{{ phone_number }}</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div><i class="ri-map-pin-2-line"></i></div>
+                            <div>
+                                <p class="info-label">Governorate</p>
+                                <p class="info-value">{{ governorate }}</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div><i class="ri-home-4-line"></i></div>
+                            <div>
+                                <p class="info-label">Address</p>
+                                <p class="info-value">{{ address }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="patient-actions" style="align-self:flex-end; margin-left:auto; margin-right:32px; margin-bottom:-4px;">
+                    <button class="btn-primary-edit" onclick="window.location.href='{% url 'patient:edit_patient_profile' %}'">
+                        Edit Profile
+                    </button>
+                </div>
+            </div>
+
+            <!-- Requests Grid -->
+            <div class="requests-grid">
+                <div class="request-stat-card">
+                    <div class="req-header">
+                        <span class="req-title">Doctor Requests</span>
+                        <span class="req-count blue">{{ doctor_total }}</span>
+                    </div>
+                    <div class="req-progress track-blue">
+                        <div class="req-fill bg-blue" style="width:{% if total_requests %}{% widthratio doctor_total total_requests 100 %}{% else %}0{% endif %}%;"></div>
+                    </div>
+                    <div class="req-footer">{{ doctor_completed }} Completed</div>
+                </div>
+                <div class="request-stat-card">
+                    <div class="req-header">
+                        <span class="req-title">Nurse Requests</span>
+                        <span class="req-count green">{{ nurse_total }}</span>
+                    </div>
+                    <div class="req-progress track-green">
+                        <div class="req-fill bg-green" style="width:{% if total_requests %}{% widthratio nurse_total total_requests 100 %}{% else %}0{% endif %}%;"></div>
+                    </div>
+                    <div class="req-footer">{{ nurse_completed }} Completed</div>
+                </div>
+                <div class="request-stat-card">
+                    <div class="req-header">
+                        <span class="req-title">Total Requests</span>
+                        <span class="req-count gold">{{ total_requests }}</span>
+                    </div>
+                    <div class="req-progress track-gold">
+                        <div class="req-fill bg-gold" style="width:{% if total_requests %}100{% else %}0{% endif %}%;"></div>
+                    </div>
+                    <div class="req-footer">{{ total_completed }} Completed</div>
+                </div>
+            </div>
+
+            <!-- Bottom Section -->
+            <div class="bottom-section">
+                <!-- Wallet Card -->
+                <div class="profile-wallet-card">
+                    <div class="wallet-header-flex">
+                        <div class="wallet-title-area">
+                            <h3>TechCare Wallet</h3>
+                            <p>Easily manage your healthcare payments</p>
+                        </div>
+                        <div class="wallet-icon-btn">
+                            <i class="ri-wallet-3-line"></i>
+                        </div>
+                    </div>
+                    <div class="wallet-balance-box">
+                        <span class="balance-label">AVAILABLE BALANCE</span>
+                        <div class="balance-amount">0.00 EGP</div>
+                    </div>
+                </div>
+
+                <!-- Stats Column -->
+                <div class="stats-column">
+                    <div class="small-stat-card">
+                        <div class="icon-circle icon-blue">
+                            <i class="ri-calendar-line"></i>
+                        </div>
+                        <div class="small-stat-info">
+                            <span class="small-stat-title">TOTAL APPOINTMENTS</span>
+                            <span class="small-stat-count">{{ total_requests }}</span>
+                        </div>
+                    </div>
+                    <div class="small-stat-card">
+                        <div class="icon-circle icon-green">
+                            <i class="ri-check-line"></i>
+                        </div>
+                        <div class="small-stat-info">
+                            <span class="small-stat-title">COMPLETED SESSIONS</span>
+                            <span class="small-stat-count">{{ total_completed }}</span>
+                        </div>
+                    </div>
+                    <div class="small-stat-card">
+                        <div class="icon-circle icon-orange">
+                            <i class="ri-article-line"></i>
+                        </div>
+                        <div class="small-stat-info">
+                            <span class="small-stat-title">PENDING REQUESTS</span>
+                            <span class="small-stat-count">{{ total_pending }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
     </div>
+</div>
 
-    <!-- Requests Stats Grid -->
-    <div class="requests-grid animate slide-up-2">
-        <div class="request-stat-card">
-            <div class="req-header">
-                <span class="req-title">Doctor Requests</span>
-                <span class="req-count blue">{{ doctor_total }}</span>
-            </div>
-            <div class="req-progress track-blue">
-                {% if doctor_total > 0 %}
-                    {% widthratio doctor_completed doctor_total 100 as completed_pct %}
-                    <div class="req-fill bg-blue" style="width: {{ completed_pct }}%;"></div>
-                {% else %}
-                    <div class="req-fill bg-blue" style="width: 0%;"></div>
-                {% endif %}
-            </div>
-            <div class="req-footer">{{ doctor_completed }} Completed</div>
-        </div>
-        <div class="request-stat-card">
-            <div class="req-header">
-                <span class="req-title">Pending</span>
-                <span class="req-count gold">{{ doctor_pending }}</span>
-            </div>
-            <div class="req-progress track-gold">
-                {% if doctor_total > 0 %}
-                    {% widthratio doctor_pending doctor_total 100 as pending_pct %}
-                    <div class="req-fill bg-gold" style="width: {{ pending_pct }}%;"></div>
-                {% else %}
-                    <div class="req-fill bg-gold" style="width: 0%;"></div>
-                {% endif %}
-            </div>
-            <div class="req-footer">Awaiting doctor response</div>
-        </div>
-        <div class="request-stat-card">
-            <div class="req-header">
-                <span class="req-title">Accepted</span>
-                <span class="req-count green">{{ doctor_accepted }}</span>
-            </div>
-            <div class="req-progress track-green">
-                {% if doctor_total > 0 %}
-                    {% widthratio doctor_accepted doctor_total 100 as accepted_pct %}
-                    <div class="req-fill bg-green" style="width: {{ accepted_pct }}%;"></div>
-                {% else %}
-                    <div class="req-fill bg-green" style="width: 0%;"></div>
-                {% endif %}
-            </div>
-            <div class="req-footer">Confirmed appointments</div>
-        </div>
-    </div>
-
-    <!-- Bottom Section -->
-    <div class="bottom-section animate slide-up-2">
-        <!-- Wallet Card -->
-        <div class="profile-wallet-card">
-            <div class="wallet-header-flex">
-                <div class="wallet-title-area">
-                    <h3>TechCare Wallet</h3>
-                    <p>Easily manage your healthcare payments</p>
-                </div>
-                <div class="wallet-icon-btn">
-                    <i class="ri-wallet-3-line"></i>
-                </div>
-            </div>
-            <div class="wallet-balance-box">
-                <span class="balance-label">AVAILABLE BALANCE</span>
-                <div class="balance-amount">0.00 EGP</div>
-            </div>
-        </div>
-
-        <!-- Stats Column -->
-        <div class="stats-column">
-            <div class="small-stat-card">
-                <div class="icon-circle icon-blue">
-                    <i class="ri-calendar-line"></i>
-                </div>
-                <div class="small-stat-info">
-                    <span class="small-stat-title">TOTAL APPOINTMENTS</span>
-                    <span class="small-stat-count">{{ doctor_total }}</span>
-                </div>
-            </div>
-            <div class="small-stat-card">
-                <div class="icon-circle icon-green">
-                    <i class="ri-check-line"></i>
-                </div>
-                <div class="small-stat-info">
-                    <span class="small-stat-title">COMPLETED SESSIONS</span>
-                    <span class="small-stat-count">{{ doctor_completed }}</span>
-                </div>
-            </div>
-            <div class="small-stat-card">
-                <div class="icon-circle icon-orange">
-                    <i class="ri-article-line"></i>
-                </div>
-                <div class="small-stat-info">
-                    <span class="small-stat-title">PENDING REQUESTS</span>
-                    <span class="small-stat-count">{{ doctor_pending }}</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
-{% endblock %}
+<script src="{% static 'JS/Board.js' %}"></script>
+</body>
+</html>

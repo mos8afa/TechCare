@@ -1,0 +1,90 @@
+{% extends 'patient_base.html' %}
+
+{% block sidebar %}
+<aside class="aside">
+    <a href="{% url 'patient:patient_dashboard' %}" class="aside-item">
+        <i class="bi bi-person"></i><span>Profile</span>
+    </a>
+    <a href="{% url 'patient:patient_requests' 'nurse' 'booking' %}" class="aside-item active">
+        <i class="ri-file-list-line"></i><span>Requests</span>
+    </a>
+    <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
+    <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
+    <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
+</aside>
+{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <div class="booking-wrapper">
+
+        <div class="category-tabs">
+            <button class="cat-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'doctor' 'booking' %}'">
+                <i class="ri-stethoscope-line"></i> Doctor
+            </button>
+            <button class="cat-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'booking' %}'">
+                <i class="ri-nurse-line"></i> Nurse</button>
+            <button class="cat-tab"><i class="ri-medicine-bottle-line"></i> Medicine</button>
+        </div>
+
+        <div class="status-tabs">
+            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'booking' %}'">Booking</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'pending' %}'">Pending</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'accepted' %}'">Accepted</button>
+            <button class="status-tab active">Done</button>
+        </div>
+
+        <div class="done-cards-container">
+            {% for req in completed %}
+            <div class="done-card animate slide-up">
+                <div class="dc-header">
+                    <div class="dc-doc-info">
+                        <img src="{{ req.nurse.profile_pic.url }}" alt="{{ req.nurse.user.first_name }}" class="dc-avatar">
+                        <h3 class="dc-doc-name">{{ req.nurse.user.first_name }} {{ req.nurse.user.last_name }}</h3>
+                    </div>
+                    <div class="dc-badge">DONE</div>
+                </div>
+
+                <hr class="dc-divider">
+
+                <div class="dc-details-grid">
+                    <div class="dc-detail-row">
+                        <p class="dc-label">Date & Time</p>
+                        <p class="dc-value">{{ req.date|date:"M d, Y" }} • {{ req.time|time:"h:i A" }}</p>
+                    </div>
+                    <div class="dc-detail-row">
+                        <p class="dc-label">Region</p>
+                        <p class="dc-value">{{ req.governrate }}, {{ req.address }}</p>
+                    </div>
+                </div>
+
+                <hr class="dc-divider">
+
+                <div class="dc-description">
+                    <p class="dc-label-uppercase">REQUESTED SERVICES</p>
+                    <div class="dc-services">
+                        {% for svc in req.service.all %}
+                        <div class="dc-service-item">
+                            <p class="dc-service-name">{{ svc.name }}</p>
+                            <p class="dc-service-price">{{ svc.price }} EGP</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <hr class="dc-divider">
+
+                <div class="dc-financial">
+                    <p class="dc-fin-label">TOTAL PAID</p>
+                    <p class="dc-fin-amount">{{ req.net_income }} EGP</p>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-requests-placeholder">
+                <h3>No Completed Nurse Requests</h3>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</main>
+{% endblock %}
