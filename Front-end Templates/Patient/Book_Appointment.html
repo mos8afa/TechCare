@@ -110,7 +110,7 @@
                             <i class="ri-nurse-line"></i> Nurse
                         </button>
                         <button class="cat-tab">
-                            <i class="ri-medicine-bottle-line"></i> Pharmacy
+                            <i class="ri-medicine-bottle-line"></i> Medicine
                         </button>
                     </div>
 
@@ -147,7 +147,7 @@
                                             <span class="rating-badge"><i class="fa-solid fa-star"></i> 4.9</span>
                                             <span class="rating-text">500+ Consultations</span>
                                         </div>
-                                        <div class="doc-fee" style="text-align: left; margin-top: 15px;">
+                                        <div class="doc-fee">
                                             <p class="fee-label">CONSULTATION FEE</p>
                                             <h3 class="fee-amount">450 EGP</h3>
                                         </div>
@@ -155,18 +155,39 @@
                                 </div>
                             </div>
 
-                            <!-- Symptoms Card -->
-                            <div class="booking-card symptoms-card">
-                                <div class="card-title">
-                                    <i class="ri-file-text-line"></i> <span>Describe Your Symptoms</span>
+                            <!-- Governorate Card -->
+                            <div class="form-group-booking">
+                                <label class="booking-label">Governorate</label>
+                                <div class="custom-select-wrapper">
+                                    <select class="booking-select">
+                                        <option value="Cairo">Cairo</option>
+                                        <option value="Giza">Giza</option>
+                                        <option value="Alexandria">Alexandria</option>
+                                    </select>
+                                    <i class="ri-arrow-down-s-line"></i>
                                 </div>
-                                <div class="symptoms-chips">
-                                    <button class="chip">Chest Pain</button>
-                                    <button class="chip">Shortness of Breath</button>
-                                    <button class="chip active">Dizziness</button>
-                                    <button class="chip">Palpitations</button>
+                            </div>
+
+                            <!-- Symptoms & Address Grid -->
+                            <div class="booking-inputs-grid">
+                                <!-- Symptoms Card -->
+                                <div class="booking-card symptoms-card">
+                                    <div class="card-title">
+                                        <i class="ri-file-text-line"></i> <span>Describe Your Symptoms</span>
+                                    </div>
+                                    <textarea placeholder="Please provide more details about how you are feeling..."></textarea>
                                 </div>
-                                <textarea placeholder="Please provide more details about how you are feeling..."></textarea>
+
+                                <!-- Address Card -->
+                                <div class="booking-card address-card">
+                                    <div class="card-title">
+                                        <span>Full Address</span>
+                                    </div>
+                                    <div class="address-input-wrapper">
+                                        <i class="ri-map-pin-line"></i>
+                                        <textarea placeholder="Maadi, Cairo, Egypt"></textarea>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Date & Time Card -->

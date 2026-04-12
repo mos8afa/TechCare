@@ -201,100 +201,78 @@
                 </div>
 
                 <!-- New Available Time Slots Section -->
-                <div class="ats-card">
-                    <div class="ats-header">
-                        <div class="ats-icon"><i class="ri-time-line"></i></div>
-                        <h3 class="ats-title">Available Time Slots</h3>
+                <div class="info-card ats-card-v2">
+                    <div class="card-header">
+                        <h3>
+                            <span class="header-icon-circle"><i class="bi bi-clock"></i></span>
+                            Available Time Slots
+                        </h3>
                     </div>
-                    
-                    <div class="ats-dates-container">
-                        <div class="ats-date-card active">
-                            <span class="ats-day">MON</span>
-                            <span class="ats-date">14</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">TUE</span>
-                            <span class="ats-date">15</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">WED</span>
-                            <span class="ats-date">16</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">THU</span>
-                            <span class="ats-date">17</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">FRI</span>
-                            <span class="ats-date">18</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">SAT</span>
-                            <span class="ats-date">19</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">SUN</span>
-                            <span class="ats-date">20</span>
-                        </div>
-                        <div class="ats-date-card active">
-                            <span class="ats-day">MON</span>
-                            <span class="ats-date">14</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">TUE</span>
-                            <span class="ats-date">15</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">WED</span>
-                            <span class="ats-date">16</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">THU</span>
-                            <span class="ats-date">17</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">THU</span>
-                            <span class="ats-date">17</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">THU</span>
-                            <span class="ats-date">17</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">THU</span>
-                            <span class="ats-date">17</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">THU</span>
-                            <span class="ats-date">17</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">FRI</span>
-                            <span class="ats-date">18</span>
+
+                    <!-- Days Carousel -->
+                    <div class="days-carousel">
+                        <div class="days-track" id="daysTrack">
+                            <div class="day-btn active" onclick="selectDay(this)">
+                                <span class="day-name">MON</span>
+                                <span class="day-num">14</span>
+                            </div>
+                            <div class="day-btn" onclick="selectDay(this)">
+                                <span class="day-name">TUE</span>
+                                <span class="day-num">15</span>
+                            </div>
+                            <div class="day-btn" onclick="selectDay(this)">
+                                <span class="day-name">WED</span>
+                                <span class="day-num">16</span>
+                            </div>
+                            <div class="day-btn" onclick="selectDay(this)">
+                                <span class="day-name">THU</span>
+                                <span class="day-num">17</span>
+                            </div>
+                            <div class="day-btn" onclick="selectDay(this)">
+                                <span class="day-name">FRI</span>
+                                <span class="day-num">18</span>
+                            </div>
+                            <div class="day-btn" onclick="selectDay(this)">
+                                <span class="day-name">SAT</span>
+                                <span class="day-num">19</span>
+                            </div>
+                            <div class="day-btn" onclick="selectDay(this)">
+                                <span class="day-name">SUN</span>
+                                <span class="day-num">20</span>
+                            </div>
+                            <div class="day-btn" onclick="selectDay(this)">
+                                <span class="day-name">MON</span>
+                                <span class="day-num">14</span>
+                            </div>
+                            <div class="day-btn" onclick="selectDay(this)">
+                                <span class="day-name">TUE</span>
+                                <span class="day-num">15</span>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="ats-bottom-wrapper">
-                        <div class="ats-times-container">
-                            <div class="ats-time-btn active">09:00 AM</div>
-                            <div class="ats-time-btn">09:30 AM</div>
-                            <div class="ats-time-btn">10:00 AM</div>
-                            <div class="ats-time-btn">10:30 AM</div>
-                            <div class="ats-time-btn">11:00 AM</div>
-                            <div class="ats-time-btn">11:30 AM</div>
-                            <div class="ats-time-btn">12:00 PM</div>
-                            <div class="ats-time-btn">05:30 PM</div>
-                            <div class="ats-time-btn">06:30 PM</div>
-                            <div class="ats-time-btn">07:30 PM</div>
-                            <div class="ats-time-btn">08:30 PM</div>
-                            <div class="ats-time-btn">09:00 PM</div>
+
+                    <!-- Merged Available Slots -->
+                    <div class="slots-container">
+                        <div class="slots-grid">
+                            <button class="slot-pill active" onclick="selectSlotPill(this)">09:00 AM</button>
+                            <button class="slot-pill" onclick="selectSlotPill(this)">09:30 AM</button>
+                            <button class="slot-pill" onclick="selectSlotPill(this)">10:00 AM</button>
+                            <button class="slot-pill" onclick="selectSlotPill(this)">10:30 AM</button>
+                            <button class="slot-pill" onclick="selectSlotPill(this)">11:00 AM</button>
+                            <button class="slot-pill" onclick="selectSlotPill(this)">11:30 AM</button>
+                            <button class="slot-pill" onclick="selectSlotPill(this)">12:00 PM</button>
+                            <button class="slot-pill" onclick="selectSlotPill(this)">05:30 PM</button>
+                            <button class="slot-pill" onclick="selectSlotPill(this)">06:30 PM</button>
+                            <button class="slot-pill" onclick="selectSlotPill(this)">07:30 PM</button>
+                            <button class="slot-pill" onclick="selectSlotPill(this)">08:30 PM</button>
+                            <button class="slot-pill" onclick="selectSlotPill(this)">09:00 PM</button>
                         </div>
-                        
-                        <div class="ats-footer">
-                            <button class="ats-edit-btn" onclick="window.location.href='Edit_time_slots.html'">
-                                <i class="ri-add-line"></i> Edit Time Slots
-                            </button>
-                        </div>
+                    </div>
+
+                    <div class="ats-card-footer">
+                        <button class="edit-slots-btn-hollow" onclick="window.location.href='Edit_time_slots.html'">
+                            <i class="bi bi-plus"></i> Edit Time Slots
+                        </button>
                     </div>
                 </div>
 
@@ -302,8 +280,8 @@
                 <!-- Services Section -->
                 <div class="Services-Card">
                     <div class="services-header">
-                        <h3>My Services <span id="serviceCount">(0)</span></h3>
-                        <button class="btn-add-services" id="addServiceBtn">Add Services</button>
+                        <h3>My Services <span id="serviceCount" class="count-pill">(3)</span></h3>
+                        <button class="btn-add-services-v2" id="addServiceBtn">Add Services</button>
                     </div>
 
                     <!-- Modal for Add/Edit -->
