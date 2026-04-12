@@ -1099,6 +1099,18 @@ body {
     cursor: pointer;
 }
 
+.edit-ts-pill.pending-delete {
+    opacity: 0.45;
+    text-decoration: line-through;
+    border: 2px solid #b91c1c;
+    background: #fee2e2;
+}
+
+.edit-ts-pill.new-slot {
+    border: 2px solid #0085FF;
+    background: #e0f0ff;
+}
+
 /* ===== Requests Pages (Common) ===== */
 .requests-sticky {
     z-index: 100;

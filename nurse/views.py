@@ -42,8 +42,7 @@ def nurse_dashboard(request):
 
     days = get_provider_days_with_dates(days)
 
-    morning_slots = []
-    evening_slots = []
+    time_slots = []
 
     if request.method == 'POST':
         input_day = request.POST.get('day')
@@ -54,10 +53,7 @@ def nurse_dashboard(request):
         ).order_by('time')
 
         for slot in slots:
-            if slot.time < time(12, 0):
-                morning_slots.append(slot)
-            else:
-                evening_slots.append(slot)
+            time_slots.append(slot)
 
     return render(request, 'nurse/nurse_profile.html', {
         'name': name,
@@ -72,8 +68,7 @@ def nurse_dashboard(request):
         'completed': completed,
         'services':services,
         'days':days,
-        'morning_slots':morning_slots,
-        'evening_slots':evening_slots,
+        'time_slots': time_slots,
     })
 
 

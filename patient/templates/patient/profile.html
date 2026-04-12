@@ -1,0 +1,177 @@
+{% extends 'patient_base.html' %}
+
+{% block sidebar %}
+<aside class="aside">
+    <a href="{% url 'patient:patient_dashboard' %}" class="aside-item active">
+        <i class="bi bi-person"></i>
+        <span>Profile</span>
+    </a>
+    <a href="{% url 'patient:patient_requests' 'doctor' 'booking' %}" class="aside-item">
+        <i class="ri-file-list-line"></i>
+        <span>Requests</span>
+    </a> 
+    <a href="#" class="aside-item">
+        <i class="fa-regular fa-bell"></i>
+        <span>Notifications</span>
+    </a>
+    <a href="#" class="aside-item">
+        <i class="ri-wallet-3-line"></i>
+        <span>Wallet</span>
+    </a>
+    <a href="#" class="aside-item">
+        <i class="ri-error-warning-line"></i>
+        <span>Complaints</span>
+    </a>
+</aside>
+{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <!-- Patient Profile Card -->
+    <div class="patient-profile-card animate slide-up">
+        <div class="patient-avatar-wrap">
+            <img src="{{ profile_pic.url }}" alt="{{ name }}" class="patient-avatar">
+            <div class="patient-status-dot"></div>
+        </div>
+        <div class="patient-details">
+            <h2 class="patient-name">{{ name }}</h2>
+            <hr class="dc111-divider">
+            <div class="profile-info">
+                <div class="info-item">
+                    <div><i class="ri-mail-line"></i></div>
+                    <div>
+                        <p class="info-label">Email Address</p>
+                        <p class="info-value">{{ email }}</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div><i class="ri-phone-line"></i></div>
+                    <div>
+                        <p class="info-label">Phone Number</p>
+                        <p class="info-value-phone">{{ phone_number }}</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div><i class="ri-map-pin-2-line"></i></div>
+                    <div>
+                        <p class="info-label">Governorate</p>
+                        <p class="info-value">{{ governorate }}</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div><i class="ri-home-4-line"></i></div>
+                    <div>
+                        <p class="info-label">Address</p>
+                        <p class="info-value">{{ address }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="patient-actions" style="align-self: flex-end; margin-left: auto; margin-right: 32px; margin-bottom: -4px;">
+            <button class="btn-primary-edit" onclick="window.location.href='{% url 'patient:edit_patient_profile' %}'">
+                Edit Profile
+            </button>
+        </div>
+    </div>
+
+    <!-- Requests Stats Grid -->
+    <div class="requests-grid animate slide-up-2">
+        <div class="request-stat-card">
+            <div class="req-header">
+                <span class="req-title">Doctor Requests</span>
+                <span class="req-count blue">{{ doctor_total }}</span>
+            </div>
+            <div class="req-progress track-blue">
+                {% if doctor_total > 0 %}
+                    {% widthratio doctor_completed doctor_total 100 as completed_pct %}
+                    <div class="req-fill bg-blue" style="width: {{ completed_pct }}%;"></div>
+                {% else %}
+                    <div class="req-fill bg-blue" style="width: 0%;"></div>
+                {% endif %}
+            </div>
+            <div class="req-footer">{{ doctor_completed }} Completed</div>
+        </div>
+        <div class="request-stat-card">
+            <div class="req-header">
+                <span class="req-title">Pending</span>
+                <span class="req-count gold">{{ doctor_pending }}</span>
+            </div>
+            <div class="req-progress track-gold">
+                {% if doctor_total > 0 %}
+                    {% widthratio doctor_pending doctor_total 100 as pending_pct %}
+                    <div class="req-fill bg-gold" style="width: {{ pending_pct }}%;"></div>
+                {% else %}
+                    <div class="req-fill bg-gold" style="width: 0%;"></div>
+                {% endif %}
+            </div>
+            <div class="req-footer">Awaiting doctor response</div>
+        </div>
+        <div class="request-stat-card">
+            <div class="req-header">
+                <span class="req-title">Accepted</span>
+                <span class="req-count green">{{ doctor_accepted }}</span>
+            </div>
+            <div class="req-progress track-green">
+                {% if doctor_total > 0 %}
+                    {% widthratio doctor_accepted doctor_total 100 as accepted_pct %}
+                    <div class="req-fill bg-green" style="width: {{ accepted_pct }}%;"></div>
+                {% else %}
+                    <div class="req-fill bg-green" style="width: 0%;"></div>
+                {% endif %}
+            </div>
+            <div class="req-footer">Confirmed appointments</div>
+        </div>
+    </div>
+
+    <!-- Bottom Section -->
+    <div class="bottom-section animate slide-up-2">
+        <!-- Wallet Card -->
+        <div class="profile-wallet-card">
+            <div class="wallet-header-flex">
+                <div class="wallet-title-area">
+                    <h3>TechCare Wallet</h3>
+                    <p>Easily manage your healthcare payments</p>
+                </div>
+                <div class="wallet-icon-btn">
+                    <i class="ri-wallet-3-line"></i>
+                </div>
+            </div>
+            <div class="wallet-balance-box">
+                <span class="balance-label">AVAILABLE BALANCE</span>
+                <div class="balance-amount">0.00 EGP</div>
+            </div>
+        </div>
+
+        <!-- Stats Column -->
+        <div class="stats-column">
+            <div class="small-stat-card">
+                <div class="icon-circle icon-blue">
+                    <i class="ri-calendar-line"></i>
+                </div>
+                <div class="small-stat-info">
+                    <span class="small-stat-title">TOTAL APPOINTMENTS</span>
+                    <span class="small-stat-count">{{ doctor_total }}</span>
+                </div>
+            </div>
+            <div class="small-stat-card">
+                <div class="icon-circle icon-green">
+                    <i class="ri-check-line"></i>
+                </div>
+                <div class="small-stat-info">
+                    <span class="small-stat-title">COMPLETED SESSIONS</span>
+                    <span class="small-stat-count">{{ doctor_completed }}</span>
+                </div>
+            </div>
+            <div class="small-stat-card">
+                <div class="icon-circle icon-orange">
+                    <i class="ri-article-line"></i>
+                </div>
+                <div class="small-stat-info">
+                    <span class="small-stat-title">PENDING REQUESTS</span>
+                    <span class="small-stat-count">{{ doctor_pending }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

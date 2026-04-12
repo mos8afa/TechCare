@@ -1,0 +1,151 @@
+{% extends 'patient_base.html' %}
+
+{% block sidebar %}
+<aside class="aside">
+    <a href="{% url 'patient:patient_dashboard' %}" class="aside-item">
+        <i class="bi bi-person"></i>
+        <span>Profile</span>
+    </a>
+    <a href="{% url 'patient:patient_requests' 'doctor' 'booking' %}" class="aside-item active">
+        <i class="ri-file-list-line"></i>
+        <span>Requests</span>
+    </a>
+    <a href="#" class="aside-item">
+        <i class="fa-regular fa-bell"></i>
+        <span>Notifications</span>
+    </a>
+    <a href="#" class="aside-item">
+        <i class="ri-wallet-3-line"></i>
+        <span>Wallet</span>
+    </a>
+    <a href="#" class="aside-item">
+        <i class="ri-error-warning-line"></i>
+        <span>Complaints</span>
+    </a>
+</aside>
+{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <div class="booking-wrapper">
+
+        <!-- Category Tabs -->
+        <div class="category-tabs">
+            <button class="cat-tab active">
+                <i class="ri-stethoscope-line"></i> Doctor
+            </button>
+            <button class="cat-tab">
+                <i class="ri-nurse-line"></i> Nurse
+            </button>
+            <button class="cat-tab">
+                <i class="ri-medicine-bottle-line"></i> Pharmacy
+            </button>
+        </div>
+
+        <!-- Status Tabs -->
+        <div class="status-tabs">
+            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'doctor' 'booking' %}'">Booking</button>
+            <button class="status-tab active">Pending</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'doctor' 'accepted' %}'">Accepted</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'doctor' 'done' %}'">Done</button>
+        </div>
+
+        <div class="pending-grid">
+            {% for req in pending %}
+            <div class="pending-card animate slide-up">
+                <div class="pending-card-top">
+                    <img src="{{ req.doctor.profile_pic.url }}" alt="Dr. {{ req.doctor.user.first_name }}" class="pending-avatar">
+                    <div class="pending-info">
+                        <div class="pending-name-row">
+                            <h3 class="pending-name">Dr. {{ req.doctor.user.first_name }} {{ req.doctor.user.last_name }}</h3>
+                            <span class="pending-badge">PENDING</span>
+                        </div>
+                        <p class="pending-date">
+                            <i class="bi bi-calendar3"></i> {{ req.date }} &nbsp;|&nbsp; {{ req.time }}
+                        </p>
+                        <p class="pending-note">"{{ req.disease_description|truncatewords:20 }}"</p>
+                    </div>
+                </div>
+
+                <div class="pending-details">
+                    <div class="pending-detail-col">
+                        <span class="detail-label">LOCATION DETAILS</span>
+                        <p class="detail-place">
+                            <i class="ri-map-pin-2-line"></i>
+                            <strong>{{ req.patient.get_governorate_display }}</strong>
+                        </p>
+                        <p class="detail-address">{{ req.patient.address }}</p>
+                    </div>
+                    <div class="pending-detail-col">
+                        <span class="detail-label">DOCTOR SPECIALTY</span>
+                        <strong class="detail-phone">
+                            <i class="ri-stethoscope-line"></i> {{ req.doctor.get_specification_display }}
+                        </strong>
+                    </div>
+                </div>
+
+                <div class="pending-card-footer">
+                    <div class="pending-price-wrap">
+                        <span class="price-label">CONSULTATION FEE</span>
+                        <span class="price-val">{{ req.total_price }} EGP</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% for req in edited %}
+            <div class="pending-card animate slide-up">
+                <div class="pending-card-top">
+                    <img src="{{ req.doctor.profile_pic.url }}" alt="Dr. {{ req.doctor.user.first_name }}" class="pending-avatar">
+                    <div class="pending-info">
+                        <div class="pending-name-row">
+                            <h3 class="pending-name">Dr. {{ req.doctor.user.first_name }} {{ req.doctor.user.last_name }}</h3>
+                            <span class="pending-badge" style="background:#fff3cd; color:#856404;">EDITED</span>
+                        </div>
+                        <p class="pending-date">
+                            <i class="bi bi-calendar3"></i> {{ req.date }} &nbsp;|&nbsp; {{ req.time }}
+                        </p>
+                        <p class="pending-note">"{{ req.disease_description|truncatewords:20 }}"</p>
+                    </div>
+                </div>
+
+                <div class="pending-details">
+                    <div class="pending-detail-col">
+                        <span class="detail-label">LOCATION DETAILS</span>
+                        <p class="detail-place">
+                            <i class="ri-map-pin-2-line"></i>
+                            <strong>{{ req.patient.get_governorate_display }}</strong>
+                        </p>
+                        <p class="detail-address">{{ req.patient.address }}</p>
+                    </div>
+                    <div class="pending-detail-col">
+                        <span class="detail-label">DOCTOR SPECIALTY</span>
+                        <strong class="detail-phone">
+                            <i class="ri-stethoscope-line"></i> {{ req.doctor.get_specification_display }}
+                        </strong>
+                    </div>
+                </div>
+
+                <div class="pending-card-footer">
+                    <div class="pending-price-wrap">
+                        <span class="price-label">TOTAL PRICE</span>
+                        <span class="price-val">{{ req.total_price }} EGP</span>
+                    </div>
+                    <div class="pending-actions">
+                        <button class="btn-accept">Accept</button>
+                        <button class="btn-cancel">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% if not pending and not edited %}
+            <div class="no-requests-placeholder">
+                <h3>No Pending Requests</h3>
+                <p>Once you book a consultation, it will appear here while waiting for doctor confirmation.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</main>
+{% endblock %}

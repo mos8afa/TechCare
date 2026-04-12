@@ -173,26 +173,24 @@
                         </div>
 
                         <div class="balance-card">
-                            <p>Total Wallet Balance</p>
-                            <p class="balance-amount">12,450.00 EGP</p>
+                    <p>Total Wallet Balance</p>
+                    <p class="balance-amount">12,450.00 EGP</p>
+                </div>
+            
+                <div class="mini-stats">
+                    <div class="stat-card Approved">
+                        <p class="stat-label">Completed Requests</p>
+                        <div>
+                            <i class="bi bi-check2-circle"></i>
+                            <p class="stat-value">{{ completed }}</p>
                         </div>
-
-                        <div class="mini-stats">
-                            <div class="stat-card Approved">
-                                <p class="stat-label">Completed Requests</p>
-                                <div>
-                                    <strong class="stat-value">1,248</strong>
-                                    <i class="bi bi-check2-circle"></i>
-
-                                </div>
-                            </div>
-
-                            <div class="stat-card Pending">
-                                <p class="stat-label">Pending Requests</p>
-                                <div>
-                                    <strong class="stat-value">14</strong>
-                                    <i class="ri-survey-line"></i>
-                                </div>
+                    </div>
+                    <div class="stat-card Pending">
+                        <p class="stat-label">Pending Requests</p>
+                        <div>
+                            <i class="ri-survey-line"></i>
+                            <p class="stat-value">{{ pending }}</p>
+                        </div>
                             </div>
                         </div>
                     </div>
@@ -206,128 +204,63 @@
                     </div>
                     
                     <div class="ats-dates-container">
-                        <div class="ats-date-card active">
-                            <span class="ats-day">MON</span>
-                            <span class="ats-date">14</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">TUE</span>
-                            <span class="ats-date">15</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">WED</span>
-                            <span class="ats-date">16</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">THU</span>
-                            <span class="ats-date">17</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">FRI</span>
-                            <span class="ats-date">18</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">SAT</span>
-                            <span class="ats-date">19</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">SUN</span>
-                            <span class="ats-date">20</span>
-                        </div>
-                        <div class="ats-date-card active">
-                            <span class="ats-day">MON</span>
-                            <span class="ats-date">14</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">TUE</span>
-                            <span class="ats-date">15</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">WED</span>
-                            <span class="ats-date">16</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">THU</span>
-                            <span class="ats-date">17</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">THU</span>
-                            <span class="ats-date">17</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">THU</span>
-                            <span class="ats-date">17</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">THU</span>
-                            <span class="ats-date">17</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">THU</span>
-                            <span class="ats-date">17</span>
-                        </div>
-                        <div class="ats-date-card">
-                            <span class="ats-day">FRI</span>
-                            <span class="ats-date">18</span>
-                        </div>
+                        {% if days %}
+                            {% for d in days %}
+                                <div class="day-btn {% if d.day == selected_day %}active{% endif %}"
+                                    onclick="window.location.href='?day={{ d.day }}'">
+
+                                    <span class="day-name">{{ d.day|slice:":3"|upper }}</span>
+                                    <span class="day-num">{{ d.date|date:"d" }}</span>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                     
                     <div class="ats-bottom-wrapper">
                         <div class="ats-times-container">
-                            <div class="ats-time-btn active">09:00 AM</div>
-                            <div class="ats-time-btn">09:30 AM</div>
-                            <div class="ats-time-btn">10:00 AM</div>
-                            <div class="ats-time-btn">10:30 AM</div>
-                            <div class="ats-time-btn">11:00 AM</div>
-                            <div class="ats-time-btn">11:30 AM</div>
-                            <div class="ats-time-btn">12:00 PM</div>
-                            <div class="ats-time-btn">05:30 PM</div>
-                            <div class="ats-time-btn">06:30 PM</div>
-                            <div class="ats-time-btn">07:30 PM</div>
-                            <div class="ats-time-btn">08:30 PM</div>
-                            <div class="ats-time-btn">09:00 PM</div>
+                            {% for slot in time_slots %}
+                        <button class="slot-pill">
+                            {{ slot.time|time:"h:i A" }}
+                        </button>
+                            {% empty %}
+                                <p>No slots available</p>
+                            {% endfor %}
                         </div>
                         
                         <div class="ats-footer">
-                            <button class="ats-edit-btn" onclick="window.location.href='Edit_time_slots.html'">
+                            <button class="ats-edit-btn" onclick="window.location.href='{% url 'nurse:edit_slots' %}'">
                                 <i class="ri-add-line"></i> Edit Time Slots
                             </button>
                         </div>
                     </div>
                 </div>
 
-<!-- Services Section -->
+                <!-- Services Section -->
                 <div class="Services-Card">
                     <div class="services-header">
-                        <h3>My Services <span id="serviceCount">(3)</span></h3>
+                        <h3>My Services <span id="serviceCount">(0)</span></h3>
                         <button class="btn-add-services" id="addServiceBtn">Add Services</button>
                     </div>
 
+                    <!-- Modal for Add/Edit -->
                     <div id="addServiceModal" class="modal">
                         <div class="modal-content">
                             <span class="close" id="closeAddService">&times;</span>
-                            <h3>Add New Service</h3>
-                            <form method='post' action="{% url 'nurse:add_services' %}">
-                                {% csrf_token %}
+                            <h3 id="modalTitle">Add New Service</h3>
+                            <form id="serviceForm">
                                 <div class="form-group">
                                     <label for="serviceTitle">Title</label>
-                                    <input name='name' type="text" id="serviceTitle" required />
+                                    <input type="text" id="serviceTitle" required />
                                 </div>
                                 <div class="form-group">
-                                    <label for="servicePrice">Price</label>
-                                    <input name ='price' type="number" id="servicePrice" required />
-                                    {% if errors.price %}
-                                        <p class="error-message">{{ errors.price }}</p>
-                                    {% endif %}
+                                    <label for="servicePrice">Price ($)</label>
+                                    <input type="number" id="servicePrice" required />
                                 </div>
                                 <div class="form-group">
                                     <label for="serviceDescription">Description</label>
-                                    <textarea name = 'description'id="serviceDescription" rows="3" required></textarea>
-                                    {% if errors.description %}
-                                        <p class="error-message">{{ errors.description }}</p>
-                                    {% endif %}
+                                    <textarea id="serviceDescription" rows="3" required></textarea>
                                 </div>
-                                <button type="submit" class="btn-primary">Add Service</button>
+                                <button type="submit" class="btn-primary" id="saveServiceBtn">Add Service</button>
                             </form>
                         </div>
                     </div>
@@ -336,61 +269,24 @@
                         <button class="service-nav-btn prev-service" id="prev-service">
                             <i class="fas fa-angle-left"></i>
                         </button>
-                        
-            
-                        {% if services %}
-                            {% for service in services  %}
+
+                        <div class="services-grid" id="servicesGrid">
+                            <!-- Placeholder card to show Edit/Remove buttons (Usually injected via JS) -->
                             <div class="service-card">
-                                <h4>{{service.name}} <span class="money">${{service.price}}</span></h4>
-                                <p>{{service.description}}</p>
+                                <h4>Medical consultation <span class="money">$50</span></h4>
+                                <p>Provide daily medical consultation for chronic diseases.</p>
                                 <div class="service-actions">
-                                    
-
-
-                                    <div id="addServiceModal" class="modal">
-                            <div class="modal-content">
-                                <span class="close" id="closeAddService">&times;</span>
-                                <h3>Add New Service</h3>
-                                <form method='post' action="{% url 'nurse:add_services' %}">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <label for="serviceTitle">Title</label>
-                                        <input name='name' type="text" id="serviceTitle" required />
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="servicePrice">Price</label>
-                                        <input name ='price' type="number" id="servicePrice" required />
-                                        {% if errors.price %}
-                                            <p class="error-message">{{ errors.price }}</p>
-                                        {% endif %}
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="serviceDescription">Description</label>
-                                        <textarea name = 'description'id="serviceDescription" rows="3" required></textarea>
-                                        {% if errors.description %}
-                                            <p class="error-message">{{ errors.description }}</p>
-                                        {% endif %}
-                                    </div>
-                                    <button type="submit" class="btn-primary">Add Service</button>
-                                </form>
-                            </div>
-                        </div>
-                                    <a href="{% url 'nurse:edit_service' service.id %}"><i class="fas fa-edit"></i> Edit</a>
-                                    <a href="{% url 'nurse:delete_service' service.id %}"><i class="fas fa-trash"></i> Remove</a>
+                                    <a href="#" class="edit-service"><i class="fas fa-edit"></i> Edit</a>
+                                    <a href="#" class="remove-service"><i class="fas fa-trash"></i> Remove</a>
                                 </div>
                             </div>
-                            {% endfor %}
-                        {% else %}
-                        <p>There is no services yet, Once you add service it will be shown here.</p>
-                        {% endif %}
-                            
-                        
+                        </div>
+
                         <button class="service-nav-btn next-service" id="next-service">
                             <i class="fas fa-angle-right"></i>
                         </button>
                     </div>
                 </div>
-
             </main>
         </div>
 
@@ -398,5 +294,14 @@
     <script src="{% static 'JS/Board.js' %}"></script>
 
 </body>
+<script>
+function selectDay(el) {
+    document.querySelectorAll('.day-btn').forEach(d => d.classList.remove('active'));
+    el.classList.add('active');
+}
 
+function selectSlotPill(el) {
+    el.classList.toggle('active');
+}
+</script>
 </html>

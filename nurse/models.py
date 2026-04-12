@@ -26,3 +26,4 @@ class NurseRequest(models.Model):
     service = models.ManyToManyField(Service)
     net_income = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     status = models.CharField(max_length=10, choices=STATUS, default="pending")
+    

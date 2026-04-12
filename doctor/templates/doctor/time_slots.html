@@ -1,40 +1,37 @@
-{% extends "doctor_base.html" %}
-{% block title %}
-    <title>Profile</title>
-{% endblock title %}
+{% extends 'doctor_base.html' %}
+
+{% block title %}<title>Time Slots</title>{% endblock %}
 
 {% block sidebar %}
-        <aside class="aside">
-            <a href="{% url 'doctor:doctor_dashboard' %}" class="aside-item active">
-                <i class="bi bi-person"></i>
-                <span>Profile</span>
-            </a>
-            <a href="{% url 'doctor:doctor_requests' 'pending' %}" class="aside-item">
-                <i class="ri-file-list-line"></i>
-                <span>Requests</span>
-            </a>
-            <a href="../Dr_Board/Notifications.html" class="aside-item">
-                <i class="fa-regular fa-bell"></i>
-                <span>Notifications</span>
-            </a>
-            <a href="../Dr_Board/Wallet.html" class="aside-item">
-                <i class="ri-wallet-3-line"></i>
-                <span>Wallet</span>
-            </a>
-            <a href="../Dr_Board/Complaints.html" class="aside-item">
-                <i class="ri-error-warning-line"></i>
-                <span>Complaints</span>
-            </a>
-        </aside>
+    <aside class="aside">
+        <a href="{% url 'doctor:doctor_dashboard' %}" class="aside-item active">
+            <i class="bi bi-person"></i>
+            <span>Profile</span>
+        </a>
+        <a href="{% url 'doctor:doctor_requests' 'pending' %}" class="aside-item">
+            <i class="ri-file-list-line"></i>
+            <span>Requests</span>
+        </a>
+        <a href="../Dr_Board/Notifications.html" class="aside-item">
+            <i class="fa-regular fa-bell"></i>
+            <span>Notifications</span>
+        </a>
+        <a href="../Dr_Board/Wallet.html" class="aside-item">
+            <i class="ri-wallet-3-line"></i>
+            <span>Wallet</span>
+        </a>
+        <a href="../Dr_Board/Complaints.html" class="aside-item">
+            <i class="ri-error-warning-line"></i>
+            <span>Complaints</span>
+        </a>
     </aside>
+</aside>
 {% endblock sidebar %}
-
-        
 {% block topbar_title %}
     <h2 class="topbar-title">Time Slots</h2>
 {% endblock topbar_title %}
-
 {% block main %}
+        <!-- Main Content -->
         <main class="main-content">
 
             <div class="edit-ts-container">
@@ -45,7 +42,8 @@
                         <p class="edit-ts-subtitle">Customize your working hours and appointment slots.</p>
                     </div>
                     <div class="edit-ts-action-col" style="display: flex; gap: 15px;">
-                        <button class="edit-ts-btn-cancel" onclick="window.location.href='{% url 'doctor:doctor_dashboard' %}'">Cancel</button>
+                        <button class="edit-ts-btn-cancel" onclick="window.location.href='Profile.html'">Cancel</button>
+                        <button class="edit-ts-btn-save" onclick="saveChanges()">Save Changes</button>
                     </div>
                 </div>
 
@@ -53,21 +51,16 @@
                 <div class="edit-ts-weekly-section">
                     <h4 class="edit-ts-section-title">WEEKLY SCHEDULE</h4>
                     <div class="edit-ts-days-row">
+                        {% if days %}
                             {% for d in days %}
-                                <div class="edit-ts-day-card {% if d.day == selected_day %}active{% endif %}"
+                                <div class="day-btn {% if d.day == selected_day %}active{% endif %}"
                                     onclick="window.location.href='?day={{ d.day }}'">
 
-                                    <span class="edit-ts-day">
-                                        {% if forloop.first %}TODAY{% else %}{{ d.day|slice:":3"|upper }}{% endif %}
-                                    </span>
-
-                                    <span class="edit-ts-date">
-                                        {{ d.date|date:"d" }}
-                                    </span>
+                                    <span class="day-name">{{ d.day|slice:":3"|upper }}</span>
+                                    <span class="day-num">{{ d.date|date:"d" }}</span>
                                 </div>
                             {% endfor %}
-                        </div>
-
+                        {% endif %}
                     </div>
                 </div>
 
@@ -85,22 +78,16 @@
                                 </div>
                             </div>
                             <div class="edit-ts-time-pills">
-                                    {% for slot in morning_slots %}
-                                        <div class="edit-ts-pill">
-                                            {{ slot.time|time:"h:i A" }}
-                                            
-                                            <span class="edit-ts-pill-remove"
-                                                onclick="deleteSlot({{ slot.id }})">×</span>
-                                        </div>
-                                    {% empty %}
-                                        <p>No slots</p>
-                                    {% endfor %}
-
-                                    <!-- Add button -->
-                                    <div class="edit-ts-pill dashed" onclick="openAddTimeModal()">
-                                        <i class="bi bi-plus-circle"></i>
+                                {% for slot in morning_slots %}
+                                    <div class="edit-ts-pill db-slot" data-id="{{ slot.id }}" data-time="{{ slot.time|time:'H:i' }}">
+                                        {{ slot.time|time:"h:i A" }}
+                                        <span class="edit-ts-pill-remove" onclick="removePill(event, this)">×</span>
                                     </div>
-                                </div>
+                                {% empty %}
+                                    <p class="no-slots-msg">No slots available</p>
+                                {% endfor %}
+                                
+                                <div class="edit-ts-pill dashed" onclick="openAddTimeModal('morning')"><i class="bi bi-plus-circle"></i></div>
                             </div>
                         </div>
 
@@ -114,112 +101,161 @@
                                 </div>
                             </div>
                             <div class="edit-ts-time-pills">
-                                <div class="edit-ts-time-pills">
-                                    {% for slot in evening_slots %}
-                                        <div class="edit-ts-pill">
-                                            {{ slot.time|time:"h:i A" }}
-
-                                            <span class="edit-ts-pill-remove"
-                                                onclick="deleteSlot({{ slot.id }})">×</span>
-                                        </div>
-                                    {% empty %}
-                                        <p>No slots</p>
-                                    {% endfor %}
-
-                                    <div class="edit-ts-pill dashed" onclick="openAddTimeModal()">
-                                        <i class="bi bi-plus-circle"></i>
+                                {% for slot in evening_slots %}
+                                    <div class="edit-ts-pill db-slot" data-id="{{ slot.id }}" data-time="{{ slot.time|time:'H:i' }}">
+                                        {{ slot.time|time:"h:i A" }}
+                                        <span class="edit-ts-pill-remove" onclick="removePill(event, this)">×</span>
                                     </div>
-                                </div>
+                                {% empty %}
+                                    <p class="no-slots-msg">No slots available</p>
+                                {% endfor %}
+                                <div class="edit-ts-pill dashed" onclick="openAddTimeModal('evening')"><i class="bi bi-plus-circle"></i></div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div id="addTimeModal" class="modal">
-                    <div class="modal-content">
-                        <h3>Add Time Slot</h3>
-
-                        <form method="POST">
-                            {% csrf_token %}
-
-                            <input type="hidden" name="day" value="{{ selected_day }}">
-
-                            <input type="time" name="time" required>
-
-                            <button type="submit">Add</button>
-                            <button type="button" id="cancelSlot" onclick="closeAddTimeModal()">Cancel</button>
-                        </form>
-                    </div>
+            </div>
+            
+            <!-- Add Time Slot Modal -->
+            <div id="addTimeModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" id="closeAddTime">&times;</span>
+                    <h3 id="modalTitle">Add New Time Slot</h3>
+                    <form id="addTimeForm">
+                        <div class="form-group">
+                            <label>Select Time</label>
+                            <div style="display:flex; gap:8px; align-items:center;">
+                                <select id="slotHour" style="padding:8px 12px; border:1px solid #cbd5e1; border-radius:8px; font-size:15px;"></select>
+                                <span style="font-size:18px; font-weight:600;">:</span>
+                                <select id="slotMinute" style="padding:8px 12px; border:1px solid #cbd5e1; border-radius:8px; font-size:15px;">
+                                    <option value="00">00</option>
+                                    <option value="15">15</option>
+                                    <option value="30">30</option>
+                                    <option value="45">45</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary">Add Slot</button>
+                        <button type="button" class="btn-secondary" id="cancelSlot" style="background: #f1f5f9; color: #475569; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-left: 10px;">Cancel</button>
+                    </form>
                 </div>
             </div>
+            
         </main>
-{% endblock main %}
+        {% endblock main %}
 
 {% block script %}
+    <script>
+    const SAVE_URL = "{% url 'doctor:save_time_slots' %}";
+    const CSRF_TOKEN = "{{ csrf_token }}";
+    const SELECTED_DAY = "{{ selected_day }}";
 
-<script>
-    // ✅ Select day (هيعمل reload بالـ GET)
-    function selectDay(day) {
-        window.location.href = '?day=' + day;
+    let targetSession = 'morning';
+
+    // ── Remove pill from DOM (works for both DB and new slots) ──
+    function removePill(event, btn) {
+        event.stopPropagation();
+        btn.closest('.edit-ts-pill').remove();
     }
 
-    // ✅ Toggle slot (اختياري - UI بس)
-    function togglePill(pillElement) {
-        if (pillElement.classList.contains('dashed')) return;
-        pillElement.classList.toggle('active');
-    }
-
-    // ✅ Delete slot
-    function deleteSlot(slotId) {
-        const currentUrl = new URL(window.location.href);
-        const day = currentUrl.searchParams.get("day");
-
-        if (confirm("Delete this slot?")) {
-            window.location.href = `?delete=${slotId}&day=${day}`;
+    // ── Modal helpers ──
+    function openAddTimeModal(session) {
+        targetSession = session || 'morning';
+        const hourSelect = document.getElementById('slotHour');
+        hourSelect.innerHTML = '';
+        // morning: 00–11, evening: 12–23
+        const start = targetSession === 'morning' ? 0 : 12;
+        const end   = targetSession === 'morning' ? 12 : 24;
+        for (let h = start; h < end; h++) {
+            const opt = document.createElement('option');
+            opt.value = h.toString().padStart(2, '0');
+            opt.textContent = h.toString().padStart(2, '0');
+            hourSelect.appendChild(opt);
         }
-    }
-
-    // ✅ Open modal
-    function openAddTimeModal() {
         document.getElementById('addTimeModal').classList.add('active');
     }
 
-    // ✅ Close modal
     function closeAddTimeModal() {
         document.getElementById('addTimeModal').classList.remove('active');
+        document.getElementById('slotMinute').value = '00';
     }
 
-    // ✅ Close modal buttons
-    document.addEventListener("DOMContentLoaded", function () {
-        const closeBtn = document.getElementById('closeAddTime');
-        const cancelBtn = document.getElementById('cancelSlot');
-
-        if (closeBtn) closeBtn.addEventListener('click', closeAddTimeModal);
-        if (cancelBtn) cancelBtn.addEventListener('click', closeAddTimeModal);
+    document.getElementById('closeAddTime').addEventListener('click', closeAddTimeModal);
+    document.getElementById('cancelSlot').addEventListener('click', closeAddTimeModal);
+    window.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('addTimeModal')) closeAddTimeModal();
     });
 
-    // ✅ Close modal when clicking outside
-    window.addEventListener('click', (event) => {
-        const modal = document.getElementById('addTimeModal');
-        if (event.target === modal) {
-            closeAddTimeModal();
-        }
+    // ── Add new slot pill ──
+    document.getElementById('addTimeForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const h = document.getElementById('slotHour').value;
+        const m = document.getElementById('slotMinute').value;
+        const timeVal = `${h}:${m}`;  // HH:MM 24h
+
+        const pill = document.createElement('div');
+        pill.className = 'edit-ts-pill';
+        pill.dataset.time = timeVal;
+        pill.textContent = formatTime(timeVal);
+
+        const removeBtn = document.createElement('span');
+        removeBtn.className = 'edit-ts-pill-remove';
+        removeBtn.innerHTML = '&times;';
+        removeBtn.addEventListener('click', (ev) => removePill(ev, removeBtn));
+        pill.appendChild(removeBtn);
+
+        const sessionIndex = targetSession === 'evening' ? 1 : 0;
+        const pillsContainer = document.querySelectorAll('.edit-ts-time-pills')[sessionIndex];
+        const addBtn = pillsContainer.querySelector('.edit-ts-pill.dashed');
+        pillsContainer.insertBefore(pill, addBtn);
+
+        // hide the "No slots available" message if present
+        const noMsg = pillsContainer.querySelector('.no-slots-msg');
+        if (noMsg) noMsg.remove();
+
+        closeAddTimeModal();
     });
 
-    // ✅ Format time (لو هتستخدم JS add مستقبلاً)
+    // ── Save Changes: send all remaining slot times, backend replaces DB ──
+    function saveChanges() {
+        // Collect all visible (non-dashed) pills and their raw HH:MM times
+        const allTimes = [...document.querySelectorAll('.edit-ts-pill:not(.dashed)')]
+            .map(p => p.dataset.time)
+            .filter(Boolean);
+
+        fetch(SAVE_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': CSRF_TOKEN,
+            },
+            body: JSON.stringify({
+                day: SELECTED_DAY,
+                times: allTimes,
+            }),
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '?day=' + SELECTED_DAY;
+            } else {
+                alert('Error saving changes.');
+            }
+        })
+        .catch(() => alert('Network error. Please try again.'));
+    }
+
     function formatTime(timeValue) {
         const [hours, minutes] = timeValue.split(':');
         let period = 'AM';
         let hour = parseInt(hours);
-
-        if (hour >= 12) {
-            period = 'PM';
-            if (hour > 12) hour -= 12;
-        }
-
+        if (hour >= 12) { period = 'PM'; if (hour > 12) hour -= 12; }
         if (hour === 0) hour = 12;
-
         return `${hour.toString().padStart(2, '0')}:${minutes} ${period}`;
     }
-</script>
-
+    </script>
 {% endblock script %}
+    </div>
+</div>
+
+

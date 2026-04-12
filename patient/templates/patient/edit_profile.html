@@ -1,0 +1,138 @@
+{% extends 'patient_base.html' %}
+
+{% block sidebar %}
+<aside class="aside">
+    <a href="{% url 'patient:patient_dashboard' %}" class="aside-item active">
+        <i class="bi bi-person"></i>
+        <span>Profile</span>
+    </a>
+    <a href="{% url 'patient:patient_requests' 'doctor' 'booking' %}" class="aside-item">
+        <i class="ri-file-list-line"></i>
+        <span>Requests</span>
+    </a>
+    <a href="#" class="aside-item">
+        <i class="fa-regular fa-bell"></i>
+        <span>Notifications</span>
+    </a>
+    <a href="#" class="aside-item">
+        <i class="ri-wallet-3-line"></i>
+        <span>Wallet</span>
+    </a>
+    <a href="#" class="aside-item">
+        <i class="ri-error-warning-line"></i>
+        <span>Complaints</span>
+    </a>
+</aside>
+{% endblock %}
+
+{% block content %}
+<main class="main-content animate slide-up">
+    <div class="edit-profile-wrapper">
+        <div class="edit-profile-card">
+            <!-- Header -->
+            <div class="edit-header">
+                <div>
+                    <h2>Edit Profile</h2>
+                </div>
+                <span class="profile-badge">Patient Profile</span>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- Profile Photo Section -->
+            <div class="edit-photo-section">
+                <div class="edit-avatar">
+                    <div class="avatar-container">
+                        <img id="profile-img" src="{{ patient.profile_pic.url }}" alt="{{ patient.user.username }}">
+                        <div class="online-badge"></div>
+                    </div>
+                </div>
+                <div class="edit-photo-info">
+                    <h4>{{ patient.user.username }}</h4>
+                    <p>New profile pictures require admin approval and verification. Recommended size: 400x400px.</p>
+                    <div class="photo-buttons">
+                        <input type="file" id="profile-upload" style="display: none;" name="profile_pic" accept="image/*">
+                        <button type="button" class="btn-primary-edit" onclick="document.getElementById('profile-upload').click()">
+                            Change Photo
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <hr style="margin:15px 0; border:1px solid #F0F4F8;">
+
+            <!-- Errors -->
+            {% if errors %}
+                {% for key, msg in errors.items %}
+                    <div style="color:red; margin-bottom:8px; padding: 8px 12px; background:#fff0f0; border-radius:6px;">{{ msg }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Form -->
+            <div class="edit-form-grid">
+                <div class="form-group-edit">
+                    <label>Username</label>
+                    <input name="username" type="text" value="{{ patient.user.username }}">
+                </div>
+
+                <div class="form-group-edit">
+                    <label>Contact Phone Number</label>
+                    <div class="phone-wrapper-custom">
+                        <span class="country-code">+20</span>
+                        <input name="phone_number" type="tel" placeholder="1001234567" value="{{ patient.phone_number }}">
+                    </div>
+                </div>
+
+
+                <div class="form-group-edit full-width">
+                    <label>Governorate / Location</label>
+                    <select name="governorate">
+                        <option value="" disabled {% if not patient.governorate %}selected{% endif %}>Select governorate</option>
+                        <option value="alexandria" {% if patient.governorate == 'alexandria' %}selected{% endif %}>Alexandria</option>
+                        <option value="aswan" {% if patient.governorate == 'aswan' %}selected{% endif %}>Aswan</option>
+                        <option value="asyut" {% if patient.governorate == 'asyut' %}selected{% endif %}>Assiut</option>
+                        <option value="beheira" {% if patient.governorate == 'beheira' %}selected{% endif %}>Beheira</option>
+                        <option value="beni_suef" {% if patient.governorate == 'beni_suef' %}selected{% endif %}>Beni Suef</option>
+                        <option value="cairo" {% if patient.governorate == 'cairo' %}selected{% endif %}>Cairo</option>
+                        <option value="dakahlia" {% if patient.governorate == 'dakahlia' %}selected{% endif %}>Dakahlia</option>
+                        <option value="damietta" {% if patient.governorate == 'damietta' %}selected{% endif %}>Damietta</option>
+                        <option value="fayoum" {% if patient.governorate == 'fayoum' %}selected{% endif %}>Faiyum</option>
+                        <option value="gharbia" {% if patient.governorate == 'gharbia' %}selected{% endif %}>Gharbia</option>
+                        <option value="giza" {% if patient.governorate == 'giza' %}selected{% endif %}>Giza</option>
+                        <option value="ismailia" {% if patient.governorate == 'ismailia' %}selected{% endif %}>Ismailia</option>
+                        <option value="kafr_el_sheikh" {% if patient.governorate == 'kafr_el_sheikh' %}selected{% endif %}>Kafr El Sheikh</option>
+                        <option value="luxor" {% if patient.governorate == 'luxor' %}selected{% endif %}>Luxor</option>
+                        <option value="matrouh" {% if patient.governorate == 'matrouh' %}selected{% endif %}>Matrouh</option>
+                        <option value="minya" {% if patient.governorate == 'minya' %}selected{% endif %}>Minya</option>
+                        <option value="monufia" {% if patient.governorate == 'monufia' %}selected{% endif %}>Monufia</option>
+                        <option value="new_valley" {% if patient.governorate == 'new_valley' %}selected{% endif %}>New Valley</option>
+                        <option value="north_sinai" {% if patient.governorate == 'north_sinai' %}selected{% endif %}>North Sinai</option>
+                        <option value="port_said" {% if patient.governorate == 'port_said' %}selected{% endif %}>Port Said</option>
+                        <option value="qalyubia" {% if patient.governorate == 'qalyubia' %}selected{% endif %}>Qalyubia</option>
+                        <option value="qena" {% if patient.governorate == 'qena' %}selected{% endif %}>Qena</option>
+                        <option value="red_sea" {% if patient.governorate == 'red_sea' %}selected{% endif %}>Red Sea</option>
+                        <option value="sharqia" {% if patient.governorate == 'sharqia' %}selected{% endif %}>Sharqia</option>
+                        <option value="sohag" {% if patient.governorate == 'sohag' %}selected{% endif %}>Sohag</option>
+                        <option value="south_sinai" {% if patient.governorate == 'south_sinai' %}selected{% endif %}>South Sinai</option>
+                        <option value="suez" {% if patient.governorate == 'suez' %}selected{% endif %}>Suez</option>
+                    </select>
+                </div>
+
+                <div class="form-group-edit full-width">
+                    <label>Full Address</label>
+                    <div class="address-wrapper-custom full-width">
+                        <i class="bi bi-geo-alt"></i>
+                        <input name="address" type="text" placeholder="Street, Building, Apartment" value="{{ patient.address }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="edit-footer">
+                <button type="button" class="btn-light-edit" onclick="window.location.href='{% url 'patient:patient_dashboard' %}'">Cancel Changes</button>
+                <button class="btn-primary-edit" type="submit">Save Changes</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

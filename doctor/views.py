@@ -1,4 +1,7 @@
+import json
 from django.shortcuts import redirect, render
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 from accounts import validations
 from accounts.models import Doctor, get_provider_days_with_dates, TimeSlots
 from django.db.models import Avg
@@ -270,31 +273,46 @@ def edit_time_slots(request):
         else:
             evening_slots.append(slot)
 
-    if request.method == 'POST':
-        input_day = request.POST.get('day')
-        input_time = request.POST.get('time')
-
-        exists = TimeSlots.objects.filter(
-            doctor=doctor,
-            day=input_day,
-            time=input_time
-        ).exists()
-
-        if not exists:
-            TimeSlots.objects.create(
-                doctor=doctor,
-                day=input_day,
-                time=input_time
-            )
-
-        return redirect(f'?day={input_day}')
-
     return render(request, 'doctor/time_slots.html', {
         'days': days,
         'selected_day': selected_day,
         'morning_slots': morning_slots,
         'evening_slots': evening_slots,
     })
+
+
+@login_required
+@require_POST
+def save_time_slots(request):
+    if request.user.role != 'doctor':
+        return JsonResponse({'error': 'Forbidden'}, status=403)
+
+    doctor = Doctor.objects.get(user=request.user)
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+    day = data.get('day')
+    times = data.get('times', [])  # all remaining HH:MM times from JS
+
+    if not day:
+        return JsonResponse({'error': 'Missing day'}, status=400)
+
+    # Delete all existing slots for this doctor+day
+    TimeSlots.objects.filter(doctor=doctor, day=day).delete()
+
+    # Re-create from whatever is left in the UI
+    for t_str in times:
+        try:
+            h, m = t_str.split(':')
+            t_val = time(int(h), int(m))
+        except (ValueError, AttributeError):
+            continue
+        TimeSlots.objects.get_or_create(doctor=doctor, day=day, time=t_val)
+
+    return JsonResponse({'success': True})
 
 @login_required
 def delete_time_slot(request, slot_id):

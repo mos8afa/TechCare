@@ -314,9 +314,7 @@ class TimeSlots(models.Model):
     nurse = models.ForeignKey(Nurse, on_delete=models.CASCADE, null=True, blank=True, related_name='slots')
 
 def get_provider_days_with_dates(provider_days):
-    today = datetime.today()
-
-    start_of_week = today - timedelta(days=today.weekday())
+    today = datetime.today().date()
 
     days_map = {
         'monday': 0,
@@ -332,14 +330,13 @@ def get_provider_days_with_dates(provider_days):
 
     for day in provider_days:
         day_index = days_map[day]
-
-        date = start_of_week + timedelta(days=day_index)
-
+        days_ahead = (day_index - today.weekday()) % 7  # 0 = today, positive = future
+        next_date = today + timedelta(days=days_ahead)
         result.append({
             "day": day,
-            "date": date.date(),
+            "date": next_date,
         })
 
-        result.sort(key=lambda x: x['date'])
+    result.sort(key=lambda x: x['date'])
 
     return result
