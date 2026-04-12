@@ -31,7 +31,7 @@
 
         <!-- Category Tabs -->
         <div class="category-tabs">
-            <button class="cat-tab active">
+            <button class="cat-tab active" onclick="window.location.href='{% url 'patient:patient_requests' 'doctor' 'booking' %}'">
                 <i class="ri-stethoscope-line"></i> Doctor
             </button>
             <button class="cat-tab">
@@ -50,7 +50,26 @@
             <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'doctor' 'done' %}'">Done</button>
         </div>
 
+        <!-- Search & Filters -->
+        <div class="search-bar">
+            <div class="search-input-wrap">
+                <i class="bi bi-card-text" style="font-size:18px; color:#aab0bc;"></i>
+                <input type="text" placeholder="Search by doctor..." />
+            </div>
+            <select class="filter-select">
+                <option value="">Specialization</option>
+            </select>
+            <select class="filter-select">
+                <option value="">Governorate</option>
+            </select>
+            <select class="filter-select">
+                <option value="">Price Range</option>
+            </select>
+        </div>
+
+        <!-- ===== PENDING CARDS ===== -->
         <div class="pending-grid">
+
             {% for req in pending %}
             <div class="pending-card animate slide-up">
                 <div class="pending-card-top">
@@ -61,7 +80,7 @@
                             <span class="pending-badge">PENDING</span>
                         </div>
                         <p class="pending-date">
-                            <i class="bi bi-calendar3"></i> {{ req.date }} &nbsp;|&nbsp; {{ req.time }}
+                            <i class="bi bi-calendar3"></i> {{ req.date|date:"M d, Y" }} &nbsp;|&nbsp; {{ req.time|time:"h:i A" }}
                         </p>
                         <p class="pending-note">"{{ req.disease_description|truncatewords:20 }}"</p>
                     </div>
@@ -70,24 +89,25 @@
                 <div class="pending-details">
                     <div class="pending-detail-col">
                         <span class="detail-label">LOCATION DETAILS</span>
-                        <p class="detail-place">
-                            <i class="ri-map-pin-2-line"></i>
-                            <strong>{{ req.patient.get_governorate_display }}</strong>
-                        </p>
-                        <p class="detail-address">{{ req.patient.address }}</p>
+                        <p class="detail-place"><i class="ri-map-pin-2-line"></i> <strong>{{ req.governorate }}</strong></p>
+                        <p class="detail-address">{{ req.address }}</p>
                     </div>
                     <div class="pending-detail-col">
-                        <span class="detail-label">DOCTOR SPECIALTY</span>
-                        <strong class="detail-phone">
-                            <i class="ri-stethoscope-line"></i> {{ req.doctor.get_specification_display }}
-                        </strong>
+                        <span class="detail-label">CONTACT INFORMATION</span>
+                        <strong class="detail-phone"><i class="ri-phone-line"></i> {{ req.doctor.phone_number }}</strong>
                     </div>
                 </div>
 
                 <div class="pending-card-footer">
                     <div class="pending-price-wrap">
-                        <span class="price-label">CONSULTATION FEE</span>
+                        <span class="price-label">TOTAL PRICE</span>
                         <span class="price-val">{{ req.total_price }} EGP</span>
+                    </div>
+                    <div class="pending-actions">
+                        <form method="POST" action="{% url 'patient:cancel_request' req.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-cancel">Cancel</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -100,10 +120,12 @@
                     <div class="pending-info">
                         <div class="pending-name-row">
                             <h3 class="pending-name">Dr. {{ req.doctor.user.first_name }} {{ req.doctor.user.last_name }}</h3>
-                            <span class="pending-badge" style="background:#fff3cd; color:#856404;">EDITED</span>
+                            <span class="pending-badge" style="background:#fff3cd; color:#b45309; border:1px solid #fcd34d;">
+                                <i class="bi bi-clock-history"></i> RESCHEDULED
+                            </span>
                         </div>
                         <p class="pending-date">
-                            <i class="bi bi-calendar3"></i> {{ req.date }} &nbsp;|&nbsp; {{ req.time }}
+                            <i class="bi bi-calendar3"></i> {{ req.date|date:"M d, Y" }} &nbsp;|&nbsp; {{ req.time|time:"h:i A" }}
                         </p>
                         <p class="pending-note">"{{ req.disease_description|truncatewords:20 }}"</p>
                     </div>
@@ -112,17 +134,12 @@
                 <div class="pending-details">
                     <div class="pending-detail-col">
                         <span class="detail-label">LOCATION DETAILS</span>
-                        <p class="detail-place">
-                            <i class="ri-map-pin-2-line"></i>
-                            <strong>{{ req.patient.get_governorate_display }}</strong>
-                        </p>
-                        <p class="detail-address">{{ req.patient.address }}</p>
+                        <p class="detail-place"><i class="ri-map-pin-2-line"></i> <strong>{{ req.governorate }}</strong></p>
+                        <p class="detail-address">{{ req.address }}</p>
                     </div>
                     <div class="pending-detail-col">
-                        <span class="detail-label">DOCTOR SPECIALTY</span>
-                        <strong class="detail-phone">
-                            <i class="ri-stethoscope-line"></i> {{ req.doctor.get_specification_display }}
-                        </strong>
+                        <span class="detail-label">CONTACT INFORMATION</span>
+                        <strong class="detail-phone"><i class="ri-phone-line"></i> {{ req.doctor.phone_number }}</strong>
                     </div>
                 </div>
 
@@ -132,8 +149,14 @@
                         <span class="price-val">{{ req.total_price }} EGP</span>
                     </div>
                     <div class="pending-actions">
-                        <button class="btn-accept">Accept</button>
-                        <button class="btn-cancel">Cancel</button>
+                        <form method="POST" action="{% url 'patient:accept_reschedule' req.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-accept">Accept</button>
+                        </form>
+                        <form method="POST" action="{% url 'patient:cancel_request' req.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-cancel">Cancel</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -145,7 +168,10 @@
                 <p>Once you book a consultation, it will appear here while waiting for doctor confirmation.</p>
             </div>
             {% endif %}
+
         </div>
+        <!-- ===== END PENDING CARDS ===== -->
+
     </div>
 </main>
 {% endblock %}

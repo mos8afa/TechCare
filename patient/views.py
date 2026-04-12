@@ -176,20 +176,18 @@ def book_appointment(request, doctor_id):
     patient = Patient.objects.get(user=request.user)
     doctor = Doctor.objects.get(id=doctor_id)
 
-    # Build available days (only days that have slots)
     from accounts.models import TimeSlots, get_provider_days_with_dates
-    from datetime import date, time as time_type
+    from datetime import time as time_type
 
     raw_days = TimeSlots.objects.filter(doctor=doctor).values_list('day', flat=True).distinct()
     days_with_dates = get_provider_days_with_dates(raw_days)
 
-    # Enrich each day with display fields needed by the template
     for d in days_with_dates:
-        d['day_name']  = d['day']
+        d['day_name']   = d['day']
         d['short_name'] = d['day'][:3].upper()
-        d['date_num']  = d['date'].strftime('%d')
+        d['date_num']   = d['date'].strftime('%d')
         d['month_name'] = d['date'].strftime('%b').upper()
-        d['full_date'] = d['date'].isoformat()
+        d['full_date']  = d['date'].isoformat()
 
     selected_day  = request.GET.get('day') or (days_with_dates[0]['day'] if days_with_dates else None)
     selected_date = next((d['full_date'] for d in days_with_dates if d['day'] == selected_day), '')
@@ -203,6 +201,9 @@ def book_appointment(request, doctor_id):
                 morning_slots.append(slot)
             else:
                 evening_slots.append(slot)
+
+    avg = doctor.rates.aggregate(Avg('rate'))['rate__avg'] or 0
+    doctor.avg_rating = round(avg)
 
     errors = {}
 
@@ -228,7 +229,7 @@ def book_appointment(request, doctor_id):
                 date=dt.fromisoformat(selected_date_post),
                 time=selected_time_post,
                 total_price=doctor.price,
-                net_income=doctor.price,
+                net_income=doctor.price * 75 / 100,
                 disease_description=disease_description,
                 governorate=governorate,
                 address=address,
@@ -244,5 +245,58 @@ def book_appointment(request, doctor_id):
         'selected_date': selected_date,
         'morning_slots': morning_slots,
         'evening_slots': evening_slots,
+        'governorates': GOVERNORATES,
         'errors': errors,
+        'name': patient.user.first_name + ' ' + patient.user.last_name,
+        'profile_pic': patient.profile_pic,
     })
+
+
+@login_required
+def cancel_request(request, request_id):
+    if request.user.role != 'patient':
+        return redirect('login')
+
+    patient = Patient.objects.get(user=request.user)
+    try:
+        req = DoctorRequest.objects.get(id=request_id, patient=patient)
+        req.status = 'rejected'
+        req.save()
+    except DoctorRequest.DoesNotExist:
+        pass
+
+    return redirect('patient:patient_requests', category='doctor', type='pending')
+
+
+@login_required
+def accept_reschedule(request, request_id):
+    if request.user.role != 'patient':
+        return redirect('login')
+
+    patient = Patient.objects.get(user=request.user)
+    try:
+        req = DoctorRequest.objects.get(id=request_id, patient=patient, status='edited')
+        req.status = 'accepted'
+        req.save()
+    except DoctorRequest.DoesNotExist:
+        pass
+
+    return redirect('patient:patient_requests', category='doctor', type='pending')
+
+
+@login_required
+def mark_done(request, request_id):
+    if request.user.role != 'patient':
+        return redirect('login')
+
+    patient = Patient.objects.get(user=request.user)
+    try:
+        req = DoctorRequest.objects.get(id=request_id, patient=patient, status='accepted')
+        req.patient_done = True
+        if req.doctor_done:
+            req.status = 'completed'
+        req.save()
+    except DoctorRequest.DoesNotExist:
+        pass
+
+    return redirect('patient:patient_requests', category='doctor', type='accepted')

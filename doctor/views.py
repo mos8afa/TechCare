@@ -201,6 +201,15 @@ def doctor_requests(request, type):
     }
 
     if type in ('pending', 'edited') or type is None:
+        # attach the doctor's slots for the day matching each request
+        from datetime import datetime
+        pending_list = list(pending) + list(edited)
+        for req in pending_list:
+            req_day = req.date.strftime('%A').lower()  # e.g. 'monday'
+            req.day_slots = TimeSlots.objects.filter(
+                doctor=doctor, day=req_day
+            ).order_by('time')
+
         return render(request, 'doctor/requests_pending.html', {
             **context_base,
             "pending": pending,
@@ -328,3 +337,67 @@ def delete_time_slot(request, slot_id):
         pass
 
     return redirect(request.path)
+
+
+@login_required
+@require_POST
+def request_action(request, request_id):
+    if request.user.role != 'doctor':
+        return redirect('login')
+
+    doctor = Doctor.objects.get(user=request.user)
+    from doctor.models import DoctorRequest
+
+    try:
+        req = DoctorRequest.objects.get(id=request_id, doctor=doctor)
+    except DoctorRequest.DoesNotExist:
+        return redirect('doctor:doctor_requests', type='pending')
+
+    action = request.POST.get('action')
+
+    if action == 'reject':
+        req.status = 'rejected'
+        req.save()
+
+    elif action == 'accept':
+        req.status = 'accepted'
+        req.save()
+
+    elif action == 'reschedule':
+        new_time = request.POST.get('new_time')
+        if new_time:
+            from datetime import time as time_type
+            try:
+                h, m = new_time.split(':')
+                new_t = time_type(int(h), int(m))
+                # if same time → just accept, if different → reschedule (edited)
+                if new_t == req.time:
+                    req.status = 'accepted'
+                else:
+                    req.time = new_t
+                    req.status = 'edited'
+                req.save()
+            except (ValueError, AttributeError):
+                pass
+
+    return redirect('doctor:doctor_requests', type='pending')
+
+
+@login_required
+@require_POST
+def mark_done_doctor(request, request_id):
+    if request.user.role != 'doctor':
+        return redirect('login')
+
+    doctor = Doctor.objects.get(user=request.user)
+    from doctor.models import DoctorRequest
+    try:
+        req = DoctorRequest.objects.get(id=request_id, doctor=doctor, status='accepted')
+        req.doctor_done = True
+        if req.patient_done:
+            req.status = 'completed'
+        req.save()
+    except DoctorRequest.DoesNotExist:
+        pass
+
+    return redirect('doctor:doctor_requests', type='accepted')

@@ -73,7 +73,7 @@
                 <div class="dc-details-grid">
                     <div class="dc-detail-row">
                         <p class="dc-label">Date & Time</p>
-                        <p class="dc-value">{{ req.date }} • {{ req.time }}</p>
+                        <p class="dc-value">{{ req.date|date:"M d, Y" }} • {{ req.time|time:"h:i A" }}</p>
                     </div>
                     <div class="dc-detail-row">
                         <p class="dc-label">Region</p>

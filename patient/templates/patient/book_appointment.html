@@ -27,18 +27,20 @@
 
 {% block content %}
 <main class="main-content">
+
+    <!-- ===== BOOKING SECTION ===== -->
     <div class="booking-wrapper">
 
         <!-- Category Tabs -->
         <div class="category-tabs">
-            <button class="cat-tab active">
+            <button class="cat-tab active" onclick="window.location.href='{% url 'patient:patient_requests' 'doctor' 'booking' %}'">
                 <i class="ri-stethoscope-line"></i> Doctor
             </button>
             <button class="cat-tab">
                 <i class="ri-nurse-line"></i> Nurse
             </button>
             <button class="cat-tab">
-                <i class="ri-medicine-bottle-line"></i> Pharmacy
+                <i class="ri-medicine-bottle-line"></i> Medicine
             </button>
         </div>
 
@@ -57,31 +59,36 @@
 
         {% if errors %}
             {% for key, msg in errors.items %}
-                <div style="color:red; margin-bottom:8px; padding: 10px 14px; background:#fff0f0; border-radius:8px;">{{ msg }}</div>
+                <div style="color:red; margin-bottom:8px; padding:10px 14px; background:#fff0f0; border-radius:8px;">{{ msg }}</div>
             {% endfor %}
         {% endif %}
 
-        <!-- فورم مخفي لجيب الـ slots بس -->
+        <!-- Hidden form for day selection (GET) -->
         <form method="GET" id="dayForm">
             <input type="hidden" name="day" id="dayInput">
         </form>
 
+        <!-- Main booking form (POST) -->
         <form method="POST" id="bookingForm">
         {% csrf_token %}
+
         <div class="booking-grid">
             <!-- Left Column -->
             <div class="booking-left">
 
-                <!-- Doctor Card -->
+                <!-- Doctor Details Card -->
                 <div class="doc-card">
                     <div class="doc-avatar-bg">
-                        <img src="{{ doctor.profile_pic.url }}" alt="Dr. {{ doctor.user.first_name }}" class="doc-avatar">
+                        <img src="{{ doctor.profile_pic.url }}" alt="Doctor" class="doc-avatar">
                     </div>
                     <div class="doc-info-wrapper">
                         <div class="doc-info-main">
                             <h2 class="doc-name">Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h2>
                             <p class="doc-title">{{ doctor.get_specification_display }}</p>
-                            <div class="doc-fee" style="text-align: left; margin-top: 15px;">
+                            <div class="doc-rating">
+                                <span class="rating-badge"><i class="fa-solid fa-star"></i> {{ doctor.avg_rating }}</span>
+                            </div>
+                            <div class="doc-fee">
                                 <p class="fee-label">CONSULTATION FEE</p>
                                 <h3 class="fee-amount">{{ doctor.price }} EGP</h3>
                             </div>
@@ -89,20 +96,45 @@
                     </div>
                 </div>
 
-                <!-- Symptoms / Description -->
-                <div class="booking-card symptoms-card">
-                    <div class="card-title">
-                        <i class="ri-file-text-line"></i>
-                        <span>Describe Your Symptoms</span>
+                <!-- Governorate -->
+                <div class="form-group-booking">
+                    <label class="booking-label">Governorate</label>
+                    <div class="custom-select-wrapper">
+                        <select class="booking-select" name="governorate">
+                            {% for val, label in governorates %}
+                                <option value="{{ val }}" {% if val == patient.governorate %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        <i class="ri-arrow-down-s-line"></i>
                     </div>
-                    <textarea name="disease_description" rows="4" placeholder="Please describe how you're feeling..."></textarea>
                 </div>
 
-                <!-- Date & Time -->
+                <!-- Symptoms & Address Grid -->
+                <div class="booking-inputs-grid">
+                    <!-- Symptoms Card -->
+                    <div class="booking-card symptoms-card">
+                        <div class="card-title">
+                            <i class="ri-file-text-line"></i> <span>Describe Your Symptoms</span>
+                        </div>
+                        <textarea name="disease_description" placeholder="Please provide more details about how you are feeling..."></textarea>
+                    </div>
+
+                    <!-- Address Card -->
+                    <div class="booking-card address-card">
+                        <div class="card-title">
+                            <span>Full Address</span>
+                        </div>
+                        <div class="address-input-wrapper">
+                            <i class="ri-map-pin-line"></i>
+                            <textarea name="address" placeholder="Maadi, Cairo, Egypt">{{ patient.address }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Date & Time Card -->
                 <div class="booking-card datetime-card">
                     <div class="card-title">
-                        <i class="ri-calendar-event-line"></i>
-                        <span>Select Date & Time</span>
+                        <i class="ri-calendar-event-line"></i> <span>Select Date & Time</span>
                     </div>
 
                     <div class="date-scroll-container">
@@ -126,7 +158,9 @@
                         <h5 class="slot-title">MORNING SLOTS</h5>
                         <div class="slots-grid">
                             {% for slot in morning_slots %}
-                            <button type="button" class="slot-btn" onclick="selectTime(this, '{{ slot.time }}')">{{ slot.time }}</button>
+                            <button type="button" class="slot-btn" onclick="selectTime(this, '{{ slot.time|time:'H:i' }}')">
+                                {{ slot.time|time:"h:i A" }}
+                            </button>
                             {% endfor %}
                         </div>
                     </div>
@@ -137,7 +171,9 @@
                         <h5 class="slot-title">EVENING SLOTS</h5>
                         <div class="slots-grid">
                             {% for slot in evening_slots %}
-                            <button type="button" class="slot-btn" onclick="selectTime(this, '{{ slot.time }}')">{{ slot.time }}</button>
+                            <button type="button" class="slot-btn" onclick="selectTime(this, '{{ slot.time|time:'H:i' }}')">
+                                {{ slot.time|time:"h:i A" }}
+                            </button>
                             {% endfor %}
                         </div>
                     </div>
@@ -146,20 +182,7 @@
                     {% if not morning_slots and not evening_slots %}
                     <p style="color:#888; padding:10px 0;">Select a day to see available time slots.</p>
                     {% endif %}
-                </div>
 
-                <!-- Address -->
-                <div class="booking-card">
-                    <div class="card-title">
-                        <i class="ri-map-pin-line"></i>
-                        <span>Your Address</span>
-                    </div>
-                    <select name="governorate" style="width:100%; padding:10px; border-radius:8px; border:1px solid #e0e6ed; margin-bottom:10px;">
-                        <option value="{{ patient.governorate }}" selected>{{ patient.get_governorate_display }}</option>
-                    </select>
-                    <input name="address" type="text" value="{{ patient.address }}"
-                           style="width:100%; padding:10px; border-radius:8px; border:1px solid #e0e6ed; box-sizing:border-box;"
-                           placeholder="Full address...">
                 </div>
             </div>
 
@@ -167,30 +190,34 @@
             <div class="booking-right">
                 <div class="booking-card payment-summary-card">
                     <h3 class="summary-title">Payment Summary</h3>
+
                     <div class="summary-row">
                         <span class="summary-label">Consultation Fee</span>
                         <span class="summary-value">{{ doctor.price }} EGP</span>
                     </div>
+
                     <hr class="summary-divider">
+
                     <div class="summary-total-row">
                         <div class="total-label">TOTAL AMOUNT</div>
                         <div class="total-value">{{ doctor.price }} EGP</div>
                     </div>
+
                     <button type="submit" class="confirm-btn">Confirm Booking</button>
+
                     <div class="secure-payment-text">
                         <i class="ri-lock-2-line"></i> Secure encrypted payment
                     </div>
                 </div>
 
                 <div class="booking-card help-card">
-                    <h4 class="help-title">
-                        <i class="ri-question-line" style="font-size: 18px;"></i> Need Help?
-                    </h4>
+                    <h4 class="help-title"><i class="ri-question-line" style="font-size: 18px; position:relative; top:1px;"></i> Need Help?</h4>
                     <p class="help-text">Cancel or reschedule up to 24 hours before your appointment for a full refund.</p>
                     <a href="#" class="help-link">Read Refund Policy</a>
                 </div>
             </div>
         </div>
+
         </form>
     </div>
 </main>
@@ -199,8 +226,8 @@
 function selectDay(el, dayName, fullDate) {
     document.querySelectorAll('.date-item').forEach(d => d.classList.remove('active'));
     el.classList.add('active');
-    document.getElementById('dayInput').value = dayName;
     document.getElementById('selectedDate').value = fullDate;
+    document.getElementById('dayInput').value = dayName;
     document.getElementById('dayForm').submit();
 }
 
@@ -211,14 +238,12 @@ function selectTime(el, timeVal) {
 }
 
 document.getElementById('bookingForm').addEventListener('submit', function(e) {
-    const time = document.getElementById('selectedTime').value;
-    const date = document.getElementById('selectedDate').value;
-    if (!date) {
+    if (!document.getElementById('selectedDate').value) {
         e.preventDefault();
         alert('Please select a day first.');
         return;
     }
-    if (!time) {
+    if (!document.getElementById('selectedTime').value) {
         e.preventDefault();
         alert('Please select a time slot.');
         return;

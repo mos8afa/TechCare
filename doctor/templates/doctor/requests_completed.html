@@ -60,9 +60,9 @@
                         <div class="patient-name-info">
                             <h3>{{ c.patient.user.first_name }} {{ c.patient.user.last_name }}</h3>
                             <p>
-                                <i class="bi bi-calendar3"></i> {{ c.date }}
+                                <i class="bi bi-calendar3"></i> {{ c.date|date:"M d, Y" }}
                                 &nbsp; • &nbsp;
-                                <i class="bi bi-clock"></i> {{ c.time }}
+                                <i class="bi bi-clock"></i> {{ c.time|time:"h:i A" }}
                             </p>
                         </div>
                     </div>

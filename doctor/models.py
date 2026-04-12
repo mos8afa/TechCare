@@ -21,3 +21,5 @@ class DoctorRequest(models.Model):
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
     address = models.TextField()
     status = models.CharField(max_length=10, choices=STATUS, default="pending")
+    patient_done = models.BooleanField(default=False)
+    doctor_done = models.BooleanField(default=False)

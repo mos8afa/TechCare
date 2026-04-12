@@ -69,7 +69,7 @@
                         <i class="ri-calendar-event-line ac-icon blue"></i>
                         <div>
                             <p class="ac-label">DATE AND TIME</p>
-                            <p class="ac-value">{{ req.date }} • {{ req.time }}</p>
+                            <p class="ac-value">{{ req.date|date:"M d, Y" }} • {{ req.time|time:"h:i A" }}</p>
                         </div>
                     </div>
                     <div class="ac-detail-item">
@@ -103,6 +103,17 @@
                 <div class="ac-financial">
                     <p class="ac-fin-label">FINANCIAL TOTAL</p>
                     <p class="ac-fin-amount">{{ req.total_price }} EGP</p>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; margin-top:16px;">
+                    {% if req.patient_done %}
+                        <button class="btn-done" disabled>Waiting for Doctor...</button>
+                    {% else %}
+                        <form method="POST" action="{% url 'patient:mark_done' req.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-done">Done</button>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
             {% empty %}

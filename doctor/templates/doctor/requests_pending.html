@@ -1,8 +1,6 @@
-{% extends 'doctor_base.html' %}  
+{% extends 'doctor_base.html' %}
 
-{% block title %}
-    <title>Requests</title>
-{% endblock title %}
+{% block title %}<title>Requests</title>{% endblock title %}
 
 {% block sidebar %}
     <aside class="aside">
@@ -35,125 +33,206 @@
 {% endblock topbar_title %}
 
 {% block main %}
-        <main class="main-content">
-                
-                <div class="requests-sticky">
-                    <div class="requests-header">
-                        <div class="header-text">
-                            <h2>Requests</h2>
-                            <p>Manage incoming consultation requests</p>
-                        </div>
-                        <button class="filter-button">
-                            <b><i class="bi bi-funnel"></i> Filter</b>
-                        </button>
-                    </div>
+<main class="main-content">
 
-                <div class="tabs-navigation">
-                        <button class="tab-link active" data-status="pending" onclick="window.location.href='{% url 'doctor:doctor_requests' 'pending' %}'">Pending</button>
-                        <button class="tab-link" data-status="accepted" onclick="window.location.href='{% url 'doctor:doctor_requests' 'accepted' %}'">Accepted</button>
-                        <button class="tab-link" data-status="done" onclick="window.location.href='{% url 'doctor:doctor_requests' 'completed' %}'">Done</button>
+    <div class="requests-sticky">
+        <div class="requests-header">
+            <div class="header-text">
+                <h2>Requests</h2>
+                <p>Manage incoming consultation requests</p>
+            </div>
+            <button class="filter-button"><b><i class="bi bi-funnel"></i> Filter</b></button>
+        </div>
+        <div class="tabs-navigation">
+            <button class="tab-link active" onclick="window.location.href='{% url 'doctor:doctor_requests' 'pending' %}'">Pending</button>
+            <button class="tab-link" onclick="window.location.href='{% url 'doctor:doctor_requests' 'accepted' %}'">Accepted</button>
+            <button class="tab-link" onclick="window.location.href='{% url 'doctor:doctor_requests' 'completed' %}'">Done</button>
+        </div>
+    </div>
+
+    <div class="requests-grid">
+
+        {% for p in pending %}
+        <div class="request-card-item animate slide-up">
+
+            <div class="card-top-section">
+                <div class="patient-meta">
+                    <div class="patient-avatar-mini"><i class="bi bi-person-circle"></i></div>
+                    <div class="patient-name-info">
+                        <h3>{{ p.patient.user.first_name }} {{ p.patient.user.last_name }}</h3>
                     </div>
                 </div>
+                <span class="status-pill pending">PENDING</span>
+            </div>
 
-                {% if pending %}
-                {% for p in pending %}
-                <div class="requests-grid">
-                    <div class="request-card-item animate slide-up">
-                        <div class="card-top-section">
-                            <div class="patient-meta">
-                                <div class="patient-avatar-mini">
-                                    <i class="bi bi-person-circle"></i>
-                                </div>
-                                <div class="patient-name-info">
-                                    <h3>{{p.patient.user.first_name}} {{p.patient.user.last_name}}</h3>
-                                </div>
-                            </div>
-                            <span class="status-pill pending">PENDING</span>
-                        </div>
-                    
-                        <div class="card-mid-section">
-                            <div class="info-group">
-                                <label>Date</label>
-                                <p>{{p.date}} &nbsp; </p>
-                            </div>
-                            <div class="info-group">
-                                <label>Time</label>
-                                <p>{{p.time}}</p>
-                            </div>
-                            <div class="info-group">
-                                <label>Governorate</label>
-                                <p>{{p.governorate}}</p>
-                            </div>
-                            <div class="info-group">
-                                <label>Total Price</label>
-                                <p>{{p.total_price}} EGP</p>
-                            </div>
-                        </div>
-                    
-                        <div class="disease-section">   
-                            <label> DESCRIPTION </label>
-                            <div class="description-box">
-                                {{p.disease_description}}
-                            </div>
-                        </div>
-                    
-                        <div class="edit-input">
-                            <label>Time Slots</label>
+            <div class="card-mid-section">
+                <div class="info-group"><label>Date</label><p>{{ p.date|date:"M d, Y" }}</p></div>
+                <div class="info-group"><label>Time</label><p>{{ p.time|time:"h:i A" }}</p></div>
+                <div class="info-group"><label>Governorate</label><p>{{ p.governorate }}</p></div>
+                <div class="info-group"><label>Total Price</label><p>{{ p.total_price }} EGP</p></div>
+            </div>
 
-                            <div class="time-slots-carousel">
-                                <button class="slot-nav prev-slot" onclick="slideSlots(-1, this)">&#8249;</button>
-                                <div class="slots-viewport">
-                                    <div class="slots-track" id="slotsTrack">
-                                        <button class="time-slot-btn" onclick="selectSlot(this)">09:00 AM</button>
-                                        <button class="time-slot-btn" onclick="selectSlot(this)">10:30 AM</button>
-                                        <button class="time-slot-btn active" onclick="selectSlot(this)">12:00 PM</button>
-                                        <button class="time-slot-btn" onclick="selectSlot(this)">01:30 PM</button>
-                                        <button class="time-slot-btn" onclick="selectSlot(this)">03:00 PM</button>
-                                        <button class="time-slot-btn" onclick="selectSlot(this)">04:30 PM</button>
-                                    </div>
-                                </div>
-                                <button class="slot-nav next-slot" onclick="slideSlots(1, this)">&#8250;</button>
-                            </div>
+            <div class="disease-section">
+                <label>DESCRIPTION</label>
+                <div class="description-box">{{ p.disease_description }}</div>
+            </div>
 
-                        </div>
-                    
-                        <div class="card-footer-actions">
-                            <button class="btn-action reject">Reject</button>
-                            <button class="btn-action accept">Accept</button>
+            <div class="edit-input">
+                <label>Time Slots</label>
+                <div class="time-slots-carousel">
+                    <button type="button" class="slot-nav prev-slot" onclick="slideSlots(-1, this)">&#8249;</button>
+                    <div class="slots-viewport">
+                        <div class="slots-track" data-offset="0">
+                            {% for slot in p.day_slots %}
+                            <button type="button" class="time-slot-btn {% if slot.time == p.time %}active{% endif %}"
+                                    onclick="selectSlot(this)">
+                                {{ slot.time|time:"h:i A" }}
+                            </button>
+                            {% empty %}
+                            <span style="color:#888; font-size:13px; padding:8px;">No slots for this day</span>
+                            {% endfor %}
                         </div>
                     </div>
-                    {% endfor %}
-                    {% endif %}
+                    <button type="button" class="slot-nav next-slot" onclick="slideSlots(1, this)">&#8250;</button>
                 </div>
-                
-        </main>
+            </div>
 
+            <div class="card-footer-actions">
+                <!-- Reject -->
+                <form method="POST" action="{% url 'doctor:request_action' p.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="reject">
+                    <button type="submit" class="btn-action reject">Reject</button>
+                </form>
+                <!-- Accept with selected slot time -->
+                <form method="POST" action="{% url 'doctor:request_action' p.id %}" style="display:inline;" class="accept-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="reschedule">
+                    <input type="hidden" name="new_time" class="selected-time-input" value="{{ p.time|time:'H:i' }}" data-original="{{ p.time|time:'H:i' }}">
+                    <button type="submit" class="btn-action accept">Accept</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
 
+        {% for p in edited %}
+        <div class="request-card-item animate slide-up">
+
+            <div class="card-top-section">
+                <div class="patient-meta">
+                    <div class="patient-avatar-mini"><i class="bi bi-person-circle"></i></div>
+                    <div class="patient-name-info">
+                        <h3>{{ p.patient.user.first_name }} {{ p.patient.user.last_name }}</h3>
+                    </div>
+                </div>
+                <span class="status-pill" style="background:#fff3cd; color:#856404;">EDITED</span>
+            </div>
+
+            <div class="card-mid-section">
+                <div class="info-group"><label>Date</label><p>{{ p.date|date:"M d, Y" }}</p></div>
+                <div class="info-group"><label>Time</label><p>{{ p.time|time:"h:i A" }}</p></div>
+                <div class="info-group"><label>Governorate</label><p>{{ p.governorate }}</p></div>
+                <div class="info-group"><label>Total Price</label><p>{{ p.total_price }} EGP</p></div>
+            </div>
+
+            <div class="disease-section">
+                <label>DESCRIPTION</label>
+                <div class="description-box">{{ p.disease_description }}</div>
+            </div>
+
+            <div class="edit-input">
+                <label>Time Slots</label>
+                <div class="time-slots-carousel">
+                    <button type="button" class="slot-nav prev-slot" onclick="slideSlots(-1, this)">&#8249;</button>
+                    <div class="slots-viewport">
+                        <div class="slots-track" data-offset="0">
+                            {% for slot in p.day_slots %}
+                            <button type="button" class="time-slot-btn {% if slot.time == p.time %}active{% endif %}"
+                                    onclick="selectSlot(this)">
+                                {{ slot.time|time:"h:i A" }}
+                            </button>
+                            {% empty %}
+                            <span style="color:#888; font-size:13px; padding:8px;">No slots for this day</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <button type="button" class="slot-nav next-slot" onclick="slideSlots(1, this)">&#8250;</button>
+                </div>
+            </div>
+
+            <div class="card-footer-actions">
+                <form method="POST" action="{% url 'doctor:request_action' p.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="reject">
+                    <button type="submit" class="btn-action reject">Reject</button>
+                </form>
+                <form method="POST" action="{% url 'doctor:request_action' p.id %}" style="display:inline;" class="accept-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="reschedule">
+                    <input type="hidden" name="new_time" class="selected-time-input" value="{{ p.time|time:'H:i' }}" data-original="{{ p.time|time:'H:i' }}">
+                    <button type="submit" class="btn-action accept">Accept</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% if not pending and not edited %}
+        <div class="no-requests-placeholder" style="grid-column:1/-1; text-align:center; padding:60px 20px; color:#888;">
+            <h3>No Pending Requests</h3>
+            <p>New consultation requests will appear here.</p>
+        </div>
+        {% endif %}
+
+    </div>
+</main>
 {% endblock main %}
+
 {% block script %}
 <script>
-    // Time Slots Carousel
-    function selectSlot(el) {
-        const track = el.closest('.slots-track');
-        track.querySelectorAll('.time-slot-btn').forEach(btn => btn.classList.remove('active'));
-        el.classList.add('active');
+function selectSlot(el) {
+    const track = el.closest('.slots-track');
+    track.querySelectorAll('.time-slot-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+
+    const card = el.closest('.request-card-item');
+    const timeInput = card.querySelector('.selected-time-input');
+    const acceptBtn = card.querySelector('.accept-form .btn-action');
+
+    // convert "hh:mm AM/PM" → HH:MM 24h
+    const text = el.textContent.trim();
+    const [timePart, period] = text.split(' ');
+    let [h, m] = timePart.split(':').map(Number);
+    if (period === 'PM' && h !== 12) h += 12;
+    if (period === 'AM' && h === 12) h = 0;
+    const newVal = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`;
+
+    if (timeInput) timeInput.value = newVal;
+
+    // toggle button label based on whether time changed
+    if (acceptBtn) {
+        const original = card.querySelector('.selected-time-input').dataset.original;
+        if (newVal !== original) {
+            acceptBtn.textContent = 'Edit';
+        } else {
+            acceptBtn.textContent = 'Accept';
+        }
     }
+}
 
-    function slideSlots(dir, btn) {
-        const carousel = btn.closest('.time-slots-carousel');
-        const track = carousel.querySelector('.slots-track');
-        const viewport = carousel.querySelector('.slots-viewport');
+function slideSlots(dir, btn) {
+    const carousel = btn.closest('.time-slots-carousel');
+    const track = carousel.querySelector('.slots-track');
+    const viewport = carousel.querySelector('.slots-viewport');
+    const btnWidth = 108;
+    const totalBtns = track.querySelectorAll('.time-slot-btn').length;
+    const maxOffset = Math.max(0, totalBtns - Math.floor(viewport.clientWidth / btnWidth));
+    let current = parseInt(track.dataset.offset || 0);
+    current = Math.min(Math.max(current + dir, 0), maxOffset);
+    track.dataset.offset = current;
+    track.style.transform = `translateX(-${current * btnWidth}px)`;
+}
 
-        const btnWidth = 100 + 8; // نفس الـ width في الـ CSS + gap
-        const viewportWidth = viewport.clientWidth;
-        const totalBtns = track.querySelectorAll('.time-slot-btn').length;
-        const maxOffset = Math.max(0, totalBtns - Math.floor(viewportWidth / btnWidth));
+// Accept = reschedule with selected slot; if same slot → just accept
 
-        let current = parseInt(track.dataset.offset || 0);
-        current = Math.min(Math.max(current + dir, 0), maxOffset);
-
-        track.dataset.offset = current;
-        track.style.transform = `translateX(-${current * btnWidth}px)`;
-    }
 </script>
 {% endblock script %}

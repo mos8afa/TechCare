@@ -1798,13 +1798,99 @@ body {
 .booking-left {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 25px;
 }
 
 .booking-right {
     display: flex;
     flex-direction: column;
+    gap: 25px;
+}
+
+/* Governorate Select Styling */
+.form-group-booking {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.booking-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+}
+
+.custom-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.booking-select {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 14px;
+    color: #666;
+    background: #fff;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    appearance: none;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.booking-select:focus {
+    border-color: #2b84ea;
+    box-shadow: 0 0 0 3px rgba(43, 132, 234, 0.1);
+}
+
+.custom-select-wrapper i {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    pointer-events: none;
+}
+
+/* Grid for Symptoms & Address */
+.booking-inputs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
+}
+
+.address-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.address-input-wrapper i {
+    position: absolute;
+    left: 15px;
+    top: 12px;
+    color: #94A3B8;
+    font-size: 18px;
+}
+
+.address-input-wrapper textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 16px 16px 16px 39px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 14px;
+    font-family: inherit;
+    color: #333;
+    resize: none;
+    background: #fff;
+    transition: all 0.2s ease;
+}
+
+.address-input-wrapper textarea:focus {
+    outline: none;
+    border-color: #2b84ea;
+    box-shadow: 0 0 0 3px rgba(43, 132, 234, 0.1);
 }
 
 /* Card General CSS */
@@ -1840,19 +1926,19 @@ body {
 /* Doctor Card */
 .doc-card {
     background: #fff;
-    border-radius: 16px;
-    padding: 24px 30px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03);
-    border: 1px solid #f1f1f1;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid #f8f9fa;
     display: flex;
     align-items: center;
-    gap: 25px;
-    transition: 0.3s ease;
+    gap: 30px;
+    transition: all 0.3s ease;
 }
 
 .doc-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
 }
 
 .doc-avatar-bg {
@@ -1923,7 +2009,8 @@ body {
 }
 
 .doc-fee {
-    text-align: right;
+    text-align: left;
+    margin-top: 15px;
 }
 
 .fee-label {
@@ -1981,8 +2068,9 @@ body {
     font-size: 14px;
     font-family: inherit;
     color: #333;
-    resize: vertical;
+    resize: none;
     box-sizing: border-box;
+    transition: all 0.2s ease;
 }
 
 .symptoms-card textarea::placeholder {
@@ -2034,7 +2122,8 @@ body {
     background: #2b84ea;
     border-color: #2b84ea;
     color: #fff;
-    box-shadow: 0 4px 10px rgba(43, 132, 234, 0.3);
+    box-shadow: 0 8px 20px rgba(43, 132, 234, 0.4);
+    transform: scale(1.05);
 }
 
 .date-day {
@@ -2106,15 +2195,16 @@ body {
 .slot-btn.active {
     background: #2b84ea;
     color: #fff;
-    box-shadow: 0 4px 10px rgba(43, 132, 234, 0.3);
+    box-shadow: 0 6px 15px rgba(43, 132, 234, 0.35);
+    transform: scale(1.05);
 }
 
 /* Payment Summary */
 .summary-title {
-    font-size: 17px;
-    font-weight: 600;
-    color: #2b84ea;
-    margin-bottom: 24px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1E88E5;
+    margin-bottom: 30px;
 }
 
 .summary-row {
@@ -2154,8 +2244,8 @@ body {
 }
 
 .total-value {
-    font-size: 26px;
-    font-weight: 700;
+    font-size: 32px;
+    font-weight: 800;
     color: #2b84ea;
 }
 
@@ -2163,14 +2253,15 @@ body {
     width: 100%;
     background: #2b84ea;
     color: #fff;
-    font-weight: 600;
-    font-size: 15px;
-    padding: 16px;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 18px;
     border: none;
-    border-radius: 12px;
+    border-radius: 14px;
     cursor: pointer;
-    transition: var(--transition-smooth);
-    margin-bottom: 15px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin: 20px 0 15px;
+    box-shadow: 0 4px 12px rgba(43, 132, 234, 0.2);
 }
 
 .confirm-btn:hover {
@@ -3647,7 +3738,6 @@ body {
 .dc-divider {
     border: none;
     border-top: 1px solid #F3F4F6;
-    margin: 24px 0;
 }
 
 .dc-details-grid {
@@ -3840,4 +3930,25 @@ body {
     .profile-info {
         grid-template-columns: 1fr;
     }
+}
+
+/* ===== Done button (accepted page) ===== */
+.btn-done {
+    background: #1d89e4;
+    color: white;
+    border: none;
+    padding: 10px 35px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-done:hover {
+    background: #1570c4;
+}
+
+.btn-done:disabled {
+    background: #93c5fd;
+    cursor: not-allowed;
 }

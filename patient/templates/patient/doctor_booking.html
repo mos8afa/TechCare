@@ -133,19 +133,19 @@
 <script>
 function filterDoctors() {
     const search = document.getElementById('searchInput').value.toLowerCase();
-    const spec   = document.getElementById('specFilter').value.toLowerCase();
-    const gov    = document.getElementById('govFilter').value.toLowerCase();
+    const spec   = document.getElementById('specFilter').value;       // exact label
+    const gov    = document.getElementById('govFilter').value;        // exact label
     const price  = document.getElementById('priceFilter').value;
 
     document.querySelectorAll('.doctor-card').forEach(card => {
-        const name     = card.dataset.name.toLowerCase();
-        const cardSpec = card.dataset.spec.toLowerCase();
-        const cardGov  = card.dataset.gov.toLowerCase();
+        const name      = card.dataset.name.toLowerCase();
+        const cardSpec  = card.dataset.spec;   // exact display value
+        const cardGov   = card.dataset.gov;    // exact display value
         const cardPrice = parseFloat(card.dataset.price);
 
         const matchSearch = !search || name.includes(search);
-        const matchSpec   = !spec   || cardSpec.includes(spec);
-        const matchGov    = !gov    || cardGov.includes(gov);
+        const matchSpec   = !spec   || cardSpec === spec;
+        const matchGov    = !gov    || cardGov === gov;
 
         let matchPrice = true;
         if (price === '0-300')   matchPrice = cardPrice <= 300;
