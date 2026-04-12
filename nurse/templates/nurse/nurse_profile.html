@@ -103,13 +103,15 @@
                         <hr class="hr">
 
                         <div class="profile-info">
-                            <div class="info-item">
+                            <!-- Line 1: Email full width -->
+                            <div class="info-item" style="grid-column: 1 / -1;">
                                 <div><i class="ri-mail-line"></i></div>
                                 <div>
                                     <p class="info-label">Email Address</p>
                                     <p class="info-value">{{ email }}</p>
                                 </div>
                             </div>
+                            <!-- Line 2: Phone + Governorate side by side -->
                             <div class="info-item">
                                 <div><i class="ri-phone-line"></i></div>
                                 <div>
@@ -124,7 +126,8 @@
                                     <p class="info-value">{{ governorate }}</p>
                                 </div>
                             </div>
-                            <div class="info-item">
+                            <!-- Line 3: Address full width -->
+                            <div class="info-item" style="grid-column: 1 / -1;">
                                 <div><i class="ri-home-4-line"></i></div>
                                 <div>
                                     <p class="info-label">Address</p>
@@ -133,6 +136,7 @@
                             </div>
                         </div>
 
+                        <!-- Line 4: About full width -->
                         <div class="margin">
                             <strong>About</strong>
                             <p>{{ brief }}</p>
@@ -223,57 +227,142 @@
                     <button class="btn-add-services" id="addServiceBtn">Add Services</button>
                 </div>
 
-                <!-- Modal for Add/Edit -->
-                    <div id="addServiceModal" class="modal">
-                        <div class="modal-content">
-                            <span class="close" id="closeAddService">&times;</span>
-                            <h3 id="modalTitle">Add New Service</h3>
-                            <form id="serviceForm">
-                                <div class="form-group">
-                                    <label for="serviceTitle">Title</label>
-                                    <input type="text" id="serviceTitle" required />
-                                </div>
-                                <div class="form-group">
-                                    <label for="servicePrice">Price ($)</label>
-                                    <input type="number" id="servicePrice" required />
-                                </div>
-                                <div class="form-group">
-                                    <label for="serviceDescription">Description</label>
-                                    <textarea id="serviceDescription" rows="3" required></textarea>
-                                </div>
-                                <button type="submit" class="btn-primary" id="saveServiceBtn">Add Service</button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="services-container">
-                        <button class="service-nav-btn prev-service" id="prev-service">
-                            <i class="fas fa-angle-left"></i>
-                        </button>
-
-                        <div class="services-grid" id="servicesGrid">
-                            <!-- Placeholder card to show Edit/Remove buttons (Usually injected via JS) -->
-                            <div class="service-card">
-                                <h4>Medical consultation <span class="money">$50</span></h4>
-                                <p>Provide daily medical consultation for chronic diseases.</p>
-                                <div class="service-actions">
-                                    <a href="#" class="edit-service"><i class="fas fa-edit"></i> Edit</a>
-                                    <a href="#" class="remove-service"><i class="fas fa-trash"></i> Remove</a>
-                                </div>
+                <!-- Add Service Modal -->
+                <div id="addServiceModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" id="closeAddService">&times;</span>
+                        <h3>Add New Service</h3>
+                        <form method="POST" action="{% url 'nurse:add_services' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label>Title</label>
+                                <input type="text" name="name" required />
                             </div>
-                        </div>
-
-                        <button class="service-nav-btn next-service" id="next-service">
-                            <i class="fas fa-angle-right"></i>
-                        </button>
+                            <div class="form-group">
+                                <label>Price (EGP)</label>
+                                <input type="number" name="price" step="0.01" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea name="description" rows="3" required></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary">Add Service</button>
+                        </form>
                     </div>
                 </div>
+
+                <!-- Edit Service Modal -->
+                <div id="editServiceModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" id="closeEditService">&times;</span>
+                        <h3>Edit Service</h3>
+                        <form method="POST" id="editServiceForm" action="">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label>Title</label>
+                                <input type="text" id="editServiceTitle" name="name" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Price (EGP)</label>
+                                <input type="number" id="editServicePrice" name="price" step="0.01" required />
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea id="editServiceDescription" name="description" rows="3" required></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="services-container">
+                    <button class="service-nav-btn prev-service" id="prev-service">
+                        <i class="fas fa-angle-left"></i>
+                    </button>
+
+                    <div class="services-grid" id="nurseServicesGrid" style="overflow-x: auto; scroll-behavior: smooth;">
+                        {% for service in services %}
+                        <div class="service-card">
+                            <h4>{{ service.name }} <span class="money">{{ service.price }} EGP</span></h4>
+                            <p>{{ service.description }}</p>
+                            <div class="service-actions">
+                                <a href="#" class="edit-service"
+                                   data-name="{{ service.name }}"
+                                   data-price="{{ service.price }}"
+                                   data-description="{{ service.description }}"
+                                   data-url="{% url 'nurse:edit_service' service.id %}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <form method="POST" action="{% url 'nurse:delete_service' service.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="remove-service"><i class="fas fa-trash"></i> Remove
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p style="color:#888; padding:10px;">No services added yet.</p>
+                        {% endfor %}
+                    </div>
+
+                    <button class="service-nav-btn next-service" id="next-service">
+                        <i class="fas fa-angle-right"></i>
+                    </button>
+                </div>
+            </div>
             </main>
         </div>
 
     </div>
 
 <script src="{% static 'JS/Board.js' %}"></script>
+<script>
+function selectSlotPill(el) {
+    document.querySelectorAll('.slot-pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+}
 
-</body>
+// ── Add Service Modal ──
+const addModal = document.getElementById('addServiceModal');
+document.getElementById('addServiceBtn').addEventListener('click', () => addModal.classList.add('active'));
+document.getElementById('closeAddService').addEventListener('click', () => addModal.classList.remove('active'));
+
+// ── Edit Service Modal ──
+const editModal = document.getElementById('editServiceModal');
+document.getElementById('closeEditService').addEventListener('click', () => editModal.classList.remove('active'));
+
+document.querySelectorAll('.edit-service').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('editServiceTitle').value       = btn.dataset.name;
+        document.getElementById('editServicePrice').value       = btn.dataset.price;
+        document.getElementById('editServiceDescription').value = btn.dataset.description;
+        document.getElementById('editServiceForm').action       = btn.dataset.url;
+        editModal.classList.add('active');
+    });
+});
+
+window.addEventListener('click', (e) => {
+    if (e.target === addModal)  addModal.classList.remove('active');
+    if (e.target === editModal) editModal.classList.remove('active');
+});
+
+// ── Services Carousel ──
+(function() {
+    const grid = document.getElementById('nurseServicesGrid');
+    if (!grid) return;
+
+    document.getElementById('next-service').addEventListener('click', () => {
+        const card = grid.querySelector('.service-card');
+        const amount = card ? card.offsetWidth + 20 : 300;
+        grid.scrollBy({ left: amount, behavior: 'smooth' });
+    });
+
+    document.getElementById('prev-service').addEventListener('click', () => {
+        const card = grid.querySelector('.service-card');
+        const amount = card ? card.offsetWidth + 20 : 300;
+        grid.scrollBy({ left: -amount, behavior: 'smooth' });
+    });
+})();
+</script></body>
 </html>

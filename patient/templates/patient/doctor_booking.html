@@ -3,25 +3,14 @@
 {% block sidebar %}
 <aside class="aside">
     <a href="{% url 'patient:patient_dashboard' %}" class="aside-item">
-        <i class="bi bi-person"></i>
-        <span>Profile</span>
+        <i class="bi bi-person"></i><span>Profile</span>
     </a>
     <a href="{% url 'patient:patient_requests' 'doctor' 'booking' %}" class="aside-item active">
-        <i class="ri-file-list-line"></i>
-        <span>Requests</span>
+        <i class="ri-file-list-line"></i><span>Requests</span>
     </a>
-    <a href="#" class="aside-item">
-        <i class="fa-regular fa-bell"></i>
-        <span>Notifications</span>
-    </a>
-    <a href="#" class="aside-item">
-        <i class="ri-wallet-3-line"></i>
-        <span>Wallet</span>
-    </a>
-    <a href="#" class="aside-item">
-        <i class="ri-error-warning-line"></i>
-        <span>Complaints</span>
-    </a>
+    <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
+    <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
+    <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
 </aside>
 {% endblock %}
 
@@ -34,7 +23,7 @@
             <button class="cat-tab active" onclick="window.location.href='{% url 'patient:patient_requests' 'doctor' 'booking' %}'">
                 <i class="ri-stethoscope-line"></i> Doctor
             </button>
-            <button class="cat-tab">
+            <button class="cat-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'booking' %}'">
                 <i class="ri-nurse-line"></i> Nurse
             </button>
             <button class="cat-tab">
@@ -101,11 +90,7 @@
                     <span class="stars">
                         {% with avg=doctor.avg_rating %}
                             {% for i in "12345" %}
-                                {% if forloop.counter <= avg %}
-                                    <i class="ri-star-fill" style="color:#f59e0b;"></i>
-                                {% else %}
-                                    <i class="ri-star-line" style="color:#d1d5db;"></i>
-                                {% endif %}
+                                {% if forloop.counter <= avg %}★{% else %}☆{% endif %}
                             {% endfor %}
                         {% endwith %}
                     </span>
@@ -133,14 +118,14 @@
 <script>
 function filterDoctors() {
     const search = document.getElementById('searchInput').value.toLowerCase();
-    const spec   = document.getElementById('specFilter').value;       // exact label
-    const gov    = document.getElementById('govFilter').value;        // exact label
+    const spec   = document.getElementById('specFilter').value;
+    const gov    = document.getElementById('govFilter').value;
     const price  = document.getElementById('priceFilter').value;
 
     document.querySelectorAll('.doctor-card').forEach(card => {
         const name      = card.dataset.name.toLowerCase();
-        const cardSpec  = card.dataset.spec;   // exact display value
-        const cardGov   = card.dataset.gov;    // exact display value
+        const cardSpec  = card.dataset.spec;
+        const cardGov   = card.dataset.gov;
         const cardPrice = parseFloat(card.dataset.price);
 
         const matchSearch = !search || name.includes(search);

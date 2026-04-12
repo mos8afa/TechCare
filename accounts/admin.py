@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, Patient, Doctor, Nurse, PendingUser, Pharmacist, Donor
+from .models import CustomUser, Patient, Doctor, Nurse, PendingUser, Pharmacist, Donor, Rate
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
@@ -53,3 +53,8 @@ class PendingUserAdmin(admin.ModelAdmin):
         "last_name",
         "role",
     )
+
+@admin.register(Rate)
+class RateAdmin(admin.ModelAdmin):
+    list_display = ('rate', 'doctor', 'nurse', 'pharmacist')
+    list_filter = ('rate',)

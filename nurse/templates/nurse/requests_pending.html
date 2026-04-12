@@ -167,7 +167,7 @@
                         <form method="POST" action="{% url 'nurse:request_action' req.id %}" style="display:inline;" class="accept-form-{{ req.id }}">
                             {% csrf_token %}
                             <input type="hidden" name="action" value="accept">
-                            <input type="hidden" name="selected_time" class="selected-time-{{ req.id }}" value="{{ req.time|time:'H:i' }}">
+                            <input type="hidden" name="selected_time" class="selected-time-{{ req.id }}" value="{{ req.time|time:'H:i' }}" data-original="{{ req.time|time:'H:i' }}">
                             <button type="submit" class="btn-action accept" id="accept-btn-{{ req.id }}">Accept</button>
                         </form>
                     </div>
@@ -191,7 +191,10 @@ function selectSlot(el, timeVal, reqId) {
     const input = document.querySelector(`.selected-time-${reqId}`);
     if (input) input.value = timeVal;
     const btn = document.getElementById(`accept-btn-${reqId}`);
-    if (btn) btn.textContent = (timeVal !== btn.closest('form').querySelector('input[name=selected_time]').defaultValue) ? 'Edit' : 'Accept';
+    if (btn) {
+        const original = input ? input.dataset.original : null;
+        btn.textContent = (original && timeVal !== original) ? 'Edit' : 'Accept';
+    }
 }
 
 function slideSlots(dir, btn) {

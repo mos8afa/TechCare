@@ -1,0 +1,114 @@
+{% extends 'patient_base.html' %}
+
+{% block sidebar %}
+<aside class="aside">
+    <a href="{% url 'patient:patient_dashboard' %}" class="aside-item">
+        <i class="bi bi-person"></i><span>Profile</span>
+    </a>
+    <a href="{% url 'patient:patient_requests' 'nurse' 'booking' %}" class="aside-item active">
+        <i class="ri-file-list-line"></i><span>Requests</span>
+    </a>
+    <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
+    <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
+    <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
+</aside>
+{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <div class="booking-wrapper">
+
+        <div class="category-tabs">
+            <button class="cat-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'doctor' 'booking' %}'">
+                <i class="ri-stethoscope-line"></i> Doctor
+            </button>
+            <button class="cat-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'booking' %}'">
+                <i class="ri-nurse-line"></i> Nurse</button>
+            <button class="cat-tab"><i class="ri-medicine-bottle-line"></i> Medicine</button>
+        </div>
+
+        <div class="status-tabs">
+            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'booking' %}'">Booking</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'pending' %}'">Pending</button>
+            <button class="status-tab active">Accepted</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'done' %}'">Done</button>
+        </div>
+
+        <div class="accepted-cards-container">
+            {% for req in accepted %}
+            <div class="accepted-card animate slide-up">
+                <div class="ac-header">
+                    <div class="ac-doc-info">
+                        <img src="{{ req.nurse.profile_pic.url }}" alt="{{ req.nurse.user.first_name }}" class="ac-avatar">
+                        <h3 class="ac-doc-name">{{ req.nurse.user.first_name }} {{ req.nurse.user.last_name }}</h3>
+                    </div>
+                    <div class="ac-badge">Accepted</div>
+                </div>
+
+                <div class="ac-details-grid">
+                    <div class="ac-detail-item">
+                        <i class="ri-calendar-event-line ac-icon blue"></i>
+                        <div>
+                            <p class="ac-label">DATE AND TIME</p>
+                            <p class="ac-value">{{ req.date|date:"M d, Y" }} • {{ req.time|time:"h:i A" }}</p>
+                        </div>
+                    </div>
+                    <div class="ac-detail-item">
+                        <i class="ri-phone-line ac-icon blue"></i>
+                        <div>
+                            <p class="ac-label">CONTACT INFO</p>
+                            <p class="ac-value">{{ req.nurse.phone_number }}</p>
+                        </div>
+                    </div>
+                    <div class="ac-detail-item">
+                        <i class="ri-map-pin-line ac-icon blue"></i>
+                        <div>
+                            <p class="ac-label">REGION AND ADDRESS</p>
+                            <p class="ac-value">{{ req.governrate }}, {{ req.address }}</p>
+                        </div>
+                    </div>
+                    <div class="ac-detail-item">
+                        <i class="ri-shield-check-line ac-icon green"></i>
+                        <div>
+                            <p class="ac-label">STATUS</p>
+                            <p class="ac-value text-green">Confirmed by Provider</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ac-services">
+                    <h4 class="ac-section-title">REQUESTED SERVICES</h4>
+                    {% for svc in req.service.all %}
+                    <div class="ac-service-item">
+                        <span class="ac-service-name">{{ svc.name }}</span>
+                        <span class="ac-service-price">{{ svc.price }} EGP</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="ac-financial-box">
+                    <span class="ac-fin-label">FINANCIAL TOTAL</span>
+                    <span class="ac-fin-amount">{{ req.net_income }} EGP</span>
+                </div>
+
+                <div class="ac-footer">
+                    {% if req.patient_done %}
+                        <button class="btn-done" disabled style="opacity:0.5; cursor:not-allowed;">Waiting for Nurse...</button>
+                    {% else %}
+                        <form method="POST" action="{% url 'patient:mark_nurse_done' req.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="ac-done-btn btn-done">Done</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-requests-placeholder">
+                <h3>No Accepted Nurse Requests</h3>
+                <p>Once a nurse accepts your request, it will appear here.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</main>
+{% endblock %}

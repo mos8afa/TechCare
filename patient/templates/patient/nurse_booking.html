@@ -1,0 +1,134 @@
+{% extends 'patient_base.html' %}
+
+{% block sidebar %}
+<aside class="aside">
+    <a href="{% url 'patient:patient_dashboard' %}" class="aside-item">
+        <i class="bi bi-person"></i><span>Profile</span>
+    </a>
+    <a href="{% url 'patient:patient_requests' 'nurse' 'booking' %}" class="aside-item active">
+        <i class="ri-file-list-line"></i><span>Requests</span>
+    </a>
+    <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
+    <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
+    <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
+</aside>
+{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <div class="booking-wrapper">
+
+        <!-- Category Tabs -->
+        <div class="category-tabs">
+            <button class="cat-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'doctor' 'booking' %}'">
+                <i class="ri-stethoscope-line"></i> Doctor
+            </button>
+            <button class="cat-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'booking' %}'">
+                <i class="ri-nurse-line"></i> Nurse
+            </button>
+            <button class="cat-tab"><i class="ri-medicine-bottle-line"></i> Medicine</button>
+        </div>
+
+        <!-- Status Tabs -->
+        <div class="status-tabs">
+            <button class="status-tab active">Booking</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'pending' %}'">Pending</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'accepted' %}'">Accepted</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'done' %}'">Done</button>
+        </div>
+
+        <!-- Search & Filters -->
+        <div class="search-bar" style="margin-top:25px;">
+            <div class="search-input-wrap">
+                <i class="bi bi-card-text" style="font-size:18px; color:#aab0bc;"></i>
+                <input type="text" id="searchInput" placeholder="Search by Nurse..." oninput="filterNurses()" />
+            </div>
+            <select class="filter-select" id="govFilter" onchange="filterNurses()">
+                <option value="">Governorate</option>
+                {% for val, label in governorates %}
+                    <option value="{{ label }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Nurse Cards Grid -->
+        <div class="nbs-grid">
+            {% for nurse in nurses %}
+            <div class="nbs-card animate slide-up"
+                 data-name="{{ nurse.user.first_name }} {{ nurse.user.last_name }}"
+                 data-gov="{{ nurse.get_governorate_display }}">
+
+                <div class="nbs-header">
+                    <div class="nbs-avatar-wrap">
+                        <img src="{{ nurse.profile_pic.url }}" alt="{{ nurse.user.first_name }}" class="nbs-avatar">
+                        <div class="nbs-dot"></div>
+                    </div>
+                    <div class="nbs-info-col">
+                        <div class="nbs-title-row">
+                            <h3 class="nbs-name" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:160px;">{{ nurse.user.first_name }} {{ nurse.user.last_name }}</h3>
+                            <div class="nbs-rating">
+                                <span class="nbs-stars">
+                                    {% with avg=nurse.avg_rating %}
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= avg %}★{% else %}☆{% endif %}
+                                    {% endfor %}
+                                    {% endwith %}
+                                </span>
+                                <span>({{ nurse.avg_rating }}/5)</span>
+                            </div>
+                        </div>
+                        <div class="nbs-spec">{{ nurse.brief|truncatewords:6|default:"Registered Nurse" }}</div>
+                        <div class="nbs-location"><i class="ri-map-pin-2-line"></i> {{ nurse.get_governorate_display }}{% if nurse.address %}, {{ nurse.address }}{% endif %}</div>
+                        <hr class="nbs-divider">
+                    </div>
+                </div>
+
+                <div class="nbs-section-title">SERVICES</div>
+                {% for svc in nurse.nurse_services.all|slice:":3" %}
+                <div class="nbs-service">
+                    <span class="nbs-service-name">{{ svc.name }}</span>
+                    <span class="nbs-service-price">{{ svc.price }} EGP</span>
+                </div>
+                {% empty %}
+                <div class="nbs-service">
+                    <span class="nbs-service-name" style="color:#888;">No services listed</span>
+                </div>
+                {% endfor %}
+
+                <div class="nbs-footer">
+                    <div>
+                        <span class="nbs-price-label">STARTING FROM</span>
+                        <span class="nbs-price-amount">
+                            {% with first=nurse.nurse_services.first %}
+                                {% if first %}{{ first.price }} <span style="font-size:14px;">EGP</span>{% else %}—{% endif %}
+                            {% endwith %}
+                        </span>
+                    </div>
+                    <a href="{% url 'patient:book_nurse' nurse.id %}" class="nbs-btn-book" style="white-space:nowrap;">Book Now</a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-requests-placeholder" style="grid-column:1/-1;">
+                <h3>No Nurses Available</h3>
+                <p>There are no nurses registered yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</main>
+
+<script>
+function filterNurses() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const gov    = document.getElementById('govFilter').value;
+    document.querySelectorAll('.nbs-card').forEach(card => {
+        const name    = card.dataset.name.toLowerCase();
+        const cardGov = card.dataset.gov;
+        const matchSearch = !search || name.includes(search);
+        const matchGov    = !gov    || cardGov === gov;
+        card.style.display = (matchSearch && matchGov) ? '' : 'none';
+    });
+}
+</script>
+{% endblock %}

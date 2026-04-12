@@ -12,7 +12,7 @@ STATUS = (
 class Service(models.Model):
     name = models.CharField(max_length=150)
     description = models.TextField()
-    price = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     nurse = models.ForeignKey(Nurse, on_delete=models.CASCADE, related_name='nurse_services')
 
 class NurseRequest(models.Model):
@@ -26,4 +26,6 @@ class NurseRequest(models.Model):
     service = models.ManyToManyField(Service)
     net_income = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     status = models.CharField(max_length=10, choices=STATUS, default="pending")
+    patient_done = models.BooleanField(default=False)
+    nurse_done = models.BooleanField(default=False)
     

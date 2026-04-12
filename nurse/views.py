@@ -132,6 +132,7 @@ def nurse_requests(request, type):
 
 
 @login_required
+@login_required
 @require_POST
 def request_action(request, request_id):
     if request.user.role != 'nurse':
@@ -174,7 +175,9 @@ def mark_done(request, request_id):
 
     nurse = Nurse.objects.get(user=request.user)
     req = get_object_or_404(NurseRequest, id=request_id, nurse=nurse, status='accepted')
-    req.status = 'completed'
+    req.nurse_done = True
+    if req.patient_done:
+        req.status = 'completed'
     req.save()
     return redirect('nurse:nurse_requests', type='accepted')
 
