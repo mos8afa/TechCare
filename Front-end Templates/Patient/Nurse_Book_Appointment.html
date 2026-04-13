@@ -101,17 +101,19 @@
                 <!-- ===== BOOKING SECTION ===== -->
                 <div class="booking-wrapper">
 
-                    <!-- Category Tabs -->
-                    <div class="category-tabs">
-                        <button class="cat-tab" onclick="window.location.href='Requests.html'">
-                            <i class="ri-stethoscope-line"></i> Doctor
-                        </button>
-                        <button class="cat-tab active" data-status="pending" onclick="window.location.href='Book_nurse.html'">
-                            <i class="ri-nurse-line"></i> Nurse
-                        </button>
-                        <button class="cat-tab">
-                            <i class="ri-medicine-bottle-line"></i> Pharmacy
-                        </button>
+                    <!-- Category Tabs Container -->
+                    <div class="category-tabs-wrapper">
+                        <div class="category-tabs">
+                            <button class="cat-tab" onclick="window.location.href='Requests.html'">
+                                <i class="ri-stethoscope-line"></i> Doctor
+                            </button>
+                            <button class="cat-tab active" data-status="pending" onclick="window.location.href='Book_nurse.html'">
+                                <i class="ri-first-aid-kit-line"></i> Nurse
+                            </button>
+                            <button class="cat-tab">
+                                <i class="ri-medicine-bottle-line"></i> Medicine
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Status Tabs -->
@@ -143,34 +145,105 @@
                                 </div>
                                 <div class="doc-info-wrapper nurse-info-wrapper">
                                     <div class="doc-info-main">
-                                        <h2 class="doc-name">Sarah Ahmed</h2>
-                                        <p class="doc-title nurse-doc-title">Specialty: Wound Care & IV Therapy</p>
-                                        <div class="nurse-tags nurse-tags-wrapper">
-                                            <span class="nurse-tag-gray">Certified Specialist</span>
-                                            <span class="nurse-tag-gray">Home Visits</span>
-                                            <span class="nurse-tag-gray">Vaccinations</span>
+                                        <div class="name-rating-row">
+                                            <h2 class="doc-name">Sarah Ahmed</h2>
+                                            <div class="doc-rating">
+                                                <div class="stars">
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star" style="opacity: 0.3;"></i>
+                                                </div>
+                                                <span class="rating-val">(4.9/5)</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="doc-fee nurse-doc-fee">
-                                        <p class="fee-label nurse-fee-label">SESSION RATE</p>
-                                        <h3 class="fee-amount nurse-fee-amount">350 EGP</h3>
+                                        <p class="doc-title nurse-doc-title">Specialty: Wound Care & IV Therapy</p>
+                                        <div class="nurse-tags">
+                                            <span class="nurse-tag">Certified Specialist</span>
+                                            <span class="nurse-tag">Home Visits</span>
+                                            <span class="nurse-tag">Vaccinations</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Symptoms Card -->
-                            <div class="booking-card symptoms-card">
+                            <!-- Select Services -->
+                            <div class="booking-card services-card">
                                 <div class="card-title">
-                                    <i class="ri-file-text-line"></i> <span>Describe Your Symptoms</span>
+                                    <i class="ri-file-list-3-line"></i> <span>Select Services</span>
                                 </div>
-                                <div class="symptoms-chips">
-                                    <button class="chip">Chest Pain</button>
-                                    <button class="chip">Shortness of Breath</button>
-                                    <button class="chip active">Dizziness</button>
-                                    <button class="chip">Palpitations</button>
+                                <div class="services-list">
+                                    <label class="service-item">
+                                        <input type="checkbox" checked>
+                                        <div class="checkbox-box">
+                                            <i class="ri-check-line"></i>
+                                        </div>
+                                        <div class="service-text-wrap">
+                                            <span class="service-name">Insulin Injection</span>
+                                            <span class="service-desc">Safe and sterile procedure at home</span>
+                                        </div>
+                                        <span class="service-price">150 EGP</span>
+                                    </label>
+                                    <label class="service-item">
+                                        <input type="checkbox">
+                                        <div class="checkbox-box">
+                                            <i class="ri-check-line"></i>
+                                        </div>
+                                        <div class="service-text-wrap">
+                                            <span class="service-name">Vital Signs Monitoring</span>
+                                            <span class="service-desc">Check blood pressure, pulse, and temp</span>
+                                        </div>
+                                        <span class="service-price">250 EGP</span>
+                                    </label>
+                                    <label class="service-item">
+                                        <input type="checkbox">
+                                        <div class="checkbox-box">
+                                            <i class="ri-check-line"></i>
+                                        </div>
+                                        <div class="service-text-wrap">
+                                            <span class="service-name">Wound Dressing</span>
+                                            <span class="service-desc">Professional care for surgical wounds</span>
+                                        </div>
+                                        <span class="service-price">400 EGP</span>
+                                    </label>
                                 </div>
-                                <textarea
-                                    placeholder="Please provide more details about how you are feeling..."></textarea>
+                            </div>
+
+                            <!-- Governorate -->
+                            <div class="form-group-booking">
+                                <label class="booking-label">Governorate</label>
+                                <div class="custom-select-wrapper">
+                                    <select class="booking-select">
+                                        <option value="Cairo">Cairo</option>
+                                        <option value="Giza">Giza</option>
+                                        <option value="Alexandria">Alexandria</option>
+                                    </select>
+                                    <i class="ri-arrow-down-s-line"></i>
+                                </div>
+                            </div>
+
+                            <!-- Symptoms & Address Grid -->
+                            <div class="booking-inputs-grid">
+                                <!-- Symptoms Card -->
+                                <div class="booking-card symptoms-card">
+                                    <div class="card-title-plain">
+                                        <i class="ri-file-text-line"></i> <span>Describe Your Symptoms</span>
+                                    </div>
+                                    <textarea
+                                        placeholder="Please provide more details about how you are feeling..."></textarea>
+                                </div>
+
+                                <!-- Full Address Card -->
+                                <div class="booking-card address-card">
+                                    <div class="card-title-plain">
+                                        <span>Full Address</span>
+                                    </div>
+                                    <div class="address-input-wrapper">
+                                        <i class="ri-map-pin-2-line"></i>
+                                        <textarea placeholder="Maadi, Cairo, Egypt"></textarea>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Date & Time Card -->
