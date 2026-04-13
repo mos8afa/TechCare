@@ -115,10 +115,10 @@ def nurse_requests(request, type):
 
     if type == 'pending' or type is None:
         pending_qs = list(all_reqs.filter(status='pending').order_by('-date', '-time'))
-        # attach nurse's slots for the day of each request
         for req in pending_qs:
             req_day = req.date.strftime('%A').lower()
             req.nurse_slots = TimeSlots.objects.filter(nurse=nurse, day=req_day).order_by('time')
+            req.day_slots = req.nurse_slots  # alias for template compatibility
         return render(request, 'nurse/requests_pending.html', {**context_base, 'pending': pending_qs})
 
     elif type == 'accepted':
@@ -224,10 +224,16 @@ def edit_time_slots(request):
     if request.user.role != 'nurse':
         return redirect('login')
 
+    import json as json_mod
     nurse = Nurse.objects.get(user=request.user)
-
     days = get_ordered_week_days()
     selected_day = request.GET.get('day') or days[0]['day']
+
+    # Pass ALL days' slots as JSON so JS can switch days without reloading
+    all_slots = {}
+    for d in days:
+        s = TimeSlots.objects.filter(nurse=nurse, day=d['day']).order_by('time')
+        all_slots[d['day']] = [slot.time.strftime('%H:%M') for slot in s]
 
     slots = TimeSlots.objects.filter(nurse=nurse, day=selected_day).order_by('time')
     morning_slots = [s for s in slots if s.time < time(12, 0)]
@@ -238,6 +244,7 @@ def edit_time_slots(request):
         'selected_day': selected_day,
         'morning_slots': morning_slots,
         'evening_slots': evening_slots,
+        'all_slots_json': json_mod.dumps(all_slots),
         'name': _nurse_name(nurse),
         'profile_pic': nurse.profile_pic,
     })
@@ -252,21 +259,29 @@ def save_time_slots(request):
     nurse = Nurse.objects.get(user=request.user)
 
     try:
-        data  = json.loads(request.body)
-        day   = data.get('day')
-        times = data.get('times', [])
+        data = json.loads(request.body)
     except (json.JSONDecodeError, AttributeError):
         return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
-    if not day:
-        return JsonResponse({'error': 'Missing day'}, status=400)
+    # Accept either single day or multiple days
+    # Format: { days: { "monday": ["HH:MM", ...], "tuesday": [...] } }
+    # or legacy: { day: "monday", times: [...] }
+    days_data = data.get('days')
+    if not days_data:
+        # legacy single-day format
+        day   = data.get('day')
+        times = data.get('times', [])
+        if not day:
+            return JsonResponse({'error': 'Missing day'}, status=400)
+        days_data = {day: times}
 
-    TimeSlots.objects.filter(nurse=nurse, day=day).delete()
-    for t_str in times:
-        try:
-            h, m = t_str.split(':')
-            TimeSlots.objects.create(nurse=nurse, day=day, time=time(int(h), int(m)))
-        except (ValueError, AttributeError):
-            continue
+    for day, times in days_data.items():
+        TimeSlots.objects.filter(nurse=nurse, day=day).delete()
+        for t_str in times:
+            try:
+                h, m = t_str.split(':')
+                TimeSlots.objects.create(nurse=nurse, day=day, time=time(int(h), int(m)))
+            except (ValueError, AttributeError):
+                continue
 
     return JsonResponse({'success': True})

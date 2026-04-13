@@ -322,33 +322,25 @@ def edit_time_slots(request):
         return redirect('login')
 
     doctor = Doctor.objects.get(user=request.user)
-
     days = get_ordered_week_days()
+    selected_day = request.GET.get('day') or days[0]['day']
 
-    selected_day = request.GET.get('day')
+    # All days' slots as JSON for client-side switching
+    all_slots = {}
+    for d in days:
+        s = TimeSlots.objects.filter(doctor=doctor, day=d['day']).order_by('time')
+        all_slots[d['day']] = [slot.time.strftime('%H:%M') for slot in s]
 
-    if not selected_day:
-        selected_day = days[0]['day']
-
-    slots = TimeSlots.objects.filter(
-        doctor=doctor,
-        day=selected_day
-    ).order_by('time')
-
-    morning_slots = []
-    evening_slots = []
-
-    for slot in slots:
-        if slot.time < time(12, 0):
-            morning_slots.append(slot)
-        else:
-            evening_slots.append(slot)
+    slots = TimeSlots.objects.filter(doctor=doctor, day=selected_day).order_by('time')
+    morning_slots = [s for s in slots if s.time < time(12, 0)]
+    evening_slots = [s for s in slots if s.time >= time(12, 0)]
 
     return render(request, 'doctor/time_slots.html', {
         'days': days,
         'selected_day': selected_day,
         'morning_slots': morning_slots,
         'evening_slots': evening_slots,
+        'all_slots_json': json.dumps(all_slots),
     })
 
 @login_required
@@ -364,21 +356,24 @@ def save_time_slots(request):
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
-    day = data.get('day')
-    times = data.get('times', [])  
+    # Accept multi-day: { days: { "monday": [...], ... } } or legacy single-day
+    days_data = data.get('days')
+    if not days_data:
+        day   = data.get('day')
+        times = data.get('times', [])
+        if not day:
+            return JsonResponse({'error': 'Missing day'}, status=400)
+        days_data = {day: times}
 
-    if not day:
-        return JsonResponse({'error': 'Missing day'}, status=400)
-    
-    TimeSlots.objects.filter(doctor=doctor, day=day).delete()
-
-    for t_str in times:
-        try:
-            h, m = t_str.split(':')
-            t_val = time(int(h), int(m))
-        except (ValueError, AttributeError):
-            continue
-        TimeSlots.objects.get_or_create(doctor=doctor, day=day, time=t_val)
+    for day, times in days_data.items():
+        TimeSlots.objects.filter(doctor=doctor, day=day).delete()
+        for t_str in times:
+            try:
+                h, m = t_str.split(':')
+                t_val = time(int(h), int(m))
+            except (ValueError, AttributeError):
+                continue
+            TimeSlots.objects.get_or_create(doctor=doctor, day=day, time=t_val)
 
     return JsonResponse({'success': True})
 

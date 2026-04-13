@@ -984,6 +984,8 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     opacity: 0;
     animation: fadeInUp 0.5s ease-out forwards;
+    overflow: hidden;
+    min-width: 0;
 }
 
 .request-card-item:nth-child(1) {
@@ -1492,12 +1494,21 @@ body {
 .timeslots-container1 {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 16px;
+    gap: 8px;
+    width: 100%;
+}
+
+.timeslots-viewport1 {
+    flex: 1;
+    overflow: hidden;
+    min-width: 0;
 }
 
 .timeslots-container1 .timeslots-grid {
-    gap: 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: nowrap;
+    transition: transform 0.3s ease;
 }
 
 .timeslot-nav-btn {
@@ -2220,4 +2231,96 @@ input:checked + .edit-ts-slider:before {
 .edit-slots-btn-hollow:hover {
     background: #eff6ff;
     transform: translateY(-1px);
+}
+
+
+/* ===== Time Slots Carousel (Pending Requests) ===== */
+.time-slots-carousel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.slots-viewport {
+    flex: 1;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.slots-track {
+    display: flex;
+    gap: 8px;
+    transition: transform 0.35s ease;
+}
+
+.time-slot-btn {
+    flex-shrink: 0;
+    width: 100px;
+    text-align: center;
+    background: #F0F4F8;
+    border: 1px solid #E2E8F0;
+    border-radius: 20px;
+    padding: 7px 0;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    color: #4b5563;
+    transition: all 0.25s ease;
+}
+
+.time-slot-btn:hover:not(.active) {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background: rgba(29, 137, 228, 0.06);
+}
+
+.time-slot-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(29, 137, 228, 0.3);
+}
+
+.slot-nav {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 25px;
+    font-weight: 700;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid #E2E8F0;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    line-height: 1;
+}
+
+.slot-nav:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.edit-input {
+    margin: 16px 0 8px;
+}
+
+.edit-input > label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary-color);
+    display: block;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
 }

@@ -54,8 +54,7 @@
                         {% if days %}
                             {% for d in days %}
                                 <div class="day-btn {% if d.day == selected_day %}active{% endif %}"
-                                    onclick="window.location.href='?day={{ d.day }}'">
-
+                                     data-day="{{ d.day }}" style="cursor:pointer;">
                                     <span class="day-name">{{ d.day|slice:":3"|upper }}</span>
                                     <span class="day-num">{{ d.date|date:"d" }}</span>
                                 </div>
@@ -146,24 +145,81 @@
 
 {% block script %}
     <script>
-    const SAVE_URL = "{% url 'doctor:save_time_slots' %}";
+    const SAVE_URL   = "{% url 'doctor:save_time_slots' %}";
     const CSRF_TOKEN = "{{ csrf_token }}";
-    const SELECTED_DAY = "{{ selected_day }}";
 
+    const allSlots = {{ all_slots_json|safe }};
+    let currentDay = "{{ selected_day }}";
     let targetSession = 'morning';
 
-    // ── Remove pill from DOM (works for both DB and new slots) ──
+    function renderDay(day) {
+        currentDay = day;
+        document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.day-btn').forEach(b => {
+            if (b.dataset.day === day) b.classList.add('active');
+        });
+        const times = allSlots[day] || [];
+        renderPills(0, times.filter(t => parseInt(t.split(':')[0]) < 12));
+        renderPills(1, times.filter(t => parseInt(t.split(':')[0]) >= 12));
+    }
+
+    function renderPills(sessionIndex, times) {
+        const container = document.querySelectorAll('.edit-ts-time-pills')[sessionIndex];
+        container.querySelectorAll('.edit-ts-pill:not(.dashed)').forEach(p => p.remove());
+        const noMsg = container.querySelector('.no-slots-msg');
+        if (noMsg) noMsg.remove();
+        const addBtn = container.querySelector('.edit-ts-pill.dashed');
+        if (times.length === 0) {
+            const msg = document.createElement('p');
+            msg.className = 'no-slots-msg';
+            msg.textContent = 'No slots available';
+            container.insertBefore(msg, addBtn);
+        } else {
+            times.forEach(t => container.insertBefore(makePill(t), addBtn));
+        }
+    }
+
+    function makePill(timeVal) {
+        const pill = document.createElement('div');
+        pill.className = 'edit-ts-pill';
+        pill.dataset.time = timeVal;
+        pill.textContent = formatTime(timeVal);
+        const removeBtn = document.createElement('span');
+        removeBtn.className = 'edit-ts-pill-remove';
+        removeBtn.innerHTML = '&times;';
+        removeBtn.addEventListener('click', (ev) => removePill(ev, removeBtn));
+        pill.appendChild(removeBtn);
+        return pill;
+    }
+
+    function saveCurrentDayToMemory() {
+        allSlots[currentDay] = [...document.querySelectorAll('.edit-ts-pill:not(.dashed)')]
+            .map(p => p.dataset.time).filter(Boolean);
+    }
+
+    document.querySelectorAll('.day-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            saveCurrentDayToMemory();
+            renderDay(btn.dataset.day);
+        });
+    });
+
     function removePill(event, btn) {
         event.stopPropagation();
         btn.closest('.edit-ts-pill').remove();
+        const container = btn.closest('.edit-ts-time-pills');
+        if (!container.querySelector('.edit-ts-pill:not(.dashed)') && !container.querySelector('.no-slots-msg')) {
+            const msg = document.createElement('p');
+            msg.className = 'no-slots-msg';
+            msg.textContent = 'No slots available';
+            container.insertBefore(msg, container.querySelector('.edit-ts-pill.dashed'));
+        }
     }
 
-    // ── Modal helpers ──
     function openAddTimeModal(session) {
         targetSession = session || 'morning';
         const hourSelect = document.getElementById('slotHour');
         hourSelect.innerHTML = '';
-        // morning: 00–11, evening: 12–23
         const start = targetSession === 'morning' ? 0 : 12;
         const end   = targetSession === 'morning' ? 12 : 24;
         for (let h = start; h < end; h++) {
@@ -186,69 +242,38 @@
         if (e.target === document.getElementById('addTimeModal')) closeAddTimeModal();
     });
 
-    // ── Add new slot pill ──
     document.getElementById('addTimeForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const h = document.getElementById('slotHour').value;
         const m = document.getElementById('slotMinute').value;
-        const timeVal = `${h}:${m}`;  // HH:MM 24h
-
-        const pill = document.createElement('div');
-        pill.className = 'edit-ts-pill';
-        pill.dataset.time = timeVal;
-        pill.textContent = formatTime(timeVal);
-
-        const removeBtn = document.createElement('span');
-        removeBtn.className = 'edit-ts-pill-remove';
-        removeBtn.innerHTML = '&times;';
-        removeBtn.addEventListener('click', (ev) => removePill(ev, removeBtn));
-        pill.appendChild(removeBtn);
-
+        const timeVal = `${h}:${m}`;
         const sessionIndex = targetSession === 'evening' ? 1 : 0;
-        const pillsContainer = document.querySelectorAll('.edit-ts-time-pills')[sessionIndex];
-        const addBtn = pillsContainer.querySelector('.edit-ts-pill.dashed');
-        pillsContainer.insertBefore(pill, addBtn);
-
-        // hide the "No slots available" message if present
-        const noMsg = pillsContainer.querySelector('.no-slots-msg');
+        const container = document.querySelectorAll('.edit-ts-time-pills')[sessionIndex];
+        const addBtn = container.querySelector('.edit-ts-pill.dashed');
+        container.insertBefore(makePill(timeVal), addBtn);
+        const noMsg = container.querySelector('.no-slots-msg');
         if (noMsg) noMsg.remove();
-
         closeAddTimeModal();
     });
 
-    // ── Save Changes: send all remaining slot times, backend replaces DB ──
     function saveChanges() {
-        // Collect all visible (non-dashed) pills and their raw HH:MM times
-        const allTimes = [...document.querySelectorAll('.edit-ts-pill:not(.dashed)')]
-            .map(p => p.dataset.time)
-            .filter(Boolean);
-
+        saveCurrentDayToMemory();
         fetch(SAVE_URL, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': CSRF_TOKEN,
-            },
-            body: JSON.stringify({
-                day: SELECTED_DAY,
-                times: allTimes,
-            }),
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN },
+            body: JSON.stringify({ days: allSlots }),
         })
         .then(r => r.json())
         .then(data => {
-            if (data.success) {
-                window.location.href = "{% url 'doctor:doctor_dashboard' %}";
-            } else {
-                alert('Error saving changes.');
-            }
+            if (data.success) window.location.href = "{% url 'doctor:doctor_dashboard' %}";
+            else alert('Error saving changes.');
         })
         .catch(() => alert('Network error. Please try again.'));
     }
 
     function formatTime(timeValue) {
         const [hours, minutes] = timeValue.split(':');
-        let period = 'AM';
-        let hour = parseInt(hours);
+        let period = 'AM', hour = parseInt(hours);
         if (hour >= 12) { period = 'PM'; if (hour > 12) hour -= 12; }
         if (hour === 0) hour = 12;
         return `${hour.toString().padStart(2, '0')}:${minutes} ${period}`;

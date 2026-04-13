@@ -3466,9 +3466,15 @@ body {
 /* ===== NURSE BOOKING CARDS ===== */
 .nbs-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 24px;
     margin-top: 30px;
+}
+
+@media (max-width: 768px) {
+    .nbs-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .nbs-card {
@@ -3477,8 +3483,6 @@ body {
     padding: 24px 28px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     border: 1.5px solid #94A3B8;
-    width: 536px;
-    height: 326px;
     max-width: 100%;
     display: flex;
     flex-direction: column;
@@ -3588,8 +3592,6 @@ body {
     margin-top: 20px;
     margin-bottom: 12px;
     letter-spacing: 0.5px;
-    margin-left: 99px;
-
 }
 
 .nbs-service {
@@ -3597,8 +3599,6 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 3px;
-    margin-left: 102px;
-
 }
 
 .nbs-service:last-of-type {
@@ -3621,7 +3621,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-top: 13px;
+    margin-top: auto;
+    padding-top: 16px;
 }
 
 .nbs-price-label {
@@ -3630,9 +3631,7 @@ body {
     font-weight: 700;
     color: #4b5563;
     letter-spacing: 1px;
-    margin-bottom: -2px;
-    margin-left: 102px;
-
+    margin-bottom: 2px;
 }
 
 .nbs-price-amount {
@@ -3642,7 +3641,6 @@ body {
     display: flex;
     align-items: baseline;
     gap: 4px;
-    margin-left: 102px;
 }
 
 .nbs-price-amount span {

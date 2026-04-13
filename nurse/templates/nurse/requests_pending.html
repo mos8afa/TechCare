@@ -138,37 +138,36 @@
 
                     <hr class="hr">
 
-                    <div class="timeslots-header1"><h3>Time Slots</h3></div>
-                    <div class="timeslots-card1">
-                        <div class="timeslots-container1">
-                            <button class="timeslot-nav-btn" onclick="slideSlots(-1, this)">
-                                <i class="fas fa-angle-left"></i>
-                            </button>
-                            <div class="timeslots-grid">
-                                {% for slot in req.nurse_slots %}
-                                <div class="timeslot-item1 {% if slot.time == req.time %}active-slot{% endif %}"
-                                     onclick="selectSlot(this, '{{ slot.time|time:'H:i' }}', {{ req.id }})">
-                                    {{ slot.time|time:"h:i A" }}
+                    <div class="edit-input">
+                        <label>Time Slots</label>
+                        <div class="time-slots-carousel">
+                            <button type="button" class="slot-nav prev-slot" onclick="slideSlots(-1, this)">&#8249;</button>
+                            <div class="slots-viewport">
+                                <div class="slots-track" data-offset="0">
+                                    {% for slot in req.day_slots %}
+                                    <button type="button" class="time-slot-btn {% if slot.time == req.time %}active{% endif %}"
+                                            onclick="selectSlot(this)">
+                                        {{ slot.time|time:"h:i A" }}
+                                    </button>
+                                    {% empty %}
+                                    <span style="color:#888; font-size:13px; padding:8px;">No slots for this day</span>
+                                    {% endfor %}
                                 </div>
-                                {% endfor %}
                             </div>
-                            <button class="timeslot-nav-btn" onclick="slideSlots(1, this)">
-                                <i class="fas fa-angle-right"></i>
-                            </button>
+                            <button type="button" class="slot-nav next-slot" onclick="slideSlots(1, this)">&#8250;</button>
                         </div>
                     </div>
-
                     <div class="card-footer-actions">
                         <form method="POST" action="{% url 'nurse:request_action' req.id %}" style="display:inline;">
                             {% csrf_token %}
                             <input type="hidden" name="action" value="reject">
                             <button type="submit" class="btn-action reject">Reject</button>
                         </form>
-                        <form method="POST" action="{% url 'nurse:request_action' req.id %}" style="display:inline;" class="accept-form-{{ req.id }}">
+                        <form method="POST" action="{% url 'nurse:request_action' req.id %}" style="display:inline;" class="accept-form">
                             {% csrf_token %}
                             <input type="hidden" name="action" value="accept">
-                            <input type="hidden" name="selected_time" class="selected-time-{{ req.id }}" value="{{ req.time|time:'H:i' }}" data-original="{{ req.time|time:'H:i' }}">
-                            <button type="submit" class="btn-action accept" id="accept-btn-{{ req.id }}">Accept</button>
+                            <input type="hidden" name="selected_time" class="selected-time-input" value="{{ req.time|time:'H:i' }}" data-original="{{ req.time|time:'H:i' }}">
+                            <button type="submit" class="btn-action accept">Accept</button>
                         </form>
                     </div>
                 </div>
@@ -185,28 +184,41 @@
 
 <script src="{% static 'JS/Board.js' %}"></script>
 <script>
-function selectSlot(el, timeVal, reqId) {
-    el.closest('.timeslots-grid').querySelectorAll('.timeslot-item1').forEach(i => i.classList.remove('active-slot'));
-    el.classList.add('active-slot');
-    const input = document.querySelector(`.selected-time-${reqId}`);
-    if (input) input.value = timeVal;
-    const btn = document.getElementById(`accept-btn-${reqId}`);
-    if (btn) {
-        const original = input ? input.dataset.original : null;
-        btn.textContent = (original && timeVal !== original) ? 'Edit' : 'Accept';
+function selectSlot(el) {
+    const track = el.closest('.slots-track');
+    track.querySelectorAll('.time-slot-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+
+    const card = el.closest('.request-card-item');
+    const timeInput = card.querySelector('.selected-time-input');
+    const acceptBtn = card.querySelector('.accept-form .btn-action');
+
+    const text = el.textContent.trim();
+    const [timePart, period] = text.split(' ');
+    let [h, m] = timePart.split(':').map(Number);
+    if (period === 'PM' && h !== 12) h += 12;
+    if (period === 'AM' && h === 12) h = 0;
+    const newVal = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`;
+
+    if (timeInput) timeInput.value = newVal;
+
+    if (acceptBtn) {
+        const original = timeInput ? timeInput.dataset.original : null;
+        acceptBtn.textContent = (original && newVal !== original) ? 'Edit' : 'Accept';
     }
 }
 
 function slideSlots(dir, btn) {
-    const grid = btn.closest('.timeslots-container1').querySelector('.timeslots-grid');
-    const item = grid.querySelector('.timeslot-item1');
-    if (!item) return;
-    const itemW = item.offsetWidth + 8;
-    const current = parseInt(grid.dataset.offset || 0);
-    const max = Math.max(0, grid.children.length - Math.floor(grid.parentElement.offsetWidth / itemW));
-    const next = Math.min(Math.max(current + dir, 0), max);
-    grid.dataset.offset = next;
-    grid.style.transform = `translateX(-${next * itemW}px)`;
+    const carousel = btn.closest('.time-slots-carousel');
+    const track = carousel.querySelector('.slots-track');
+    const viewport = carousel.querySelector('.slots-viewport');
+    const btnWidth = 108;
+    const totalBtns = track.querySelectorAll('.time-slot-btn').length;
+    const maxOffset = Math.max(0, totalBtns - Math.floor(viewport.clientWidth / btnWidth));
+    let current = parseInt(track.dataset.offset || 0);
+    current = Math.min(Math.max(current + dir, 0), maxOffset);
+    track.dataset.offset = current;
+    track.style.transform = `translateX(-${current * btnWidth}px)`;
 }
 </script>
 </body>
