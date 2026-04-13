@@ -27,6 +27,7 @@ from doctor.models import DoctorRequest
 # Local Apps - Nurse
 from nurse.models import NurseRequest, Service
 from nurse.views import _nurse_name, get_ordered_week_days
+###################################### Nurse Rooole ###########################################
 # ─────────────────────────────────────────────
 # HELPERS
 # ─────────────────────────────────────────────
@@ -49,6 +50,10 @@ def get_ordered_week_days():
         })
     return ordered_days
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_role(request):
+    return Response({"role": request.user.role}, status=200)
 
 # ─────────────────────────────────────────────
 # DASHBOARD
@@ -468,25 +473,7 @@ def delete_time_slot(request, slot_id):
     return Response({"message": "Time slot deleted successfully"}, status=200)
 
 
-################################################################################
-# ─────────────────────────────────────────────
-# HELPERS
-# ─────────────────────────────────────────────
-
-def get_ordered_week_days():
-    today = date.today()
-    days_map = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
-    today_index = today.weekday()
-    ordered_days = []
-    for i in range(7):
-        day_index = (today_index + i) % 7
-        ordered_days.append({
-            'day': days_map[day_index],
-            'date': today + timedelta(days=i)
-        })
-    return ordered_days
-
-
+############################### DOCTOR ROOOLE ######################################
 # ─────────────────────────────────────────────
 # DASHBOARD
 # ─────────────────────────────────────────────
@@ -830,7 +817,7 @@ def delete_time_slot(request, slot_id):
 
     return Response({"message": "Time slot deleted successfully"}, status=200)
 
-#######################################################################################
+############################### patient Rooole ################################################
 # ─────────────────────────────────────────────
 # DASHBOARD
 # ─────────────────────────────────────────────

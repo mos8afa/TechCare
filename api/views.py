@@ -518,16 +518,3 @@ def resend_otp(request):
 
     return Response({"error": "Invalid source"}, status=400)
 
-
-
-    if request.user.role != 'doctor':
-        return Response({"error": "Unauthorized"}, status=401)
-
-    doctor = Doctor.objects.get(user=request.user)
-
-    try:
-        slot = TimeSlots.objects.get(id=slot_id, doctor=doctor)
-        slot.delete()
-        return Response({"message": "Time slot deleted successfully"}, status=200)
-    except TimeSlots.DoesNotExist:
-        return Response({"error": "Time slot not found"}, status=404)
