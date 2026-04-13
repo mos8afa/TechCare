@@ -37,7 +37,6 @@ body {
     border-right: #E1E6EC 1px solid;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     overflow-y: auto;
-    transition: var(--transition-smooth);
 }
 
 .sidebar.collapsed {
@@ -108,7 +107,6 @@ body {
     cursor: ew-resize;
     margin-left: auto;
     background-color: white;
-    transition: all 0.2s;
 }
 
 .sidebar-toggle:hover {
@@ -137,7 +135,6 @@ body {
     border-radius: 15px;
     text-decoration: none;
     border: 1px solid transparent;
-    transition: border 0.2s, box-shadow 0.2s;
 }
 
 .aside-item i {
@@ -158,7 +155,6 @@ body {
 .aside-item:not(.active):hover {
     border: 1px solid var(--primary-color);
     box-shadow: 0 2px 8px rgba(0, 133, 255, 0.25);
-    transform: translateX(5px);
 }
 
 /* ===== Top Navbar ===== */
@@ -176,7 +172,6 @@ body {
     border-bottom: 1px solid #E1E6EC;
     box-shadow: 0 2px 8px rgba(255, 0, 0, 0.03);
     z-index: 1000;
-    transition: var(--transition-smooth);
 }
 
 .topbar-title {
@@ -196,12 +191,10 @@ body {
     cursor: pointer;
     color: #4b5563;
     position: relative;
-    transition: var(--transition-smooth);
 }
 
 .topbar-icon:hover {
     color: var(--primary-color);
-    transform: scale(1.15);
 }
 
 .notification-badge {
@@ -245,7 +238,6 @@ body {
     padding: 10px;
     cursor: pointer;
     border-radius: 10px;
-    transition: background 0.2s;
 }
 
 .notification-item:hover {
@@ -279,11 +271,9 @@ body {
     display: flex;
     align-items: center;
     cursor: pointer;
-    transition: 0.3s ease;
 }
 
 .topbar-profile:hover {
-    transform: scale(1.05);
 }
 
 .topbar-profile img {
@@ -317,11 +307,7 @@ body {
     padding: 32px;
     margin-left: 250px;
     margin-top: 80px;
-    transition: 0.3s ease;
 }
-
-/* ===== Responsive ===== */
-/* Removed redundant variables and reset as they are already defined at the top */
 
 /* ===== Dashboard Layout ===== */
 .dashboard {
@@ -342,7 +328,6 @@ body {
     border-right: #E1E6EC 1px solid;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     overflow-y: auto;
-    transition: 0.3s ease;
 }
 
 .sidebar.collapsed {
@@ -413,7 +398,6 @@ body {
     cursor: ew-resize;
     margin-left: auto;
     background-color: white;
-    transition: all 0.2s;
 }
 
 .sidebar-toggle:hover {
@@ -442,7 +426,6 @@ body {
     border-radius: 15px;
     text-decoration: none;
     border: 1px solid transparent;
-    transition: border 0.2s, box-shadow 0.2s;
 }
 
 .aside-item i {
@@ -499,7 +482,6 @@ body {
     cursor: pointer;
     color: #4b5563;
     position: relative;
-    transition: color 0.2s;
 }
 
 .topbar-icon:hover {
@@ -532,7 +514,6 @@ body {
     padding: 10px;
     cursor: pointer;
     border-radius: 10px;
-    transition: background 0.2s;
 }
 
 .notification-item:hover {
@@ -600,7 +581,6 @@ body {
     padding: 32px;
     margin-left: 250px;
     margin-top: 80px;
-    transition: 0.3s ease;
 }
 
 /* ===== Responsive ===== */
@@ -891,6 +871,13 @@ body {
 }
 
 /* ---- Category Tabs ---- */
+.category-tabs-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
 .category-tabs {
     display: flex;
     align-items: center;
@@ -905,8 +892,6 @@ body {
     width: 672px;
     /* كبرنا العرض */
     margin: 0 auto 30px;
-
-    border: 1px solid #E2E8F0;
 }
 
 /* التابات */
@@ -928,7 +913,6 @@ body {
     border: none;
 
     cursor: pointer;
-    transition: all 0.25s ease;
 }
 
 /* الأبيض (active) */
@@ -968,13 +952,11 @@ body {
     color: #9ca3af;
     cursor: pointer;
     position: relative;
-    transition: var(--transition-smooth);
     font-family: 'Inter', sans-serif;
 }
 
 .status-tab:hover:not(.active) {
     color: var(--primary-color);
-    transform: translateY(-2px);
 }
 
 .status-tab.active {
@@ -1453,7 +1435,7 @@ body {
     align-items: center;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
     margin-bottom: 24px;
-    transition: var(--transition-smooth);
+    transition: 0.3s ease;
 }
 
 .patient-profile-card:hover {
@@ -1544,7 +1526,7 @@ body {
     border-radius: 16px;
     padding: 30px 24px 24px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-    transition: var(--transition-smooth);
+    transition: 0.3s ease;
     /* animation: fadeInUp 0.6s ease-out; */
 }
 
@@ -1642,7 +1624,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: var(--transition-smooth);
+    transition: 0.3s ease;
 }
 
 .profile-wallet-card:hover {
@@ -2671,9 +2653,38 @@ body {
 }
 
 /* تحسين محاذاة بطاقة الممرضة بحيث تكون كما في الصورة */
-.doc-card {
+.doc-card.nurse-doc-card {
     align-items: center;
-    /* توسيط رأسي للصورة والنص */
+    padding: 30px;
+}
+
+.name-rating-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.doc-info-main {
+    flex: 1;
+    width: 100%;
+}
+
+.doc-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stars {
+    color: #F59E0B;
+    font-size: 12px;
+}
+
+.rating-val {
+    font-size: 13px;
+    font-weight: 600;
+    color: #9CA3AF;
 }
 
 /* جعل صورة الممرضة تحتوي على positioning صحيح للنقطة الخضراء */
@@ -2701,6 +2712,114 @@ body {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
+}
+
+/* Services Card & Checkboxes */
+.services-card .card-title {
+    margin-bottom: 25px;
+}
+
+.services-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.service-item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 16px 0;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.service-item:first-child {
+    padding-top: 0;
+}
+
+.service-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.checkbox-box {
+    width: 22px;
+    height: 22px;
+    background: #fff;
+    border: 2px solid #D1D5DB;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    transition: 0.2s;
+    position: relative;
+}
+
+.checkbox-box i {
+    color: white;
+    font-size: 14px;
+    opacity: 0;
+    transition: 0.2s;
+}
+
+.service-item input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.service-item input[type="checkbox"]:checked ~ .checkbox-box,
+.checkbox-box.checked {
+    background: #1D89E4;
+    border-color: #1D89E4;
+}
+
+.service-item input[type="checkbox"]:checked ~ .checkbox-box i,
+.checkbox-box.checked i {
+    opacity: 1;
+}
+
+.service-text-wrap {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 2px;
+}
+
+.service-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1F2937;
+}
+
+.service-desc {
+    font-size: 13px;
+    color: #9CA3AF;
+    font-weight: 500;
+}
+
+.service-price {
+    font-size: 15px;
+    font-weight: 700;
+    color: #4B5563;
+}
+
+/* Card titles matching */
+.card-title-plain {
+    font-size: 15px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-title-plain i {
+    color: #1D89E4;
+    font-size: 18px;
 }
 
 /* تنسيق رسوم الجلسة في الجهة اليمنى */
@@ -3471,7 +3590,7 @@ body {
     margin-top: 30px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .nbs-grid {
         grid-template-columns: 1fr;
     }
@@ -3483,10 +3602,13 @@ body {
     padding: 24px 28px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     border: 1.5px solid #94A3B8;
+    width: 100%;
     max-width: 100%;
     display: flex;
     flex-direction: column;
     transition: 0.3s ease;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .nbs-card:hover {
@@ -3592,6 +3714,7 @@ body {
     margin-top: 20px;
     margin-bottom: 12px;
     letter-spacing: 0.5px;
+    margin-left: 99px;
 }
 
 .nbs-service {
@@ -3599,6 +3722,7 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 3px;
+    margin-left: 102px;
 }
 
 .nbs-service:last-of-type {
@@ -3620,9 +3744,12 @@ body {
 .nbs-footer {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
     margin-top: auto;
     padding-top: 16px;
+    gap: 12px;
+    flex-wrap: nowrap;
+    overflow: hidden;
 }
 
 .nbs-price-label {
@@ -3631,7 +3758,8 @@ body {
     font-weight: 700;
     color: #4b5563;
     letter-spacing: 1px;
-    margin-bottom: 2px;
+    margin-bottom: -2px;
+    margin-left: 102px;
 }
 
 .nbs-price-amount {
@@ -3641,6 +3769,7 @@ body {
     display: flex;
     align-items: baseline;
     gap: 4px;
+    margin-left: 102px;
 }
 
 .nbs-price-amount span {
@@ -3659,6 +3788,10 @@ body {
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(29, 137, 228, 0.2);
     transition: var(--transition-smooth);
+    white-space: nowrap;
+    flex-shrink: 0;
+    text-decoration: none;
+    display: inline-block;
 }
 
 .nbs-btn-book:hover {
@@ -3801,7 +3934,6 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 10px;
 }
 
 .dc-fin-label {
@@ -4220,4 +4352,62 @@ body {
 .npc-btn-cancel:hover {
     background-color: #f8fafc;
     border-color: #cbd5e1;
+}
+
+
+/* Extra Nurse Booking layout adjustments */
+.address-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.address-input-wrapper i {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    color: #9CA3AF;
+    font-size: 18px;
+}
+
+.address-input-wrapper textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 15px 15px 15px 42px;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    font-size: 14px;
+    font-family: inherit;
+    color: #374151;
+    resize: none;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.address-input-wrapper textarea:focus {
+    outline: none;
+    border-color: #1D89E4;
+}
+
+.symptoms-card textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 15px;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    font-size: 14px;
+    font-family: inherit;
+    color: #374151;
+    resize: none;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.symptoms-card textarea::placeholder,
+.address-input-wrapper textarea::placeholder {
+    color: #9CA3AF;
+}
+
+.symptoms-card textarea:focus {
+    outline: none;
+    border-color: #1D89E4;
 }

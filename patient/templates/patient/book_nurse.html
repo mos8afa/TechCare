@@ -23,11 +23,11 @@
             <button class="cat-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'doctor' 'booking' %}'">
                 <i class="ri-stethoscope-line"></i> Doctor
             </button>
-            <button class="cat-tab active" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'booking' %}'">
-                <i class="ri-nurse-line"></i> Nurse
+            <button class="cat-tab active">
+                <i class="ri-first-aid-kit-line"></i> Nurse
             </button>
             <button class="cat-tab">
-                <i class="ri-medicine-bottle-line"></i> Pharmacy
+                <i class="ri-medicine-bottle-line"></i> Medicine
             </button>
         </div>
 
@@ -69,53 +69,57 @@
                     </div>
                     <div class="doc-info-wrapper nurse-info-wrapper">
                         <div class="doc-info-main">
-                            <h2 class="doc-name">{{ nurse.user.first_name }} {{ nurse.user.last_name }}</h2>
-                            <p class="doc-title nurse-doc-title">Registered Nurse</p>
-                            <div class="nurse-tags nurse-tags-wrapper">
-                                <span class="nurse-tag-gray">{{ nurse.get_governorate_display }}</span>
-                                <span class="nurse-tag-gray">Home Visits</span>
-                                <span class="nurse-tag-gray">Verified Specialist</span>
+                            <div class="name-rating-row">
+                                <h2 class="doc-name">{{ nurse.user.first_name }} {{ nurse.user.last_name }}</h2>
+                                <div class="doc-rating">
+                                    <div class="stars">
+                                        {% with avg=nurse.avg_rating %}
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= avg %}
+                                                <i class="fas fa-star"></i>
+                                            {% else %}
+                                                <i class="fas fa-star" style="opacity:0.3;"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% endwith %}
+                                    </div>
+                                    <span class="rating-val">({{ nurse.avg_rating }}/5)</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="doc-fee nurse-doc-fee">
-                            <p class="fee-label nurse-fee-label">AVG RATING</p>
-                            <h3 class="fee-amount nurse-fee-amount">
-                                <i class="fa-solid fa-star" style="color:#f59e0b; font-size:16px;"></i> {{ nurse.avg_rating }}/5
-                            </h3>
+                            <p class="doc-title nurse-doc-title">{{ nurse.brief|truncatewords:6|default:"Registered Nurse" }}</p>
+                            <div class="nurse-tags">
+                                <span class="nurse-tag">{{ nurse.get_governorate_display }}</span>
+                                <span class="nurse-tag">Home Visits</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Services Selection (kept as-is) -->
-                <div class="booking-card symptoms-card">
+                <!-- Select Services -->
+                <div class="booking-card services-card">
                     <div class="card-title">
-                        <i class="ri-service-line"></i> <span>Select Services</span>
+                        <i class="ri-file-list-3-line"></i> <span>Select Services</span>
                     </div>
-                    {% if services %}
-                    <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+                    <div class="services-list">
                         {% for svc in services %}
-                        <label style="display:flex; align-items:center; gap:10px; cursor:pointer; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+                        <label class="service-item">
                             <input type="checkbox" name="services" value="{{ svc.id }}"
                                    onchange="updateTotal()"
                                    data-price="{{ svc.price }}"
-                                   data-name="{{ svc.name }}"
-                                   style="width:16px; height:16px;">
-                            <span style="flex:1; font-weight:500;">{{ svc.name }}</span>
-                            <span style="color:#0085FF; font-weight:600;">{{ svc.price }} EGP</span>
+                                   data-name="{{ svc.name }}">
+                            <div class="checkbox-box">
+                                <i class="ri-check-line"></i>
+                            </div>
+                            <div class="service-text-wrap">
+                                <span class="service-name">{{ svc.name }}</span>
+                                <span class="service-desc">{{ svc.description|truncatewords:8 }}</span>
+                            </div>
+                            <span class="service-price">{{ svc.price }} EGP</span>
                         </label>
+                        {% empty %}
+                        <p style="color:#888; padding:10px 0;">This nurse has no services listed.</p>
                         {% endfor %}
                     </div>
-                    {% else %}
-                    <p style="color:#888; padding:10px 0;">This nurse has no services listed.</p>
-                    {% endif %}
-                </div>
-
-                <!-- Symptoms Card -->
-                <div class="booking-card symptoms-card">
-                    <div class="card-title">
-                        <i class="ri-file-text-line"></i> <span>Describe Your Symptoms</span>
-                    </div>
-                    <textarea name="disease_description" placeholder="Please provide more details about how you are feeling..."></textarea>
                 </div>
 
                 <!-- Governorate -->
@@ -131,12 +135,20 @@
                     </div>
                 </div>
 
-                <!-- Address -->
-                <div class="booking-card address-card">
-                    <div class="card-title"><span>Full Address</span></div>
-                    <div class="address-input-wrapper">
-                        <i class="ri-map-pin-line"></i>
-                        <textarea name="address" placeholder="Your full address...">{{ patient.address }}</textarea>
+                <!-- Symptoms & Address Grid -->
+                <div class="booking-inputs-grid">
+                    <div class="booking-card symptoms-card">
+                        <div class="card-title">
+                            <i class="ri-file-text-line"></i> <span>Describe Your Symptoms</span>
+                        </div>
+                        <textarea name="disease_description" placeholder="Please provide more details about how you are feeling..."></textarea>
+                    </div>
+                    <div class="booking-card address-card">
+                        <div class="card-title"><span>Full Address</span></div>
+                        <div class="address-input-wrapper">
+                            <i class="ri-map-pin-line"></i>
+                            <textarea name="address" placeholder="Maadi, Cairo, Egypt">{{ patient.address }}</textarea>
+                        </div>
                     </div>
                 </div>
 
