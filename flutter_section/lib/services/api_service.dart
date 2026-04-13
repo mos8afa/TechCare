@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  // غير الـ IP ده لـ IP الجهاز بتاعك
   static const String baseUrl = 'http://10.0.2.2:8000/api';
 
   // ==================== Token Management ====================
@@ -19,16 +18,136 @@ class ApiService {
     return prefs.getString('access_token');
   }
 
+  static Future<String?> getRefreshToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('refresh_token');
+  }
+
   static Future<void> clearTokens() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('access_token');
     await prefs.remove('refresh_token');
   }
 
+  // ==================== REFRESH ACCESS TOKEN ====================
+  static Future<bool> refreshAccessToken() async {
+    try {
+      final refresh = await getRefreshToken();
+      if (refresh == null) return false;
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/token/refresh/'), // ✅ اللينك الصح
+        headers: _headers,
+        body: jsonEncode({'refresh': refresh}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('access_token', data['access']);
+        if (data['refresh'] != null) {
+          await prefs.setString('refresh_token', data['refresh']);
+        }
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // ==================== AUTHENTICATED GET ====================
+  static Future<http.Response> _authGet(String url) async {
+    final token = await getAccessToken();
+    var response = await http.get(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    if (response.statusCode == 401) {
+      final refreshed = await refreshAccessToken();
+      if (refreshed) {
+        final newToken = await getAccessToken();
+        response = await http.get(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $newToken',
+          },
+        );
+      }
+    }
+    return response;
+  }
+
+  // ==================== AUTHENTICATED POST ====================
+  static Future<http.Response> _authPost(
+      String url, Map<String, dynamic> body) async {
+    final token = await getAccessToken();
+    var response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(body),
+    );
+    if (response.statusCode == 401) {
+      final refreshed = await refreshAccessToken();
+      if (refreshed) {
+        final newToken = await getAccessToken();
+        response = await http.post(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $newToken',
+          },
+          body: jsonEncode(body),
+        );
+      }
+    }
+    return response;
+  }
+
+  // ==================== AUTHENTICATED DELETE ====================
+  static Future<http.Response> _authDelete(String url) async {
+    final token = await getAccessToken();
+    var response = await http.delete(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    if (response.statusCode == 401) {
+      final refreshed = await refreshAccessToken();
+      if (refreshed) {
+        final newToken = await getAccessToken();
+        response = await http.delete(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $newToken',
+          },
+        );
+      }
+    }
+    return response;
+  }
+
   // ==================== Headers ====================
   static const Map<String, String> _headers = {
     'Content-Type': 'application/json',
   };
+
+  // ==================== MEDIA URL ====================
+  static String buildMediaUrl(String? path) {
+    if (path == null || path.isEmpty) return '';
+    if (path.startsWith('http')) return path;
+    return 'http://10.0.2.2:8000$path';
+  }
 
   // ==================== LOGIN ====================
   static Future<ApiResult> login({
@@ -41,25 +160,13 @@ class ApiService {
         headers: _headers,
         body: jsonEncode({'username': username, 'password': password}),
       );
-
       final data = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        return ApiResult.success(data);
-      }
+      if (response.statusCode == 200) return ApiResult.success(data);
       return ApiResult.error(data['error'] ?? 'Login failed');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
     }
   }
-
-
-  static String buildMediaUrl(String? path) {
-    if (path == null || path.isEmpty) return '';
-    if (path.startsWith('http')) return path;
-    return 'http://10.0.2.2:8000$path';
-  }
-
 
   // ==================== VERIFY OTP LOGIN ====================
   static Future<ApiResult> verifyOtpLogin({
@@ -72,9 +179,7 @@ class ApiService {
         headers: _headers,
         body: jsonEncode({'username': username, 'otp': otp}),
       );
-
       final data = jsonDecode(response.body);
-
       if (response.statusCode == 200) {
         await saveTokens(data['access'], data['refresh']);
         return ApiResult.success(data);
@@ -107,12 +212,8 @@ class ApiService {
           'role': role.toLowerCase(),
         }),
       );
-
       final data = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        return ApiResult.success(data);
-      }
+      if (response.statusCode == 200) return ApiResult.success(data);
       return ApiResult.error(data['error'] ?? 'Registration failed');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
@@ -130,9 +231,7 @@ class ApiService {
         headers: _headers,
         body: jsonEncode({'otp': otp}),
       );
-
       final data = jsonDecode(response.body);
-
       if (response.statusCode == 200) {
         await saveTokens(data['access'], data['refresh']);
         return ApiResult.success(data);
@@ -151,12 +250,8 @@ class ApiService {
         headers: _headers,
         body: jsonEncode({'email': email}),
       );
-
       final data = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        return ApiResult.success(data);
-      }
+      if (response.statusCode == 200) return ApiResult.success(data);
       return ApiResult.error(data['error'] ?? 'Email not found');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
@@ -174,12 +269,8 @@ class ApiService {
         headers: _headers,
         body: jsonEncode({'email': email, 'otp': otp}),
       );
-
       final data = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        return ApiResult.success(data);
-      }
+      if (response.statusCode == 200) return ApiResult.success(data);
       return ApiResult.error(data['error'] ?? 'OTP verification failed');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
@@ -196,24 +287,17 @@ class ApiService {
       final response = await http.post(
         Uri.parse('$baseUrl/auth/reset-password/'),
         headers: _headers,
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-          'confirm': confirm,
-        }),
+        body: jsonEncode({'email': email, 'password': password, 'confirm': confirm}),
       );
-
       final data = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        return ApiResult.success(data);
-      }
+      if (response.statusCode == 200) return ApiResult.success(data);
       return ApiResult.error(data['error'] ?? 'Reset failed');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
     }
   }
 
+  // ==================== RESEND OTP ====================
   static Future<ApiResult> resendOtp({
     required String source,
     String? username,
@@ -250,40 +334,19 @@ class ApiService {
   }) async {
     try {
       final token = await getAccessToken();
-      final request = http.MultipartRequest(
-        'POST',
-        Uri.parse('$baseUrl/auth/patient/'),
-      );
-
+      final request = http.MultipartRequest('POST', Uri.parse('$baseUrl/auth/patient/'));
       request.headers['Authorization'] = 'Bearer $token';
       request.fields['gender'] = gender;
       request.fields['phone_number'] = phoneNumber;
       request.fields['address'] = address;
       request.fields['governorate'] = governorate;
-
-      request.files.add(
-        await http.MultipartFile.fromPath('profile_pic', profilePic.path),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'national_id_pic_front',
-          nationalIdFront.path,
-        ),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'national_id_pic_back',
-          nationalIdBack.path,
-        ),
-      );
-
+      request.files.add(await http.MultipartFile.fromPath('profile_pic', profilePic.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_front', nationalIdFront.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_back', nationalIdBack.path));
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
       final data = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        return ApiResult.success(data);
-      }
+      if (response.statusCode == 200) return ApiResult.success(data);
       return ApiResult.error(data['error'] ?? 'Patient registration failed');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
@@ -310,10 +373,7 @@ class ApiService {
   }) async {
     try {
       final token = await getAccessToken();
-      final request = http.MultipartRequest(
-        'POST',
-        Uri.parse('$baseUrl/auth/doctor/'),
-      );
+      final request = http.MultipartRequest('POST', Uri.parse('$baseUrl/auth/doctor/'));
       request.headers['Authorization'] = 'Bearer $token';
       request.fields['gender'] = gender;
       request.fields['phone_number'] = phoneNumber;
@@ -323,39 +383,13 @@ class ApiService {
       request.fields['price'] = price;
       request.fields['specification'] = specification;
       request.fields['university'] = university;
-      request.files.add(
-        await http.MultipartFile.fromPath('profile_pic', profilePic.path),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'national_id_pic_front',
-          nationalIdFront.path,
-        ),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'national_id_pic_back',
-          nationalIdBack.path,
-        ),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath('syndicate_card', syndicateCard.path),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath('practice_permit', practicePerm.path),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'graduation_certificate',
-          graduationCert.path,
-        ),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'excellence_certificate',
-          excellenceCert.path,
-        ),
-      );
+      request.files.add(await http.MultipartFile.fromPath('profile_pic', profilePic.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_front', nationalIdFront.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_back', nationalIdBack.path));
+      request.files.add(await http.MultipartFile.fromPath('syndicate_card', syndicateCard.path));
+      request.files.add(await http.MultipartFile.fromPath('practice_permit', practicePerm.path));
+      request.files.add(await http.MultipartFile.fromPath('graduation_certificate', graduationCert.path));
+      request.files.add(await http.MultipartFile.fromPath('excellence_certificate', excellenceCert.path));
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
       final data = jsonDecode(response.body);
@@ -383,49 +417,20 @@ class ApiService {
   }) async {
     try {
       final token = await getAccessToken();
-      final request = http.MultipartRequest(
-        'POST',
-        Uri.parse('$baseUrl/auth/nurse/'),
-      );
+      final request = http.MultipartRequest('POST', Uri.parse('$baseUrl/auth/nurse/'));
       request.headers['Authorization'] = 'Bearer $token';
       request.fields['gender'] = gender;
       request.fields['phone_number'] = phoneNumber;
       request.fields['address'] = address;
       request.fields['governorate'] = governorate;
       request.fields['date_of_birth'] = dateOfBirth;
-      request.files.add(
-        await http.MultipartFile.fromPath('profile_pic', profilePic.path),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'national_id_pic_front',
-          nationalIdFront.path,
-        ),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'national_id_pic_back',
-          nationalIdBack.path,
-        ),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'excellence_certificate',
-          excellenceCert.path,
-        ),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath('syndicate_card', syndicateCard.path),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath('practice_permit', practicePerm.path),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'graduation_certificate',
-          graduationCert.path,
-        ),
-      );
+      request.files.add(await http.MultipartFile.fromPath('profile_pic', profilePic.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_front', nationalIdFront.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_back', nationalIdBack.path));
+      request.files.add(await http.MultipartFile.fromPath('excellence_certificate', excellenceCert.path));
+      request.files.add(await http.MultipartFile.fromPath('syndicate_card', syndicateCard.path));
+      request.files.add(await http.MultipartFile.fromPath('practice_permit', practicePerm.path));
+      request.files.add(await http.MultipartFile.fromPath('graduation_certificate', graduationCert.path));
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
       final data = jsonDecode(response.body);
@@ -450,11 +455,7 @@ class ApiService {
   }) async {
     try {
       final token = await getAccessToken();
-      final request = http.MultipartRequest(
-        'POST',
-        Uri.parse('$baseUrl/auth/donor/'),
-      );
-
+      final request = http.MultipartRequest('POST', Uri.parse('$baseUrl/auth/donor/'));
       request.headers['Authorization'] = 'Bearer $token';
       request.fields['blood_type'] = bloodType;
       request.fields['phone_number'] = phoneNumber;
@@ -464,30 +465,13 @@ class ApiService {
       if (lastDonationDate != null && lastDonationDate.isNotEmpty) {
         request.fields['last_donation_date'] = lastDonationDate;
       }
-
-      request.files.add(
-        await http.MultipartFile.fromPath('profile_pic', profilePic.path),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'national_id_pic_front',
-          nationalIdFront.path,
-        ),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'national_id_pic_back',
-          nationalIdBack.path,
-        ),
-      );
-
+      request.files.add(await http.MultipartFile.fromPath('profile_pic', profilePic.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_front', nationalIdFront.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_back', nationalIdBack.path));
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
       final data = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        return ApiResult.success(data);
-      }
+      if (response.statusCode == 200) return ApiResult.success(data);
       return ApiResult.error(data['error'] ?? 'Donor registration failed');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
@@ -496,12 +480,18 @@ class ApiService {
 
   // ==================== PHARMACIST REGISTER ====================
   static Future<ApiResult> pharmacistRegister({
-    required String gender, required String phoneNumber,
-    required String dateOfBirth, required File profilePic,
-    required File nationalIdFront, required File nationalIdBack,
-    required String pharmacyName, required String pharmacyAddress,
-    required String governorate, required String university,
-    required File syndicateCard, required File practicePerm,
+    required String gender,
+    required String phoneNumber,
+    required String dateOfBirth,
+    required File profilePic,
+    required File nationalIdFront,
+    required File nationalIdBack,
+    required String pharmacyName,
+    required String pharmacyAddress,
+    required String governorate,
+    required String university,
+    required File syndicateCard,
+    required File practicePerm,
     required File graduationCert,
   }) async {
     try {
@@ -534,21 +524,11 @@ class ApiService {
   // ==================== GET USER ROLE ====================
   static Future<ApiResult> getUserRole() async {
     try {
-      final token = await getAccessToken();
-      final response = await http.get(
-        Uri.parse('$baseUrl/auth/user-role/'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
-
+      final response = await _authGet('$baseUrl/auth/user-role/');
       final data = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        return ApiResult.success(data);
-      }
-      return ApiResult.error(data['error'] ?? 'Failed to get role');
+      if (response.statusCode == 200) return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
+      return ApiResult.error(data['error'] ?? 'Failed');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
     }
@@ -557,16 +537,13 @@ class ApiService {
   // ==================== DOCTOR DASHBOARD ====================
   static Future<ApiResult> getDoctorDashboard({String? day}) async {
     try {
-      final token = await getAccessToken();
       final uri = day != null
-          ? Uri.parse('$baseUrl/dashboard/?day=$day')
-          : Uri.parse('$baseUrl/dashboard/');
-      final response = await http.get(uri, headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
+          ? '$baseUrl/dashboard/?day=$day'
+          : '$baseUrl/dashboard/';
+      final response = await _authGet(uri);
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
       return ApiResult.error(data['error'] ?? 'Failed');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
@@ -576,13 +553,10 @@ class ApiService {
   // ==================== DOCTOR EDIT PROFILE GET ====================
   static Future<ApiResult> getDoctorProfile() async {
     try {
-      final token = await getAccessToken();
-      final response = await http.get(
-        Uri.parse('$baseUrl/profile/edit/'),
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
-      );
+      final response = await _authGet('$baseUrl/profile/edit/');
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
       return ApiResult.error(data['error'] ?? 'Failed');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
@@ -625,16 +599,13 @@ class ApiService {
   // ==================== DOCTOR TIME SLOTS GET ====================
   static Future<ApiResult> getTimeSlots({String? day}) async {
     try {
-      final token = await getAccessToken();
       final uri = day != null
-          ? Uri.parse('$baseUrl/time-slots/?day=$day')
-          : Uri.parse('$baseUrl/time-slots/');
-      final response = await http.get(uri, headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
+          ? '$baseUrl/time-slots/?day=$day'
+          : '$baseUrl/time-slots/';
+      final response = await _authGet(uri);
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
       return ApiResult.error(data['error'] ?? 'Failed');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
@@ -647,14 +618,13 @@ class ApiService {
     required String time,
   }) async {
     try {
-      final token = await getAccessToken();
-      final response = await http.post(
-        Uri.parse('$baseUrl/time-slots/'),
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
-        body: jsonEncode({'day': day, 'time': time}),
+      final response = await _authPost(
+        '$baseUrl/time-slots/',
+        {'day': day, 'time': time},
       );
       final data = jsonDecode(response.body);
       if (response.statusCode == 201) return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
       return ApiResult.error(data['error'] ?? 'Failed');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
@@ -664,13 +634,10 @@ class ApiService {
   // ==================== DOCTOR TIME SLOTS DELETE ====================
   static Future<ApiResult> deleteTimeSlot(int slotId) async {
     try {
-      final token = await getAccessToken();
-      final response = await http.delete(
-        Uri.parse('$baseUrl/time-slots/$slotId/delete/'),
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
-      );
+      final response = await _authDelete('$baseUrl/time-slots/$slotId/delete/');
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
       return ApiResult.error(data['error'] ?? 'Failed');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
@@ -680,31 +647,15 @@ class ApiService {
   // ==================== DOCTOR REQUESTS ====================
   static Future<ApiResult> getDoctorRequests(String type) async {
     try {
-      final token = await getAccessToken();
-      final response = await http.get(
-        Uri.parse('$baseUrl/requests/$type/'),
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
-      );
+      final response = await _authGet('$baseUrl/requests/$type/');
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
       return ApiResult.error(data['error'] ?? 'Failed');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 // ==================== ApiResult Helper ====================
