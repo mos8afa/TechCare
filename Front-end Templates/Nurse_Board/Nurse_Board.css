@@ -1087,12 +1087,12 @@ body {
 .services-each {
     display: flex;
     justify-content: space-between;
-    margin-top: 5px;
 }
 
 .services-each>label {
     font-size: 15px;
     color: #4b5563;
+    margin-bottom: 6px;
 }
 
 .services-each>p {

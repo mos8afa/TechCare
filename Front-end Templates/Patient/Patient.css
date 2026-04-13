@@ -3359,7 +3359,7 @@ body {
 }
 
 .ac-icon.green {
-    color: #2ED47A;
+    color: #047857;
 }
 
 .ac-label {
@@ -3378,7 +3378,7 @@ body {
 }
 
 .ac-value.text-green {
-    color: #2ED47A;
+    color: #047857;
 }
 
 .ac-services {
@@ -3931,4 +3931,275 @@ body {
     .profile-info {
         grid-template-columns: 1fr;
     }
+}
+
+/* ===== NURSE PENDING CARDS (NPC) ===== */
+.npc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 25px;
+    margin-top: 25px;
+}
+
+.npc-card {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #f1f1f1;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.npc-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+.npc-header {
+    display: flex;
+    padding: 24px 24px 0 24px;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.npc-avatar-wrap {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    padding: 3px;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    flex-shrink: 0;
+}
+
+.npc-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.npc-dot {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    background-color: #22c55e;
+    border: 3px solid #fff;
+    border-radius: 50%;
+}
+
+.npc-info-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.npc-services-wrap {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.npc-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.npc-name {
+    font-size: 18px;
+    font-weight: 800;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.npc-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-rescheduled {
+    background-color: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fde68a;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.badge-rescheduled i {
+    font-size: 12px;
+}
+
+.badge-pending-bg {
+    background-color: #ffedd5;
+    color: #ea580c;
+}
+
+.npc-date {
+    font-size: 13px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+}
+
+.npc-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.npc-section-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #1a1a1a;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.npc-service {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.npc-service-name {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.npc-service-price {
+    font-size: 14px;
+    color: #1a1a1a;
+    font-weight: 700;
+}
+
+.npc-divider {
+    border: none;
+    border-top: 1px dashed #e2e8f0;
+    margin: 16px 0;
+}
+
+.npc-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.npc-col {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.npc-detail-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.npc-detail-val {
+    font-size: 13px;
+    font-weight: 800;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.npc-detail-val i {
+    font-size: 16px;
+    color: #94a3b8;
+}
+
+.npc-detail-sub {
+    font-size: 11px;
+    color: #94a3b8;
+    padding-left: 22px;
+    line-height: 1.4;
+    margin-top: -8px;
+}
+
+.npc-footer {
+    padding: 20px 24px;
+    background-color: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.npc-price-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.npc-price-amount {
+    display: block;
+    font-size: 20px;
+    font-weight: 800;
+    color: #2b84ea;
+}
+
+.npc-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.npc-btn-accept {
+    background-color: #2b84ea;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(43, 132, 234, 0.2);
+}
+
+.npc-btn-accept:hover {
+    background-color: #1e6ec4;
+    box-shadow: 0 6px 14px rgba(43, 132, 234, 0.3);
+}
+
+.npc-btn-cancel {
+    background-color: #fff;
+    color: #1e293b;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.npc-btn-cancel:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
 }

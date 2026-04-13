@@ -515,7 +515,6 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 14px;
 }
 
 .services-each label {
@@ -539,7 +538,6 @@ body {
 }
 
 .total-row {
-    margin-top: 8px;
     align-items: center;
 }
 

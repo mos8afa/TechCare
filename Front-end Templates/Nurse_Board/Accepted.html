@@ -13,10 +13,6 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <style> .location-info i{color: var(--primary-color);}
-        .services-each>p {
-    font-size: 21px;
-    font-weight: 1000;
-    }
     </style>
 
 </head>
@@ -156,33 +152,49 @@
                     
                         <!-- Condition -->
                         <div class="Condition">
-                            <span class="accepted-tag">Description</span>
+                            <span class="accepted-tag" style="text-transform: uppercase;">Description</span>
                         </div>
-                        <div class="description-box-accepted">
+                        <div class="description-box-accepted" style="border-bottom: 1px solid #f1f5f9; padding-bottom: 16px; margin-bottom: 20px;">
                             Patient reports severe chest pain and shortness of breath since early morning.
                             Previous history of hypertension noted.
                         </div>
+                        
+                        <div class="Condition" style="margin-bottom: 15px; margin-top: 0;">
+                            <span class="accepted-tag" style="color: #1a1a1a; font-weight: 800; font-size: 15px; text-transform: uppercase;">SERVICES REQUESTED</span>
+                        </div>
 
-                        <hr style="margin:15px 0; border:1px solid #F0F4F8;">
+                        <div class="services-each">
+                            <label>Insulin Injection & Monitoring</label>
+                            <p>$45.00</p>
+                        </div>
+                        <div class="services-each" style="margin-bottom: 0;">
+                            <label>Glucose Strip Test</label>
+                            <p>$15.00</p>
+                        </div>
 
-                            <div class="services-each total-row">
-                                <label>Total Price</label>
-                                <p>600 EGY</p>
-                            </div>
+                        <hr style="margin:13px 0; border:none; border-top: 1px dashed #e2e8f0;">
 
-                            <div class="request-footer">
-                                <div class="user-confirmed-banner">
+                        <div class="services-each total-row" style="margin-bottom: 24px;">
+                            <label style="color: #1a1a1a; font-size: 16px; font-weight: 800;">Total Price</label>
+                            <p style="color: #2b84ea; font-size: 16px;">$60.00</p>
+                        </div>
+
+                        <div class="request-footer" style="padding: 0; margin-top: 0;">
+                            <div class="footer-action-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 60px;">
+                                <div class="phone-display">
+                                    <i class="ri-phone-line"></i>
+                                    <span>+20 123 456 789</span>
+                                </div>
+                                <div class="user-confirmed-banner" style="width: auto; margin: 0; background-color: #f0fdf4; color: #22c55e; border-radius: 6px; padding: 6px 12px; font-size: 11px;">
                                     <i class="ri-checkbox-circle-line"></i>
-                                    User Has Confirmed Appointment
-                                </div>
-                                <div class="footer-action-row">
-                                    <div class="phone-display">
-                                        <i class="ri-phone-line"></i>
-                                        <span>+20 123 456 789</span>
-                                    </div>
-                                    <button class="btn-done">Done</button>
+                                    USER HAS CONFIRMED
                                 </div>
                             </div>
+                            
+                            <div style="display: flex; justify-content: flex-end;">
+                                <button class="btn-done" style="border-radius: 20px; padding: 12px 32px; font-size: 14px; background: #2B84EA;">Done</button>
+                            </div>
+                        </div>
                     
                         
                     </div>
