@@ -1,10 +1,9 @@
-from api.views import delete_time_slot, doctor_dashboard, doctor_requests, edit_time_slots, login, Verify_OTP_login, register, verify_OTP_register, patient_register, doctor_register, nurse_register, donor_register, pharmacist_register , forget_password, verify_OTP_forget_password, reset_password, resend_otp, edit_doctor_profile , get_user_role
+from api.views import  login, Verify_OTP_login, register, verify_OTP_register, patient_register, doctor_register, nurse_register, donor_register, pharmacist_register , forget_password, verify_OTP_forget_password, reset_password, resend_otp
 from django.urls import path
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
-
-from doctor import views
+from . import views_2
 
 urlpatterns = [
     path('auth/login/', login, name='login'),
@@ -22,10 +21,47 @@ urlpatterns = [
     path('auth/reset-password/', reset_password, name='reset_password'),
     path('auth/resend-otp/', resend_otp, name='resend_otp'),
 #################################################################################################
-    path('auth/user-role/', get_user_role, name='get_user_role'),
-    path('dashboard/', doctor_dashboard, name='doctor_dashboard'),
-    path('profile/edit/', edit_doctor_profile, name='edit_doctor_profile'),
-    path('requests/<str:type>/',doctor_requests, name='doctor_requests'),
-    path('time-slots/', edit_time_slots, name='edit_time_slots'),
-    path('time-slots/<int:slot_id>/delete/', delete_time_slot, name='delete_time_slot'),
+    path('dashboard/',                          views_2.doctor_dashboard,    name='doctor_dashboard'),
+    path('profile/edit/',                       views_2.edit_doctor_profile, name='edit_doctor_profile'),
+
+    path('requests/<str:type>/',                views_2.doctor_requests,     name='doctor_requests'),
+    path('requests/action/<int:request_id>/',   views_2.request_action,      name='request_action'),
+    path('requests/done/<int:request_id>/',     views_2.mark_done_doctor,    name='mark_done_doctor'),
+
+    path('slots/',                              views_2.get_time_slots,      name='get_time_slots'),
+    path('slots/save/',                         views_2.save_time_slots,     name='save_time_slots'),
+    path('slots/<int:slot_id>/delete/',         views_2.delete_time_slot,    name='delete_time_slot'),
+##################################################################################################
+    path('dashboard/',                        views_2.nurse_dashboard,    name='nurse_dashboard'),
+    path('profile/edit/',                     views_2.edit_nurse_profile, name='edit_nurse_profile'),
+
+    path('requests/<str:type>/',              views_2.nurse_requests,     name='nurse_requests'),
+    path('requests/action/<int:request_id>/', views_2.request_action,     name='request_action'),
+    path('requests/done/<int:request_id>/',   views_2.mark_done,          name='mark_done'),
+
+    path('services/add/',                         views_2.add_service,    name='add_service'),
+    path('services/<int:service_id>/edit/',        views_2.edit_service,   name='edit_service'),
+    path('services/<int:service_id>/delete/',      views_2.delete_service, name='delete_service'),
+
+    path('slots/',                            views_2.get_time_slots,     name='get_time_slots'),
+    path('slots/save/',                       views_2.save_time_slots,    name='save_time_slots'),
+    path('slots/<int:slot_id>/delete/',       views_2.delete_time_slot,   name='delete_time_slot'),
+####################################################################################################
+    path('dashboard/',                              views_2.patient_dashboard,        name='patient_dashboard'),
+    path('profile/edit/',                           views_2.edit_patient_profile,     name='edit_patient_profile'),
+
+    path('requests/<str:category>/<str:type>/',     views_2.patient_requests,         name='patient_requests'),
+
+    # Doctor actions
+    path('doctor/<int:doctor_id>/book/',            views_2.book_appointment,         name='book_appointment'),
+    path('doctor/cancel/<int:request_id>/',         views_2.cancel_request,           name='cancel_request'),
+    path('doctor/reschedule/<int:request_id>/',     views_2.accept_reschedule,        name='accept_reschedule'),
+    path('doctor/done/<int:request_id>/',           views_2.mark_done,                name='mark_done'),
+
+    # Nurse actions
+    path('nurse/<int:nurse_id>/book/',              views_2.book_nurse,               name='book_nurse'),
+    path('nurse/cancel/<int:request_id>/',          views_2.cancel_nurse_request,     name='cancel_nurse_request'),
+    path('nurse/reschedule/<int:request_id>/',      views_2.accept_nurse_reschedule,  name='accept_nurse_reschedule'),
+    path('nurse/done/<int:request_id>/',            views_2.mark_nurse_done,          name='mark_nurse_done'),
 ]
+
