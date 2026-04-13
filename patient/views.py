@@ -5,6 +5,10 @@ from doctor.models import DoctorRequest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg
+from accounts.models import TimeSlots, get_provider_days_with_dates
+from datetime import time as time_type
+from datetime import datetime as dt
+
 
 
 @login_required
@@ -64,7 +68,6 @@ def patient_dashboard(request):
         'total_accepted': total_accepted,
         'total_completed': total_completed,
     })
-
 
 @login_required
 def edit_patient_profile(request):
@@ -239,9 +242,6 @@ def book_appointment(request, doctor_id):
     patient = Patient.objects.get(user=request.user)
     doctor = Doctor.objects.get(id=doctor_id)
 
-    from accounts.models import TimeSlots, get_provider_days_with_dates
-    from datetime import time as time_type
-
     raw_days = TimeSlots.objects.filter(doctor=doctor).values_list('day', flat=True).distinct()
     days_with_dates = get_provider_days_with_dates(raw_days)
 
@@ -285,7 +285,6 @@ def book_appointment(request, doctor_id):
             errors['description'] = 'Please describe your symptoms.'
 
         if not errors:
-            from datetime import datetime as dt
             DoctorRequest.objects.create(
                 patient=patient,
                 doctor=doctor,
@@ -314,7 +313,6 @@ def book_appointment(request, doctor_id):
         'profile_pic': patient.profile_pic,
     })
 
-
 @login_required
 def cancel_request(request, request_id):
     if request.user.role != 'patient':
@@ -330,7 +328,6 @@ def cancel_request(request, request_id):
 
     return redirect('patient:patient_requests', category='doctor', type='pending')
 
-
 @login_required
 def accept_reschedule(request, request_id):
     if request.user.role != 'patient':
@@ -345,7 +342,6 @@ def accept_reschedule(request, request_id):
         pass
 
     return redirect('patient:patient_requests', category='doctor', type='pending')
-
 
 @login_required
 def mark_done(request, request_id):
@@ -451,7 +447,6 @@ def book_nurse(request, nurse_id):
         'profile_pic': patient.profile_pic,
     })
 
-
 @login_required
 def cancel_nurse_request(request, request_id):
     if request.user.role != 'patient':
@@ -466,7 +461,6 @@ def cancel_nurse_request(request, request_id):
         pass
     return redirect('patient:patient_requests', category='nurse', type='pending')
 
-
 @login_required
 def accept_nurse_reschedule(request, request_id):
     if request.user.role != 'patient':
@@ -480,7 +474,6 @@ def accept_nurse_reschedule(request, request_id):
     except NurseRequest.DoesNotExist:
         pass
     return redirect('patient:patient_requests', category='nurse', type='pending')
-
 
 @login_required
 def mark_nurse_done(request, request_id):

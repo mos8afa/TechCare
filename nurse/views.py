@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Service, NurseRequest
 from decimal import Decimal
 from datetime import time
+from doctor.views import get_ordered_week_days
 
 
 def _nurse_name(nurse):
@@ -225,7 +226,6 @@ def edit_time_slots(request):
 
     nurse = Nurse.objects.get(user=request.user)
 
-    from doctor.views import get_ordered_week_days
     days = get_ordered_week_days()
     selected_day = request.GET.get('day') or days[0]['day']
 
