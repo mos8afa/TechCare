@@ -64,11 +64,6 @@
         {% endif %}
 
         <!-- Hidden form for day selection (GET) -->
-        <form method="GET" id="dayForm">
-            <input type="hidden" name="day" id="dayInput">
-        </form>
-
-        <!-- Main booking form (POST) -->
         <form method="POST" id="bookingForm">
         {% csrf_token %}
 
@@ -153,35 +148,17 @@
                     <input type="hidden" name="date" id="selectedDate" value="{{ selected_date|default:'' }}">
                     <input type="hidden" name="time" id="selectedTime" value="">
 
-                    {% if morning_slots %}
-                    <div class="slots-section">
+                    <div class="slots-section" id="morningSlotsSection">
                         <h5 class="slot-title">MORNING SLOTS</h5>
-                        <div class="slots-grid">
-                            {% for slot in morning_slots %}
-                            <button type="button" class="slot-btn" onclick="selectTime(this, '{{ slot.time|time:'H:i' }}')">
-                                {{ slot.time|time:"h:i A" }}
-                            </button>
-                            {% endfor %}
-                        </div>
+                        <div class="slots-grid" id="morningSlots"></div>
                     </div>
-                    {% endif %}
 
-                    {% if evening_slots %}
-                    <div class="slots-section" style="margin-top: 25px;">
+                    <div class="slots-section nurse-evening-slots" id="eveningSlotsSection" style="margin-top:25px;">
                         <h5 class="slot-title">EVENING SLOTS</h5>
-                        <div class="slots-grid">
-                            {% for slot in evening_slots %}
-                            <button type="button" class="slot-btn" onclick="selectTime(this, '{{ slot.time|time:'H:i' }}')">
-                                {{ slot.time|time:"h:i A" }}
-                            </button>
-                            {% endfor %}
-                        </div>
+                        <div class="slots-grid" id="eveningSlots"></div>
                     </div>
-                    {% endif %}
 
-                    {% if not morning_slots and not evening_slots %}
-                    <p style="color:#888; padding:10px 0;">Select a day to see available time slots.</p>
-                    {% endif %}
+                    <p id="noSlotsMsg" style="color:#888; padding:10px 0; display:none;">No available time slots for this day.</p>
 
                 </div>
             </div>
@@ -223,12 +200,54 @@
 </main>
 
 <script>
+const ALL_SLOTS = {{ all_slots_json|safe }};
+let currentDay = "{{ selected_day }}";
+
 function selectDay(el, dayName, fullDate) {
     document.querySelectorAll('.date-item').forEach(d => d.classList.remove('active'));
     el.classList.add('active');
+    currentDay = dayName;
     document.getElementById('selectedDate').value = fullDate;
-    document.getElementById('dayInput').value = dayName;
-    document.getElementById('dayForm').submit();
+    document.getElementById('selectedTime').value = '';
+    renderSlots(dayName);
+}
+
+function renderSlots(day) {
+    const data = ALL_SLOTS[day] || { morning: [], evening: [] };
+
+    const morningContainer = document.getElementById('morningSlots');
+    const eveningContainer = document.getElementById('eveningSlots');
+    const noSlotsMsg = document.getElementById('noSlotsMsg');
+
+    if (morningContainer) {
+        morningContainer.innerHTML = '';
+        data.morning.forEach(t => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'slot-btn';
+            btn.textContent = formatTime(t);
+            btn.onclick = () => selectTime(btn, t);
+            morningContainer.appendChild(btn);
+        });
+        morningContainer.closest('.slots-section').style.display = data.morning.length ? '' : 'none';
+    }
+
+    if (eveningContainer) {
+        eveningContainer.innerHTML = '';
+        data.evening.forEach(t => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'slot-btn';
+            btn.textContent = formatTime(t);
+            btn.onclick = () => selectTime(btn, t);
+            eveningContainer.appendChild(btn);
+        });
+        eveningContainer.closest('.slots-section').style.display = data.evening.length ? '' : 'none';
+    }
+
+    if (noSlotsMsg) {
+        noSlotsMsg.style.display = (!data.morning.length && !data.evening.length) ? '' : 'none';
+    }
 }
 
 function selectTime(el, timeVal) {
@@ -237,17 +256,24 @@ function selectTime(el, timeVal) {
     document.getElementById('selectedTime').value = timeVal;
 }
 
+function formatTime(t) {
+    let [h, m] = t.split(':').map(Number);
+    const p = h >= 12 ? 'PM' : 'AM';
+    if (h > 12) h -= 12;
+    if (h === 0) h = 12;
+    return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')} ${p}`;
+}
+
 document.getElementById('bookingForm').addEventListener('submit', function(e) {
     if (!document.getElementById('selectedDate').value) {
-        e.preventDefault();
-        alert('Please select a day first.');
-        return;
+        e.preventDefault(); alert('Please select a day first.'); return;
     }
     if (!document.getElementById('selectedTime').value) {
-        e.preventDefault();
-        alert('Please select a time slot.');
-        return;
+        e.preventDefault(); alert('Please select a time slot.'); return;
     }
 });
+
+// Render initial day on load
+renderSlots(currentDay);
 </script>
 {% endblock %}

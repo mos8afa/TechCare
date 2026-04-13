@@ -252,18 +252,18 @@ def book_appointment(request, doctor_id):
         d['month_name'] = d['date'].strftime('%b').upper()
         d['full_date']  = d['date'].isoformat()
 
-    selected_day  = request.GET.get('day') or (days_with_dates[0]['day'] if days_with_dates else None)
-    selected_date = next((d['full_date'] for d in days_with_dates if d['day'] == selected_day), '')
+    selected_day  = days_with_dates[0]['day'] if days_with_dates else None
+    selected_date = days_with_dates[0]['full_date'] if days_with_dates else ''
 
-    morning_slots = []
-    evening_slots = []
-    if selected_day:
-        slots = TimeSlots.objects.filter(doctor=doctor, day=selected_day).order_by('time')
-        for slot in slots:
-            if slot.time < time_type(12, 0):
-                morning_slots.append(slot)
-            else:
-                evening_slots.append(slot)
+    # All slots per day as JSON for client-side switching
+    import json as _json
+    all_slots = {}
+    for d in days_with_dates:
+        slots = TimeSlots.objects.filter(doctor=doctor, day=d['day']).order_by('time')
+        all_slots[d['day']] = {
+            'morning': [s.time.strftime('%H:%M') for s in slots if s.time < time_type(12, 0)],
+            'evening': [s.time.strftime('%H:%M') for s in slots if s.time >= time_type(12, 0)],
+        }
 
     avg = doctor.rates.aggregate(Avg('rate'))['rate__avg'] or 0
     doctor.avg_rating = round(avg)
@@ -305,8 +305,7 @@ def book_appointment(request, doctor_id):
         'days': days_with_dates,
         'selected_day': selected_day,
         'selected_date': selected_date,
-        'morning_slots': morning_slots,
-        'evening_slots': evening_slots,
+        'all_slots_json': _json.dumps(all_slots),
         'governorates': GOVERNORATES,
         'errors': errors,
         'name': patient.user.first_name + ' ' + patient.user.last_name,
@@ -387,13 +386,17 @@ def book_nurse(request, nurse_id):
         d['month_name'] = d['date'].strftime('%b').upper()
         d['full_date']  = d['date'].isoformat()
 
-    selected_day  = request.GET.get('day') or (days_with_dates[0]['day'] if days_with_dates else None)
-    selected_date = next((d['full_date'] for d in days_with_dates if d['day'] == selected_day), '')
+    selected_day  = days_with_dates[0]['day'] if days_with_dates else None
+    selected_date = days_with_dates[0]['full_date'] if days_with_dates else ''
 
-    morning_slots, evening_slots = [], []
-    if selected_day:
-        for slot in TimeSlots.objects.filter(nurse=nurse, day=selected_day).order_by('time'):
-            (morning_slots if slot.time < time_type(12, 0) else evening_slots).append(slot)
+    import json as _json
+    all_slots = {}
+    for d in days_with_dates:
+        slots = TimeSlots.objects.filter(nurse=nurse, day=d['day']).order_by('time')
+        all_slots[d['day']] = {
+            'morning': [s.time.strftime('%H:%M') for s in slots if s.time < time_type(12, 0)],
+            'evening': [s.time.strftime('%H:%M') for s in slots if s.time >= time_type(12, 0)],
+        }
 
     errors = {}
 
@@ -439,8 +442,7 @@ def book_nurse(request, nurse_id):
         'days': days_with_dates,
         'selected_day': selected_day,
         'selected_date': selected_date,
-        'morning_slots': morning_slots,
-        'evening_slots': evening_slots,
+        'all_slots_json': _json.dumps(all_slots),
         'governorates': GOVERNORATES,
         'errors': errors,
         'name': patient.user.first_name + ' ' + patient.user.last_name,

@@ -39,35 +39,21 @@ def doctor_dashboard(request):
         average_rating = 0
 
     days = TimeSlots.objects.filter(doctor=doctor).values_list('day', flat=True).distinct()
-
     days = get_provider_days_with_dates(days)
+    selected_day = days[0]['day'] if days else None
 
-    selected_day = request.GET.get('day')
+    all_slots = {}
+    for d in days:
+        slots = TimeSlots.objects.filter(doctor=doctor, day=d['day']).order_by('time')
+        all_slots[d['day']] = {
+            'morning': [s.time.strftime('%H:%M') for s in slots if s.time < time(12, 0)],
+            'evening': [s.time.strftime('%H:%M') for s in slots if s.time >= time(12, 0)],
+        }
 
     morning_slots = []
     evening_slots = []
-
     if selected_day:
-        slots = TimeSlots.objects.filter(
-            doctor=doctor,
-            day=selected_day
-        ).order_by('time')
-
-        for slot in slots:
-            if slot.time < time(12, 0):
-                morning_slots.append(slot)
-            else:
-                evening_slots.append(slot)
-
-    if not selected_day and days:
-        selected_day = days[0]['day']
-
-        slots = TimeSlots.objects.filter(
-            doctor=doctor,
-            day=selected_day
-        ).order_by('time')
-
-        for slot in slots:
+        for slot in TimeSlots.objects.filter(doctor=doctor, day=selected_day).order_by('time'):
             if slot.time < time(12, 0):
                 morning_slots.append(slot)
             else:
@@ -90,6 +76,7 @@ def doctor_dashboard(request):
         'selected_day': selected_day,
         'morning_slots':morning_slots,
         'evening_slots':evening_slots,
+        'all_slots_json': json.dumps(all_slots),
     })
 
 @login_required

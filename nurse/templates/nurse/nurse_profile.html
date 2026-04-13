@@ -195,7 +195,8 @@
                     <div class="days-track" id="daysTrack">
                         {% for d in days %}
                         <div class="day-btn {% if d.day == selected_day %}active{% endif %}"
-                            onclick="window.location.href='?day={{ d.day }}'">
+                             data-day="{{ d.day }}" style="cursor:pointer;"
+                             onclick="switchDay(this, '{{ d.day }}')">
                             <span class="day-name">{{ d.day|slice:":3"|upper }}</span>
                             <span class="day-num">{{ d.date|date:"d" }}</span>
                         </div>
@@ -204,7 +205,7 @@
                 </div>
 
                 <div class="slots-container">
-                    <div class="slots-grid">
+                    <div class="slots-grid" id="nurseSlots">
                         {% for slot in time_slots %}
                             <button class="slot-pill" onclick="selectSlotPill(this)">{{ slot.time|time:"h:i A" }}</button>
                         {% empty %}
@@ -317,6 +318,19 @@
 
 <script src="{% static 'JS/Board.js' %}"></script>
 <script>
+const ALL_SLOTS = {{ all_slots_json|safe }};
+
+function switchDay(el, day) {
+    document.querySelectorAll('.day-btn').forEach(d => d.classList.remove('active'));
+    el.classList.add('active');
+    const slots = ALL_SLOTS[day] || [];
+    const fmt = t => { let [h,m]=t.split(':').map(Number),p=h>=12?'PM':'AM'; if(h>12)h-=12; if(h===0)h=12; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')} ${p}`; };
+    const container = document.getElementById('nurseSlots');
+    container.innerHTML = slots.length
+        ? slots.map(t => `<button class="slot-pill" onclick="selectSlotPill(this)">${fmt(t)}</button>`).join('')
+        : '<p style="color:#888;">No slots available for this day.</p>';
+}
+
 function selectSlotPill(el) {
     document.querySelectorAll('.slot-pill').forEach(p => p.classList.remove('active'));
     el.classList.add('active');

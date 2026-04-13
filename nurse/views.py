@@ -37,7 +37,14 @@ def nurse_dashboard(request):
         TimeSlots.objects.filter(nurse=nurse).values_list('day', flat=True).distinct()
     ))
 
-    selected_day = request.GET.get('day') or (days[0]['day'] if days else None)
+    selected_day = days[0]['day'] if days else None
+
+    import json as _json
+    all_slots = {}
+    for d in days:
+        slots = TimeSlots.objects.filter(nurse=nurse, day=d['day']).order_by('time')
+        all_slots[d['day']] = [s.time.strftime('%H:%M') for s in slots]
+
     time_slots = list(TimeSlots.objects.filter(nurse=nurse, day=selected_day).order_by('time')) if selected_day else []
 
     return render(request, 'nurse/nurse_profile.html', {
@@ -55,6 +62,7 @@ def nurse_dashboard(request):
         'days': days,
         'time_slots': time_slots,
         'selected_day': selected_day,
+        'all_slots_json': _json.dumps(all_slots),
     })
 
 

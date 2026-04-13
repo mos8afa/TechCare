@@ -130,8 +130,8 @@
                         {% if days %}
                             {% for d in days %}
                                 <div class="day-btn {% if d.day == selected_day %}active{% endif %}"
-                                    onclick="window.location.href='?day={{ d.day }}'">
-
+                                     data-day="{{ d.day }}" style="cursor:pointer;"
+                                     onclick="switchDay(this, '{{ d.day }}')">
                                     <span class="day-name">{{ d.day|slice:":3"|upper }}</span>
                                     <span class="day-num">{{ d.date|date:"d" }}</span>
                                 </div>
@@ -142,11 +142,9 @@
 
                 <!-- Morning Slots -->
                 <p class="slots-section-label">MORNING SLOTS</p>
-                <div class="slots-grid">
+                <div class="slots-grid" id="morningSlots">
                     {% for slot in morning_slots %}
-                        <button class="slot-pill">
-                            {{ slot.time|time:"h:i A" }}
-                        </button>
+                        <button class="slot-pill">{{ slot.time|time:"h:i A" }}</button>
                     {% empty %}
                         <p>No slots available</p>
                     {% endfor %}
@@ -154,11 +152,9 @@
 
                 <!-- Evening Slots -->
                 <p class="slots-section-label">EVENING SLOTS</p>
-                <div class="slots-grid">
+                <div class="slots-grid" id="eveningSlots">
                     {% for slot in evening_slots %}
-                        <button class="slot-pill">
-                            {{ slot.time|time:"h:i A" }}
-                        </button>
+                        <button class="slot-pill">{{ slot.time|time:"h:i A" }}</button>
                     {% empty %}
                         <p>No slots available</p>
                     {% endfor %}
@@ -204,13 +200,27 @@
 
 {% block script %}
     <script>
-function selectDay(el) {
+const ALL_SLOTS = {{ all_slots_json|safe }};
+
+function switchDay(el, day) {
     document.querySelectorAll('.day-btn').forEach(d => d.classList.remove('active'));
     el.classList.add('active');
+    renderSlots(day);
 }
 
-function selectSlotPill(el) {
-    el.classList.toggle('active');
+function renderSlots(day) {
+    const data = ALL_SLOTS[day] || { morning: [], evening: [] };
+    const fmt = t => { let [h,m]=t.split(':').map(Number),p=h>=12?'PM':'AM'; if(h>12)h-=12; if(h===0)h=12; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')} ${p}`; };
+
+    const mc = document.getElementById('morningSlots');
+    mc.innerHTML = data.morning.length
+        ? data.morning.map(t => `<button class="slot-pill">${fmt(t)}</button>`).join('')
+        : '<p>No slots available</p>';
+
+    const ec = document.getElementById('eveningSlots');
+    ec.innerHTML = data.evening.length
+        ? data.evening.map(t => `<button class="slot-pill">${fmt(t)}</button>`).join('')
+        : '<p>No slots available</p>';
 }
     </script>
 {% endblock script %}
