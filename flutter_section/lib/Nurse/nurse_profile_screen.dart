@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/api_service.dart';
 import '../Nurse/nurse_edit_profile.dart';
 import '../Nurse/nurse_edit_slots.dart';
 import '../Nurse/nurse_requests_screen.dart';
@@ -17,10 +18,11 @@ const Color kAmber      = Color(0xFFF59E0B);
 
 // ─── Service Model ────────────────────────────────────────────────────────
 class NurseService {
+  final int id;
   String title;
   double price;
   String description;
-  NurseService({required this.title, required this.price, required this.description});
+  NurseService({required this.id, required this.title, required this.price, required this.description});
 }
 
 // ─── Nurse Profile Screen ─────────────────────────────────────────────────
@@ -32,6 +34,12 @@ class NurseProfileScreen extends StatefulWidget {
 
 class _NurseProfileScreenState extends State<NurseProfileScreen> {
   int _selectedDayIndex = 0;
+  bool _isLoading = true;
+  bool _isServicesLoading = false;
+  String? _error;
+  Map<String, dynamic>? _profileData;
+  List<Map<String, dynamic>> _slots = [];
+  List<NurseService> _services = [];
 
   final List<Map<String, String>> _days = [
     {'name': 'MON', 'num': '14'}, {'name': 'TUE', 'num': '15'},
@@ -40,16 +48,139 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
     {'name': 'SUN', 'num': '20'},
   ];
 
-  final List<String> _slots = [
-    '09:00 AM','09:30 AM','10:00 AM','10:30 AM','11:00 AM','11:30 AM',
-    '12:00 PM','05:30 PM','06:30 PM','07:30 PM','08:30 PM','09:00 PM',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
 
-  final List<NurseService> _services = [
-    NurseService(title: 'Home Visit Consultation', price: 200, description: 'Full nursing assessment at home.'),
-    NurseService(title: 'Wound Dressing (Small)', price: 100, description: 'Sterile dressing for minor wounds.'),
-    NurseService(title: 'Glucose Check', price: 50, description: 'Blood glucose monitoring service.'),
-  ];
+
+  Future<void> _loadProfile() async {
+    setState(() { _isLoading = true; _error = null; });
+    final result = await ApiService.getNurseDashboard();
+    if (result.success) {
+      final data = result.data;
+      // Parse services from dashboard data if available
+      List<NurseService> services = [];
+      if (data['services'] != null) {
+        services = (data['services'] as List).map<NurseService>((s) {
+          // Handle price which may be a String or num
+          double priceValue = 0;
+          final priceField = s['price'];
+          if (priceField is String) {
+            priceValue = double.tryParse(priceField) ?? 0;
+          } else if (priceField is num) {
+            priceValue = priceField.toDouble();
+          }
+          return NurseService(
+            id: s['id'],
+            title: s['name'] ?? s['title'] ?? '',
+            price: priceValue,
+            description: s['description'] ?? '',
+          );
+        }).toList();
+      }
+      setState(() {
+        _profileData = data;
+        _services = services;
+        _isLoading = false;
+      });
+      _loadTimeSlots();
+    } else {
+      if (result.error == 'Session expired') {
+        await ApiService.clearTokens();
+        if (mounted) Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
+        return;
+      }
+      setState(() {
+        _error = result.error ?? 'Failed to load profile';
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _loadTimeSlots() async {
+    // Get day string like "Monday", "Tuesday" etc based on selected day index
+    // For now we'll use the day name from _days mapping
+    final dayName = _getDayName(_selectedDayIndex);
+    final result = await ApiService.getTimeSlots(day: dayName);
+    if (result.success) {
+      setState(() {
+        _slots = List<Map<String, dynamic>>.from(result.data['slots'] ?? []);
+      });
+    }
+  }
+
+  String _getDayName(int index) {
+    // Map index to day name expected by backend (e.g., "Monday")
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    return days[index];
+  }
+
+  Future<void> _addService(String title, String description, double price) async {
+    setState(() => _isServicesLoading = true);
+    final result = await ApiService.addService(
+      name: title,
+      description: description,
+      price: price.toStringAsFixed(0),
+    );
+    if (result.success) {
+      // Reload dashboard to get updated services
+      await _loadProfile();
+    } else {
+      _showSnackBar(result.error ?? 'Failed to add service');
+    }
+    setState(() => _isServicesLoading = false);
+  }
+
+  Future<void> _updateService(int serviceId, String title, String description, double price) async {
+    setState(() => _isServicesLoading = true);
+    final result = await ApiService.editService(
+      serviceId: serviceId,
+      name: title,
+      description: description,
+      price: price.toStringAsFixed(0),
+    );
+    if (result.success) {
+      await _loadProfile();
+    } else {
+      _showSnackBar(result.error ?? 'Failed to update service');
+    }
+    setState(() => _isServicesLoading = false);
+  }
+
+  Future<void> _deleteService(int serviceId) async {
+    // Confirm deletion
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Service'),
+        content: const Text('Are you sure you want to delete this service?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirm != true) return;
+
+    setState(() => _isServicesLoading = true);
+    final result = await ApiService.deleteService(serviceId);
+    if (result.success) {
+      await _loadProfile();
+    } else {
+      _showSnackBar(result.error ?? 'Failed to delete service');
+    }
+    setState(() => _isServicesLoading = false);
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,23 +188,44 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
       backgroundColor: kBgLight,
       appBar: _buildAppBar(context),
       drawer: _buildDrawer(context),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            _buildTopRow(context),
-            const SizedBox(height: 20),
-            _buildTimeSlotsCard(),
-            const SizedBox(height: 20),
-            _buildServicesCard(),
-          ],
-        ),
-      ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator(color: kPrimary))
+          : _error != null
+              ? Center(child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(_error!, style: const TextStyle(color: Colors.red)),
+                    const SizedBox(height: 12),
+                    ElevatedButton(
+                      onPressed: _loadProfile,
+                      style: ElevatedButton.styleFrom(backgroundColor: kPrimary),
+                      child: const Text('Retry', style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
+                ))
+              : RefreshIndicator(
+                  onRefresh: _loadProfile,
+                  color: kPrimary,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        _buildTopRow(context),
+                        const SizedBox(height: 20),
+                        _buildTimeSlotsCard(),
+                        const SizedBox(height: 20),
+                        _buildServicesCard(),
+                      ],
+                    ),
+                  ),
+                ),
     );
   }
 
   // ── AppBar ────────────────────────────────────────────────────────────────
   PreferredSizeWidget _buildAppBar(BuildContext context) {
+    final profilePic = _profileData?['profile_pic'];
+    final picUrl = ApiService.buildMediaUrl(profilePic);
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -94,8 +246,13 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
         const SizedBox(width: 4),
         const VerticalDivider(width: 1, thickness: 1, color: kBorderColor, indent: 16, endIndent: 16),
         const SizedBox(width: 12),
-        GestureDetector(onTap: () {}, child: const CircleAvatar(radius: 20,
-            backgroundImage: NetworkImage('https://randomuser.me/api/portraits/women/44.jpg'))),
+        CircleAvatar(
+          radius: 20,
+          backgroundColor: kBgLight,
+          backgroundImage: picUrl.isNotEmpty
+              ? NetworkImage(picUrl) as ImageProvider
+              : const NetworkImage('https://ui-avatars.com/api/?name=Nurse&background=1D89E4&color=fff'),
+        ),
         const SizedBox(width: 16),
       ],
       bottom: PreferredSize(preferredSize: const Size.fromHeight(1),
@@ -107,10 +264,10 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
   Widget _buildDrawer(BuildContext context) {
     return _NurseDrawer(activePage: 'Profile', onNav: (ctx, label) {
       switch (label) {
-        case 'Requests':     Navigator.push(ctx, MaterialPageRoute(builder: (_) => const NurseRequestsScreen())); break;
-        case 'Notifications':Navigator.push(ctx, MaterialPageRoute(builder: (_) => const NurseNotificationsScreen())); break;
-        case 'Wallet':       Navigator.push(ctx, MaterialPageRoute(builder: (_) => const NurseWalletScreen())); break;
-        case 'Complaints':   Navigator.push(ctx, MaterialPageRoute(builder: (_) => const NurseComplaintsScreen())); break;
+        case 'Requests':     Navigator.pushReplacement(ctx, MaterialPageRoute(builder: (_) => const NurseRequestsScreen())); break;
+        case 'Notifications':Navigator.pushReplacement(ctx, MaterialPageRoute(builder: (_) => const NurseNotificationsScreen())); break;
+        case 'Wallet':       Navigator.pushReplacement(ctx, MaterialPageRoute(builder: (_) => const NurseWalletScreen())); break;
+        case 'Complaints':   Navigator.pushReplacement(ctx, MaterialPageRoute(builder: (_) => const NurseComplaintsScreen())); break;
         default: break;
       }
     });
@@ -135,6 +292,16 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
 
   // ── Profile Card ──────────────────────────────────────────────────────────
   Widget _buildProfileCard() {
+    final data = _profileData!;
+    final name = data['name'] ?? data['username'] ?? '';
+    final email = data['email'] ?? '';
+    final phone = data['phone_number'] ?? '';
+    final governorate = data['governorate'] ?? '';
+    final address = data['address'] ?? '';
+    final brief = data['brief'] ?? data['bio'] ?? '';
+    final profilePic = data['profile_pic'];
+    final picUrl = ApiService.buildMediaUrl(profilePic);
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20),
@@ -143,12 +310,13 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
         // Avatar + Name
         Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           CircleAvatar(radius: 40,
-              backgroundImage: const NetworkImage('https://randomuser.me/api/portraits/women/44.jpg'),
+              backgroundImage: picUrl.isNotEmpty
+                  ? NetworkImage(picUrl) as ImageProvider
+                  : const NetworkImage('https://ui-avatars.com/api/?name=Nurse&background=1D89E4&color=fff'),
               backgroundColor: kBgLight),
           const SizedBox(width: 16),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('Sarah Johnson, RN',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: kDarkText)),
+            Text(name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: kDarkText)),
             const SizedBox(height: 2),
             const Text('Registered Nurse', style: TextStyle(fontSize: 13, color: kTextGray)),
           ])),
@@ -156,29 +324,30 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
         const Padding(padding: EdgeInsets.symmetric(vertical: 16), child: Divider(color: kBorderColor)),
 
         // Info items
-        _profileInfoItem(Icons.email_outlined, 'Email Address', 'sarah@techcare.com'),
+        _profileInfoItem(Icons.email_outlined, 'Email Address', email),
         const SizedBox(height: 10),
-        _profileInfoItem(Icons.phone_outlined, 'Phone Number', '+1 (555) 234-5678'),
+        _profileInfoItem(Icons.phone_outlined, 'Phone Number', phone),
         const SizedBox(height: 10),
-        _profileInfoItem(Icons.location_on_outlined, 'Governorate', 'Central District'),
+        _profileInfoItem(Icons.location_on_outlined, 'Governorate', governorate),
         const SizedBox(height: 10),
-        _profileInfoItem(Icons.home_outlined, 'Address', '123 Healthcare St, Medical City'),
+        _profileInfoItem(Icons.home_outlined, 'Address', address),
         const SizedBox(height: 16),
 
         // About
-        const Text('About', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText)),
-        const SizedBox(height: 6),
-        const Text(
-          'Dedicated and compassionate Registered Nurse with over 8 years of clinical experience. '
-          'Specialized in post-operative recovery and complex wound management.',
-          style: TextStyle(fontSize: 13, color: kTextGray, height: 1.6),
-        ),
-        const SizedBox(height: 20),
+        if (brief.isNotEmpty) ...[
+          const Text('About', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText)),
+          const SizedBox(height: 6),
+          Text(brief, style: const TextStyle(fontSize: 13, color: kTextGray, height: 1.6)),
+          const SizedBox(height: 20),
+        ],
 
         // Edit button
         Align(alignment: Alignment.centerRight,
           child: OutlinedButton.icon(
-            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const NurseEditProfileScreen())),
+            onPressed: () async {
+              await Navigator.push(context, MaterialPageRoute(builder: (_) => const NurseEditProfileScreen()));
+              _loadProfile();
+            },
             icon: const Icon(Icons.edit_rounded, size: 15),
             label: const Text('Edit Profile', style: TextStyle(fontWeight: FontWeight.w600)),
             style: OutlinedButton.styleFrom(
@@ -200,13 +369,19 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(label, style: const TextStyle(fontSize: 11, color: kTextGray, fontWeight: FontWeight.w600)),
         const SizedBox(height: 1),
-        Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText)),
+        Text(value.isNotEmpty ? value : 'Not provided', 
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: value.isNotEmpty ? kDarkText : kTextGray)),
       ]),
     ]);
   }
 
   // ── Financials Card ───────────────────────────────────────────────────────
   Widget _buildFinancialsCard() {
+    final data = _profileData!;
+    final balance = data['wallet_balance']?.toString() ?? '0.00';
+    final completedRequests = data['completed']?.toString() ?? '0';
+    final pendingRequests = data['pending']?.toString() ?? '0';
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20),
@@ -226,17 +401,17 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
           decoration: BoxDecoration(color: kBgLight, borderRadius: BorderRadius.circular(14)),
-          child: const Column(children: [
-            Text('Total Wallet Balance', style: TextStyle(fontSize: 13, color: kTextGray)),
-            SizedBox(height: 6),
-            Text('12,450.00 EGP', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: kPrimary)),
+          child: Column(children: [
+            const Text('Total Wallet Balance', style: TextStyle(fontSize: 13, color: kTextGray)),
+            const SizedBox(height: 6),
+            Text('$balance EGP', style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: kPrimary)),
           ]),
         ),
         const SizedBox(height: 14),
         Row(children: [
-          Expanded(child: _statCard('Completed\nRequests', '1,248', Icons.check_circle_outline_rounded, kGreen, const Color(0xFFE6F7E6))),
+          Expanded(child: _statCard('Completed\nRequests', completedRequests, Icons.check_circle_outline_rounded, kGreen, const Color(0xFFE6F7E6))),
           const SizedBox(width: 12),
-          Expanded(child: _statCard('Pending\nRequests', '14', Icons.article_outlined, kAmber, const Color(0xFFFFFBEB))),
+          Expanded(child: _statCard('Pending\nRequests', pendingRequests, Icons.article_outlined, kAmber, const Color(0xFFFFFBEB))),
         ]),
       ]),
     );
@@ -273,7 +448,10 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
             Text('Available Time Slots', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: kDarkText)),
           ]),
           OutlinedButton.icon(
-            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const NurseEditTimeSlotsScreen())),
+            onPressed: () async {
+              await Navigator.push(context, MaterialPageRoute(builder: (_) => const NurseEditTimeSlotsScreen()));
+              _loadProfile(); // Refresh slots after edit
+            },
             icon: const Icon(Icons.edit_calendar_outlined, size: 14),
             label: const Text('Edit Slots', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
             style: OutlinedButton.styleFrom(
@@ -294,7 +472,10 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
           itemBuilder: (_, i) {
             final active = _selectedDayIndex == i;
             return GestureDetector(
-              onTap: () => setState(() => _selectedDayIndex = i),
+              onTap: () async {
+                setState(() => _selectedDayIndex = i);
+                await _loadTimeSlots();
+              },
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 width: 58,
@@ -315,13 +496,20 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
         )),
         const SizedBox(height: 16),
 
-        // Slots (read-only)
-        Wrap(spacing: 8, runSpacing: 8, children: _slots.map((s) => Container(
-          padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 7),
-          decoration: BoxDecoration(color: kBgLight, border: Border.all(color: kBorderColor),
-              borderRadius: BorderRadius.circular(30)),
-          child: Text(s, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF4B5563))),
-        )).toList()),
+        // Slots
+        if (_slots.isEmpty)
+          const Center(child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: Text('No slots set for this day', style: TextStyle(color: kTextGray)),
+          ))
+        else
+          Wrap(spacing: 8, runSpacing: 8, children: _slots.map((slot) => Container(
+            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 7),
+            decoration: BoxDecoration(color: kBgLight, border: Border.all(color: kBorderColor),
+                borderRadius: BorderRadius.circular(30)),
+            child: Text(slot['time'] as String? ?? '', 
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF4B5563))),
+          )).toList()),
       ]),
     );
   }
@@ -351,7 +539,9 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
         ]),
         const SizedBox(height: 16),
 
-        if (_services.isEmpty)
+        if (_isServicesLoading)
+          const Center(child: Padding(padding: EdgeInsets.all(20), child: CircularProgressIndicator()))
+        else if (_services.isEmpty)
           Center(child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 24),
             child: Column(children: [
@@ -385,6 +575,7 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
           Text('${s.price.toStringAsFixed(0)} EGP',
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: kPrimary)),
         ])),
+        // Edit and Delete buttons - now active with API calls
         Row(children: [
           GestureDetector(
             onTap: () => _showEditServiceSheet(index),
@@ -394,7 +585,7 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
           ),
           const SizedBox(width: 8),
           GestureDetector(
-            onTap: () => setState(() => _services.removeAt(index)),
+            onTap: () => _deleteService(s.id),
             child: Container(padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(color: const Color(0xFFFEE2E2), borderRadius: BorderRadius.circular(8)),
               child: const Icon(Icons.delete_outline_rounded, size: 15, color: Color(0xFFEF4444))),
@@ -445,19 +636,17 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
             )),
             const SizedBox(width: 12),
             Expanded(child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 final title = titleCtrl.text.trim();
                 final price = double.tryParse(priceCtrl.text.trim()) ?? 0;
                 final desc  = descCtrl.text.trim();
-                if (title.isEmpty) return;
-                setState(() {
-                  if (editIndex != null) {
-                    _services[editIndex] = NurseService(title: title, price: price, description: desc);
-                  } else {
-                    _services.add(NurseService(title: title, price: price, description: desc));
-                  }
-                });
+                if (title.isEmpty || price <= 0) return;
                 Navigator.pop(ctx);
+                if (editIndex != null) {
+                  await _updateService(_services[editIndex].id, title, desc, price);
+                } else {
+                  await _addService(title, desc, price);
+                }
               },
               style: ElevatedButton.styleFrom(backgroundColor: kPrimary, foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 13), elevation: 0,
@@ -520,7 +709,7 @@ class _NurseDrawer extends StatelessWidget {
             const SizedBox(width: 12),
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
               Text('TechCare', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: kPrimary)),
-              Text('Medical Portal', style: TextStyle(fontSize: 12, color: kTextGray)),
+              Text('Nurse Portal', style: TextStyle(fontSize: 12, color: kTextGray)),
             ]),
           ]),
           const SizedBox(height: 32),

@@ -27,7 +27,7 @@ urlpatterns = [
 
     path('doctor/requests/<str:type>/',               views_2.doctor_requests,     name='doctor_requests'),
     path('requests/action/<int:request_id>/',         views_2.request_action,      name='request_action'),
-    path('requests/done/<int:request_id>/',           views_2.mark_done_doctor,    name='mark_done_doctor'),
+    path('requests/done/doctor/<int:request_id>/',    views_2.mark_done_doctor,    name='mark_done_doctor'),
 
     path('slots/',                                    views_2.get_time_slots,      name='get_time_slots'),
     path('slots/save/',                               views_2.save_time_slots,     name='save_time_slots'),
@@ -38,7 +38,7 @@ urlpatterns = [
 
     path('nurse/requests/<str:type>/',                views_2.nurse_requests,     name='nurse_requests'),
     path('requests/action/<int:request_id>/',         views_2.request_action,     name='request_action'),
-    path('requests/done/<int:request_id>/',           views_2.mark_done,          name='mark_done'),
+    path('requests/done/nurse/<int:request_id>/',     views_2.mark_nurse_done,    name='mark_done_nurse'),
 
     path('services/add/',                             views_2.add_service,    name='add_service'),
     path('services/<int:service_id>/edit/',           views_2.edit_service,   name='edit_service'),

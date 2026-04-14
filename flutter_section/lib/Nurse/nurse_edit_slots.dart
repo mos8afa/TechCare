@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/api_service.dart';
 
 const Color kPrimary    = Color(0xFF1D89E4);
 const Color kBgLight    = Color(0xFFF4F7FC);
@@ -15,58 +16,148 @@ class NurseEditTimeSlotsScreen extends StatefulWidget {
 }
 
 class _NurseEditTimeSlotsScreenState extends State<NurseEditTimeSlotsScreen> {
-  int _selectedDayIndex = 2;
+  int _selectedDayIndex = 0;
+  bool _isLoading = true;
+  bool _isSaving = false;
+  String? _error;
+  
   final List<Map<String, String>> _days = [
-    {'name': 'MON', 'num': '14'}, {'name': 'TUE', 'num': '15'},
-    {'name': 'WED', 'num': '16'}, {'name': 'THU', 'num': '17'},
-    {'name': 'FRI', 'num': '18'}, {'name': 'SAT', 'num': '19'},
-    {'name': 'SUN', 'num': '20'},
+    {'name': 'MON', 'api': 'Monday'},
+    {'name': 'TUE', 'api': 'Tuesday'},
+    {'name': 'WED', 'api': 'Wednesday'},
+    {'name': 'THU', 'api': 'Thursday'},
+    {'name': 'FRI', 'api': 'Friday'},
+    {'name': 'SAT', 'api': 'Saturday'},
+    {'name': 'SUN', 'api': 'Sunday'},
   ];
-  final List<Map<String, dynamic>> _morningSlots = [
-    {'time': '09:00 AM', 'active': false},
-    {'time': '09:30 AM', 'active': true},
-    {'time': '10:00 AM', 'active': false},
-  ];
-  final List<Map<String, dynamic>> _eveningSlots = [
-    {'time': '06:00 PM', 'active': false},
-    {'time': '07:00 PM', 'active': false},
-    {'time': '07:30 PM', 'active': false},
-  ];
+
+  // Store slots per day as list of time strings
+  Map<String, List<String>> _slotsByDay = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSlots();
+  }
+
+  Future<void> _loadSlots() async {
+    setState(() { _isLoading = true; _error = null; });
+    try {
+      // Load slots for current selected day
+      final dayApi = _days[_selectedDayIndex]['api']!;
+      final result = await ApiService.getTimeSlots(day: dayApi);
+      if (result.success) {
+        final slotsData = result.data['slots'] as List? ?? [];
+        final times = slotsData.map<String>((s) => s['time'].toString()).toList();
+        setState(() {
+          _slotsByDay[dayApi] = times;
+          _isLoading = false;
+        });
+      } else {
+        if (result.error == 'Session expired') {
+          await ApiService.clearTokens();
+          if (mounted) Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
+          return;
+        }
+        setState(() {
+          _error = result.error ?? 'Failed to load slots';
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _error = 'Connection error';
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _saveSlots() async {
+    setState(() => _isSaving = true);
+    final dayApi = _days[_selectedDayIndex]['api']!;
+    final times = _slotsByDay[dayApi] ?? [];
+    final result = await ApiService.addTimeSlot(
+      day: dayApi,
+      times: times,
+    );
+    setState(() => _isSaving = false);
+    if (result.success) {
+      Navigator.pop(context);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.error ?? 'Failed to save slots')),
+      );
+    }
+  }
+
+  void _addSlot(String dayApi, String time) {
+    setState(() {
+      _slotsByDay.putIfAbsent(dayApi, () => []);
+      if (!_slotsByDay[dayApi]!.contains(time)) {
+        _slotsByDay[dayApi]!.add(time);
+        _slotsByDay[dayApi]!.sort();
+      }
+    });
+  }
+
+  void _removeSlot(String dayApi, String time) {
+    setState(() {
+      _slotsByDay[dayApi]?.remove(time);
+    });
+  }
+
+  List<String> get _currentSlots {
+    final dayApi = _days[_selectedDayIndex]['api']!;
+    return _slotsByDay[dayApi] ?? [];
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBgLight,
       appBar: _buildAppBar(context),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          _buildHeader(),
-          const SizedBox(height: 28),
-          _buildWeekly(),
-          const SizedBox(height: 28),
-          _buildSession(isMorning: true, slots: _morningSlots),
-          const SizedBox(height: 16),
-          _buildSession(isMorning: false, slots: _eveningSlots),
-          const SizedBox(height: 28),
-          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              style: TextButton.styleFrom(foregroundColor: const Color(0xFF4B5563)),
-              child: const Text('Cancel', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-            ),
-            const SizedBox(width: 10),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              style: ElevatedButton.styleFrom(backgroundColor: kPrimary, foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 13), elevation: 0,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-              child: const Text('Save Changes', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
-            ),
-          ]),
-          const SizedBox(height: 8),
-        ]),
-      ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator(color: kPrimary))
+          : _error != null
+              ? Center(child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(_error!, style: const TextStyle(color: Colors.red)),
+                    ElevatedButton(
+                      onPressed: _loadSlots,
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                ))
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    _buildHeader(),
+                    const SizedBox(height: 28),
+                    _buildWeekly(),
+                    const SizedBox(height: 28),
+                    _buildSlotsEditor(),
+                    const SizedBox(height: 28),
+                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: TextButton.styleFrom(foregroundColor: const Color(0xFF4B5563)),
+                        child: const Text('Cancel', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                      ),
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: _isSaving ? null : _saveSlots,
+                        style: ElevatedButton.styleFrom(backgroundColor: kPrimary, foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 13), elevation: 0,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                        child: _isSaving
+                            ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                            : const Text('Save Changes', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                      ),
+                    ]),
+                    const SizedBox(height: 8),
+                  ]),
+                ),
     );
   }
 
@@ -95,7 +186,10 @@ class _NurseEditTimeSlotsScreenState extends State<NurseEditTimeSlotsScreen> {
       itemBuilder: (_, i) {
         final active = _selectedDayIndex == i;
         return GestureDetector(
-          onTap: () => setState(() => _selectedDayIndex = i),
+          onTap: () {
+            setState(() => _selectedDayIndex = i);
+            _loadSlots();
+          },
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             width: 72,
@@ -108,7 +202,8 @@ class _NurseEditTimeSlotsScreenState extends State<NurseEditTimeSlotsScreen> {
               Text(_days[i]['name']!, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
                   color: active ? Colors.white : kTextGray)),
               const SizedBox(height: 4),
-              Text(_days[i]['num']!, style: TextStyle(fontSize: 19, fontWeight: FontWeight.w800,
+              // Just show day number placeholder
+              Text((i+14).toString(), style: TextStyle(fontSize: 19, fontWeight: FontWeight.w800,
                   color: active ? Colors.white : kDarkText)),
             ]),
           ),
@@ -117,7 +212,9 @@ class _NurseEditTimeSlotsScreenState extends State<NurseEditTimeSlotsScreen> {
     )),
   ]);
 
-  Widget _buildSession({required bool isMorning, required List<Map<String, dynamic>> slots}) {
+  Widget _buildSlotsEditor() {
+    final slots = _currentSlots;
+    final dayApi = _days[_selectedDayIndex]['api']!;
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20),
@@ -126,48 +223,22 @@ class _NurseEditTimeSlotsScreenState extends State<NurseEditTimeSlotsScreen> {
         Row(children: [
           Container(width: 42, height: 42,
             decoration: BoxDecoration(
-              color: isMorning ? const Color(0xFFFEEDDF) : const Color(0xFFE0F2FE),
+              color: const Color(0xFFE0F2FE),
               borderRadius: BorderRadius.circular(12)),
-            child: Icon(isMorning ? Icons.wb_sunny_rounded : Icons.nightlight_round,
-                color: isMorning ? kAmber : kSky, size: 22)),
+            child: const Icon(Icons.schedule_rounded, color: kSky, size: 22)),
           const SizedBox(width: 12),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(isMorning ? 'Morning Sessions' : 'Evening Sessions',
+            Text('${_days[_selectedDayIndex]['name']} Slots',
                 style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: kDarkText)),
-            Text(isMorning ? 'Recommended: 08:00 AM – 12:00 PM' : 'Recommended: 04:00 PM – 09:00 PM',
+            Text('Add or remove available times',
                 style: const TextStyle(fontSize: 12, color: kTextGray)),
           ]),
         ]),
         const SizedBox(height: 18),
         Wrap(spacing: 10, runSpacing: 10, children: [
-          ...slots.asMap().entries.map((e) {
-            final i = e.key; final slot = e.value; final isActive = slot['active'] as bool;
-            return GestureDetector(
-              onTap: () => setState(() => slot['active'] = !isActive),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 180),
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 11),
-                decoration: BoxDecoration(
-                  color: isActive ? Colors.white : const Color(0xFFF1F5F9),
-                  border: Border.all(color: isActive ? kPrimary : Colors.transparent, width: 2),
-                  borderRadius: BorderRadius.circular(100)),
-                child: Stack(clipBehavior: Clip.none, children: [
-                  Text(slot['time'] as String, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700,
-                      color: isActive ? kPrimary : const Color(0xFF64748B))),
-                  if (isActive)
-                    Positioned(top: -16, right: -16,
-                      child: GestureDetector(
-                        onTap: () => setState(() => slots.removeAt(i)),
-                        child: Container(width: 20, height: 20,
-                          decoration: const BoxDecoration(color: Color(0xFFB91C1C), shape: BoxShape.circle),
-                          child: const Icon(Icons.close_rounded, color: Colors.white, size: 12)),
-                      )),
-                ]),
-              ),
-            );
-          }),
+          ...slots.map((time) => _slotChip(time, dayApi)),
           GestureDetector(
-            onTap: () => _showAddSlot(slots),
+            onTap: () => _showAddSlot(dayApi),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 11),
               decoration: BoxDecoration(border: Border.all(color: const Color(0xFFCBD5E1), width: 2),
@@ -184,7 +255,28 @@ class _NurseEditTimeSlotsScreenState extends State<NurseEditTimeSlotsScreen> {
     );
   }
 
-  void _showAddSlot(List<Map<String, dynamic>> target) {
+  Widget _slotChip(String time, String dayApi) {
+    return GestureDetector(
+      onTap: () => _removeSlot(dayApi, time),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 11),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: kPrimary, width: 2),
+          borderRadius: BorderRadius.circular(100)),
+        child: Stack(clipBehavior: Clip.none, children: [
+          Text(time, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kPrimary)),
+          Positioned(top: -16, right: -16,
+            child: Container(width: 20, height: 20,
+              decoration: const BoxDecoration(color: Color(0xFFB91C1C), shape: BoxShape.circle),
+              child: const Icon(Icons.close_rounded, color: Colors.white, size: 12)),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  void _showAddSlot(String dayApi) {
     TimeOfDay sel = TimeOfDay.now();
     showModalBottomSheet(
       context: context, isScrollControlled: true, backgroundColor: Colors.white,
@@ -229,7 +321,7 @@ class _NurseEditTimeSlotsScreenState extends State<NurseEditTimeSlotsScreen> {
             Expanded(child: ElevatedButton(
               onPressed: () {
                 final label = sel.format(context);
-                setState(() => target.add({'time': label, 'active': true}));
+                _addSlot(dayApi, label);
                 Navigator.pop(ctx);
               },
               style: ElevatedButton.styleFrom(backgroundColor: kPrimary, foregroundColor: Colors.white,
