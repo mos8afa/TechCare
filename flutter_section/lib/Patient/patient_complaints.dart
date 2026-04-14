@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../Nurse/nurse_profile_screen.dart';
-import '../Nurse/nurse_requests_screen.dart';
-import '../Nurse/nurse_notifications.dart';
-import '../Nurse/nurse_wallet.dart';
+import '../Patient/patient_profile_screen.dart';
+import '../Patient/patient_requests_screen.dart';
+import '../Patient/patient_notifications.dart';
+import '../Patient/patient_wallet.dart';
 
 const Color kPrimary = Color(0xFF1D89E4);
 const Color kBgLight = Color(0xFFF4F7FC);
@@ -13,15 +13,15 @@ const Color kRed = Color(0xFFEF4444);
 const Color kAmber = Color(0xFFF59E0B);
 const Color kGreen = Color(0xFF10B981);
 
-class NurseComplaintsScreen extends StatefulWidget {
-  const NurseComplaintsScreen({super.key});
+class PatientComplaintsScreen extends StatefulWidget {
+  const PatientComplaintsScreen({super.key});
 
   @override
-  State<NurseComplaintsScreen> createState() =>
-      _NurseComplaintsScreenState();
+  State<PatientComplaintsScreen> createState() =>
+      _PatientComplaintsScreenState();
 }
 
-class _NurseComplaintsScreenState extends State<NurseComplaintsScreen> {
+class _PatientComplaintsScreenState extends State<PatientComplaintsScreen> {
   final _subjectCtrl = TextEditingController();
   final _messageCtrl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -29,15 +29,15 @@ class _NurseComplaintsScreenState extends State<NurseComplaintsScreen> {
 
   final List<Map<String, dynamic>> _previousComplaints = [
     {
-      'subject': 'Incomplete Patient Record',
+      'subject': 'Long Waiting Time',
       'message':
-          'The assigned patient record was missing vital signs from yesterday.',
+          'I waited for over 45 minutes for my scheduled appointment.',
       'date': 'Apr 2, 2026',
       'status': 'Resolved',
     },
     {
-      'subject': 'Equipment Issue',
-      'message': 'The blood pressure monitor in room 302 is malfunctioning.',
+      'subject': 'Incorrect Prescription',
+      'message': 'The pharmacy gave me the wrong medication dosage.',
       'date': 'Mar 20, 2026',
       'status': 'Under Review',
     },
@@ -120,7 +120,7 @@ class _NurseComplaintsScreenState extends State<NurseComplaintsScreen> {
         const CircleAvatar(
           radius: 20,
           backgroundImage: NetworkImage(
-              'https://randomuser.me/api/portraits/women/44.jpg'),
+              'https://randomuser.me/api/portraits/men/1.jpg'), // patient avatar
         ),
         const SizedBox(width: 16),
       ],
@@ -134,11 +134,31 @@ class _NurseComplaintsScreenState extends State<NurseComplaintsScreen> {
   // ── Drawer ───────────────────────────────────────────────────────────────
   Widget _buildDrawer(BuildContext context) {
     final items = [
-      {'icon': Icons.person_outline_rounded, 'label': 'Profile', 'active': false},
-      {'icon': Icons.list_alt_rounded, 'label': 'Requests', 'active': false},
-      {'icon': Icons.notifications_none_rounded, 'label': 'Notifications', 'active': false},
-      {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet', 'active': false},
-      {'icon': Icons.warning_amber_rounded, 'label': 'Complaints', 'active': true},
+      {
+        'icon': Icons.person_outline_rounded,
+        'label': 'Profile',
+        'active': false
+      },
+      {
+        'icon': Icons.list_alt_rounded,
+        'label': 'Requests',
+        'active': false
+      },
+      {
+        'icon': Icons.notifications_none_rounded,
+        'label': 'Notifications',
+        'active': false
+      },
+      {
+        'icon': Icons.account_balance_wallet_outlined,
+        'label': 'Wallet',
+        'active': false
+      },
+      {
+        'icon': Icons.warning_amber_rounded,
+        'label': 'Complaints',
+        'active': true
+      },
     ];
 
     return Drawer(
@@ -165,7 +185,7 @@ class _NurseComplaintsScreenState extends State<NurseComplaintsScreen> {
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
                               color: kPrimary)),
-                      Text('Nurse Portal',
+                      Text('Patient Portal',
                           style: TextStyle(fontSize: 12, color: kTextGray)),
                     ],
                   ),
@@ -222,25 +242,26 @@ class _NurseComplaintsScreenState extends State<NurseComplaintsScreen> {
       case 'Profile':
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const NurseProfileScreen()),
+          MaterialPageRoute(builder: (_) => const PatientProfileScreen()),
         );
         break;
       case 'Requests':
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const NurseRequestsScreen()),
+          MaterialPageRoute(builder: (_) => const PatientRequestsScreen()),
         );
         break;
       case 'Notifications':
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const NurseNotificationsScreen()),
+          MaterialPageRoute(
+              builder: (_) => const PatientNotificationsScreen()),
         );
         break;
       case 'Wallet':
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const NurseWalletScreen()),
+          MaterialPageRoute(builder: (_) => const PatientWalletScreen()),
         );
         break;
       default:

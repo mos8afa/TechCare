@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 import '../Patient/patient_edit_profile_screen.dart';
 import '../Patient/patient_requests_screen.dart';
+import '../Patient/patient_notifications.dart';
+import '../Patient/patient_wallet.dart';
+import '../Patient/patient_complaints.dart';
 
 const Color kPrimary    = Color(0xFF1D89E4);
 const Color kBgLight    = Color(0xFFF4F7FC);
@@ -107,7 +110,11 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
             Positioned(right: -2, top: -2,
                 child: CircleAvatar(radius: 5, backgroundColor: Color(0xFFEF4444))),
           ]),
-          onPressed: () {},
+          onPressed: () {
+            // Navigate to notifications
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (_) => const PatientNotificationsScreen()));
+          },
         ),
         const SizedBox(width: 4),
         const VerticalDivider(width: 1, thickness: 1, color: kBorderColor, indent: 16, endIndent: 16),
@@ -152,7 +159,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                 const SizedBox(width: 12),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
                   Text('TechCare', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: kPrimary)),
-                  Text('Medical Portal', style: TextStyle(fontSize: 12, color: kTextGray)),
+                  Text('Patient Portal', style: TextStyle(fontSize: 12, color: kTextGray)), // changed
                 ]),
               ]),
               const SizedBox(height: 32),
@@ -358,46 +365,53 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
   }
 
   Widget _buildBottomSection() {
+    final combined = _data!['combined'] as Map? ?? {};
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Wallet card
         Expanded(
           flex: 3,
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF1D89E4), Color(0xFF2179C2)],
-                begin: Alignment.topLeft, end: Alignment.bottomRight,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (_) => const PatientWalletScreen()));
+            },
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF1D89E4), Color(0xFF2179C2)],
+                  begin: Alignment.topLeft, end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(20),
               ),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  const Text('TechCare Wallet',
-                      style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w700)),
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    const Text('TechCare Wallet',
+                        style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w700)),
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(Icons.account_balance_wallet_outlined, color: Colors.white, size: 18),
                     ),
-                    child: const Icon(Icons.account_balance_wallet_outlined, color: Colors.white, size: 18),
-                  ),
-                ]),
-                const SizedBox(height: 4),
-                const Text('Manage healthcare payments',
-                    style: TextStyle(color: Colors.white70, fontSize: 11)),
-                const SizedBox(height: 16),
-                const Text('AVAILABLE BALANCE',
-                    style: TextStyle(color: Colors.white60, fontSize: 10, letterSpacing: 0.8)),
-                const SizedBox(height: 4),
-                const Text('— EGP',
-                    style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w800)),
-              ],
+                  ]),
+                  const SizedBox(height: 4),
+                  const Text('Manage healthcare payments',
+                      style: TextStyle(color: Colors.white70, fontSize: 11)),
+                  const SizedBox(height: 16),
+                  const Text('AVAILABLE BALANCE',
+                      style: TextStyle(color: Colors.white60, fontSize: 10, letterSpacing: 0.8)),
+                  const SizedBox(height: 4),
+                  const Text('2,450 EGP',  // يمكن استبدالها بقيمة من API لاحقاً
+                      style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w800)),
+                ],
+              ),
             ),
           ),
         ),
@@ -407,13 +421,13 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
           flex: 2,
           child: Column(children: [
             _smallStat(Icons.calendar_today_outlined, 'APPOINTMENTS',
-                (_data!['combined'] as Map?)?['total'] ?? 0, kPrimary, const Color(0xFFEFF6FF)),
+                combined['total'] ?? 0, kPrimary, const Color(0xFFEFF6FF)),
             const SizedBox(height: 10),
             _smallStat(Icons.check_circle_outline_rounded, 'COMPLETED',
-                (_data!['combined'] as Map?)?['completed'] ?? 0, kGreen, const Color(0xFFE6F7E6)),
+                combined['completed'] ?? 0, kGreen, const Color(0xFFE6F7E6)),
             const SizedBox(height: 10),
             _smallStat(Icons.article_outlined, 'PENDING',
-                (_data!['combined'] as Map?)?['pending'] ?? 0, kAmber, const Color(0xFFFFFBEB)),
+                combined['pending'] ?? 0, kAmber, const Color(0xFFFFFBEB)),
           ]),
         ),
       ],
@@ -444,11 +458,27 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
 
   void _navigateTo(String label) {
     switch (label) {
-      case 'Profile': break;
-      case 'Requests':
-        Navigator.push(context, MaterialPageRoute(builder: (_) => const PatientRequestsScreen()));
+      case 'Profile':
+        // بالفعل في نفس الصفحة
         break;
-      default: break;
+      case 'Requests':
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (_) => const PatientRequestsScreen()));
+        break;
+      case 'Notifications':
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (_) => const PatientNotificationsScreen()));
+        break;
+      case 'Wallet':
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (_) => const PatientWalletScreen()));
+        break;
+      case 'Complaints':
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (_) => const PatientComplaintsScreen()));
+        break;
+      default:
+        break;
     }
   }
 }

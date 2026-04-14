@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 import '../Patient/patient_book_appointment_screen.dart';
+import '../Patient/patient_profile_screen.dart';
+import '../Patient/patient_notifications.dart';
+import '../Patient/patient_wallet.dart';
+import '../Patient/patient_complaints.dart';
 
 const Color kPrimary     = Color(0xFF1D89E4);
 const Color kBgLight     = Color(0xFFF4F7FC);
@@ -89,6 +93,7 @@ class _PatientRequestsScreenState extends State<PatientRequestsScreen>
     return Scaffold(
       backgroundColor: kBgLight,
       appBar: _buildAppBar(),
+      drawer: _buildDrawer(context),
       body: Column(
         children: [
           // Category tabs (Doctor / Nurse)
@@ -143,8 +148,32 @@ class _PatientRequestsScreenState extends State<PatientRequestsScreen>
       backgroundColor: Colors.white,
       elevation: 0,
       surfaceTintColor: Colors.transparent,
+      leading: Builder(
+        builder: (ctx) => IconButton(
+          icon: const Icon(Icons.menu_rounded, color: kDarkText, size: 26),
+          onPressed: () => Scaffold.of(ctx).openDrawer(),
+        ),
+      ),
       title: const Text('Requests',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kDarkText)),
+      actions: [
+        IconButton(
+          icon: Stack(clipBehavior: Clip.none, children: const [
+            Icon(Icons.notifications_none_rounded, color: Color(0xFF4B5563), size: 24),
+            Positioned(right: -2, top: -2,
+                child: CircleAvatar(radius: 5, backgroundColor: Color(0xFFEF4444))),
+          ]),
+          onPressed: () {},
+        ),
+        const SizedBox(width: 4),
+        const VerticalDivider(width: 1, thickness: 1, color: kBorderColor, indent: 16, endIndent: 16),
+        const SizedBox(width: 12),
+        const CircleAvatar(
+          radius: 20,
+          backgroundImage: NetworkImage('https://randomuser.me/api/portraits/men/1.jpg'),
+        ),
+        const SizedBox(width: 16),
+      ],
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
         child: Container(color: kBorderColor, height: 1),
@@ -152,6 +181,102 @@ class _PatientRequestsScreenState extends State<PatientRequestsScreen>
     );
   }
 
+  Widget _buildDrawer(BuildContext context) {
+    final items = [
+      {'icon': Icons.person_outline_rounded,          'label': 'Profile',      'active': false},
+      {'icon': Icons.list_alt_rounded,                'label': 'Requests',     'active': true},
+      {'icon': Icons.notifications_none_rounded,      'label': 'Notifications','active': false},
+      {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet',       'active': false},
+      {'icon': Icons.warning_amber_rounded,           'label': 'Complaints',   'active': false},
+    ];
+
+    return Drawer(
+      backgroundColor: Colors.white,
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset('img/logo.png', width: 44, height: 44, fit: BoxFit.cover),
+                ),
+                const SizedBox(width: 12),
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
+                  Text('TechCare', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: kPrimary)),
+                  Text('Patient Portal', style: TextStyle(fontSize: 12, color: kTextGray)),
+                ]),
+              ]),
+              const SizedBox(height: 32),
+              ...items.map((item) {
+                final isActive = item['active'] as bool;
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  child: Material(
+                    color: isActive ? kPrimary : Colors.transparent,
+                    borderRadius: BorderRadius.circular(15),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(15),
+                      onTap: () {
+                        Navigator.pop(context);
+                        _handleNav(context, item['label'] as String);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+                        child: Row(children: [
+                          Icon(item['icon'] as IconData,
+                              color: isActive ? Colors.white : const Color(0xFF4B5563), size: 22),
+                          const SizedBox(width: 12),
+                          Text(item['label'] as String,
+                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600,
+                                  color: isActive ? Colors.white : const Color(0xFF4B5563))),
+                        ]),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _handleNav(BuildContext context, String label) {
+    switch (label) {
+      case 'Profile':
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const PatientProfileScreen()),
+        );
+        break;
+      case 'Notifications':
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const PatientNotificationsScreen()),
+        );
+        break;
+      case 'Wallet':
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const PatientWalletScreen()),
+        );
+        break;
+      case 'Complaints':
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const PatientComplaintsScreen()),
+        );
+        break;
+      default:
+        break;
+    }
+  }
+
+  // ── CATEGORY TAB ───────────────────────────────────────────────────────────
   Widget _catTab(int idx, IconData icon, String label) {
     final active = _categoryIndex == idx;
     return Expanded(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../Nurse/nurse_profile_screen.dart';
-import '../Nurse/nurse_requests_screen.dart';
-import '../Nurse/nurse_notifications.dart';
-import '../Nurse/nurse_complaints.dart';
+import '../Patient/patient_profile_screen.dart';
+import '../Patient/patient_requests_screen.dart';
+import '../Patient/patient_notifications.dart';
+import '../Patient/patient_complaints.dart';
 
 const Color kPrimary = Color(0xFF1D89E4);
 const Color kBgLight = Color(0xFFF4F7FC);
@@ -13,63 +13,63 @@ const Color kGreen = Color(0xFF10B981);
 const Color kAmber = Color(0xFFF59E0B);
 const Color kRed = Color(0xFFEF4444);
 
-class NurseWalletScreen extends StatefulWidget {
-  const NurseWalletScreen({super.key});
+class PatientWalletScreen extends StatefulWidget {
+  const PatientWalletScreen({super.key});
 
   @override
-  State<NurseWalletScreen> createState() => _NurseWalletScreenState();
+  State<PatientWalletScreen> createState() => _PatientWalletScreenState();
 }
 
-class _NurseWalletScreenState extends State<NurseWalletScreen>
+class _PatientWalletScreenState extends State<PatientWalletScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   final List<Map<String, dynamic>> _transactions = [
     {
-      'name': 'Layla Mahmoud',
-      'type': 'Care Service Fee',
-      'amount': 350,
-      'incoming': true,
-      'date': 'Today, 10:30 AM',
-      'avatar': 'https://randomuser.me/api/portraits/women/21.jpg',
-    },
-    {
-      'name': 'Omar Youssef',
-      'type': 'Care Service Fee',
-      'amount': 350,
-      'incoming': true,
-      'date': 'Today, 09:00 AM',
-      'avatar': 'https://randomuser.me/api/portraits/men/33.jpg',
-    },
-    {
-      'name': 'Withdrawal',
-      'type': 'Bank Transfer',
-      'amount': 1500,
+      'name': 'Dr. Ahmed Ali',
+      'type': 'Consultation Payment',
+      'amount': 500,
       'incoming': false,
+      'date': 'Today, 10:30 AM',
+      'avatar': 'https://randomuser.me/api/portraits/men/32.jpg',
+    },
+    {
+      'name': 'Pharmacy',
+      'type': 'Medication Purchase',
+      'amount': 230,
+      'incoming': false,
+      'date': 'Today, 09:00 AM',
+      'avatar': 'https://randomuser.me/api/portraits/women/65.jpg',
+    },
+    {
+      'name': 'Deposit',
+      'type': 'Wallet Top-up',
+      'amount': 1000,
+      'incoming': true,
       'date': 'Yesterday, 03:00 PM',
       'avatar': null,
     },
     {
-      'name': 'Hassan Ibrahim',
-      'type': 'Care Service Fee',
-      'amount': 350,
-      'incoming': true,
-      'date': 'Apr 4, 11:00 AM',
-      'avatar': 'https://randomuser.me/api/portraits/men/67.jpg',
-    },
-    {
-      'name': 'Nadia Fathi',
-      'type': 'Care Service Fee',
-      'amount': 350,
-      'incoming': true,
-      'date': 'Apr 3, 02:00 PM',
-      'avatar': 'https://randomuser.me/api/portraits/women/55.jpg',
-    },
-    {
-      'name': 'Withdrawal',
-      'type': 'Bank Transfer',
-      'amount': 1000,
+      'name': 'Dr. Karim Hassan',
+      'type': 'Consultation Payment',
+      'amount': 500,
       'incoming': false,
+      'date': 'Apr 4, 11:00 AM',
+      'avatar': 'https://randomuser.me/api/portraits/men/45.jpg',
+    },
+    {
+      'name': 'Lab Services',
+      'type': 'Blood Test',
+      'amount': 350,
+      'incoming': false,
+      'date': 'Apr 3, 02:00 PM',
+      'avatar': 'https://randomuser.me/api/portraits/women/22.jpg',
+    },
+    {
+      'name': 'Refund',
+      'type': 'Appointment Cancellation',
+      'amount': 250,
+      'incoming': true,
       'date': 'Apr 2, 12:00 PM',
       'avatar': null,
     },
@@ -90,7 +90,8 @@ class _NurseWalletScreenState extends State<NurseWalletScreen>
   List<Map<String, dynamic>> get _filtered {
     final tab = _tabController.index;
     if (tab == 0) return _transactions;
-    if (tab == 1) return _transactions.where((t) => t['incoming'] == true).toList();
+    if (tab == 1)
+      return _transactions.where((t) => t['incoming'] == true).toList();
     return _transactions.where((t) => t['incoming'] == false).toList();
   }
 
@@ -157,7 +158,7 @@ class _NurseWalletScreenState extends State<NurseWalletScreen>
         const CircleAvatar(
           radius: 20,
           backgroundImage: NetworkImage(
-              'https://randomuser.me/api/portraits/women/44.jpg'),
+              'https://randomuser.me/api/portraits/men/1.jpg'), // patient avatar
         ),
         const SizedBox(width: 16),
       ],
@@ -171,11 +172,31 @@ class _NurseWalletScreenState extends State<NurseWalletScreen>
   // ── Drawer ───────────────────────────────────────────────────────────────
   Widget _buildDrawer(BuildContext context) {
     final items = [
-      {'icon': Icons.person_outline_rounded, 'label': 'Profile', 'active': false},
-      {'icon': Icons.list_alt_rounded, 'label': 'Requests', 'active': false},
-      {'icon': Icons.notifications_none_rounded, 'label': 'Notifications', 'active': false},
-      {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet', 'active': true},
-      {'icon': Icons.warning_amber_rounded, 'label': 'Complaints', 'active': false},
+      {
+        'icon': Icons.person_outline_rounded,
+        'label': 'Profile',
+        'active': false
+      },
+      {
+        'icon': Icons.list_alt_rounded,
+        'label': 'Requests',
+        'active': false
+      },
+      {
+        'icon': Icons.notifications_none_rounded,
+        'label': 'Notifications',
+        'active': false
+      },
+      {
+        'icon': Icons.account_balance_wallet_outlined,
+        'label': 'Wallet',
+        'active': true
+      },
+      {
+        'icon': Icons.warning_amber_rounded,
+        'label': 'Complaints',
+        'active': false
+      },
     ];
 
     return Drawer(
@@ -202,7 +223,7 @@ class _NurseWalletScreenState extends State<NurseWalletScreen>
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
                               color: kPrimary)),
-                      Text('Nurse Portal',
+                      Text('Patient Portal',
                           style: TextStyle(fontSize: 12, color: kTextGray)),
                     ],
                   ),
@@ -259,25 +280,26 @@ class _NurseWalletScreenState extends State<NurseWalletScreen>
       case 'Profile':
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const NurseProfileScreen()),
+          MaterialPageRoute(builder: (_) => const PatientProfileScreen()),
         );
         break;
       case 'Requests':
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const NurseRequestsScreen()),
+          MaterialPageRoute(builder: (_) => const PatientRequestsScreen()),
         );
         break;
       case 'Notifications':
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const NurseNotificationsScreen()),
+          MaterialPageRoute(
+              builder: (_) => const PatientNotificationsScreen()),
         );
         break;
       case 'Complaints':
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const NurseComplaintsScreen()),
+          MaterialPageRoute(builder: (_) => const PatientComplaintsScreen()),
         );
         break;
       default:
@@ -311,7 +333,7 @@ class _NurseWalletScreenState extends State<NurseWalletScreen>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Total Wallet Balance',
+              const Text('Wallet Balance',
                   style: TextStyle(
                       fontSize: 14,
                       color: Colors.white70,
@@ -339,7 +361,7 @@ class _NurseWalletScreenState extends State<NurseWalletScreen>
             ],
           ),
           const SizedBox(height: 12),
-          const Text('8,750.00',
+          const Text('2,450.00',
               style: TextStyle(
                   fontSize: 38,
                   fontWeight: FontWeight.w800,
@@ -350,8 +372,8 @@ class _NurseWalletScreenState extends State<NurseWalletScreen>
             children: [
               Expanded(
                 child: _balanceAction(
-                  icon: Icons.arrow_downward_rounded,
-                  label: 'Withdraw',
+                  icon: Icons.add_rounded,
+                  label: 'Top Up',
                   onTap: () {},
                 ),
               ),
@@ -405,21 +427,21 @@ class _NurseWalletScreenState extends State<NurseWalletScreen>
       children: [
         Expanded(
           child: _statCard(
-            label: 'Total Earned',
-            value: '10,250 EGP',
-            icon: Icons.trending_up_rounded,
-            color: kGreen,
-            bg: const Color(0xFFE6F7E6),
+            label: 'Total Spent',
+            value: '1,580 EGP',
+            icon: Icons.trending_down_rounded,
+            color: kRed,
+            bg: const Color(0xFFFEE2E2),
           ),
         ),
         const SizedBox(width: 14),
         Expanded(
           child: _statCard(
-            label: 'Withdrawn',
-            value: '1,500 EGP',
-            icon: Icons.trending_down_rounded,
-            color: kRed,
-            bg: const Color(0xFFFEE2E2),
+            label: 'Refunded',
+            value: '250 EGP',
+            icon: Icons.trending_up_rounded,
+            color: kGreen,
+            bg: const Color(0xFFE6F7E6),
           ),
         ),
       ],
@@ -448,8 +470,8 @@ class _NurseWalletScreenState extends State<NurseWalletScreen>
           Container(
             width: 40,
             height: 40,
-            decoration:
-                BoxDecoration(color: bg, borderRadius: BorderRadius.circular(12)),
+            decoration: BoxDecoration(
+                color: bg, borderRadius: BorderRadius.circular(12)),
             child: Icon(icon, color: color, size: 20),
           ),
           const SizedBox(width: 12),
@@ -493,7 +515,9 @@ class _NurseWalletScreenState extends State<NurseWalletScreen>
         children: [
           const Text('Transaction History',
               style: TextStyle(
-                  fontSize: 16, fontWeight: FontWeight.w700, color: kDarkText)),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: kDarkText)),
           const SizedBox(height: 16),
           // Tabs
           TabBar(
@@ -509,8 +533,8 @@ class _NurseWalletScreenState extends State<NurseWalletScreen>
             onTap: (_) => setState(() {}),
             tabs: const [
               Tab(text: 'All'),
-              Tab(text: 'Income'),
-              Tab(text: 'Withdrawals'),
+              Tab(text: 'Deposits'),
+              Tab(text: 'Payments'),
             ],
           ),
           const SizedBox(height: 16),
@@ -544,11 +568,17 @@ class _NurseWalletScreenState extends State<NurseWalletScreen>
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: kRed.withOpacity(0.1),
+                    color: isIncoming
+                        ? kGreen.withOpacity(0.1)
+                        : kRed.withOpacity(0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.account_balance_outlined,
-                      color: kRed, size: 20),
+                  child: Icon(
+                      isIncoming
+                          ? Icons.arrow_downward_rounded
+                          : Icons.arrow_upward_rounded,
+                      color: isIncoming ? kGreen : kRed,
+                      size: 20),
                 ),
           const SizedBox(width: 12),
           Expanded(

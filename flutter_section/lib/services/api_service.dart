@@ -111,6 +111,38 @@ class ApiService {
     return response;
   }
 
+  static Future<http.Response> _authPut(
+    String url,
+    Map<String, dynamic> body,
+  ) async {
+    final token = await getAccessToken();
+    var response = await http.put(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(body),
+    );
+    if (response.statusCode == 401) {
+      final refreshed = await refreshAccessToken();
+      if (refreshed) {
+        final newToken = await getAccessToken();
+        response = await http.put(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $newToken',
+          },
+          body: jsonEncode(body),
+        );
+      }
+    }
+    return response;
+  }
+
   static Future<http.Response> _authDelete(String url) async {
     final token = await getAccessToken();
     var response = await http.delete(
@@ -148,6 +180,8 @@ class ApiService {
     if (path.startsWith('http')) return path;
     return 'http://10.0.2.2:8000$path';
   }
+
+  // ==================== AUTH ====================
 
   static Future<ApiResult> login({
     required String username,
@@ -317,6 +351,8 @@ class ApiService {
       return ApiResult.error('Connection error: $e');
     }
   }
+
+  // ==================== REGISTRATION (ROLE SPECIFIC) ====================
 
   static Future<ApiResult> patientRegister({
     required String gender,
@@ -783,7 +819,12 @@ class ApiService {
     try {
       final body = {'action': action};
       if (time != null) {
-        body['selected_time'] = time;
+        // Doctor endpoint expects 'new_time' when rescheduling
+        if (action == 'reschedule') {
+          body['new_time'] = time;
+        } else {
+          body['selected_time'] = time;
+        }
       }
       final response = await _authPost(
         '$baseUrl/requests/action/$requestId/',
@@ -802,7 +843,7 @@ class ApiService {
   static Future<ApiResult> markDoneDoctor(int requestId) async {
     try {
       final response = await _authPost(
-        '$baseUrl/requests/done/$requestId/',
+        '$baseUrl/requests/done/doctor/$requestId/',
         {},
       );
       final data = jsonDecode(response.body);
@@ -833,10 +874,12 @@ class ApiService {
     }
   }
 
-  // ==================== NURSE REQUESTS ====================
-  static Future<ApiResult> getNurseRequests(String type) async {
+  // ==================== NURSE PROFILE (GET & POST) ====================
+  /// Fetches nurse profile data for editing.
+  /// Endpoint: GET /nurse/profile/edit/
+  static Future<ApiResult> getNurseProfile() async {
     try {
-      final response = await _authGet('$baseUrl/nurse/requests/$type/');
+      final response = await _authGet('$baseUrl/nurse/profile/edit/');
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) return ApiResult.success(data);
       if (response.statusCode == 401) return ApiResult.error('Session expired');
@@ -846,24 +889,51 @@ class ApiService {
     }
   }
 
-  // ==================== ADD SERVICE ====================
-  static Future<ApiResult> addService({
-    required String name,
-    required String description,
-    required String price,
+  /// Updates nurse profile.
+  /// Endpoint: POST /nurse/profile/edit/
+  static Future<ApiResult> updateNurseProfile({
+    required String username,
+    required String phoneNumber,
+    required String address,
+    required String brief,
+    required String governorate,
+    File? profilePic,
   }) async {
     try {
-      final response = await _authPost('$baseUrl/services/add/', {
-        'name': name,
-        'description': description,
-        'price': price,
-      });
-
+      final token = await getAccessToken();
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse('$baseUrl/nurse/profile/edit/'),
+      );
+      request.headers['Authorization'] = 'Bearer $token';
+      request.headers['Accept'] = 'application/json';
+      request.fields['username'] = username;
+      request.fields['phone_number'] = phoneNumber;
+      request.fields['address'] = address;
+      request.fields['brief'] = brief;
+      request.fields['governorate'] = governorate;
+      if (profilePic != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath('profile_pic', profilePic.path),
+        );
+      }
+      final streamed = await request.send();
+      final response = await http.Response.fromStream(streamed);
       final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
 
-      if (response.statusCode == 201) return ApiResult.success(data);
+  // ==================== NURSE REQUESTS ====================
+  static Future<ApiResult> getNurseRequests(String type) async {
+    try {
+      final response = await _authGet('$baseUrl/nurse/requests/$type/');
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
       if (response.statusCode == 401) return ApiResult.error('Session expired');
-
       return ApiResult.error(data['error'] ?? 'Failed');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
@@ -898,9 +968,73 @@ class ApiService {
   static Future<ApiResult> markDoneNurse(int requestId) async {
     try {
       final response = await _authPost(
-        '$baseUrl/requests/done/$requestId/',
+        '$baseUrl/requests/done/nurse/$requestId/',
         {},
       );
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  // ==================== SERVICES (NURSE) ====================
+
+  /// Adds a new service for the nurse.
+  /// Endpoint: POST /services/add/
+  static Future<ApiResult> addService({
+    required String name,
+    required String description,
+    required String price,
+  }) async {
+    try {
+      final response = await _authPost('$baseUrl/services/add/', {
+        'name': name,
+        'description': description,
+        'price': price,
+      });
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 201) return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
+
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  /// Edits an existing service.
+  /// Endpoint: PUT /services/<service_id>/edit/
+  static Future<ApiResult> editService({
+    required int serviceId,
+    required String name,
+    required String description,
+    required String price,
+  }) async {
+    try {
+      final response = await _authPut('$baseUrl/services/$serviceId/edit/', {
+        'name': name,
+        'description': description,
+        'price': price,
+      });
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  /// Deletes a service.
+  /// Endpoint: DELETE /services/<service_id>/delete/
+  static Future<ApiResult> deleteService(int serviceId) async {
+    try {
+      final response = await _authDelete('$baseUrl/services/$serviceId/delete/');
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) return ApiResult.success(data);
       if (response.statusCode == 401) return ApiResult.error('Session expired');
@@ -1018,6 +1152,47 @@ class ApiService {
   }) async {
     try {
       final response = await _authPost('$baseUrl/doctor/$doctorId/book/', {
+        'date': date,
+        'time': time,
+        'disease_description': diseaseDescription,
+        'governorate': governorate,
+        'address': address,
+      });
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 201 || response.statusCode == 200)
+        return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
+      return ApiResult.error(data['error'] ?? 'Booking failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  // ==================== NURSE BOOKING (GET & POST) ====================
+  static Future<ApiResult> getNurseBookingInfo(int nurseId) async {
+    try {
+      final response = await _authGet('$baseUrl/nurse/$nurseId/book/');
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  static Future<ApiResult> bookNurse({
+    required int nurseId,
+    required List<int> serviceIds,
+    required String date,
+    required String time,
+    required String diseaseDescription,
+    required String governorate,
+    required String address,
+  }) async {
+    try {
+      final response = await _authPost('$baseUrl/nurse/$nurseId/book/', {
+        'services': serviceIds,
         'date': date,
         'time': time,
         'disease_description': diseaseDescription,
