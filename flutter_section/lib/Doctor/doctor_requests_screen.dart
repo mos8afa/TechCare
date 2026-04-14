@@ -5,14 +5,14 @@ import '../Doctor/doctor_wallet.dart';
 import '../Doctor/doctor_complaints.dart';
 
 // ─── Colors ───────────────────────────────────────────────────────────────
-const Color kPrimary    = Color(0xFF1D89E4);
-const Color kBgLight    = Color(0xFFF4F7FC);
-const Color kTextGray   = Color(0xFF718096);
-const Color kBorderColor= Color(0xFFE1E6EC);
-const Color kDarkText   = Color(0xFF1A1C1E);
-const Color kGreen      = Color(0xFF10B981);
-const Color kAmber      = Color(0xFFF59E0B);
-const Color kRed        = Color(0xFFEF4444);
+const Color kPrimary = Color(0xFF1D89E4);
+const Color kBgLight = Color(0xFFF4F7FC);
+const Color kTextGray = Color(0xFF718096);
+const Color kBorderColor = Color(0xFFE1E6EC);
+const Color kDarkText = Color(0xFF1A1C1E);
+const Color kGreen = Color(0xFF10B981);
+const Color kAmber = Color(0xFFF59E0B);
+const Color kRed = Color(0xFFEF4444);
 
 // ─── Data model ───────────────────────────────────────────────────────────
 enum RequestStatus { pending, accepted, done }
@@ -62,9 +62,15 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
   late TabController _tab;
 
   final List<String> _availableSlots = [
-    '09:00 AM', '09:30 AM', '10:00 AM',
-    '10:30 AM', '11:00 AM', '11:30 AM',
-    '04:00 PM', '04:30 PM', '05:00 PM',
+    '09:00 AM',
+    '09:30 AM',
+    '10:00 AM',
+    '10:30 AM',
+    '11:00 AM',
+    '11:30 AM',
+    '04:00 PM',
+    '04:30 PM',
+    '05:00 PM',
   ];
 
   final List<ConsultationRequest> _requests = [
@@ -118,9 +124,12 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
     ),
   ];
 
-  List<ConsultationRequest> get _pending  => _requests.where((r) => r.status == RequestStatus.pending).toList();
-  List<ConsultationRequest> get _accepted => _requests.where((r) => r.status == RequestStatus.accepted).toList();
-  List<ConsultationRequest> get _done     => _requests.where((r) => r.status == RequestStatus.done).toList();
+  List<ConsultationRequest> get _pending =>
+      _requests.where((r) => r.status == RequestStatus.pending).toList();
+  List<ConsultationRequest> get _accepted =>
+      _requests.where((r) => r.status == RequestStatus.accepted).toList();
+  List<ConsultationRequest> get _done =>
+      _requests.where((r) => r.status == RequestStatus.done).toList();
 
   @override
   void initState() {
@@ -156,22 +165,38 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
-                        Text('Requests',
-                            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: kDarkText)),
+                        Text(
+                          'Requests',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w800,
+                            color: kDarkText,
+                          ),
+                        ),
                         SizedBox(height: 2),
-                        Text('Manage incoming consultation requests',
-                            style: TextStyle(fontSize: 13, color: kTextGray)),
+                        Text(
+                          'Manage incoming consultation requests',
+                          style: TextStyle(fontSize: 13, color: kTextGray),
+                        ),
                       ],
                     ),
                     OutlinedButton.icon(
                       onPressed: () {},
                       icon: const Icon(Icons.filter_list_rounded, size: 16),
-                      label: const Text('Filter', style: TextStyle(fontWeight: FontWeight.w700)),
+                      label: const Text(
+                        'Filter',
+                        style: TextStyle(fontWeight: FontWeight.w700),
+                      ),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: kTextGray,
                         side: const BorderSide(color: kBorderColor),
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                     ),
                   ],
@@ -182,8 +207,14 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
                   controller: _tab,
                   labelColor: kPrimary,
                   unselectedLabelColor: kTextGray,
-                  labelStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
-                  unselectedLabelStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  labelStyle: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  unselectedLabelStyle: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
                   indicatorColor: kPrimary,
                   indicatorWeight: 2,
                   tabs: [
@@ -201,9 +232,9 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
             child: TabBarView(
               controller: _tab,
               children: [
-                _buildList(_pending,  _buildPendingCard),
+                _buildList(_pending, _buildPendingCard),
                 _buildList(_accepted, _buildAcceptedCard),
-                _buildList(_done,     _buildDoneCard),
+                _buildList(_done, _buildDoneCard),
               ],
             ),
           ),
@@ -222,9 +253,16 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.inbox_outlined, size: 60, color: kTextGray.withOpacity(0.35)),
+            Icon(
+              Icons.inbox_outlined,
+              size: 60,
+              color: kTextGray.withOpacity(0.35),
+            ),
             const SizedBox(height: 12),
-            const Text('No requests here', style: TextStyle(fontSize: 15, color: kTextGray)),
+            const Text(
+              'No requests here',
+              style: TextStyle(fontSize: 15, color: kTextGray),
+            ),
           ],
         ),
       );
@@ -253,12 +291,14 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
           const SizedBox(height: 16),
 
           // Info grid
-          _InfoGrid(items: [
-            _InfoCell(label: 'Date', value: r.date),
-            _InfoCell(label: 'Time', value: r.time),
-            _InfoCell(label: 'Governorate', value: r.governorate),
-            _InfoCell(label: 'Total Price', value: '${r.totalPrice} EGP'),
-          ]),
+          _InfoGrid(
+            items: [
+              _InfoCell(label: 'Date', value: r.date),
+              _InfoCell(label: 'Time', value: r.time),
+              _InfoCell(label: 'Governorate', value: r.governorate),
+              _InfoCell(label: 'Total Price', value: '${r.totalPrice} EGP'),
+            ],
+          ),
           const SizedBox(height: 14),
 
           // Description
@@ -266,8 +306,14 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
           const SizedBox(height: 14),
 
           // Time slots carousel
-          const Text('Time Slots',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: kPrimary)),
+          const Text(
+            'Time Slots',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: kPrimary,
+            ),
+          ),
           const SizedBox(height: 8),
           _TimeSlotsCarousel(
             slots: _availableSlots,
@@ -317,11 +363,22 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
           const SizedBox(height: 12),
 
           // Address
-          Row(children: [
-            const Icon(Icons.location_on_outlined, size: 15, color: kTextGray),
-            const SizedBox(width: 4),
-            Expanded(child: Text(r.address, style: const TextStyle(fontSize: 13, color: kTextGray))),
-          ]),
+          Row(
+            children: [
+              const Icon(
+                Icons.location_on_outlined,
+                size: 15,
+                color: kTextGray,
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  r.address,
+                  style: const TextStyle(fontSize: 13, color: kTextGray),
+                ),
+              ),
+            ],
+          ),
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 12),
             child: Divider(color: Color(0xFFF0F4F8), thickness: 1),
@@ -335,9 +392,18 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Total Price', style: TextStyle(fontSize: 13, color: kTextGray)),
-              Text('${r.totalPrice} EGP',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: kPrimary)),
+              const Text(
+                'Total Price',
+                style: TextStyle(fontSize: 13, color: kTextGray),
+              ),
+              Text(
+                '${r.totalPrice} EGP',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  color: kPrimary,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -350,12 +416,24 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
                 color: const Color(0xFFF0FDF4),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Row(children: [
-                Icon(Icons.check_circle_outline_rounded, color: Color(0xFF16A34A), size: 20),
-                SizedBox(width: 8),
-                Text('USER HAS CONFIRMED APPOINTMENT',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF16A34A))),
-              ]),
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.check_circle_outline_rounded,
+                    color: Color(0xFF16A34A),
+                    size: 20,
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    'USER HAS CONFIRMED APPOINTMENT',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF16A34A),
+                    ),
+                  ),
+                ],
+              ),
             ),
           const SizedBox(height: 16),
 
@@ -363,21 +441,38 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(children: [
-                const Icon(Icons.phone_outlined, size: 18, color: kTextGray),
-                const SizedBox(width: 6),
-                Text(r.phone, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: kDarkText)),
-              ]),
+              Row(
+                children: [
+                  const Icon(Icons.phone_outlined, size: 18, color: kTextGray),
+                  const SizedBox(width: 6),
+                  Text(
+                    r.phone,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: kDarkText,
+                    ),
+                  ),
+                ],
+              ),
               ElevatedButton(
                 onPressed: () => setState(() => r.status = RequestStatus.done),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: kPrimary,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 10),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 28,
+                    vertical: 10,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
                   elevation: 0,
                 ),
-                child: const Text('Done', style: TextStyle(fontWeight: FontWeight.w700)),
+                child: const Text(
+                  'Done',
+                  style: TextStyle(fontWeight: FontWeight.w700),
+                ),
               ),
             ],
           ),
@@ -403,11 +498,22 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
           const SizedBox(height: 12),
 
           // Address
-          Row(children: [
-            const Icon(Icons.location_on_outlined, size: 15, color: kTextGray),
-            const SizedBox(width: 4),
-            Expanded(child: Text(r.address, style: const TextStyle(fontSize: 13, color: kTextGray))),
-          ]),
+          Row(
+            children: [
+              const Icon(
+                Icons.location_on_outlined,
+                size: 15,
+                color: kTextGray,
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  r.address,
+                  style: const TextStyle(fontSize: 13, color: kTextGray),
+                ),
+              ),
+            ],
+          ),
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 12),
             child: Divider(color: Color(0xFFF0F4F8), thickness: 1),
@@ -427,20 +533,52 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  const Text('TOTAL PRICE',
-                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: kTextGray, letterSpacing: 0.8)),
-                  const SizedBox(height: 4),
-                  Text('${r.totalPrice} EGP',
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: kDarkText)),
-                ]),
-                Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                  const Text('NET INCOME',
-                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: kTextGray, letterSpacing: 0.8)),
-                  const SizedBox(height: 4),
-                  Text('${r.netIncome} EGP',
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: kPrimary)),
-                ]),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'TOTAL PRICE',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        color: kTextGray,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${r.totalPrice} EGP',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: kDarkText,
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const Text(
+                      'NET INCOME',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        color: kTextGray,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${r.netIncome} EGP',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        color: kPrimary,
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -461,26 +599,50 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
           onPressed: () => Scaffold.of(ctx).openDrawer(),
         ),
       ),
-      title: const Text('Requests',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kDarkText)),
+      title: const Text(
+        'Requests',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+          color: kDarkText,
+        ),
+      ),
       actions: [
         IconButton(
           icon: Stack(
             clipBehavior: Clip.none,
             children: const [
-              Icon(Icons.notifications_none_rounded, color: Color(0xFF4B5563), size: 24),
-              Positioned(right: -2, top: -2,
-                  child: CircleAvatar(radius: 5, backgroundColor: Color(0xFFEF4444))),
+              Icon(
+                Icons.notifications_none_rounded,
+                color: Color(0xFF4B5563),
+                size: 24,
+              ),
+              Positioned(
+                right: -2,
+                top: -2,
+                child: CircleAvatar(
+                  radius: 5,
+                  backgroundColor: Color(0xFFEF4444),
+                ),
+              ),
             ],
           ),
           onPressed: () {},
         ),
         const SizedBox(width: 4),
-        const VerticalDivider(width: 1, thickness: 1, color: kBorderColor, indent: 16, endIndent: 16),
+        const VerticalDivider(
+          width: 1,
+          thickness: 1,
+          color: kBorderColor,
+          indent: 16,
+          endIndent: 16,
+        ),
         const SizedBox(width: 12),
         const CircleAvatar(
           radius: 20,
-          backgroundImage: NetworkImage('https://randomuser.me/api/portraits/women/44.jpg'),
+          backgroundImage: NetworkImage(
+            'https://randomuser.me/api/portraits/women/44.jpg',
+          ),
         ),
         const SizedBox(width: 16),
       ],
@@ -494,11 +656,11 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
   // ── Drawer ────────────────────────────────────────────────────────────────
   Widget _buildDrawer(BuildContext context) {
     final items = [
-      {'icon': Icons.person_outline_rounded,          'label': 'Profile'},
-      {'icon': Icons.list_alt_rounded,                'label': 'Requests'},
-      {'icon': Icons.notifications_none_rounded,      'label': 'Notifications'},
+      {'icon': Icons.person_outline_rounded, 'label': 'Profile'},
+      {'icon': Icons.list_alt_rounded, 'label': 'Requests'},
+      {'icon': Icons.notifications_none_rounded, 'label': 'Notifications'},
       {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet'},
-      {'icon': Icons.warning_amber_rounded,           'label': 'Complaints'},
+      {'icon': Icons.warning_amber_rounded, 'label': 'Complaints'},
     ];
     return Drawer(
       backgroundColor: Colors.white,
@@ -508,17 +670,37 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.asset('img/logo.png', width: 44, height: 44, fit: BoxFit.cover),
-                ),
-                const SizedBox(width: 12),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
-                  Text('TechCare', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: kPrimary)),
-                  Text('Medical Portal', style: TextStyle(fontSize: 12, color: kTextGray)),
-                ]),
-              ]),
+              Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      'img/logo.png',
+                      width: 44,
+                      height: 44,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'TechCare',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: kPrimary,
+                        ),
+                      ),
+                      Text(
+                        'Medical Portal',
+                        style: TextStyle(fontSize: 12, color: kTextGray),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
               const SizedBox(height: 32),
               ...items.map((item) {
                 final isActive = item['label'] == 'Requests';
@@ -534,15 +716,32 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
                         _handleNav(context, item['label'] as String);
                       },
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-                        child: Row(children: [
-                          Icon(item['icon'] as IconData,
-                              color: isActive ? Colors.white : const Color(0xFF4B5563), size: 22),
-                          const SizedBox(width: 12),
-                          Text(item['label'] as String,
-                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600,
-                                  color: isActive ? Colors.white : const Color(0xFF4B5563))),
-                        ]),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 13,
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              item['icon'] as IconData,
+                              color: isActive
+                                  ? Colors.white
+                                  : const Color(0xFF4B5563),
+                              size: 22,
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              item['label'] as String,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: isActive
+                                    ? Colors.white
+                                    : const Color(0xFF4B5563),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -557,11 +756,32 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
 
   void _handleNav(BuildContext context, String label) {
     switch (label) {
-      case 'Profile':      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DoctorProfileScreen())); break;
-      case 'Notifications':Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DoctorNotificationsScreen())); break;
-      case 'Wallet':       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DoctorWalletScreen())); break;
-      case 'Complaints':   Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DoctorComplaintsScreen())); break;
-      default: break;
+      case 'Profile':
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const DoctorProfileScreen()),
+        );
+        break;
+      case 'Notifications':
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const DoctorNotificationsScreen()),
+        );
+        break;
+      case 'Wallet':
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const DoctorWalletScreen()),
+        );
+        break;
+      case 'Complaints':
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const DoctorComplaintsScreen()),
+        );
+        break;
+      default:
+        break;
     }
   }
 }
@@ -576,17 +796,21 @@ class _CardShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFF0F4F8)),
-          boxShadow: const [
-            BoxShadow(color: Color(0x07000000), blurRadius: 12, offset: Offset(0, 4)),
-          ],
+    padding: const EdgeInsets.all(20),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(color: const Color(0xFFF0F4F8)),
+      boxShadow: const [
+        BoxShadow(
+          color: Color(0x07000000),
+          blurRadius: 12,
+          offset: Offset(0, 4),
         ),
-        child: child,
-      );
+      ],
+    ),
+    child: child,
+  );
 }
 
 class _CardTopRow extends StatelessWidget {
@@ -608,28 +832,56 @@ class _CardTopRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(children: [
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              color: kPrimary.withOpacity(0.08),
-              shape: BoxShape.circle,
+        Row(
+          children: [
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: kPrimary.withOpacity(0.08),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.person_outline_rounded,
+                color: kPrimary,
+                size: 22,
+              ),
             ),
-            child: const Icon(Icons.person_outline_rounded, color: kPrimary, size: 22),
-          ),
-          const SizedBox(width: 12),
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(name, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: kDarkText)),
-            if (subtitle != null)
-              Text(subtitle!, style: const TextStyle(fontSize: 12, color: kTextGray)),
-          ]),
-        ]),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: kDarkText,
+                  ),
+                ),
+                if (subtitle != null)
+                  Text(
+                    subtitle!,
+                    style: const TextStyle(fontSize: 12, color: kTextGray),
+                  ),
+              ],
+            ),
+          ],
+        ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-          decoration: BoxDecoration(color: statusBg, borderRadius: BorderRadius.circular(30)),
-          child: Text(statusLabel,
-              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: statusColor)),
+          decoration: BoxDecoration(
+            color: statusBg,
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: Text(
+            statusLabel,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              color: statusColor,
+            ),
+          ),
         ),
       ],
     );
@@ -644,7 +896,10 @@ class _InfoGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: BoxDecoration(color: kBgLight, borderRadius: BorderRadius.circular(14)),
+      decoration: BoxDecoration(
+        color: kBgLight,
+        borderRadius: BorderRadius.circular(14),
+      ),
       child: GridView.count(
         crossAxisCount: 2,
         shrinkWrap: true,
@@ -665,13 +920,29 @@ class _InfoCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label.toUpperCase(),
-          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
-              color: kTextGray, letterSpacing: 0.5)),
-      const SizedBox(height: 3),
-      Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText)),
-    ]);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label.toUpperCase(),
+          style: const TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w800,
+            color: kTextGray,
+            letterSpacing: 0.5,
+          ),
+        ),
+        const SizedBox(height: 3),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            color: kDarkText,
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -682,13 +953,29 @@ class _DescriptionBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(label,
-          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
-              color: kPrimary, letterSpacing: 0.5)),
-      const SizedBox(height: 6),
-      Text(text, style: const TextStyle(fontSize: 13, color: Color(0xFF4A5568), height: 1.5)),
-    ]);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w800,
+            color: kPrimary,
+            letterSpacing: 0.5,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          text,
+          style: const TextStyle(
+            fontSize: 13,
+            color: Color(0xFF4A5568),
+            height: 1.5,
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -696,7 +983,11 @@ class _TimeSlotsCarousel extends StatelessWidget {
   final List<String> slots;
   final String? selected;
   final ValueChanged<String> onSelect;
-  const _TimeSlotsCarousel({required this.slots, required this.selected, required this.onSelect});
+  const _TimeSlotsCarousel({
+    required this.slots,
+    required this.selected,
+    required this.onSelect,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -715,18 +1006,29 @@ class _TimeSlotsCarousel extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 14),
               decoration: BoxDecoration(
                 color: isActive ? kPrimary : const Color(0xFFF0F4F8),
-                border: Border.all(color: isActive ? kPrimary : const Color(0xFFE2E8F0)),
+                border: Border.all(
+                  color: isActive ? kPrimary : const Color(0xFFE2E8F0),
+                ),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: isActive
-                    ? [BoxShadow(color: kPrimary.withOpacity(0.25), blurRadius: 6, offset: const Offset(0, 2))]
+                    ? [
+                        BoxShadow(
+                          color: kPrimary.withOpacity(0.25),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ]
                     : [],
               ),
               child: Center(
-                child: Text(slots[i],
-                    style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: isActive ? Colors.white : const Color(0xFF4B5563))),
+                child: Text(
+                  slots[i],
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: isActive ? Colors.white : const Color(0xFF4B5563),
+                  ),
+                ),
               ),
             ),
           );
@@ -741,7 +1043,12 @@ class _ActionBtn extends StatelessWidget {
   final Color color;
   final Color bg;
   final VoidCallback onTap;
-  const _ActionBtn({required this.label, required this.color, required this.bg, required this.onTap});
+  const _ActionBtn({
+    required this.label,
+    required this.color,
+    required this.bg,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -749,8 +1056,18 @@ class _ActionBtn extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(10)),
-        child: Text(label, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: color)),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            color: color,
+          ),
+        ),
       ),
     );
   }
