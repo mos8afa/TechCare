@@ -34,7 +34,7 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
 
   Future<void> _loadInitial() async {
     setState(() => _isLoadingDays = true);
-    final result = await ApiService.getTimeSlots();
+    final result = await ApiService.getDoctorTimeSlots();
     if (result.success) {
       final data = result.data;
       setState(() {
@@ -51,7 +51,7 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
 
   Future<void> _loadSlotsForDay(String day) async {
     setState(() => _isLoadingSlots = true);
-    final result = await ApiService.getTimeSlots(day: day);
+    final result = await ApiService.getDoctorTimeSlots(day: day);
     if (result.success) {
       final data = result.data;
       setState(() {
@@ -337,7 +337,7 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
   }
 
   Future<void> _deleteSlot(int slotId) async {
-    final result = await ApiService.deleteTimeSlot(slotId);
+    final result = await ApiService.deleteDoctorTimeSlot(slotId);
     if (result.success) {
       await _loadSlotsForDay(_selectedDay);
     } else {
@@ -456,7 +456,7 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
                                 existingTimes.add(newTime);
                               }
 
-                              final result = await ApiService.addTimeSlot(
+                              final result = await ApiService.saveDoctorTimeSlots(
                                 day: _selectedDay,
                                 times: existingTimes,
                               );
