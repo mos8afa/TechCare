@@ -86,9 +86,9 @@ class DonorProfileScreen extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Wallet
+                // Wallet - تقليل المرونة لتقليل الحجم
                 Expanded(
-                  flex: 3,
+                  flex: 2,
                   child: _WalletCard(balance: _balance),
                 ),
                 const SizedBox(width: 16),
@@ -103,7 +103,7 @@ class DonorProfileScreen extends StatelessWidget {
                         iconColor: kPrimary,
                         label:   'BLOOD TYPE',
                         value:   _bloodType,
-                        valueSz: 22,
+                        valueSz: 20,
                       ),
                       const SizedBox(height: 12),
                       _DonorInfoTile(
@@ -112,7 +112,7 @@ class DonorProfileScreen extends StatelessWidget {
                         iconColor: kAmber,
                         label:   'LAST DATE',
                         value:   _lastDate,
-                        valueSz: 14,
+                        valueSz: 12,
                       ),
                       const SizedBox(height: 12),
                       _DonorInfoTile(
@@ -121,7 +121,7 @@ class DonorProfileScreen extends StatelessWidget {
                         iconColor: kGreen,
                         label:   'TOTAL',
                         value:   _totalDon,
-                        valueSz: 14,
+                        valueSz: 12,
                       ),
                     ],
                   ),
@@ -289,61 +289,70 @@ class _ProfileCard extends StatelessWidget {
         border: Border.all(color: const Color(0xFFF0F4F8)),
         boxShadow: const [BoxShadow(color: Color(0x08000000), blurRadius: 14, offset: Offset(0, 4))],
       ),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Avatar
-          Container(
-            width: 80, height: 80,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: kBorderColor, width: 2),
-            ),
-            child: ClipOval(
-              child: Image.network(
-                'https://randomuser.me/api/portraits/men/32.jpg',
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  color: kPrimary.withOpacity(0.08),
-                  child: const Icon(Icons.person_outline_rounded, color: kPrimary, size: 36),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Avatar
+              Container(
+                width: 80, height: 80,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: kBorderColor, width: 2),
+                ),
+                child: ClipOval(
+                  child: Image.network(
+                    'https://randomuser.me/api/portraits/men/32.jpg',
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      color: kPrimary.withOpacity(0.08),
+                      child: const Icon(Icons.person_outline_rounded, color: kPrimary, size: 36),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          const SizedBox(width: 20),
-
-          // Info
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name,
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: kDarkText)),
-                const SizedBox(height: 12),
-                Wrap(
-                  spacing: 20, runSpacing: 10,
+              const SizedBox(width: 20),
+              // المعلومات
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _InfoItem(icon: Icons.email_outlined,    text: email),
-                    _InfoItem(icon: Icons.phone_outlined,    text: phone),
-                    _InfoItem(icon: Icons.location_on_outlined, text: governorate),
-                    _InfoItem(icon: Icons.home_outlined,     text: address),
+                    Text(name,
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: kDarkText)),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 20, runSpacing: 10,
+                      children: [
+                        _InfoItem(icon: Icons.email_outlined,    text: email),
+                        _InfoItem(icon: Icons.phone_outlined,    text: phone),
+                        _InfoItem(icon: Icons.location_on_outlined, text: governorate),
+                        _InfoItem(icon: Icons.home_outlined,     text: address),
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-
-          // Edit button
-          ElevatedButton(
-            onPressed: onEdit,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: kPrimary,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              elevation: 0,
-            ),
-            child: const Text('Edit Profile', style: TextStyle(fontWeight: FontWeight.w700)),
+          const SizedBox(height: 16),
+          // زر Edit Profile في أسفل اليمين
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ElevatedButton(
+                onPressed: onEdit,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: kPrimary,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  elevation: 0,
+                ),
+                child: const Text('Edit Profile', style: TextStyle(fontWeight: FontWeight.w700)),
+              ),
+            ],
           ),
         ],
       ),
@@ -418,7 +427,7 @@ class _StatCard extends StatelessWidget {
   }
 }
 
-// ── Wallet card ────────────────────────────────────────────────────────────
+// ── Wallet card (تم تقليل الحجم) ───────────────────────────────────────────
 class _WalletCard extends StatelessWidget {
   final String balance;
   const _WalletCard({required this.balance});
@@ -426,7 +435,7 @@ class _WalletCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -441,35 +450,35 @@ class _WalletCard extends StatelessWidget {
             children: [
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
                 Text('TechCare Wallet',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: kDarkText)),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: kDarkText)),
                 SizedBox(height: 2),
-                Text('Easily manage your healthcare payments',
-                    style: TextStyle(fontSize: 11, color: kTextGray)),
+                Text('Manage payments',
+                    style: TextStyle(fontSize: 10, color: kTextGray)),
               ]),
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: kPrimary.withOpacity(0.08),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.account_balance_wallet_outlined, color: kPrimary, size: 20),
+                child: const Icon(Icons.account_balance_wallet_outlined, color: kPrimary, size: 18),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           const Text('AVAILABLE BALANCE',
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
+              style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800,
                   color: kTextGray, letterSpacing: 0.8)),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
           Text(balance,
-              style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w800, color: kPrimary)),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: kPrimary)),
         ],
       ),
     );
   }
 }
 
-// ── Donor info tile ────────────────────────────────────────────────────────
+// ── Donor info tile (تم تقليل الحجم أيضاً) ─────────────────────────────────
 class _DonorInfoTile extends StatelessWidget {
   final IconData icon;
   final Color    iconBg, iconColor;
@@ -483,7 +492,7 @@ class _DonorInfoTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
@@ -492,14 +501,14 @@ class _DonorInfoTile extends StatelessWidget {
       ),
       child: Row(children: [
         Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(color: iconBg, shape: BoxShape.circle),
-          child: Icon(icon, color: iconColor, size: 18),
+          child: Icon(icon, color: iconColor, size: 16),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 10),
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(label,
-              style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w800,
+              style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w800,
                   color: kTextGray, letterSpacing: 0.6)),
           const SizedBox(height: 2),
           Text(value,
