@@ -103,7 +103,7 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
     // Get day string like "Monday", "Tuesday" etc based on selected day index
     // For now we'll use the day name from _days mapping
     final dayName = _getDayName(_selectedDayIndex);
-    final result = await ApiService.getTimeSlots(day: dayName);
+    final result = await ApiService.getNurseTimeSlots(day: dayName);
     if (result.success) {
       setState(() {
         _slots = List<Map<String, dynamic>>.from(result.data['slots'] ?? []);
