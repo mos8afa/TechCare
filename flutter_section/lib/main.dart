@@ -15,6 +15,7 @@ import 'Form/pharmacy_form_screen.dart';
 import 'Doctor/doctor_profile_screen.dart';
 import 'Nurse/nurse_profile_screen.dart';
 import 'Patient/patient_profile_screen.dart';
+import 'Donor/donor_profile_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -59,6 +60,7 @@ class MyApp extends StatelessWidget {
         '/doctor-profile':   (context) => const DoctorProfileScreen(),
         '/nurse-profile':    (context) => const NurseProfileScreen(),
         '/patient-profile':  (context) => const PatientProfileScreen(),
+        '/donor-profile':    (context) => const DonorProfileScreen(),
       },
     );
   }
