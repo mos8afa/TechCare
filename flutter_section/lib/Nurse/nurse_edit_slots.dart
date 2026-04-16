@@ -32,7 +32,7 @@ class _NurseEditTimeSlotsScreenState extends State<NurseEditTimeSlotsScreen> {
   ];
 
   // Store slots per day as list of time strings
-  Map<String, List<String>> _slotsByDay = {};
+  final Map<String, List<String>> _slotsByDay = {};
 
   @override
   void initState() {

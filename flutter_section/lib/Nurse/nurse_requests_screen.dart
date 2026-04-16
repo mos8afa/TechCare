@@ -171,11 +171,13 @@ class _NurseRequestsScreenState extends State<NurseRequestsScreen>
   }
 
   Widget _buildList(List<NurseRequest> items, Widget Function(NurseRequest) builder) {
-    if (items.isEmpty) return Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+    if (items.isEmpty) {
+      return Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       Icon(Icons.inbox_outlined, size: 60, color: kTextGray.withOpacity(0.35)),
       const SizedBox(height: 12),
       const Text('No requests here', style: TextStyle(fontSize: 15, color: kTextGray)),
     ]));
+    }
     return ListView.separated(
       padding: const EdgeInsets.all(20),
       itemCount: items.length,

@@ -43,7 +43,7 @@ class _DoctorFormStep1State extends State<DoctorFormStep1> {
   String? _phoneError;
   String? _dobError;
   String? _addressError;
-  bool _isLoading = false; 
+  final bool _isLoading = false; 
   bool _isPickingImage = false;
 
   final ImagePicker _picker = ImagePicker();
@@ -164,7 +164,7 @@ class _DoctorFormStep1State extends State<DoctorFormStep1> {
       Container(
         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFE2E8F0))),
         child: DropdownButtonFormField<String>(
-          value: value,
+          initialValue: value,
           hint: Text(hint, style: const TextStyle(color: Color(0xFFA0AEC0), fontSize: 14)),
           isExpanded: true,
           decoration: InputDecoration(border: InputBorder.none, prefixIcon: Icon(icon, color: const Color(0xFFA0AEC0), size: 20), contentPadding: const EdgeInsets.symmetric(vertical: 8)),
@@ -521,7 +521,7 @@ class _DoctorFormStep2State extends State<DoctorFormStep2> {
       Container(
         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFE2E8F0))),
         child: DropdownButtonFormField<String>(
-          value: value,
+          initialValue: value,
           hint: Text(hint, style: const TextStyle(color: Color(0xFFA0AEC0), fontSize: 14)),
           isExpanded: true,
           decoration: InputDecoration(border: InputBorder.none, prefixIcon: Icon(icon, color: const Color(0xFFA0AEC0), size: 20), contentPadding: const EdgeInsets.symmetric(vertical: 8)),

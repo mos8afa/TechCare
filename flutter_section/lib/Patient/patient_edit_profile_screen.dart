@@ -301,7 +301,7 @@ class _PatientEditProfileScreenState extends State<PatientEditProfileScreen> {
         _label('Governorate'),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
-          value: _selectedGovernorate,
+          initialValue: _selectedGovernorate,
           hint: const Text('Select governorate', style: TextStyle(fontSize: 14, color: kTextGray)),
           items: kGovernorates
               .map((g) => DropdownMenuItem(value: g['value'], child: Text(g['label']!)))
