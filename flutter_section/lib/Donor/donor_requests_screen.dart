@@ -31,9 +31,9 @@ class _DonorRequestsScreenState extends State<DonorRequestsScreen>
 
   static const _categories = [
     {'icon': Icons.medical_services_outlined,  'label': 'Doctor'},
-    {'icon': Icons.health_and_safety_outlined,  'label': 'Nurse'},
-    {'icon': Icons.medication_outlined,         'label': 'Medicine'},
-    {'icon': Icons.water_drop_outlined,         'label': 'Donations'},
+    {'icon': Icons.health_and_safety_outlined, 'label': 'Nurse'},
+    {'icon': Icons.medication_outlined,        'label': 'Medicine'},
+    {'icon': Icons.water_drop_outlined,        'label': 'Donations'},
   ];
 
   @override
@@ -54,10 +54,10 @@ class _DonorRequestsScreenState extends State<DonorRequestsScreen>
       drawer: _buildDrawer(context),
       body: Column(
         children: [
-          // ── Category tabs ─────────────────────────────────────
+          // ── Category tabs (محسن المسافات) ──────────────────────────────
           Container(
             color: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Container(
               decoration: BoxDecoration(
                 color: kBgLight,
@@ -75,12 +75,12 @@ class _DonorRequestsScreenState extends State<DonorRequestsScreen>
                 indicatorSize: TabBarIndicatorSize.tab,
                 labelColor: kPrimary,
                 unselectedLabelColor: kTextGray,
-                labelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
-                unselectedLabelStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
+                labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+                unselectedLabelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
                 dividerColor: Colors.transparent,
                 padding: const EdgeInsets.all(3),
                 tabs: _categories.map((c) => Tab(
-                  height: 38,
+                  height: 36,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
@@ -227,7 +227,7 @@ class _DonorRequestsScreenState extends State<DonorRequestsScreen>
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// DOCTOR TAB
+// DOCTOR TAB (محسن المسافات)
 // ═══════════════════════════════════════════════════════════════════════════
 
 class _DoctorTab extends StatefulWidget {
@@ -292,11 +292,11 @@ class _DoctorTabState extends State<_DoctorTab> with SingleTickerProviderStateMi
     ]);
   }
 
-  // ── BOOKING ───────────────────────────────────────────────────────────
+  // ── BOOKING (محسن المسافات) ─────────────────────────────────────────────
   Widget _buildBooking() {
     return Column(children: [
       Padding(
-        padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
         child: Column(children: [
           _SearchField(controller: _searchCtrl, hint: 'Search by doctor...', onChanged: (_) => setState(() {})),
           const SizedBox(height: 8),
@@ -315,7 +315,7 @@ class _DoctorTabState extends State<_DoctorTab> with SingleTickerProviderStateMi
           ]),
         ]),
       ),
-      const SizedBox(height: 10),
+      const SizedBox(height: 8),
       Expanded(
         child: GridView.builder(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -323,7 +323,7 @@ class _DoctorTabState extends State<_DoctorTab> with SingleTickerProviderStateMi
             crossAxisCount: 2,
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
-            childAspectRatio: 0.62,
+            childAspectRatio: 0.68, // تحسين نسبة الارتفاع للعرض
           ),
           itemCount: _filtered.length,
           itemBuilder: (_, i) => _DoctorCard(
@@ -507,7 +507,7 @@ class _DoctorTabState extends State<_DoctorTab> with SingleTickerProviderStateMi
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// NURSE TAB
+// NURSE TAB (محسن المسافات)
 // ═══════════════════════════════════════════════════════════════════════════
 
 class _NurseTab extends StatefulWidget {
@@ -564,7 +564,7 @@ class _NurseTabState extends State<_NurseTab> with SingleTickerProviderStateMixi
   Widget _buildBooking() {
     return Column(children: [
       Padding(
-        padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
         child: Column(children: [
           _SearchField(controller: _searchCtrl, hint: 'Search by Nurse...', onChanged: (_) => setState(() {})),
           const SizedBox(height: 8),
@@ -577,7 +577,7 @@ class _NurseTabState extends State<_NurseTab> with SingleTickerProviderStateMixi
           ]),
         ]),
       ),
-      const SizedBox(height: 10),
+      const SizedBox(height: 8),
       Expanded(
         child: ListView.separated(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -1258,7 +1258,7 @@ class _NurseBookingPageState extends State<_NurseBookingPage> {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// SHARED CARD WIDGETS
+// SHARED CARD WIDGETS (محسنة المسافات)
 // ═══════════════════════════════════════════════════════════════════════════
 
 class _DoctorCard extends StatelessWidget {
@@ -1269,60 +1269,63 @@ class _DoctorCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white, borderRadius: BorderRadius.circular(14),
         border: Border.all(color: kBorderColor),
         boxShadow: const [BoxShadow(color: Color(0x07000000), blurRadius: 6, offset: Offset(0, 2))],
       ),
-      child: Column(children: [
-        Stack(alignment: Alignment.bottomRight, children: [
-          _Avatar(url: doctor['img'] as String?, size: 60),
-          Container(width: 12, height: 12, decoration: const BoxDecoration(color: kGreen, shape: BoxShape.circle, boxShadow: [BoxShadow(color: Colors.white, blurRadius: 0, spreadRadius: 2)])),
-        ]),
-        const SizedBox(height: 8),
-        Text(doctor['name'] as String, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText), textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis),
-        const SizedBox(height: 2),
-        Text(doctor['spec'] as String, style: const TextStyle(fontSize: 10, color: kPrimary, fontWeight: FontWeight.w500), textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis),
-        const SizedBox(height: 3),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Icon(Icons.location_on_outlined, size: 10, color: kTextGray),
-          const SizedBox(width: 2),
-          Flexible(child: Text(doctor['gov'] as String, style: const TextStyle(fontSize: 10, color: kTextGray), overflow: TextOverflow.ellipsis)),
-        ]),
-        const SizedBox(height: 5),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: List.generate(5, (i) => Icon(
-          i < (doctor['rating'] as double).floor() ? Icons.star_rounded : Icons.star_border_rounded,
-          color: kAmber, size: 12,
-        ))),
-        const SizedBox(height: 8),
-        const Divider(color: Color(0xFFF0F4F8), height: 1),
-        const SizedBox(height: 8),
-        Row(children: [
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('CONSULTATION FEE', style: TextStyle(fontSize: 7, fontWeight: FontWeight.w800, color: kTextGray, letterSpacing: 0.3)),
-            Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              Text('${doctor['fee']}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: kDarkText)),
-              const SizedBox(width: 2),
-              const Padding(padding: EdgeInsets.only(bottom: 1), child: Text('EGP', style: TextStyle(fontSize: 9, color: kTextGray, fontWeight: FontWeight.w600))),
-            ]),
-          ])),
-        ]),
-        const SizedBox(height: 8),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: onBook,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: kPrimary, foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 9),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              elevation: 0,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Stack(alignment: Alignment.bottomRight, children: [
+            _Avatar(url: doctor['img'] as String?, size: 52),
+            Container(width: 12, height: 12, decoration: const BoxDecoration(color: kGreen, shape: BoxShape.circle, boxShadow: [BoxShadow(color: Colors.white, blurRadius: 0, spreadRadius: 2)])),
+          ]),
+          const SizedBox(height: 6),
+          Text(doctor['name'] as String, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText), textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 2),
+          Text(doctor['spec'] as String, style: const TextStyle(fontSize: 10, color: kPrimary, fontWeight: FontWeight.w500), textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 4),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            const Icon(Icons.location_on_outlined, size: 10, color: kTextGray),
+            const SizedBox(width: 2),
+            Flexible(child: Text(doctor['gov'] as String, style: const TextStyle(fontSize: 10, color: kTextGray), overflow: TextOverflow.ellipsis)),
+          ]),
+          const SizedBox(height: 4),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: List.generate(5, (i) => Icon(
+            i < (doctor['rating'] as double).floor() ? Icons.star_rounded : Icons.star_border_rounded,
+            color: kAmber, size: 12,
+          ))),
+          const SizedBox(height: 6),
+          const Divider(color: Color(0xFFF0F4F8), height: 1),
+          const SizedBox(height: 6),
+          Row(children: [
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Text('CONSULTATION FEE', style: TextStyle(fontSize: 7, fontWeight: FontWeight.w800, color: kTextGray, letterSpacing: 0.3)),
+              Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                Text('${doctor['fee']}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: kDarkText)),
+                const SizedBox(width: 2),
+                const Padding(padding: EdgeInsets.only(bottom: 1), child: Text('EGP', style: TextStyle(fontSize: 8, color: kTextGray, fontWeight: FontWeight.w600))),
+              ]),
+            ])),
+          ]),
+          const SizedBox(height: 6),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: onBook,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: kPrimary, foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                elevation: 0,
+              ),
+              child: const Text('Book Now', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
             ),
-            child: const Text('Book Now', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }
@@ -1336,7 +1339,7 @@ class _NurseCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final services = (nurse['services'] as List).cast<Map<String, dynamic>>();
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white, borderRadius: BorderRadius.circular(14),
         border: Border.all(color: kBorderColor),
@@ -1344,52 +1347,52 @@ class _NurseCard extends StatelessWidget {
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          _Avatar(url: nurse['img'] as String?, size: 52),
-          const SizedBox(width: 12),
+          _Avatar(url: nurse['img'] as String?, size: 48),
+          const SizedBox(width: 10),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(nurse['name'] as String, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: kDarkText), overflow: TextOverflow.ellipsis),
-            Text(nurse['spec'] as String, style: const TextStyle(fontSize: 11, color: kPrimary, fontWeight: FontWeight.w500), maxLines: 2, overflow: TextOverflow.ellipsis),
+            Text(nurse['spec'] as String, style: const TextStyle(fontSize: 10, color: kPrimary, fontWeight: FontWeight.w500), maxLines: 2, overflow: TextOverflow.ellipsis),
             const SizedBox(height: 2),
             Row(children: [
-              const Icon(Icons.location_on_outlined, size: 11, color: kTextGray),
+              const Icon(Icons.location_on_outlined, size: 10, color: kTextGray),
               const SizedBox(width: 2),
-              Flexible(child: Text(nurse['gov'] as String, style: const TextStyle(fontSize: 11, color: kTextGray), overflow: TextOverflow.ellipsis)),
+              Flexible(child: Text(nurse['gov'] as String, style: const TextStyle(fontSize: 10, color: kTextGray), overflow: TextOverflow.ellipsis)),
             ]),
           ])),
           Row(children: List.generate(5, (i) => Icon(
             i < (nurse['rating'] as double).floor() ? Icons.star_rounded : Icons.star_border_rounded,
-            color: kAmber, size: 12,
+            color: kAmber, size: 11,
           ))),
         ]),
-        const Padding(padding: EdgeInsets.symmetric(vertical: 10), child: Divider(color: Color(0xFFF0F4F8))),
-        const Text('REQUESTED SERVICES', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: kTextGray, letterSpacing: 0.5)),
-        const SizedBox(height: 6),
+        const Padding(padding: EdgeInsets.symmetric(vertical: 8), child: Divider(color: Color(0xFFF0F4F8))),
+        const Text('REQUESTED SERVICES', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w800, color: kTextGray, letterSpacing: 0.5)),
+        const SizedBox(height: 4),
         ...services.map((s) => Padding(
-          padding: const EdgeInsets.only(bottom: 4),
+          padding: const EdgeInsets.only(bottom: 3),
           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Flexible(child: Text(s['name'] as String, style: const TextStyle(fontSize: 12, color: kDarkText))),
-            Text('${s['price']} EGP', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: kTextGray)),
+            Flexible(child: Text(s['name'] as String, style: const TextStyle(fontSize: 11, color: kDarkText))),
+            Text('${s['price']} EGP', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: kTextGray)),
           ]),
         )),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('STARTING FROM', style: TextStyle(fontSize: 8, fontWeight: FontWeight.w800, color: kTextGray, letterSpacing: 0.3)),
+            const Text('STARTING FROM', style: TextStyle(fontSize: 7, fontWeight: FontWeight.w800, color: kTextGray, letterSpacing: 0.3)),
             Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              Text('${nurse['starting']}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: kPrimary)),
+              Text('${nurse['starting']}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: kPrimary)),
               const SizedBox(width: 2),
-              const Padding(padding: EdgeInsets.only(bottom: 1), child: Text('EGP', style: TextStyle(fontSize: 9, color: kTextGray, fontWeight: FontWeight.w600))),
+              const Padding(padding: EdgeInsets.only(bottom: 1), child: Text('EGP', style: TextStyle(fontSize: 8, color: kTextGray, fontWeight: FontWeight.w600))),
             ]),
           ]),
           ElevatedButton(
             onPressed: onBook,
             style: ElevatedButton.styleFrom(
               backgroundColor: kPrimary, foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               elevation: 0,
             ),
-            child: const Text('Book Now', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
+            child: const Text('Book Now', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
           ),
         ]),
       ]),
@@ -1476,8 +1479,6 @@ class _DonationCard extends StatelessWidget {
           const SizedBox(height: 12),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Text(item['time'] as String, style: const TextStyle(fontSize: 11, color: kTextGray)),
-            // ✅ تم تعديل الجزء الخاص بـ if (showActions) و if (showDone)
-            // باستخدام if-else داخل قائمة الأطفال لتجنب أي خطأ
             if (showActions) ...[
               Row(children: [
                 OutlinedButton(
