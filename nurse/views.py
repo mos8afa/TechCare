@@ -121,13 +121,22 @@ def nurse_requests(request, type):
 
     all_reqs = nurse.nurse_requests.all()
 
-    if type == 'pending' or type is None:
-        pending_qs = list(all_reqs.filter(status='pending').order_by('-date', '-time'))
-        for req in pending_qs:
+    if type in ('pending', 'edited') or type is None:
+        pending_qs = []
+        for req in all_reqs.filter(status='pending').order_by('-date', '-time'):
             req_day = req.date.strftime('%A').lower()
             req.nurse_slots = TimeSlots.objects.filter(nurse=nurse, day=req_day).order_by('time')
             req.day_slots = req.nurse_slots  # alias for template compatibility
-        return render(request, 'nurse/requests_pending.html', {**context_base, 'pending': pending_qs})
+            pending_qs.append(req)
+
+        edited_qs = []
+        for req in all_reqs.filter(status='edited').order_by('-date', '-time'):
+            req_day = req.date.strftime('%A').lower()
+            req.nurse_slots = TimeSlots.objects.filter(nurse=nurse, day=req_day).order_by('time')
+            req.day_slots = req.nurse_slots
+            edited_qs.append(req)
+
+        return render(request, 'nurse/requests_pending.html', {**context_base, 'pending': pending_qs, 'edited': edited_qs})
 
     elif type == 'accepted':
         accepted = all_reqs.filter(status='accepted').order_by('-date', '-time')

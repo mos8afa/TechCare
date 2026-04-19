@@ -84,7 +84,7 @@
                         <div class="patient-meta">
                             <div class="patient-avatar-mini"><i class="bi bi-person-circle"></i></div>
                             <div class="patient-name-info">
-                                <h3>{{ req.patient.user.first_name }} {{ req.patient.user.last_name }}</h3>
+                                <h3>{{ req.requester_name }} {% if req.is_donor %}<span style="background:#fef3c7;color:#b45309;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">DONOR</span>{% endif %}</h3>
                                 <p>
                                     <i class="ri-map-pin-2-line"></i>
                                     {{ req.governrate }} — {{ req.address }}
@@ -174,6 +174,102 @@
                 {% empty %}
                 <div style="grid-column:1/-1; text-align:center; padding:60px; color:#888;">
                     <h3>No Pending Requests</h3>
+                </div>
+                {% endfor %}
+
+                {% for req in edited %}
+                <div class="request-card-item animate slide-up">
+
+                    <div class="card-top-section">
+                        <div class="patient-meta">
+                            <div class="patient-avatar-mini"><i class="bi bi-person-circle"></i></div>
+                            <div class="patient-name-info">
+                                <h3>{{ req.requester_name }} {% if req.is_donor %}<span style="background:#fef3c7;color:#b45309;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">DONOR</span>{% endif %}</h3>
+                                <p>
+                                    <i class="ri-map-pin-2-line"></i>
+                                    {{ req.governrate }} — {{ req.address }}
+                                </p>
+                            </div>
+                        </div>
+                        <span class="status-pill" style="background:#fff3cd; color:#856404;">EDITED</span>
+                    </div>
+
+                    <hr class="hr">
+
+                    <div class="card-mid-section">
+                        <div class="pending-time-date">
+                            <i class="ri-calendar-line"></i>
+                            <div>
+                                <span>Date</span>
+                                <p>{{ req.date|date:"d M Y" }}</p>
+                            </div>
+                        </div>
+                        <div class="pending-time-date">
+                            <i class="ri-time-line"></i>
+                            <div>
+                                <span>Time</span>
+                                <p>{{ req.time|time:"h:i A" }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="hr">
+
+                    <div class="discription-service">
+                        <label>Description</label>
+                        <div class="description-box">{{ req.disease_description }}</div>
+                    </div>
+
+                    <div class="services-card">
+                        <div class="services-card__header">Services Requested</div>
+                        <div class="services-card__list">
+                            {% for svc in req.service.all %}
+                            <div class="services-card__item">
+                                <span class="services-card__name">{{ svc.name }}</span>
+                                <span class="services-card__price">{{ svc.price }} EGP</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="services-card__total-row">
+                            <span class="services-card__total-label">Total Price</span>
+                            <span class="services-card__total-value">{{ req.net_income }} EGP</span>
+                        </div>
+                    </div>
+
+                    <hr class="hr">
+
+                    <div class="edit-input">
+                        <label>Time Slots</label>
+                        <div class="time-slots-carousel">
+                            <button type="button" class="slot-nav prev-slot" onclick="slideSlots(-1, this)">&#8249;</button>
+                            <div class="slots-viewport">
+                                <div class="slots-track" data-offset="0">
+                                    {% for slot in req.day_slots %}
+                                    <button type="button" class="time-slot-btn {% if slot.time == req.time %}active{% endif %}"
+                                            onclick="selectSlot(this)">
+                                        {{ slot.time|time:"h:i A" }}
+                                    </button>
+                                    {% empty %}
+                                    <span style="color:#888; font-size:13px; padding:8px;">No slots for this day</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <button type="button" class="slot-nav next-slot" onclick="slideSlots(1, this)">&#8250;</button>
+                        </div>
+                    </div>
+                    <div class="card-footer-actions">
+                        <form method="POST" action="{% url 'nurse:request_action' req.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="reject">
+                            <button type="submit" class="btn-action reject">Reject</button>
+                        </form>
+                        <form method="POST" action="{% url 'nurse:request_action' req.id %}" style="display:inline;" class="accept-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="accept">
+                            <input type="hidden" name="selected_time" class="selected-time-input" value="{{ req.time|time:'H:i' }}" data-original="{{ req.time|time:'H:i' }}">
+                            <button type="submit" class="btn-action accept">Accept</button>
+                        </form>
+                    </div>
                 </div>
                 {% endfor %}
             </div>

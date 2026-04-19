@@ -59,7 +59,7 @@
                 <div class="patient-meta">
                     <div class="patient-avatar-mini"><i class="bi bi-person-circle"></i></div>
                     <div class="patient-name-info">
-                        <h3>{{ p.patient.user.first_name }} {{ p.patient.user.last_name }}</h3>
+                        <h3>{{ p.requester_name }} {% if p.is_donor %}<span style="background:#fef3c7;color:#b45309;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">DONOR</span>{% endif %}</h3>
                     </div>
                 </div>
                 <span class="status-pill pending">PENDING</span>
@@ -122,7 +122,7 @@
                 <div class="patient-meta">
                     <div class="patient-avatar-mini"><i class="bi bi-person-circle"></i></div>
                     <div class="patient-name-info">
-                        <h3>{{ p.patient.user.first_name }} {{ p.patient.user.last_name }}</h3>
+                        <h3>{{ p.requester_name }} {% if p.is_donor %}<span style="background:#fef3c7;color:#b45309;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">DONOR</span>{% endif %}</h3>
                     </div>
                 </div>
                 <span class="status-pill" style="background:#fff3cd; color:#856404;">EDITED</span>

@@ -192,17 +192,22 @@ def doctor_requests(request, type):
     }
 
     if type in ('pending', 'edited') or type is None:
-        pending_list = list(pending) + list(edited)
-        for req in pending_list:
-            req_day = req.date.strftime('%A').lower()  
-            req.day_slots = TimeSlots.objects.filter(
-                doctor=doctor, day=req_day
-            ).order_by('time')
+        pending_list = []
+        for req in pending.order_by('-date', '-time'):
+            req_day = req.date.strftime('%A').lower()
+            req.day_slots = TimeSlots.objects.filter(doctor=doctor, day=req_day).order_by('time')
+            pending_list.append(req)
+
+        edited_list = []
+        for req in edited.order_by('-date', '-time'):
+            req_day = req.date.strftime('%A').lower()
+            req.day_slots = TimeSlots.objects.filter(doctor=doctor, day=req_day).order_by('time')
+            edited_list.append(req)
 
         return render(request, 'doctor/requests_pending.html', {
             **context_base,
-            "pending": pending,
-            "edited": edited,
+            "pending": pending_list,
+            "edited": edited_list,
         })
     elif type == 'accepted':
         return render(request, 'doctor/requests_accepted.html', {
@@ -247,7 +252,6 @@ def request_action(request, request_id):
             try:
                 h, m = new_time.split(':')
                 new_t = time_type(int(h), int(m))
-                # if same time → just accept, if different → reschedule (edited)
                 if new_t == req.time:
                     req.status = 'accepted'
                 else:

@@ -230,9 +230,7 @@ class Patient(models.Model):
     phone_number = models.CharField(max_length=11)
     governorate = models.CharField(max_length=50, choices=GOVERNORATES)
     address = models.TextField()
-    disease_history = models.TextField(blank=True, null=True)
     
-
 #------- Doctor -----
 class Doctor(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

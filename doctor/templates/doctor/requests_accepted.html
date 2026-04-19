@@ -58,7 +58,7 @@
                             <i class="bi bi-person-circle"></i>
                         </div>
                         <div class="patient-name-info">
-                            <h3>{{ a.patient.user.first_name }} {{ a.patient.user.last_name }}</h3>
+                            <h3>{{ a.requester_name }} {% if a.is_donor %}<span style="background:#fef3c7;color:#b45309;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">DONOR</span>{% endif %}</h3>
                             <p>
                                 <i class="bi bi-calendar3"></i> {{ a.date|date:"M d, Y" }}
                                 &nbsp; • &nbsp;
@@ -94,7 +94,7 @@
                 <div class="card-footer-flex">
                     <div class="phone-display">
                         <i class="ri-phone-line"></i>
-                        <span>{{ a.patient.phone_number }}</span>
+                        <span>{{ a.requester_phone }}</span>
                     </div>
                     {% if a.doctor_done %}
                         <button class="btn-done" disabled style="opacity:0.5; cursor:not-allowed;">Waiting for Patient...</button>

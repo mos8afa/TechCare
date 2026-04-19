@@ -10,6 +10,8 @@ urlpatterns = [
     path('doctor/', include('doctor.urls', namespace='doctor')),
     path('nurse/', include('nurse.urls', namespace = 'nurse')),
     path('patient/', include('patient.urls', namespace='patient')),
+    path('donor/', include('donor.urls', namespace='donor')),
+    path('donation/', include('donor.donation_urls', namespace='donation')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
