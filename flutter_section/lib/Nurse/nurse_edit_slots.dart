@@ -45,7 +45,7 @@ class _NurseEditTimeSlotsScreenState extends State<NurseEditTimeSlotsScreen> {
     try {
       // Load slots for current selected day
       final dayApi = _days[_selectedDayIndex]['api']!;
-      final result = await ApiService.getTimeSlots(day: dayApi);
+      final result = await ApiService.getNurseTimeSlots(day: dayApi);
       if (result.success) {
         final slotsData = result.data['slots'] as List? ?? [];
         final times = slotsData.map<String>((s) => s['time'].toString()).toList();
@@ -76,7 +76,7 @@ class _NurseEditTimeSlotsScreenState extends State<NurseEditTimeSlotsScreen> {
     setState(() => _isSaving = true);
     final dayApi = _days[_selectedDayIndex]['api']!;
     final times = _slotsByDay[dayApi] ?? [];
-    final result = await ApiService.addTimeSlot(
+    final result = await ApiService.saveNurseTimeSlots(
       day: dayApi,
       times: times,
     );

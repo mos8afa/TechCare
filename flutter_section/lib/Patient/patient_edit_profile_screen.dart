@@ -68,7 +68,7 @@ class _PatientEditProfileScreenState extends State<PatientEditProfileScreen> {
 
   Future<void> _loadProfile() async {
     setState(() => _isLoading = true);
-    final result = await ApiService.getProfile();
+    final result = await ApiService.getPatientProfile();
     if (result.success) {
       final data = result.data;
       _usernameCtrl.text = data['username'] ?? '';
@@ -350,11 +350,11 @@ class _PatientEditProfileScreenState extends State<PatientEditProfileScreen> {
   void _handleSave() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isSaving = true);
-    final result = await ApiService.updateProfile(
+    final result = await ApiService.updatePatientProfile(
       username: _usernameCtrl.text.trim(),
       phoneNumber: '0${_phoneCtrl.text.trim()}',
       address: _addressCtrl.text.trim(),
-      brief: '',
+      // brief: '',
       governorate: _selectedGovernorate ?? '',
       profilePic: _pickedImage,
     );

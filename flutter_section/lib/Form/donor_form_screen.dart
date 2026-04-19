@@ -676,7 +676,7 @@ class _DonorFormState extends State<DonorForm> {
     setState(() => _isLoading = false);
     
     if (result.success) {
-      if (mounted) Navigator.pushReplacementNamed(context, '/home');
+      if (mounted) Navigator.pushReplacementNamed(context, '/donor-profile');
     } else {
       if (mounted) {
         final error = result.error ?? 'Registration failed';

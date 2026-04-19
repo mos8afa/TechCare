@@ -181,7 +181,9 @@ class ApiService {
     return 'http://10.0.2.2:8000$path';
   }
 
-  // ==================== AUTH ====================
+  // ════════════════════════════════════════════════════════════════════
+  // AUTH
+  // ════════════════════════════════════════════════════════════════════
 
   static Future<ApiResult> login({
     required String username,
@@ -352,7 +354,9 @@ class ApiService {
     }
   }
 
-  // ==================== REGISTRATION (ROLE SPECIFIC) ====================
+  // ════════════════════════════════════════════════════════════════════
+  // REGISTRATION (ROLE SPECIFIC)
+  // ════════════════════════════════════════════════════════════════════
 
   static Future<ApiResult> patientRegister({
     required String gender,
@@ -375,21 +379,9 @@ class ApiService {
       request.fields['phone_number'] = phoneNumber;
       request.fields['address'] = address;
       request.fields['governorate'] = governorate;
-      request.files.add(
-        await http.MultipartFile.fromPath('profile_pic', profilePic.path),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'national_id_pic_front',
-          nationalIdFront.path,
-        ),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'national_id_pic_back',
-          nationalIdBack.path,
-        ),
-      );
+      request.files.add(await http.MultipartFile.fromPath('profile_pic', profilePic.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_front', nationalIdFront.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_back', nationalIdBack.path));
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
       final data = jsonDecode(response.body);
@@ -419,10 +411,7 @@ class ApiService {
   }) async {
     try {
       final token = await getAccessToken();
-      final request = http.MultipartRequest(
-        'POST',
-        Uri.parse('$baseUrl/auth/doctor/'),
-      );
+      final request = http.MultipartRequest('POST', Uri.parse('$baseUrl/auth/doctor/'));
       request.headers['Authorization'] = 'Bearer $token';
       request.headers['Accept'] = 'application/json';
       request.fields['gender'] = gender;
@@ -433,39 +422,13 @@ class ApiService {
       request.fields['price'] = price;
       request.fields['specification'] = specification;
       request.fields['university'] = university;
-      request.files.add(
-        await http.MultipartFile.fromPath('profile_pic', profilePic.path),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'national_id_pic_front',
-          nationalIdFront.path,
-        ),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'national_id_pic_back',
-          nationalIdBack.path,
-        ),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath('syndicate_card', syndicateCard.path),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath('practice_permit', practicePerm.path),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'graduation_certificate',
-          graduationCert.path,
-        ),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'excellence_certificate',
-          excellenceCert.path,
-        ),
-      );
+      request.files.add(await http.MultipartFile.fromPath('profile_pic', profilePic.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_front', nationalIdFront.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_back', nationalIdBack.path));
+      request.files.add(await http.MultipartFile.fromPath('syndicate_card', syndicateCard.path));
+      request.files.add(await http.MultipartFile.fromPath('practice_permit', practicePerm.path));
+      request.files.add(await http.MultipartFile.fromPath('graduation_certificate', graduationCert.path));
+      request.files.add(await http.MultipartFile.fromPath('excellence_certificate', excellenceCert.path));
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
       final data = jsonDecode(response.body);
@@ -492,10 +455,7 @@ class ApiService {
   }) async {
     try {
       final token = await getAccessToken();
-      final request = http.MultipartRequest(
-        'POST',
-        Uri.parse('$baseUrl/auth/nurse/'),
-      );
+      final request = http.MultipartRequest('POST', Uri.parse('$baseUrl/auth/nurse/'));
       request.headers['Authorization'] = 'Bearer $token';
       request.headers['Accept'] = 'application/json';
       request.fields['gender'] = gender;
@@ -503,39 +463,13 @@ class ApiService {
       request.fields['address'] = address;
       request.fields['governorate'] = governorate;
       request.fields['date_of_birth'] = dateOfBirth;
-      request.files.add(
-        await http.MultipartFile.fromPath('profile_pic', profilePic.path),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'national_id_pic_front',
-          nationalIdFront.path,
-        ),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'national_id_pic_back',
-          nationalIdBack.path,
-        ),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'excellence_certificate',
-          excellenceCert.path,
-        ),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath('syndicate_card', syndicateCard.path),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath('practice_permit', practicePerm.path),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'graduation_certificate',
-          graduationCert.path,
-        ),
-      );
+      request.files.add(await http.MultipartFile.fromPath('profile_pic', profilePic.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_front', nationalIdFront.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_back', nationalIdBack.path));
+      request.files.add(await http.MultipartFile.fromPath('excellence_certificate', excellenceCert.path));
+      request.files.add(await http.MultipartFile.fromPath('syndicate_card', syndicateCard.path));
+      request.files.add(await http.MultipartFile.fromPath('practice_permit', practicePerm.path));
+      request.files.add(await http.MultipartFile.fromPath('graduation_certificate', graduationCert.path));
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
       final data = jsonDecode(response.body);
@@ -559,10 +493,7 @@ class ApiService {
   }) async {
     try {
       final token = await getAccessToken();
-      final request = http.MultipartRequest(
-        'POST',
-        Uri.parse('$baseUrl/auth/donor/'),
-      );
+      final request = http.MultipartRequest('POST', Uri.parse('$baseUrl/auth/donor/'));
       request.headers['Authorization'] = 'Bearer $token';
       request.headers['Accept'] = 'application/json';
       request.fields['blood_type'] = bloodType;
@@ -573,21 +504,9 @@ class ApiService {
       if (lastDonationDate != null && lastDonationDate.isNotEmpty) {
         request.fields['last_donation_date'] = lastDonationDate;
       }
-      request.files.add(
-        await http.MultipartFile.fromPath('profile_pic', profilePic.path),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'national_id_pic_front',
-          nationalIdFront.path,
-        ),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'national_id_pic_back',
-          nationalIdBack.path,
-        ),
-      );
+      request.files.add(await http.MultipartFile.fromPath('profile_pic', profilePic.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_front', nationalIdFront.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_back', nationalIdBack.path));
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
       final data = jsonDecode(response.body);
@@ -615,10 +534,7 @@ class ApiService {
   }) async {
     try {
       final token = await getAccessToken();
-      final request = http.MultipartRequest(
-        'POST',
-        Uri.parse('$baseUrl/auth/pharmacist/'),
-      );
+      final request = http.MultipartRequest('POST', Uri.parse('$baseUrl/auth/pharmacist/'));
       request.headers['Authorization'] = 'Bearer $token';
       request.headers['Accept'] = 'application/json';
       request.fields['gender'] = gender;
@@ -628,33 +544,12 @@ class ApiService {
       request.fields['pharmacy_address'] = pharmacyAddress;
       request.fields['governorate'] = governorate;
       request.fields['university'] = university;
-      request.files.add(
-        await http.MultipartFile.fromPath('profile_pic', profilePic.path),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'national_id_pic_front',
-          nationalIdFront.path,
-        ),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'national_id_pic_back',
-          nationalIdBack.path,
-        ),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath('syndicate_card', syndicateCard.path),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath('practice_permit', practicePerm.path),
-      );
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'graduation_certificate',
-          graduationCert.path,
-        ),
-      );
+      request.files.add(await http.MultipartFile.fromPath('profile_pic', profilePic.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_front', nationalIdFront.path));
+      request.files.add(await http.MultipartFile.fromPath('national_id_pic_back', nationalIdBack.path));
+      request.files.add(await http.MultipartFile.fromPath('syndicate_card', syndicateCard.path));
+      request.files.add(await http.MultipartFile.fromPath('practice_permit', practicePerm.path));
+      request.files.add(await http.MultipartFile.fromPath('graduation_certificate', graduationCert.path));
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
       final data = jsonDecode(response.body);
@@ -665,7 +560,10 @@ class ApiService {
     }
   }
 
-  // ==================== GET USER ROLE ====================
+  // ════════════════════════════════════════════════════════════════════
+  // USER ROLE
+  // ════════════════════════════════════════════════════════════════════
+
   static Future<ApiResult> getUserRole() async {
     try {
       final response = await _authGet('$baseUrl/auth/user-role/');
@@ -678,41 +576,35 @@ class ApiService {
     }
   }
 
-  // ==================== DOCTOR DASHBOARD ====================
+  // DOCTOR — Dashboard
   static Future<ApiResult> getDoctorDashboard({String? day}) async {
     try {
       final uri = day != null
           ? '$baseUrl/dashboard/doctor/?day=$day'
           : '$baseUrl/dashboard/doctor/';
-
       final response = await _authGet(uri);
       final data = jsonDecode(response.body);
-
       if (response.statusCode == 200) return ApiResult.success(data);
       if (response.statusCode == 401) return ApiResult.error('Session expired');
-
       return ApiResult.error(data['error'] ?? 'Failed');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
     }
   }
 
-  // ==================== DOCTOR EDIT PROFILE GET ====================
+  // DOCTOR — Profile
   static Future<ApiResult> getDoctorProfile() async {
     try {
       final response = await _authGet('$baseUrl/doctor/profile/edit/');
       final data = jsonDecode(response.body);
-
       if (response.statusCode == 200) return ApiResult.success(data);
       if (response.statusCode == 401) return ApiResult.error('Session expired');
-
       return ApiResult.error(data['error'] ?? 'Failed');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
     }
   }
 
-  // ==================== DOCTOR EDIT PROFILE POST ====================
   static Future<ApiResult> updateDoctorProfile({
     required String username,
     required String phoneNumber,
@@ -724,10 +616,7 @@ class ApiService {
   }) async {
     try {
       final token = await getAccessToken();
-      final request = http.MultipartRequest(
-        'POST',
-        Uri.parse('$baseUrl/doctor/profile/edit/'),
-      );
+      final request = http.MultipartRequest('POST', Uri.parse('$baseUrl/doctor/profile/edit/'));
       request.headers['Authorization'] = 'Bearer $token';
       request.headers['Accept'] = 'application/json';
       request.fields['username'] = username;
@@ -737,9 +626,7 @@ class ApiService {
       request.fields['price'] = price;
       request.fields['governorate'] = governorate;
       if (profilePic != null) {
-        request.files.add(
-          await http.MultipartFile.fromPath('profile_pic', profilePic.path),
-        );
+        request.files.add(await http.MultipartFile.fromPath('profile_pic', profilePic.path));
       }
       final streamed = await request.send();
       final response = await http.Response.fromStream(streamed);
@@ -751,10 +638,12 @@ class ApiService {
     }
   }
 
-  // ==================== TIME SLOTS GET ====================
-  static Future<ApiResult> getTimeSlots({String? day}) async {
+  // DOCTOR — Time Slots
+  static Future<ApiResult> getDoctorTimeSlots({String? day}) async {
     try {
-      final uri = day != null ? '$baseUrl/slots/?day=$day' : '$baseUrl/slots/';
+      final uri = day != null
+          ? '$baseUrl/doctor/slots/?day=$day'
+          : '$baseUrl/doctor/slots/';
       final response = await _authGet(uri);
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) return ApiResult.success(data);
@@ -765,13 +654,12 @@ class ApiService {
     }
   }
 
-  // ==================== TIME SLOTS ADD ====================
-  static Future<ApiResult> addTimeSlot({
+  static Future<ApiResult> saveDoctorTimeSlots({
     required String day,
     required List<String> times,
   }) async {
     try {
-      final response = await _authPost('$baseUrl/slots/save/', {
+      final response = await _authPost('$baseUrl/doctor/slots/save/', {
         'day': day,
         'times': times,
       });
@@ -784,10 +672,9 @@ class ApiService {
     }
   }
 
-  // ==================== TIME SLOTS DELETE ====================
-  static Future<ApiResult> deleteTimeSlot(int slotId) async {
+  static Future<ApiResult> deleteDoctorTimeSlot(int slotId) async {
     try {
-      final response = await _authDelete('$baseUrl/slots/$slotId/delete/');
+      final response = await _authDelete('$baseUrl/doctor/slots/$slotId/delete/');
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) return ApiResult.success(data);
       if (response.statusCode == 401) return ApiResult.error('Session expired');
@@ -797,7 +684,7 @@ class ApiService {
     }
   }
 
-  // ==================== DOCTOR REQUESTS ====================
+  // DOCTOR — Requests
   static Future<ApiResult> getDoctorRequests(String type) async {
     try {
       final response = await _authGet('$baseUrl/doctor/requests/$type/');
@@ -810,24 +697,18 @@ class ApiService {
     }
   }
 
-  // ==================== DOCTOR REQUEST ACTION ====================
   static Future<ApiResult> requestActionDoctor(
     int requestId,
     String action, {
     String? time,
   }) async {
     try {
-      final body = {'action': action};
+      final body = <String, dynamic>{'action': action};
       if (time != null) {
-        // Doctor endpoint expects 'new_time' when rescheduling
-        if (action == 'reschedule') {
-          body['new_time'] = time;
-        } else {
-          body['selected_time'] = time;
-        }
+        body[action == 'reschedule' ? 'new_time' : 'selected_time'] = time;
       }
       final response = await _authPost(
-        '$baseUrl/requests/action/$requestId/',
+        '$baseUrl/doctor/requests/action/$requestId/',
         body,
       );
       final data = jsonDecode(response.body);
@@ -839,11 +720,10 @@ class ApiService {
     }
   }
 
-  // ==================== DOCTOR DONE ACTION ====================
   static Future<ApiResult> markDoneDoctor(int requestId) async {
     try {
       final response = await _authPost(
-        '$baseUrl/requests/done/doctor/$requestId/',
+        '$baseUrl/doctor/requests/done/$requestId/',
         {},
       );
       final data = jsonDecode(response.body);
@@ -855,28 +735,24 @@ class ApiService {
     }
   }
 
-  // ==================== NURSE DASHBOARD ====================
+  // ════════════════════════════════════════════════════════════════════
+  // NURSE — Dashboard
   static Future<ApiResult> getNurseDashboard({String? day}) async {
     try {
       final uri = day != null
           ? '$baseUrl/dashboard/nurse/?day=$day'
           : '$baseUrl/dashboard/nurse/';
-
       final response = await _authGet(uri);
       final data = jsonDecode(response.body);
-
       if (response.statusCode == 200) return ApiResult.success(data);
       if (response.statusCode == 401) return ApiResult.error('Session expired');
-
       return ApiResult.error(data['error'] ?? 'Failed');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
     }
   }
 
-  // ==================== NURSE PROFILE (GET & POST) ====================
-  /// Fetches nurse profile data for editing.
-  /// Endpoint: GET /nurse/profile/edit/
+  // NURSE — Profile
   static Future<ApiResult> getNurseProfile() async {
     try {
       final response = await _authGet('$baseUrl/nurse/profile/edit/');
@@ -889,8 +765,6 @@ class ApiService {
     }
   }
 
-  /// Updates nurse profile.
-  /// Endpoint: POST /nurse/profile/edit/
   static Future<ApiResult> updateNurseProfile({
     required String username,
     required String phoneNumber,
@@ -901,10 +775,7 @@ class ApiService {
   }) async {
     try {
       final token = await getAccessToken();
-      final request = http.MultipartRequest(
-        'POST',
-        Uri.parse('$baseUrl/nurse/profile/edit/'),
-      );
+      final request = http.MultipartRequest('POST', Uri.parse('$baseUrl/nurse/profile/edit/'));
       request.headers['Authorization'] = 'Bearer $token';
       request.headers['Accept'] = 'application/json';
       request.fields['username'] = username;
@@ -913,9 +784,7 @@ class ApiService {
       request.fields['brief'] = brief;
       request.fields['governorate'] = governorate;
       if (profilePic != null) {
-        request.files.add(
-          await http.MultipartFile.fromPath('profile_pic', profilePic.path),
-        );
+        request.files.add(await http.MultipartFile.fromPath('profile_pic', profilePic.path));
       }
       final streamed = await request.send();
       final response = await http.Response.fromStream(streamed);
@@ -927,7 +796,53 @@ class ApiService {
     }
   }
 
-  // ==================== NURSE REQUESTS ====================
+  // NURSE — Time Slots
+  static Future<ApiResult> getNurseTimeSlots({String? day}) async {
+    try {
+      final uri = day != null
+          ? '$baseUrl/nurse/slots/?day=$day'
+          : '$baseUrl/nurse/slots/';
+      final response = await _authGet(uri);
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  static Future<ApiResult> saveNurseTimeSlots({
+    required String day,
+    required List<String> times,
+  }) async {
+    try {
+      final response = await _authPost('$baseUrl/nurse/slots/save/', {
+        'day': day,
+        'times': times,
+      });
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  static Future<ApiResult> deleteNurseTimeSlot(int slotId) async {
+    try {
+      final response = await _authDelete('$baseUrl/nurse/slots/$slotId/delete/');
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  // NURSE — Requests
   static Future<ApiResult> getNurseRequests(String type) async {
     try {
       final response = await _authGet('$baseUrl/nurse/requests/$type/');
@@ -940,19 +855,16 @@ class ApiService {
     }
   }
 
-  // ==================== NURSE REQUEST ACTION ====================
   static Future<ApiResult> requestActionNurse(
     int requestId,
     String action, {
     String? time,
   }) async {
     try {
-      final body = {'action': action};
-      if (time != null) {
-        body['selected_time'] = time;
-      }
+      final body = <String, dynamic>{'action': action};
+      if (time != null) body['selected_time'] = time;
       final response = await _authPost(
-        '$baseUrl/requests/action/$requestId/',
+        '$baseUrl/nurse/requests/action/$requestId/',
         body,
       );
       final data = jsonDecode(response.body);
@@ -964,11 +876,10 @@ class ApiService {
     }
   }
 
-  // ==================== NURSE DONE ACTION ====================
   static Future<ApiResult> markDoneNurse(int requestId) async {
     try {
       final response = await _authPost(
-        '$baseUrl/requests/done/nurse/$requestId/',
+        '$baseUrl/nurse/requests/done/$requestId/',
         {},
       );
       final data = jsonDecode(response.body);
@@ -980,10 +891,7 @@ class ApiService {
     }
   }
 
-  // ==================== SERVICES (NURSE) ====================
-
-  /// Adds a new service for the nurse.
-  /// Endpoint: POST /services/add/
+  // NURSE — Services
   static Future<ApiResult> addService({
     required String name,
     required String description,
@@ -995,20 +903,15 @@ class ApiService {
         'description': description,
         'price': price,
       });
-
       final data = jsonDecode(response.body);
-
       if (response.statusCode == 201) return ApiResult.success(data);
       if (response.statusCode == 401) return ApiResult.error('Session expired');
-
       return ApiResult.error(data['error'] ?? 'Failed');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
     }
   }
 
-  /// Edits an existing service.
-  /// Endpoint: PUT /services/<service_id>/edit/
   static Future<ApiResult> editService({
     required int serviceId,
     required String name,
@@ -1030,8 +933,6 @@ class ApiService {
     }
   }
 
-  /// Deletes a service.
-  /// Endpoint: DELETE /services/<service_id>/delete/
   static Future<ApiResult> deleteService(int serviceId) async {
     try {
       final response = await _authDelete('$baseUrl/services/$serviceId/delete/');
@@ -1044,22 +945,64 @@ class ApiService {
     }
   }
 
-  // ==================== PATIENT DASHBOARD ====================
+  // ════════════════════════════════════════════════════════════════════
+  // PATIENT — Dashboard
   static Future<ApiResult> getPatientDashboard() async {
     try {
       final response = await _authGet('$baseUrl/dashboard/patient/');
       final data = jsonDecode(response.body);
-
       if (response.statusCode == 200) return ApiResult.success(data);
       if (response.statusCode == 401) return ApiResult.error('Session expired');
-
       return ApiResult.error(data['error'] ?? 'Failed');
     } catch (e) {
       return ApiResult.error('Connection error: $e');
     }
   }
 
-  // ==================== PATIENT REQUESTS ====================
+  // PATIENT — Profile
+  static Future<ApiResult> getPatientProfile() async {
+    try {
+      final response = await _authGet('$baseUrl/patient/profile/edit/');
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  static Future<ApiResult> updatePatientProfile({
+    required String username,
+    required String phoneNumber,
+    required String address,
+    required String governorate,
+    File? profilePic,
+  }) async {
+    try {
+      final token = await getAccessToken();
+      final request = http.MultipartRequest('POST', Uri.parse('$baseUrl/patient/profile/edit/'));
+      request.headers['Authorization'] = 'Bearer $token';
+      request.headers['Accept'] = 'application/json';
+      request.fields['username'] = username;
+      request.fields['phone_number'] = phoneNumber;
+      request.fields['address'] = address;
+      request.fields['governorate'] = governorate;
+      if (profilePic != null) {
+        request.files.add(await http.MultipartFile.fromPath('profile_pic', profilePic.path));
+      }
+      final streamed = await request.send();
+      final response = await http.Response.fromStream(streamed);
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  // PATIENT — Requests
   static Future<ApiResult> getPatientRequests(
     String category,
     String type,
@@ -1077,58 +1020,8 @@ class ApiService {
     }
   }
 
-  // ==================== PATIENT PROFILE GET ====================
-  static Future<ApiResult> getProfile() async {
-    try {
-      final response = await _authGet('$baseUrl/patient/profile/edit/');
-      final data = jsonDecode(response.body);
-      if (response.statusCode == 200) return ApiResult.success(data);
-      if (response.statusCode == 401) return ApiResult.error('Session expired');
-      return ApiResult.error(data['error'] ?? 'Failed');
-    } catch (e) {
-      return ApiResult.error('Connection error: $e');
-    }
-  }
-
-  // ==================== PATIENT PROFILE POST (UPDATE) ====================
-  static Future<ApiResult> updateProfile({
-    required String username,
-    required String phoneNumber,
-    required String address,
-    required String brief,
-    required String governorate,
-    File? profilePic,
-  }) async {
-    try {
-      final token = await getAccessToken();
-      final request = http.MultipartRequest(
-        'POST',
-        Uri.parse('$baseUrl/patient/profile/edit/'),
-      );
-      request.headers['Authorization'] = 'Bearer $token';
-      request.headers['Accept'] = 'application/json';
-      request.fields['username'] = username;
-      request.fields['phone_number'] = phoneNumber;
-      request.fields['address'] = address;
-      request.fields['brief'] = brief;
-      request.fields['governorate'] = governorate;
-      if (profilePic != null) {
-        request.files.add(
-          await http.MultipartFile.fromPath('profile_pic', profilePic.path),
-        );
-      }
-      final streamed = await request.send();
-      final response = await http.Response.fromStream(streamed);
-      final data = jsonDecode(response.body);
-      if (response.statusCode == 200) return ApiResult.success(data);
-      if (response.statusCode == 401) return ApiResult.error('Session expired');
-      return ApiResult.error(data['error'] ?? 'Failed');
-    } catch (e) {
-      return ApiResult.error('Connection error: $e');
-    }
-  }
-
-  // ==================== DOCTOR BOOKING INFO ====================
+  // ════════════════════════════════════════════════════════════════════
+  // PATIENT — Doctor Booking
   static Future<ApiResult> getDoctorBookingInfo(int doctorId) async {
     try {
       final response = await _authGet('$baseUrl/doctor/$doctorId/book/');
@@ -1141,7 +1034,6 @@ class ApiService {
     }
   }
 
-  // ==================== DOCTOR BOOKING POST ====================
   static Future<ApiResult> bookDoctor({
     required int doctorId,
     required String date,
@@ -1169,7 +1061,44 @@ class ApiService {
     }
   }
 
-  // ==================== NURSE BOOKING (GET & POST) ====================
+  static Future<ApiResult> cancelDoctorRequest(int requestId) async {
+    try {
+      final response = await _authPost('$baseUrl/doctor/cancel/$requestId/', {});
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  static Future<ApiResult> acceptDoctorReschedule(int requestId) async {
+    try {
+      final response = await _authPost('$baseUrl/doctor/reschedule/$requestId/', {});
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  static Future<ApiResult> markDoctorDone(int requestId) async {
+    try {
+      final response = await _authPost('$baseUrl/doctor/done/$requestId/', {});
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) return ApiResult.success(data);
+      if (response.statusCode == 401) return ApiResult.error('Session expired');
+      return ApiResult.error(data['error'] ?? 'Failed');
+    } catch (e) {
+      return ApiResult.error('Connection error: $e');
+    }
+  }
+
+  // ════════════════════════════════════════════════════════════════════
+  // PATIENT — Nurse Booking
   static Future<ApiResult> getNurseBookingInfo(int nurseId) async {
     try {
       final response = await _authGet('$baseUrl/nurse/$nurseId/book/');
@@ -1211,22 +1140,6 @@ class ApiService {
     }
   }
 
-  // ==================== PATIENT - CANCEL / ACCEPT / MARK DONE ====================
-  static Future<ApiResult> cancelDoctorRequest(int requestId) async {
-    try {
-      final response = await _authPost(
-        '$baseUrl/doctor/cancel/$requestId/',
-        {},
-      );
-      final data = jsonDecode(response.body);
-      if (response.statusCode == 200) return ApiResult.success(data);
-      if (response.statusCode == 401) return ApiResult.error('Session expired');
-      return ApiResult.error(data['error'] ?? 'Failed');
-    } catch (e) {
-      return ApiResult.error('Connection error: $e');
-    }
-  }
-
   static Future<ApiResult> cancelNurseRequest(int requestId) async {
     try {
       final response = await _authPost('$baseUrl/nurse/cancel/$requestId/', {});
@@ -1239,39 +1152,9 @@ class ApiService {
     }
   }
 
-  static Future<ApiResult> acceptDoctorReschedule(int requestId) async {
-    try {
-      final response = await _authPost(
-        '$baseUrl/doctor/reschedule/$requestId/',
-        {},
-      );
-      final data = jsonDecode(response.body);
-      if (response.statusCode == 200) return ApiResult.success(data);
-      if (response.statusCode == 401) return ApiResult.error('Session expired');
-      return ApiResult.error(data['error'] ?? 'Failed');
-    } catch (e) {
-      return ApiResult.error('Connection error: $e');
-    }
-  }
-
   static Future<ApiResult> acceptNurseReschedule(int requestId) async {
     try {
-      final response = await _authPost(
-        '$baseUrl/nurse/reschedule/$requestId/',
-        {},
-      );
-      final data = jsonDecode(response.body);
-      if (response.statusCode == 200) return ApiResult.success(data);
-      if (response.statusCode == 401) return ApiResult.error('Session expired');
-      return ApiResult.error(data['error'] ?? 'Failed');
-    } catch (e) {
-      return ApiResult.error('Connection error: $e');
-    }
-  }
-
-  static Future<ApiResult> markDoctorDone(int requestId) async {
-    try {
-      final response = await _authPost('$baseUrl/doctor/done/$requestId/', {});
+      final response = await _authPost('$baseUrl/nurse/reschedule/$requestId/', {});
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) return ApiResult.success(data);
       if (response.statusCode == 401) return ApiResult.error('Session expired');
@@ -1293,6 +1176,10 @@ class ApiService {
     }
   }
 }
+
+// ════════════════════════════════════════════════════════════════════════════
+// ApiResult
+// ════════════════════════════════════════════════════════════════════════════
 
 class ApiResult {
   final bool success;
