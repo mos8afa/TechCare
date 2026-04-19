@@ -32,6 +32,7 @@ from nurse.views import _nurse_name, get_ordered_week_days
 # HELPERS
 # ─────────────────────────────────────────────
 
+
 def _nurse_name(nurse):
     prefix = "Mr. " if nurse.gender == "male" else "Mrs. "
     return prefix + nurse.user.first_name + " " + nurse.user.last_name
@@ -39,7 +40,8 @@ def _nurse_name(nurse):
 
 def get_ordered_week_days():
     today = date.today()
-    days_map = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    days_map = ['monday', 'tuesday', 'wednesday',
+                'thursday', 'friday', 'saturday', 'sunday']
     today_index = today.weekday()
     ordered_days = []
     for i in range(7):
@@ -50,6 +52,7 @@ def get_ordered_week_days():
         })
     return ordered_days
 
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_user_role(request):
@@ -58,6 +61,7 @@ def get_user_role(request):
 # ─────────────────────────────────────────────
 # DASHBOARD
 # ─────────────────────────────────────────────
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -95,7 +99,8 @@ def nurse_dashboard(request):
 
     days = list(
         get_provider_days_with_dates(
-            TimeSlots.objects.filter(nurse=nurse).values_list('day', flat=True).distinct()
+            TimeSlots.objects.filter(nurse=nurse).values_list(
+                'day', flat=True).distinct()
         )
     )
 
@@ -105,7 +110,8 @@ def nurse_dashboard(request):
     evening_slots = []
 
     if selected_day:
-        slots = TimeSlots.objects.filter(nurse=nurse, day=selected_day).order_by('time')
+        slots = TimeSlots.objects.filter(
+            nurse=nurse, day=selected_day).order_by('time')
         for slot in slots:
             slot_data = {
                 "id": slot.id,
@@ -169,16 +175,16 @@ def edit_nurse_profile(request):
     if User.objects.filter(username=username).exclude(id=request.user.id).exists():
         return Response({"error": "Username already exists"}, status=400)
 
-    if not accounts.validations.validate_username(username):
+    if not validations.validate_username(username):
         return Response({"error": "Username must be lowercase, allowed letters, numbers, _ or ., and cannot contain forbidden words."}, status=400)
 
-    if not accounts.validations.validate_phone(phone_number):
+    if not validations.validate_phone(phone_number):
         return Response({"error": "Phone number must start with 0 or 1."}, status=400)
 
-    if not accounts.validations.validate_address(address):
+    if not validations.validate_address(address):
         return Response({"error": "Can't use <,> or forbidden words."}, status=400)
 
-    if not accounts.validations.validate_address(brief):
+    if not validations.validate_address(brief):
         return Response({"error": "Brief can't contain forbidden words."}, status=400)
 
     nurse.user.username = username
@@ -210,7 +216,8 @@ def nurse_requests(request, type):
         pending_list = []
         for req in all_reqs.filter(status='pending').order_by('-date', '-time'):
             req_day = req.date.strftime('%A').lower()
-            nurse_slots = TimeSlots.objects.filter(nurse=nurse, day=req_day).order_by('time')
+            nurse_slots = TimeSlots.objects.filter(
+                nurse=nurse, day=req_day).order_by('time')
             pending_list.append({
                 "id": req.id,
                 "status": req.status,
@@ -286,7 +293,8 @@ def mark_done(request, request_id):
         return Response({"error": "Unauthorized"}, status=401)
 
     nurse = Nurse.objects.get(user=request.user)
-    req = get_object_or_404(NurseRequest, id=request_id, nurse=nurse, status='accepted')
+    req = get_object_or_404(NurseRequest, id=request_id,
+                            nurse=nurse, status='accepted')
 
     req.nurse_done = True
     if req.patient_done:
@@ -448,7 +456,8 @@ def save_time_slots(request):
         for t_str in times:
             try:
                 h, m = t_str.split(':')
-                TimeSlots.objects.create(nurse=nurse, day=day, time=time(int(h), int(m)))
+                TimeSlots.objects.create(
+                    nurse=nurse, day=day, time=time(int(h), int(m)))
                 created.append(t_str)
             except (ValueError, AttributeError):
                 continue
@@ -486,18 +495,18 @@ def doctor_dashboard(request):
 
     doctor = Doctor.objects.get(user=request.user)
 
-    name          = "Dr. " + doctor.user.first_name + " " + doctor.user.last_name
+    name = "Dr. " + doctor.user.first_name + " " + doctor.user.last_name
     specification = doctor.get_specification_display()
-    price         = doctor.price
-    governorate   = doctor.get_governorate_display()
-    address       = doctor.address
-    brief         = doctor.brief
-    profile_pic   = doctor.profile_pic.url if doctor.profile_pic else None
-    email         = doctor.user.email
-    phone_num     = doctor.phone_number
+    price = doctor.price
+    governorate = doctor.get_governorate_display()
+    address = doctor.address
+    brief = doctor.brief
+    profile_pic = doctor.profile_pic.url if doctor.profile_pic else None
+    email = doctor.user.email
+    phone_num = doctor.phone_number
 
     doctor_reqs = doctor.doctor_requests.all()
-    pending   = doctor_reqs.filter(status__in=['pending', 'edited']).count()
+    pending = doctor_reqs.filter(status__in=['pending', 'edited']).count()
     completed = doctor_reqs.filter(status='completed').count()
 
     average_rating = (
@@ -507,11 +516,12 @@ def doctor_dashboard(request):
 
     days = list(
         get_provider_days_with_dates(
-            TimeSlots.objects.filter(doctor=doctor).values_list('day', flat=True).distinct()
+            TimeSlots.objects.filter(doctor=doctor).values_list(
+                'day', flat=True).distinct()
         )
     )
 
-    selected_day  = request.GET.get('day') or (days[0]['day'] if days else None)
+    selected_day = request.GET.get('day') or (days[0]['day'] if days else None)
 
     morning_slots = []
     evening_slots = []
@@ -558,7 +568,7 @@ def edit_doctor_profile(request):
     if request.user.role != 'doctor':
         return Response({"error": "Unauthorized"}, status=401)
 
-    User   = get_user_model()
+    User = get_user_model()
     doctor = Doctor.objects.get(user=request.user)
 
     if request.method == 'GET':
@@ -575,11 +585,11 @@ def edit_doctor_profile(request):
         }, status=200)
 
     phone_number = request.data.get('phone_number')
-    address      = request.data.get('address')
-    brief        = request.data.get('brief')
-    username     = request.data.get('username')
-    price        = request.data.get('price')
-    governorate  = request.data.get('governorate')
+    address = request.data.get('address')
+    brief = request.data.get('brief')
+    username = request.data.get('username')
+    price = request.data.get('price')
+    governorate = request.data.get('governorate')
 
     if User.objects.filter(username=username).exclude(id=request.user.id).exists():
         return Response({"error": "Username already exists"}, status=400)
@@ -597,12 +607,12 @@ def edit_doctor_profile(request):
         return Response({"error": "Brief can't contain forbidden words."}, status=400)
 
     doctor.user.username = username
-    doctor.phone_number  = phone_number
-    doctor.address       = address
-    doctor.brief         = brief
-    doctor.price         = price
-    doctor.governorate   = governorate
-    doctor.profile_pic   = request.FILES.get('profile_pic') or doctor.profile_pic
+    doctor.phone_number = phone_number
+    doctor.address = address
+    doctor.brief = brief
+    doctor.price = price
+    doctor.governorate = governorate
+    doctor.profile_pic = request.FILES.get('profile_pic') or doctor.profile_pic
     doctor.user.save()
     doctor.save()
 
@@ -619,14 +629,15 @@ def doctor_requests(request, type):
     if request.user.role != 'doctor':
         return Response({"error": "Unauthorized"}, status=401)
 
-    doctor   = Doctor.objects.get(user=request.user)
+    doctor = Doctor.objects.get(user=request.user)
     all_reqs = doctor.doctor_requests.all()
 
     if type in ('pending', 'edited') or type is None:
         pending_list = []
         for req in all_reqs.filter(status='pending').order_by('-date', '-time'):
-            req_day    = req.date.strftime('%A').lower()
-            day_slots  = TimeSlots.objects.filter(doctor=doctor, day=req_day).order_by('time')
+            req_day = req.date.strftime('%A').lower()
+            day_slots = TimeSlots.objects.filter(
+                doctor=doctor, day=req_day).order_by('time')
             pending_list.append({
                 "id":               req.id,
                 "status":           req.status,
@@ -637,8 +648,9 @@ def doctor_requests(request, type):
 
         edited_list = []
         for req in all_reqs.filter(status='edited').order_by('-date', '-time'):
-            req_day   = req.date.strftime('%A').lower()
-            day_slots = TimeSlots.objects.filter(doctor=doctor, day=req_day).order_by('time')
+            req_day = req.date.strftime('%A').lower()
+            day_slots = TimeSlots.objects.filter(
+                doctor=doctor, day=req_day).order_by('time')
             edited_list.append({
                 "id":              req.id,
                 "status":          req.status,
@@ -681,7 +693,7 @@ def request_action(request, request_id):
         return Response({"error": "Unauthorized"}, status=401)
 
     doctor = Doctor.objects.get(user=request.user)
-    req    = get_object_or_404(DoctorRequest, id=request_id, doctor=doctor)
+    req = get_object_or_404(DoctorRequest, id=request_id, doctor=doctor)
     action = request.data.get('action')
 
     if action == 'reject':
@@ -699,12 +711,12 @@ def request_action(request, request_id):
         if not new_time:
             return Response({"error": "new_time is required for reschedule."}, status=400)
         try:
-            h, m  = new_time.split(':')
+            h, m = new_time.split(':')
             new_t = time(int(h), int(m))
             if new_t == req.time:
                 req.status = 'accepted'
             else:
-                req.time   = new_t
+                req.time = new_t
                 req.status = 'edited'
             req.save()
             return Response({"message": f"Request {req.status}"}, status=200)
@@ -721,7 +733,8 @@ def mark_done_doctor(request, request_id):
         return Response({"error": "Unauthorized"}, status=401)
 
     doctor = Doctor.objects.get(user=request.user)
-    req    = get_object_or_404(DoctorRequest, id=request_id, doctor=doctor, status='accepted')
+    req = get_object_or_404(DoctorRequest, id=request_id,
+                            doctor=doctor, status='accepted')
 
     req.doctor_done = True
     if req.patient_done:
@@ -744,8 +757,8 @@ def get_time_slots(request):
     if request.user.role != 'doctor':
         return Response({"error": "Unauthorized"}, status=401)
 
-    doctor       = Doctor.objects.get(user=request.user)
-    days         = get_ordered_week_days()
+    doctor = Doctor.objects.get(user=request.user)
+    days = get_ordered_week_days()
     selected_day = request.GET.get('day') or days[0]['day']
 
     morning_slots = []
@@ -776,11 +789,11 @@ def save_time_slots(request):
     if request.user.role != 'doctor':
         return Response({"error": "Unauthorized"}, status=401)
 
-    doctor    = Doctor.objects.get(user=request.user)
+    doctor = Doctor.objects.get(user=request.user)
     days_data = request.data.get('days')
 
     if not days_data:
-        day   = request.data.get('day')
+        day = request.data.get('day')
         times = request.data.get('times', [])
         if not day:
             return Response({"error": "Missing 'day' field."}, status=400)
@@ -793,7 +806,8 @@ def save_time_slots(request):
         for t_str in times:
             try:
                 h, m = t_str.split(':')
-                TimeSlots.objects.get_or_create(doctor=doctor, day=day, time=time(int(h), int(m)))
+                TimeSlots.objects.get_or_create(
+                    doctor=doctor, day=day, time=time(int(h), int(m)))
                 created.append(t_str)
             except (ValueError, AttributeError):
                 continue
@@ -812,7 +826,7 @@ def delete_time_slot(request, slot_id):
         return Response({"error": "Unauthorized"}, status=401)
 
     doctor = Doctor.objects.get(user=request.user)
-    slot   = get_object_or_404(TimeSlots, id=slot_id, doctor=doctor)
+    slot = get_object_or_404(TimeSlots, id=slot_id, doctor=doctor)
     slot.delete()
 
     return Response({"message": "Time slot deleted successfully"}, status=200)
@@ -822,31 +836,36 @@ def delete_time_slot(request, slot_id):
 # DASHBOARD
 # ─────────────────────────────────────────────
 
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def patient_dashboard(request):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    patient = Patient.objects.get(user=request.user)
+    try:
+        patient = Patient.objects.get(user=request.user)
+    except Patient.DoesNotExist:
+        return Response({"error": "Patient profile not found"}, status=404)
 
-    name        = patient.user.first_name + " " + patient.user.last_name
+    name = patient.user.first_name + " " + patient.user.last_name
     profile_pic = patient.profile_pic.url if patient.profile_pic else None
-    email       = patient.user.email
-    phone_num   = patient.phone_number
+    email = patient.user.email
+    phone_num = patient.phone_number
     governorate = patient.get_governorate_display()
-    address     = patient.address
+    address = patient.address
 
-    doctor_reqs      = patient.doctor_requests.all()
-    doctor_total     = doctor_reqs.count()
-    doctor_pending   = doctor_reqs.filter(status__in=['pending', 'edited']).count()
-    doctor_accepted  = doctor_reqs.filter(status='accepted').count()
+    doctor_reqs = patient.doctor_requests.all()
+    doctor_total = doctor_reqs.count()
+    doctor_pending = doctor_reqs.filter(
+        status__in=['pending', 'edited']).count()
+    doctor_accepted = doctor_reqs.filter(status='accepted').count()
     doctor_completed = doctor_reqs.filter(status='completed').count()
 
-    nurse_reqs      = patient.nurse_requests.all()
-    nurse_total     = nurse_reqs.count()
-    nurse_pending   = nurse_reqs.filter(status__in=['pending', 'edited']).count()
-    nurse_accepted  = nurse_reqs.filter(status='accepted').count()
+    nurse_reqs = patient.nurse_requests.all()
+    nurse_total = nurse_reqs.count()
+    nurse_pending = nurse_reqs.filter(status__in=['pending', 'edited']).count()
+    nurse_accepted = nurse_reqs.filter(status='accepted').count()
     nurse_completed = nurse_reqs.filter(status='completed').count()
 
     return Response({
@@ -887,8 +906,11 @@ def edit_patient_profile(request):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    User    = get_user_model()
-    patient = Patient.objects.get(user=request.user)
+    User = get_user_model()
+    try:
+        patient = Patient.objects.get(user=request.user)
+    except Patient.DoesNotExist:
+        return Response({"error": "Patient profile not found"}, status=404)
 
     if request.method == 'GET':
         return Response({
@@ -901,9 +923,9 @@ def edit_patient_profile(request):
         }, status=200)
 
     phone_number = request.data.get('phone_number')
-    address      = request.data.get('address')
-    username     = request.data.get('username')
-    governorate  = request.data.get('governorate')
+    address = request.data.get('address')
+    username = request.data.get('username')
+    governorate = request.data.get('governorate')
 
     if User.objects.filter(username=username).exclude(id=request.user.id).exists():
         return Response({"error": "Username already exists"}, status=400)
@@ -918,10 +940,11 @@ def edit_patient_profile(request):
         return Response({"error": "Can't use <,> or forbidden words."}, status=400)
 
     patient.user.username = username
-    patient.phone_number  = phone_number
-    patient.address       = address
-    patient.governorate   = governorate
-    patient.profile_pic   = request.FILES.get('profile_pic') or patient.profile_pic
+    patient.phone_number = phone_number
+    patient.address = address
+    patient.governorate = governorate
+    patient.profile_pic = request.FILES.get(
+        'profile_pic') or patient.profile_pic
     patient.user.save()
     patient.save()
 
@@ -938,7 +961,10 @@ def patient_requests(request, category, type):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    patient = Patient.objects.get(user=request.user)
+    try:
+        patient = Patient.objects.get(user=request.user)
+    except Patient.DoesNotExist:
+        return Response({"error": "Patient profile not found"}, status=404)
 
     # ── DOCTOR ──────────────────────────────
     if category == 'doctor':
@@ -1094,16 +1120,21 @@ def book_appointment(request, doctor_id):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    patient = Patient.objects.get(user=request.user)
-    doctor  = get_object_or_404(Doctor, id=doctor_id)
+    try:
+        patient = Patient.objects.get(user=request.user)
+    except Patient.DoesNotExist:
+        return Response({"error": "Patient profile not found"}, status=404)
+    doctor = get_object_or_404(Doctor, id=doctor_id)
 
-    raw_days        = TimeSlots.objects.filter(doctor=doctor).values_list('day', flat=True).distinct()
+    raw_days = TimeSlots.objects.filter(
+        doctor=doctor).values_list('day', flat=True).distinct()
     days_with_dates = get_provider_days_with_dates(raw_days)
 
     days_list = []
     all_slots = {}
     for d in days_with_dates:
-        slots = TimeSlots.objects.filter(doctor=doctor, day=d['day']).order_by('time')
+        slots = TimeSlots.objects.filter(
+            doctor=doctor, day=d['day']).order_by('time')
         all_slots[d['day']] = {
             "morning": [s.time.strftime('%H:%M') for s in slots if s.time < time_type(12, 0)],
             "evening": [s.time.strftime('%H:%M') for s in slots if s.time >= time_type(12, 0)],
@@ -1136,10 +1167,10 @@ def book_appointment(request, doctor_id):
 
     # POST — create booking
     disease_description = request.data.get('disease_description', '').strip()
-    governorate         = request.data.get('governorate', '').strip()
-    address             = request.data.get('address', '').strip()
-    selected_date       = request.data.get('date', '').strip()
-    selected_time       = request.data.get('time', '').strip()
+    governorate = request.data.get('governorate', '').strip()
+    address = request.data.get('address', '').strip()
+    selected_date = request.data.get('date', '').strip()
+    selected_time = request.data.get('time', '').strip()
 
     if not selected_date:
         return Response({"error": "Please select a day."}, status=400)
@@ -1170,8 +1201,11 @@ def cancel_request(request, request_id):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    patient = Patient.objects.get(user=request.user)
-    req     = get_object_or_404(DoctorRequest, id=request_id, patient=patient)
+    try:
+        patient = Patient.objects.get(user=request.user)
+    except Patient.DoesNotExist:
+        return Response({"error": "Patient profile not found"}, status=404)
+    req = get_object_or_404(DoctorRequest, id=request_id, patient=patient)
     req.status = 'rejected'
     req.save()
 
@@ -1184,8 +1218,12 @@ def accept_reschedule(request, request_id):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    patient = Patient.objects.get(user=request.user)
-    req     = get_object_or_404(DoctorRequest, id=request_id, patient=patient, status='edited')
+    try:
+        patient = Patient.objects.get(user=request.user)
+    except Patient.DoesNotExist:
+        return Response({"error": "Patient profile not found"}, status=404)
+    req = get_object_or_404(DoctorRequest, id=request_id,
+                            patient=patient, status='edited')
     req.status = 'accepted'
     req.save()
 
@@ -1198,8 +1236,12 @@ def mark_done(request, request_id):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    patient = Patient.objects.get(user=request.user)
-    req     = get_object_or_404(DoctorRequest, id=request_id, patient=patient, status='accepted')
+    try:
+        patient = Patient.objects.get(user=request.user)
+    except Patient.DoesNotExist:
+        return Response({"error": "Patient profile not found"}, status=404)
+    req = get_object_or_404(DoctorRequest, id=request_id,
+                            patient=patient, status='accepted')
 
     req.patient_done = True
     if req.doctor_done:
@@ -1222,16 +1264,21 @@ def book_nurse(request, nurse_id):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    patient = Patient.objects.get(user=request.user)
-    nurse   = get_object_or_404(Nurse, id=nurse_id)
+    try:
+        patient = Patient.objects.get(user=request.user)
+    except Patient.DoesNotExist:
+        return Response({"error": "Patient profile not found"}, status=404)
+    nurse = get_object_or_404(Nurse, id=nurse_id)
 
-    raw_days        = TimeSlots.objects.filter(nurse=nurse).values_list('day', flat=True).distinct()
+    raw_days = TimeSlots.objects.filter(
+        nurse=nurse).values_list('day', flat=True).distinct()
     days_with_dates = get_provider_days_with_dates(raw_days)
 
     days_list = []
     all_slots = {}
     for d in days_with_dates:
-        slots = TimeSlots.objects.filter(nurse=nurse, day=d['day']).order_by('time')
+        slots = TimeSlots.objects.filter(
+            nurse=nurse, day=d['day']).order_by('time')
         all_slots[d['day']] = {
             "morning": [s.time.strftime('%H:%M') for s in slots if s.time < time_type(12, 0)],
             "evening": [s.time.strftime('%H:%M') for s in slots if s.time >= time_type(12, 0)],
@@ -1244,7 +1291,7 @@ def book_nurse(request, nurse_id):
         })
 
     if request.method == 'GET':
-        avg      = nurse.rates.aggregate(Avg('rate'))['rate__avg'] or 0
+        avg = nurse.rates.aggregate(Avg('rate'))['rate__avg'] or 0
         services = []
         for s in nurse.nurse_services.all():
             services.append({
@@ -1271,12 +1318,12 @@ def book_nurse(request, nurse_id):
         }, status=200)
 
     # POST — create booking
-    service_ids         = request.data.get('services', [])
+    service_ids = request.data.get('services', [])
     disease_description = request.data.get('disease_description', '').strip()
-    governorate         = request.data.get('governorate', '').strip()
-    address             = request.data.get('address', '').strip()
-    selected_date       = request.data.get('date', '').strip()
-    selected_time       = request.data.get('time', '').strip()
+    governorate = request.data.get('governorate', '').strip()
+    address = request.data.get('address', '').strip()
+    selected_date = request.data.get('date', '').strip()
+    selected_time = request.data.get('time', '').strip()
 
     if not service_ids:
         return Response({"error": "Please select at least one service."}, status=400)
@@ -1315,8 +1362,11 @@ def cancel_nurse_request(request, request_id):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    patient = Patient.objects.get(user=request.user)
-    req     = get_object_or_404(NurseRequest, id=request_id, patient=patient)
+    try:
+        patient = Patient.objects.get(user=request.user)
+    except Patient.DoesNotExist:
+        return Response({"error": "Patient profile not found"}, status=404)
+    req = get_object_or_404(NurseRequest, id=request_id, patient=patient)
     req.status = 'rejected'
     req.save()
 
@@ -1329,8 +1379,12 @@ def accept_nurse_reschedule(request, request_id):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    patient = Patient.objects.get(user=request.user)
-    req     = get_object_or_404(NurseRequest, id=request_id, patient=patient, status='edited')
+    try:
+        patient = Patient.objects.get(user=request.user)
+    except Patient.DoesNotExist:
+        return Response({"error": "Patient profile not found"}, status=404)
+    req = get_object_or_404(NurseRequest, id=request_id,
+                            patient=patient, status='edited')
     req.status = 'accepted'
     req.save()
 
@@ -1343,8 +1397,12 @@ def mark_nurse_done(request, request_id):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    patient = Patient.objects.get(user=request.user)
-    req     = get_object_or_404(NurseRequest, id=request_id, patient=patient, status='accepted')
+    try:
+        patient = Patient.objects.get(user=request.user)
+    except Patient.DoesNotExist:
+        return Response({"error": "Patient profile not found"}, status=404)
+    req = get_object_or_404(NurseRequest, id=request_id,
+                            patient=patient, status='accepted')
 
     req.patient_done = True
     if req.nurse_done:

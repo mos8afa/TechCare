@@ -18,8 +18,8 @@ class DoctorEditTimeSlotsScreen extends StatefulWidget {
 
 class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
   int _selectedDayIndex = 0;
-  bool _isLoadingDays = true;   // loading أول مرة بس
-  bool _isLoadingSlots = false; // loading الـ slots لما بتغير اليوم
+  bool _isLoadingDays = true;
+  bool _isLoadingSlots = false;
   String? _error;
 
   List<Map<String, dynamic>> _days = [];
@@ -32,10 +32,9 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
     _loadInitial();
   }
 
-  // أول تحميل — بيجيب الأيام والـ slots مع بعض
   Future<void> _loadInitial() async {
     setState(() => _isLoadingDays = true);
-    final result = await ApiService.getTimeSlots();
+    final result = await ApiService.getDoctorTimeSlots();
     if (result.success) {
       final data = result.data;
       setState(() {
@@ -50,10 +49,9 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
     }
   }
 
-  // تغيير اليوم — بيحدث الـ slots بس من غير ما يعمل rebuild للأيام
   Future<void> _loadSlotsForDay(String day) async {
     setState(() => _isLoadingSlots = true);
-    final result = await ApiService.getTimeSlots(day: day);
+    final result = await ApiService.getDoctorTimeSlots(day: day);
     if (result.success) {
       final data = result.data;
       setState(() {
@@ -89,7 +87,6 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
                       const SizedBox(height: 32),
                       _buildWeeklySchedule(),
                       const SizedBox(height: 32),
-                      // لو بيحمل slots بيحط progress indicator خفيف فوق الـ cards
                       if (_isLoadingSlots)
                         const LinearProgressIndicator(color: kPrimary, backgroundColor: kBgLight),
                       const SizedBox(height: 8),
@@ -137,7 +134,6 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
     );
   }
 
-  // ── Save & Back buttons ──────────────────────────────────────────────────
   Widget _buildBottomActions(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -154,14 +150,9 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
         ),
         const SizedBox(width: 12),
         ElevatedButton(
-          onPressed: () {
-            // الـ slots اتحفظت على طول مع كل add/delete
-            // زرار Save بس بيقفل الصفحة ويرجع
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
           style: ElevatedButton.styleFrom(
-            backgroundColor: kPrimary,
-            foregroundColor: Colors.white,
+            backgroundColor: kPrimary, foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 13),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             elevation: 0,
@@ -195,7 +186,7 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
                     final dayNum = dateStr.split('-').last;
                     return GestureDetector(
                       onTap: () {
-                        if (_selectedDayIndex == i) return; // نفس اليوم → ماتعملش حاجه
+                        if (_selectedDayIndex == i) return;
                         setState(() => _selectedDayIndex = i);
                         _loadSlotsForDay(dayData['day'] as String);
                       },
@@ -302,19 +293,15 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
               borderRadius: BorderRadius.circular(100),
             ),
             child: Text(label,
-                style: const TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w700, color: kPrimary)),
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: kPrimary)),
           ),
           Positioned(
-            top: -8,
-            right: -8,
+            top: -8, right: -8,
             child: GestureDetector(
               onTap: onRemove,
               child: Container(
-                width: 22,
-                height: 22,
-                decoration: const BoxDecoration(
-                    color: Color(0xFFB91C1C), shape: BoxShape.circle),
+                width: 22, height: 22,
+                decoration: const BoxDecoration(color: Color(0xFFB91C1C), shape: BoxShape.circle),
                 child: const Icon(Icons.close_rounded, color: Colors.white, size: 13),
               ),
             ),
@@ -350,9 +337,8 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
   }
 
   Future<void> _deleteSlot(int slotId) async {
-    final result = await ApiService.deleteTimeSlot(slotId);
+    final result = await ApiService.deleteDoctorTimeSlot(slotId);
     if (result.success) {
-      // حدّث الـ slots بس من غير ما تحمّل الأيام تاني
       await _loadSlotsForDay(_selectedDay);
     } else {
       if (mounted) {
@@ -372,7 +358,8 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (ctx) {
         return Padding(
           padding: EdgeInsets.only(
@@ -427,7 +414,8 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
                             const Icon(Icons.access_time_rounded, color: kTextGray, size: 20),
                             const SizedBox(width: 10),
                             Text(selectedTime.format(context),
-                                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: kDarkText)),
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.w600, color: kDarkText)),
                           ],
                         ),
                       ),
@@ -442,9 +430,11 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
                               foregroundColor: const Color(0xFF4B5563),
                               side: const BorderSide(color: kBorderColor),
                               padding: const EdgeInsets.symmetric(vertical: 13),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
                             ),
-                            child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.w600)),
+                            child: const Text('Cancel',
+                                style: TextStyle(fontWeight: FontWeight.w600)),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -452,30 +442,48 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
                           child: ElevatedButton(
                             onPressed: () async {
                               Navigator.pop(ctx);
+
                               final h = selectedTime.hour.toString().padLeft(2, '0');
                               final m = selectedTime.minute.toString().padLeft(2, '0');
-                              final result = await ApiService.addTimeSlot(
+                              final newTime = '$h:$m';
+
+                              // ── اجمع الـ slots الموجودة + الجديدة ──
+                              final existingTimes = [
+                                ..._morningSlots.map((s) => s['time'] as String),
+                                ..._eveningSlots.map((s) => s['time'] as String),
+                              ];
+                              if (!existingTimes.contains(newTime)) {
+                                existingTimes.add(newTime);
+                              }
+
+                              final result = await ApiService.saveDoctorTimeSlots(
                                 day: _selectedDay,
-                                time: '$h:$m',
+                                times: existingTimes,
                               );
+
                               if (result.success) {
-                                // حدّث الـ slots بس
                                 await _loadSlotsForDay(_selectedDay);
                               } else {
                                 if (mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(result.error ?? 'Failed to add'), backgroundColor: Colors.red),
+                                    SnackBar(
+                                      content: Text(result.error ?? 'Failed to add'),
+                                      backgroundColor: Colors.red,
+                                    ),
                                   );
                                 }
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: kPrimary, foregroundColor: Colors.white,
+                              backgroundColor: kPrimary,
+                              foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(vertical: 13),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
                               elevation: 0,
                             ),
-                            child: const Text('Add Slot', style: TextStyle(fontWeight: FontWeight.w600)),
+                            child: const Text('Add Slot',
+                                style: TextStyle(fontWeight: FontWeight.w600)),
                           ),
                         ),
                       ],

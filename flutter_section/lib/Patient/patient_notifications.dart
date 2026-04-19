@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../Nurse/nurse_profile_screen.dart';
-import '../Nurse/nurse_requests_screen.dart';
-import '../Nurse/nurse_wallet.dart';
-import '../Nurse/nurse_complaints.dart';
+import '../Patient/patient_profile_screen.dart';
+import '../Patient/patient_requests_screen.dart';
+import '../Patient/patient_wallet.dart';
+import '../Patient/patient_complaints.dart';
 
 const Color kPrimary = Color(0xFF1D89E4);
 const Color kBgLight = Color(0xFFF4F7FC);
@@ -11,49 +11,50 @@ const Color kBorderColor = Color(0xFFE1E6EC);
 const Color kDarkText = Color(0xFF1A1C1E);
 const Color kGreen = Color(0xFF10B981);
 
-class NurseNotificationsScreen extends StatefulWidget {
-  const NurseNotificationsScreen({super.key});
+class PatientNotificationsScreen extends StatefulWidget {
+  const PatientNotificationsScreen({super.key});
 
   @override
-  State<NurseNotificationsScreen> createState() =>
-      _NurseNotificationsScreenState();
+  State<PatientNotificationsScreen> createState() =>
+      _PatientNotificationsScreenState();
 }
 
-class _NurseNotificationsScreenState extends State<NurseNotificationsScreen> {
+class _PatientNotificationsScreenState
+    extends State<PatientNotificationsScreen> {
   final List<Map<String, dynamic>> _notifications = [
     {
-      'name': 'Layla Mahmoud',
-      'message': 'New Care Request — Room 302',
+      'name': 'Dr. Ahmed Ali',
+      'message': 'Appointment Confirmed — Tomorrow 10:00 AM',
       'time': '2 min ago',
-      'avatar': 'https://randomuser.me/api/portraits/women/21.jpg',
+      'avatar': 'https://randomuser.me/api/portraits/men/32.jpg',
       'read': false,
     },
     {
-      'name': 'Omar Youssef',
-      'message': 'Medication Reminder — 10:00 AM',
+      'name': 'Nurse Sara Mohamed',
+      'message': 'Care instructions updated for your last visit',
       'time': '15 min ago',
-      'avatar': 'https://randomuser.me/api/portraits/men/33.jpg',
+      'avatar': 'https://randomuser.me/api/portraits/women/12.jpg',
       'read': false,
     },
     {
-      'name': 'Dr. Salma Adel',
-      'message': 'Vital Signs Updated',
+      'name': 'Pharmacy',
+      'message': 'Your prescription is ready for pickup',
       'time': '1 hr ago',
-      'avatar': 'https://randomuser.me/api/portraits/women/45.jpg',
+      'avatar': 'https://randomuser.me/api/portraits/women/65.jpg',
       'read': true,
     },
     {
-      'name': 'Hassan Ibrahim',
-      'message': 'New Care Request — Room 108',
+      'name': 'Dr. Karim Hassan',
+      'message': 'Consultation summary available',
       'time': '3 hr ago',
-      'avatar': 'https://randomuser.me/api/portraits/men/67.jpg',
+      'avatar': 'https://randomuser.me/api/portraits/men/45.jpg',
       'read': true,
     },
     {
-      'name': 'Nadia Fathi',
-      'message': 'Discharge Request Approved',
+      'name': 'TechCare Support',
+      'message': 'Your complaint has been received',
       'time': 'Yesterday',
-      'avatar': 'https://randomuser.me/api/portraits/women/55.jpg',
+      'avatar': 'https://randomuser.me/api/portraits/women/44.jpg',
       'read': true,
     },
   ];
@@ -118,7 +119,7 @@ class _NurseNotificationsScreenState extends State<NurseNotificationsScreen> {
         const CircleAvatar(
           radius: 20,
           backgroundImage: NetworkImage(
-              'https://randomuser.me/api/portraits/women/44.jpg'),
+              'https://randomuser.me/api/portraits/men/1.jpg'), // patient avatar
         ),
         const SizedBox(width: 16),
       ],
@@ -183,7 +184,7 @@ class _NurseNotificationsScreenState extends State<NurseNotificationsScreen> {
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
                               color: kPrimary)),
-                      Text('Nurse Portal',
+                      Text('Patient Portal',
                           style: TextStyle(fontSize: 12, color: kTextGray)),
                     ],
                   ),
@@ -240,25 +241,25 @@ class _NurseNotificationsScreenState extends State<NurseNotificationsScreen> {
       case 'Profile':
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const NurseProfileScreen()),
+          MaterialPageRoute(builder: (_) => const PatientProfileScreen()),
         );
         break;
       case 'Requests':
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const NurseRequestsScreen()),
+          MaterialPageRoute(builder: (_) => const PatientRequestsScreen()),
         );
         break;
       case 'Wallet':
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const NurseWalletScreen()),
+          MaterialPageRoute(builder: (_) => const PatientWalletScreen()),
         );
         break;
       case 'Complaints':
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const NurseComplaintsScreen()),
+          MaterialPageRoute(builder: (_) => const PatientComplaintsScreen()),
         );
         break;
       default:
