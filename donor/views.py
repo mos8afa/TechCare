@@ -119,7 +119,6 @@ def edit_donor_profile(request):
     })
 
 
-
 def _build_slots_json(provider, provider_type, days_with_dates):
     all_slots = {}
     for d in days_with_dates:
@@ -143,7 +142,6 @@ def _enrich_days(days_with_dates):
     return days_with_dates
 
 
-
 @login_required
 def donor_requests(request, category, type):
     if request.user.role != 'donor':
@@ -164,7 +162,7 @@ def donor_requests(request, category, type):
         all_reqs = donor.doctor_requests.all()
 
         if type == 'booking':
-            doctors = Doctor.objects.all()
+            doctors = Doctor.objects.filter(slots__isnull=False).distinct()
             for doc in doctors:
                 avg = doc.rates.aggregate(Avg('rate'))['rate__avg'] or 0
                 doc.avg_rating = round(avg)
@@ -203,7 +201,7 @@ def donor_requests(request, category, type):
         all_reqs = donor.nurse_requests.all()
 
         if type == 'booking':
-            nurses = Nurse.objects.all()
+            nurses = Nurse.objects.filter(slots__isnull=False).distinct()
             for nurse in nurses:
                 avg = nurse.rates.aggregate(Avg('rate'))['rate__avg'] or 0
                 nurse.avg_rating = round(avg)
@@ -467,7 +465,6 @@ def mark_nurse_done(request, request_id):
 # ═══════════════════════════════════════════════════════════════════════════════
 #  BLOOD DONATION FLOW
 # ═══════════════════════════════════════════════════════════════════════════════
-# ── Any logged-in user: submit a blood donation request ──────────────────────
 @login_required
 def create_blood_request(request):
     errors = {}
@@ -502,8 +499,6 @@ def create_blood_request(request):
         'errors': errors,
     })
 
-
-# ── Any logged-in user: view their own blood requests ────────────────────────
 @login_required
 def my_blood_requests(request):
     requests_qs = BloodDonationRequest.objects.filter(
@@ -513,8 +508,6 @@ def my_blood_requests(request):
         'requests': requests_qs,
     })
 
-
-# ── Any logged-in user: view offers on their request & accept one ─────────────
 @login_required
 def request_offers(request, request_id):
     blood_req = BloodDonationRequest.objects.get(id=request_id, requester=request.user)
@@ -524,23 +517,19 @@ def request_offers(request, request_id):
         'offers': offers,
     })
 
-
 @login_required
 def accept_offer(request, offer_id):
     """Requester accepts one donor offer → others stay as offered."""
     offer     = DonorOffer.objects.get(id=offer_id, request__requester=request.user)
     blood_req = offer.request
 
-    # Accept this offer
     offer.status = 'accepted'
     offer.save()
 
-    # Mark the request as matched
     blood_req.status = 'matched'
     blood_req.save()
 
     return redirect('donation:request_offers', request_id=blood_req.id)
-
 
 @login_required
 def requester_mark_done(request, offer_id):
@@ -554,7 +543,6 @@ def requester_mark_done(request, offer_id):
         offer.save()
     blood_req.save()
     return redirect('donation:request_offers', request_id=blood_req.id)
-
 
 @login_required
 def cancel_blood_request(request, request_id):
@@ -588,7 +576,6 @@ def available_requests(request):
     })
 
 
-# ── Donor: offer to donate ────────────────────────────────────────────────────
 @login_required
 def offer_to_donate(request, request_id):
     if request.user.role != 'donor':
@@ -600,7 +587,6 @@ def offer_to_donate(request, request_id):
     return redirect('donation:available_requests')
 
 
-# ── Donor: view their own offers ──────────────────────────────────────────────
 @login_required
 def my_offers(request):
     if request.user.role != 'donor':
@@ -614,7 +600,6 @@ def my_offers(request):
     })
 
 
-# ── Donor: mark their side done ───────────────────────────────────────────────
 @login_required
 def donor_mark_done(request, offer_id):
     if request.user.role != 'donor':
