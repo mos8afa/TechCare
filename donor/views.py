@@ -403,9 +403,9 @@ def book_nurse(request, nurse_id):
             req.service.set(selected_services)
             return redirect('donor:donor_requests', category='nurse', type='pending')
 
-    return render(request, 'patient/book_nurse.html', {
+    return render(request, 'patient/book_nurse_services.html', {
         'nurse': nurse,
-        'patient': donor,          # template uses patient.address / patient.governorate
+        'patient': donor,          
         'services': services,
         'days': days,
         'selected_day': selected_day,
@@ -493,7 +493,7 @@ def create_blood_request(request):
             )
             return redirect('donation:my_requests')
 
-    return render(request, 'donation/create_request.html', {
+    return render(request, 'donor/blood_request.html', {
         'blood_types': BLOOD_TYPES,
         'governorates': GOV_CHOICES,
         'errors': errors,
@@ -504,7 +504,7 @@ def my_blood_requests(request):
     requests_qs = BloodDonationRequest.objects.filter(
         requester=request.user
     ).order_by('-created_at')
-    return render(request, 'donation/my_requests.html', {
+    return render(request, 'donor/my_blood_requests.html', {
         'requests': requests_qs,
     })
 
@@ -512,7 +512,7 @@ def my_blood_requests(request):
 def request_offers(request, request_id):
     blood_req = BloodDonationRequest.objects.get(id=request_id, requester=request.user)
     offers    = blood_req.offers.filter(status__in=['offered', 'accepted']).select_related('donor__user')
-    return render(request, 'donation/request_offers.html', {
+    return render(request, 'donor/blood_request_offers.html', {
         'blood_request': blood_req,
         'offers': offers,
     })
