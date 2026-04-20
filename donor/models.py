@@ -5,17 +5,17 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 REQUEST_STATUS = (
-    ("open",      "Open"),       # waiting for donors to offer
-    ("matched",   "Matched"),    # requester accepted a donor
-    ("completed", "Completed"),  # both marked done
+    ("open",      "Open"),       
+    ("matched",   "Matched"),    
+    ("completed", "Completed"),  
     ("cancelled", "Cancelled"),
 )
 
 OFFER_STATUS = (
-    ("offered",   "Offered"),    # donor offered to donate
-    ("accepted",  "Accepted"),   # requester accepted this donor
-    ("rejected",  "Rejected"),   # requester chose another donor
-    ("completed", "Completed"),  # both marked done
+    ("offered",   "Offered"),    
+    ("accepted",  "Accepted"),   
+    ("rejected",  "Rejected"),   
+    ("completed", "Completed"),  
 )
 
 
@@ -30,9 +30,6 @@ class BloodDonationRequest(models.Model):
     created_at      = models.DateTimeField(auto_now_add=True)
     requester_done  = models.BooleanField(default=False)
 
-    def __str__(self):
-        return f"{self.requester.username} needs {self.blood_type} in {self.governorate}"
-
 
 class DonorOffer(models.Model):
     """A donor offering to fulfill a BloodDonationRequest."""
@@ -43,7 +40,5 @@ class DonorOffer(models.Model):
     donor_done  = models.BooleanField(default=False)
 
     class Meta:
-        unique_together = ('request', 'donor')   # one offer per donor per request
+        unique_together = ('request', 'donor')   
 
-    def __str__(self):
-        return f"{self.donor.user.username} → {self.request}"
