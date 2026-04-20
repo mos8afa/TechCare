@@ -11,6 +11,7 @@ from .models import Service, NurseRequest
 from decimal import Decimal
 from datetime import time
 from doctor.views import get_ordered_week_days
+from donor import views as donation_views
 
 
 def _nurse_name(nurse):
@@ -150,7 +151,6 @@ def nurse_requests(request, type):
 
 
 @login_required
-@login_required
 @require_POST
 def request_action(request, request_id):
     if request.user.role != 'nurse':
@@ -198,6 +198,8 @@ def mark_done(request, request_id):
         req.status = 'completed'
     req.save()
     return redirect('nurse:nurse_requests', type='accepted')
+
+
 
 
 @login_required
@@ -302,3 +304,33 @@ def save_time_slots(request):
                 continue
 
     return JsonResponse({'success': True})
+
+
+@login_required
+def create_blood_request(request):
+    return donation_views.create_blood_request(request)
+
+
+@login_required
+def my_blood_requests(request):
+    return donation_views.my_blood_requests(request)
+
+
+@login_required
+def request_offers(request, request_id):
+    return donation_views.request_offers(request, request_id)
+
+
+@login_required
+def accept_offer(request, offer_id):
+    return donation_views.accept_offer(request, offer_id)
+
+
+@login_required
+def requester_mark_done(request, offer_id):
+    return donation_views.requester_mark_done(request, offer_id)
+
+
+@login_required
+def cancel_blood_request(request, request_id):
+    return donation_views.cancel_blood_request(request, request_id)
