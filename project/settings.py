@@ -29,9 +29,9 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'api',
     'accounts',
-    'doctor',
+    'doctor.apps.DoctorConfig',
     'wallet',
-    'nurse',
+    'nurse.apps.NurseConfig',
     'patient',
     'donor', 
 ]
