@@ -8,6 +8,8 @@ from django.db.models import Avg
 from accounts.models import Doctor, Nurse, SPECIFICATIONS, GOVERNORATES, TimeSlots, get_provider_days_with_dates
 from doctor.models import DoctorRequest
 from datetime import time as time_type, datetime as dt
+from .models import BloodDonationRequest, DonorOffer
+from accounts.models import BLOOD_TYPES, GOVERNORATES as GOV_CHOICES
 
 
 @login_required
@@ -25,11 +27,11 @@ def donor_dashboard(request):
     last_donation_date = donor.last_donation_date
     prfile_pic = donor.profile_pic
 
-    donations = donor.donation_requests.all().count()
+    donations = donor.donation_offers.all().count()
 
     doctor_requests = donor.doctor_requests.all().count()
     nurse_requests = donor.nurse_requests.all().count()
-    donations_requests = donor.user.need_donations.all().count()
+    donations_requests = donor.user.blood_requests.all().count()
 
     return render(request, 'donor/dashboard.html', {
         'name': name,
@@ -465,10 +467,6 @@ def mark_nurse_done(request, request_id):
 # ═══════════════════════════════════════════════════════════════════════════════
 #  BLOOD DONATION FLOW
 # ═══════════════════════════════════════════════════════════════════════════════
-from donor.models import BloodDonationRequest, DonorOffer
-from accounts.models import BLOOD_TYPES, GOVERNORATES as GOV_CHOICES
-
-
 # ── Any logged-in user: submit a blood donation request ──────────────────────
 @login_required
 def create_blood_request(request):
