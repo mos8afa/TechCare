@@ -14,6 +14,10 @@
 </aside>
 {% endblock %}
 
+{% block title %}
+<h2 class="topbar-title">Nurse Requests</h2>
+{% endblock title %}
+
 {% block content %}
 <main class="main-content">
     <div class="booking-wrapper">
@@ -99,9 +103,11 @@
                     <div>
                         <span class="nbs-price-label">STARTING FROM</span>
                         <span class="nbs-price-amount">
-                            {% with first=nurse.nurse_services.first %}
-                                {% if first %}{{ first.price }} <span>EGP</span>{% else %}—{% endif %}
-                            {% endwith %}
+                            {% if min_price %}
+                                {{ min_price }} <span>EGP</span>
+                            {% else %}
+                                —
+                            {% endif %}
                         </span>
                     </div>
                     <a href="{% url 'patient:book_nurse' nurse.id %}" class="nbs-btn-book">Book Now</a>

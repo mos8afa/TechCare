@@ -4,7 +4,7 @@ from accounts.models import Patient, Doctor, Nurse, SPECIFICATIONS, GOVERNORATES
 from doctor.models import DoctorRequest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg
+from django.db.models import Avg, Min
 from accounts.models import TimeSlots, get_provider_days_with_dates
 from datetime import time as time_type
 from datetime import datetime as dt
@@ -159,7 +159,7 @@ def patient_requests(request, category, type):
         all_requests = patient.doctor_requests.all()
 
         if type == 'booking':
-            doctors = Doctor.objects.all()
+            doctors = Doctor.objects.filter(slots__isnull=False).distinct()
             for doctor in doctors:
                 avg = doctor.rates.aggregate(Avg('rate'))['rate__avg'] or 0
                 doctor.avg_rating = round(avg)
@@ -197,13 +197,15 @@ def patient_requests(request, category, type):
         all_nurse = patient.nurse_requests.all()
 
         if type == 'booking':
-            nurses = Nurse.objects.all()
+            nurses = Nurse.objects.filter(slots__isnull=False).distinct()
             for nurse in nurses:
                 avg = nurse.rates.aggregate(Avg('rate'))['rate__avg'] or 0
                 nurse.avg_rating = round(avg)
+                min_price = nurse.nurse_services.aggregate(Min('price'))['price__min']
             return render(request, 'patient/nurse_booking.html', {
                 **context_base,
                 'nurses': nurses,
+                'min_price': min_price,
                 'governorates': GOVERNORATES,
             })
 
