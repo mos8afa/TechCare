@@ -1,10 +1,21 @@
+/* ============================================
+   DONOR.CSS — CLEAN VERSION
+   ============================================ */
+
+/* ---------- ROOT VARIABLES ---------- */
 :root {
     --bg-light: #F4F7FC;
     --text-gray: #718096;
     --primary-color: #1D89E4;
     --secondary-color: #2179c2;
+    --color-blue: #1E88E5;
+    --color-green: #2ECC71;
+    --color-orange: #C08A37;
+    --color-red: #C0392B;
+    --transition-smooth: all 0.3s ease;
 }
 
+/* ---------- GLOBAL RESET ---------- */
 * {
     margin: 0;
     padding: 0;
@@ -18,12 +29,13 @@ body {
     overflow-y: scroll;
 }
 
-/* ===== Dashboard Layout ===== */
+/* ---------- DASHBOARD LAYOUT ---------- */
 .dashboard {
     display: flex;
     min-height: 100vh;
 }
 
+/* Sidebar */
 .sidebar {
     display: flex;
     flex-direction: column;
@@ -44,11 +56,11 @@ body {
     padding: 20px 10px;
 }
 
-.sidebar.collapsed~div .topbar {
+.sidebar.collapsed ~ div .topbar {
     left: 80px;
 }
 
-.sidebar.collapsed~div .main-content {
+.sidebar.collapsed ~ div .main-content {
     margin-left: 80px;
 }
 
@@ -157,7 +169,7 @@ body {
     box-shadow: 0 2px 8px rgba(0, 133, 255, 0.25);
 }
 
-/* ===== Top Navbar ===== */
+/* Topbar */
 .topbar {
     display: flex;
     align-items: center;
@@ -208,289 +220,6 @@ body {
     border: 2px solid white;
 }
 
-.topbar-icon:hover {
-    color: var(--primary-color);
-}
-
-.inbox {
-    gap: 10px;
-    z-index: 2000;
-    display: none;
-    position: absolute;
-    flex-direction: column;
-    top: 40px;
-    right: 0;
-    width: 320px;
-    padding: 15px;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-}
-
-.inbox.active {
-    display: flex;
-}
-
-.notification-item {
-    gap: 12px;
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 10px;
-}
-
-.notification-item:hover {
-    background: var(--bg-light);
-}
-
-.notification-item img {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.notification-content h4 {
-    font-size: 14px;
-    margin-bottom: 3px;
-}
-
-.notification-content p {
-    font-size: 12px;
-    color: var(--text-gray);
-}
-
-.line {
-    height: 30px;
-    border: 1px solid var(--text-gray);
-}
-
-.topbar-profile {
-    gap: 12px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-}
-
-.topbar-profile:hover {
-}
-
-.topbar-profile img {
-    width: 42px;
-    height: 42px;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 2px solid #E1E6EC;
-}
-
-.topbar-user-info {
-    display: flex;
-    align-items: flex-end;
-    flex-direction: column;
-    line-height: 1.2;
-}
-
-.topbar-user-info h4 {
-    font-size: 14px;
-    font-weight: 600;
-    color: #1a1c1e;
-}
-
-.topbar-user-info span {
-    font-size: 12px;
-    color: var(--text-gray);
-}
-
-.main-content {
-    flex: 1;
-    padding: 32px;
-    margin-left: 250px;
-    margin-top: 80px;
-}
-
-/* ===== Responsive ===== */
-/* Removed redundant variables and reset as they are already defined at the top */
-
-/* ===== Dashboard Layout ===== */
-.dashboard {
-    display: flex;
-    min-height: 100vh;
-}
-
-.sidebar {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 250px;
-    height: 100vh;
-    padding: 24px;
-    background-color: white;
-    border-right: #E1E6EC 1px solid;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    overflow-y: auto;
-}
-
-.sidebar.collapsed {
-    width: 80px;
-    padding: 20px 10px;
-}
-
-.sidebar.collapsed~div .topbar {
-    left: 80px;
-}
-
-.sidebar.collapsed~div .main-content {
-    margin-left: 80px;
-}
-
-.sidebar.collapsed .logo h2,
-.sidebar.collapsed .logo p,
-.sidebar.collapsed .aside-item span,
-.sidebar.collapsed .logo .logo-icon {
-    display: none;
-}
-
-.sidebar.collapsed .aside-item {
-    justify-content: center;
-}
-
-.logo {
-    gap: 12px;
-    display: flex;
-    align-items: center;
-    margin-bottom: 32px;
-}
-
-.logo-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    color: white;
-    font-size: 22px;
-    border-radius: 15px;
-    background-color: var(--primary-color);
-}
-
-.logo-icon img {
-    width: 50px;
-    height: 50px;
-    border-radius: 10px;
-}
-
-.logo h2 {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--primary-color);
-}
-
-.logo p {
-    font-size: 12px;
-    color: #6b7280;
-}
-
-.sidebar-toggle {
-    z-index: 1000;
-    width: 40px;
-    height: 40px;
-    border: none;
-    cursor: ew-resize;
-    margin-left: auto;
-    background-color: white;
-}
-
-.sidebar-toggle:hover {
-    border-radius: 10px;
-    background-color: var(--bg-light);
-}
-
-.sidebar-toggle i {
-    font-size: 20px;
-    color: var(--text-gray);
-}
-
-.aside {
-    gap: 8px;
-    display: flex;
-    flex-direction: column;
-}
-
-.aside-item {
-    gap: 12px;
-    display: flex;
-    align-items: center;
-    font-weight: 500;
-    color: #4b5563;
-    padding: 12px 16px;
-    border-radius: 15px;
-    text-decoration: none;
-    border: 1px solid transparent;
-}
-
-.aside-item i {
-    width: 20px;
-    font-size: 20px;
-}
-
-.aside-item.active {
-    color: white;
-    background-color: var(--primary-color);
-    box-shadow: 0 2px 8px rgba(0, 133, 255, 0.25);
-}
-
-.aside-item.active:hover {
-    background-color: var(--secondary-color);
-}
-
-.aside-item:not(.active):hover {
-    border: 1px solid var(--primary-color);
-    box-shadow: 0 2px 8px rgba(0, 133, 255, 0.25);
-}
-
-/* ===== Top Navbar ===== */
-.topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: fixed;
-    top: 0;
-    left: 250px;
-    right: 0;
-    height: 72px;
-    padding: 0 32px;
-    background-color: white;
-    border-bottom: 1px solid #E1E6EC;
-    box-shadow: 0 2px 8px rgba(255, 0, 0, 0.03);
-    z-index: 1000;
-}
-
-.topbar-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: #1a1c1e;
-}
-
-.topbar-right {
-    gap: 24px;
-    display: flex;
-    align-items: center;
-}
-
-.topbar-icon {
-    font-size: 20px;
-    cursor: pointer;
-    color: #4b5563;
-    position: relative;
-}
-
-.topbar-icon:hover {
-    color: var(--primary-color);
-}
-
 .inbox {
     gap: 10px;
     z-index: 2000;
@@ -578,7 +307,7 @@ body {
     color: var(--text-gray);
 }
 
-/* ===== Main Content ===== */
+/* Main Content */
 .main-content {
     flex: 1;
     padding: 32px;
@@ -586,12 +315,11 @@ body {
     margin-top: 80px;
 }
 
-/* ===== Responsive ===== */
+/* ---------- RESPONSIVE (GLOBAL) ---------- */
 @media (max-width: 900px) {
     .dashboard {
         flex-direction: column;
     }
-
     .sidebar {
         gap: 16px;
         width: 100%;
@@ -599,19 +327,19 @@ body {
         overflow-x: auto;
         flex-direction: row;
     }
-
     .aside {
         flex-wrap: wrap;
         flex-direction: row;
     }
-
     .main-content {
         padding-left: 15px;
         padding-right: 15px;
     }
 }
 
-/* ===== Edit Profile Page ===== */
+/* ============================================
+   EDIT PROFILE PAGE
+   ============================================ */
 .edit-profile-wrapper {
     margin: auto;
     max-width: 1000px;
@@ -749,7 +477,9 @@ body {
     color: var(--text-gray);
 }
 
-.phone-wrapper-custom {
+.phone-wrapper-custom,
+.address-wrapper-custom,
+.date-wrapper-custom {
     display: flex;
     align-items: center;
     padding: 0 14px;
@@ -769,7 +499,9 @@ body {
     border-right: 1px solid #E2E8F0;
 }
 
-.phone-wrapper-custom input {
+.phone-wrapper-custom input,
+.address-wrapper-custom input,
+.date-wrapper-custom input {
     flex: 1;
     outline: none;
     font-size: 14px;
@@ -779,51 +511,32 @@ body {
     color: #9CA3AF;
 }
 
-.phone-wrapper-custom:focus-within {
+.address-wrapper-custom i,
+.date-wrapper-custom i {
+    font-size: 16px;
+    color: #9CA3AF;
+    margin-right: 10px;
+}
+
+.date-wrapper-custom input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+
+.phone-wrapper-custom:focus-within,
+.address-wrapper-custom:focus-within,
+.date-wrapper-custom:focus-within {
     border-color: var(--primary-color);
     background: white;
     box-shadow: 0 0 0 3px rgba(29, 137, 228, 0.1);
 }
 
 .phone-wrapper-custom:focus-within .country-code,
-.phone-wrapper-custom:focus-within input {
-    color: #1A1C1E;
-}
-
-.address-wrapper-custom {
-    display: flex;
-    align-items: center;
-    padding: 0 14px;
-    border-radius: 12px;
-    background: #F8FAFC;
-    border: 1px solid #E2E8F0;
-    transition: 0.2s;
-}
-
-.address-wrapper-custom i {
-    font-size: 16px;
-    color: #9CA3AF;
-    margin-right: 10px;
-}
-
-.address-wrapper-custom input {
-    flex: 1;
-    outline: none;
-    font-size: 14px;
-    border: none !important;
-    padding: 12px 0 !important;
-    background: transparent !important;
-    color: #9CA3AF;
-}
-
-.address-wrapper-custom:focus-within {
-    border-color: var(--primary-color);
-    background: white;
-    box-shadow: 0 0 0 3px rgba(29, 137, 228, 0.1);
-}
-
+.phone-wrapper-custom:focus-within input,
 .address-wrapper-custom:focus-within i,
-.address-wrapper-custom:focus-within input {
+.address-wrapper-custom:focus-within input,
+.date-wrapper-custom:focus-within input,
+.date-wrapper-custom:focus-within i {
     color: #1A1C1E;
 }
 
@@ -832,27 +545,22 @@ body {
     display: flex;
     justify-content: flex-end;
     margin-top: 30px;
+    border-top: 1px solid #F0F4F8;
+    padding-top: 24px;
 }
 
-.edit-footer .btn-light-edit {
-    margin-right: 10px;
-}
-
-/* ===== Responsive for Edit Profile Page ===== */
+/* Edit Profile Responsive */
 @media (max-width: 900px) {
     .edit-form-grid {
         grid-template-columns: 1fr;
     }
-
     .edit-photo-section {
         flex-direction: column;
         align-items: flex-start;
     }
 }
 
-/* Removed animations for Edit Profile Page */
-
-/* ===== Online Status Badge ===== */
+/* Online Badge */
 .edit-avatar .avatar-container {
     position: relative;
     display: inline-block;
@@ -878,16 +586,17 @@ body {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-
 /* ============================================
-    BOOKING SECTION STYLES
+   BOOKING & REQUESTS (GENERAL)
    ============================================ */
-
 .booking-wrapper {
     max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
-/* ---- Category Tabs ---- */
+/* Category Tabs */
 .category-tabs-wrapper {
     display: flex;
     justify-content: center;
@@ -901,30 +610,33 @@ body {
     background: #EEF2F7;
     padding: 6px;
     border-radius: 16px;
-    width: 672px;
+    width: 710px;
     margin: 0 auto 30px;
     gap: 51px;
 }
 
-/* التابات */
 .cat-tab {
-display: flex;
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 10px 42px;
-    border-radius: 14px;
-    font-size: 15px;
-    font-weight: 500;
-    color: #64748B;
-    background: transparent;
+    gap: 7px;
+    padding: 9px 22px;
     border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b7280;
+    background: transparent;
     cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    font-family: 'Inter', sans-serif;
 }
 
-/* الأبيض (active) */
+.cat-tab i {
+    font-size: 16px;
+}
+
 .cat-tab.active {
-background: #fff;
+    background: #fff;
     color: #1E88E5;
     font-weight: 600;
     padding: 12px 48px;
@@ -934,51 +646,43 @@ background: #fff;
     height: 45px;
 }
 
-/* hover */
-.cat-tab:hover:not(.active) {
-    background: #E2E8F0;
+.cat-tab:not(.active):hover {
+    background: #F4F7FC;
+    color: #374151;
 }
 
-/* ---- Status Tabs ---- */
+/* Status Tabs (underline style) */
 .status-tabs {
     display: flex;
-    gap: 24px;
-    border-bottom: 2px solid #E6EBF1;
+    gap: 0;
+    border-bottom: 2px solid #E1E6EC;
 }
 
 .status-tab {
-    background: none;
+    padding: 10px 20px;
     border: none;
-    padding: 10px 4px;
+    background: transparent;
     font-size: 14px;
     font-weight: 500;
-    color: #9ca3af;
+    color: #6b7280;
     cursor: pointer;
-    position: relative;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.2s, border-color 0.2s;
     font-family: 'Inter', sans-serif;
 }
 
-.status-tab:hover:not(.active) {
-    color: var(--primary-color);
-}
-
 .status-tab.active {
-    color: #1E88E5;
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
     font-weight: 600;
 }
 
-.status-tab.active::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: #1E88E5;
-    border-radius: 2px;
+.status-tab:not(.active):hover {
+    color: #374151;
 }
 
-/* ---- Search Bar ---- */
+/* Search Bar */
 .search-bar {
     display: flex;
     gap: 12px;
@@ -991,28 +695,26 @@ background: #fff;
 }
 
 .search-input-wrap {
+    flex: 1;
     display: flex;
     align-items: center;
     gap: 10px;
-    flex: 1;
-    min-width: 180px;
 }
 
 .search-input-wrap input {
+    flex: 1;
     border: none;
     outline: none;
     font-size: 14px;
     color: #374151;
-    width: 100%;
-    background: transparent;
     font-family: 'Inter', sans-serif;
+    background: transparent;
 }
 
 .search-input-wrap input::placeholder {
     color: #aab0bc;
 }
 
-/* ---- Filters ---- */
 .filter-select {
     border: none;
     border-radius: 12px;
@@ -1025,735 +727,152 @@ background: #fff;
     outline: none;
 }
 
-/* ---- Doctors Grid ---- */
+/* Doctor Cards Grid (common) */
 .doctors-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 22px;
+    gap: 20px;
 }
 
-@media (max-width: 1100px) {
-    .doctors-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 600px) {
-    .doctors-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .category-tabs {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .search-bar {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .filter-select {
-        width: 100%;
-    }
-}
-
-/* ---- Doctor Card ---- */
 .doctor-card {
-    background: #fff;
+    background: white;
+    border: 1px solid #E8EDF2;
     border-radius: 18px;
-    border: 1px solid #E6EBF1;
-    padding: 24px 18px 18px;
+    padding: 24px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
-    transition: 0.3s ease;
+    gap: 6px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.2s, transform 0.2s;
 }
 
 .doctor-card:hover {
-    box-shadow: 0 10px 30px rgba(30, 136, 229, 0.15);
-    transform: translateY(-8px);
+    box-shadow: 0 6px 24px rgba(29, 137, 228, 0.1);
+    transform: translateY(-2px);
 }
 
-/* ---- Avatar ---- */
 .doctor-avatar-wrap {
     position: relative;
-    display: inline-block;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
 }
 
 .doctor-avatar-img {
-    width: 90px;
-    height: 90px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     object-fit: cover;
-    border: 4px solid #F1F5F9;
+    border: 3px solid #EBF4FF;
 }
 
 .online-dot {
     position: absolute;
-    bottom: 14px;
-    right: 3px;
-    width: 19px;
-    height: 19px;
-    background-color: #2ecc71;
-    border-radius: 50%;
+    bottom: 4px;
+    right: 4px;
+    width: 13px;
+    height: 13px;
+    background: #22C55E;
     border: 2px solid white;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
 }
 
-/* ---- Text ---- */
 .doctor-name {
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 700;
-    color: #0f172a;
-    margin-bottom: 4px;
+    color: #1a1c1e;
+    margin-top: 2px;
 }
 
 .doctor-spec {
     font-size: 13px;
-    color: #1E88E5;
-    font-weight: 600;
-    margin-bottom: 6px;
+    color: var(--primary-color);
+    font-weight: 500;
 }
 
 .doctor-location {
     font-size: 12px;
-    color: #94a3b8;
-    margin-bottom: 10px;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    justify-content: center;
+    margin-top: 2px;
 }
 
-/* ---- Rating ---- */
 .doctor-rating {
-    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 4px;
 }
 
 .stars {
-    color: #f59e0b;
+    color: #F59E0B;
     font-size: 14px;
+    letter-spacing: 1px;
 }
 
 .rating-val {
     font-size: 12px;
-    color: #94a3b8;
+    color: #6b7280;
 }
 
-/* ---- Fee ---- */
 .fee-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
     background: #F8FAFC;
-    border-radius: 12px;
-    padding: 12px 14px;
-    margin-bottom: 14px;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-top: 10px;
 }
 
 .fee-label {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
-    color: #94a3b8;
+    color: #9ca3af;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
 }
 
 .fee-val {
-    font-size: 20px;
-    font-weight: 800;
-    color: #0f172a;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1c1e;
 }
 
 .fee-val small {
-    font-size: 12px;
-    color: #94a3b8;
+    font-size: 11px;
+    font-weight: 500;
+    color: #6b7280;
     margin-left: 2px;
 }
 
-/* ---- Button ---- */
 .book-btn {
     width: 100%;
-    padding: 13px;
-    background: linear-gradient(135deg, #1E88E5, #1976D2);
-    color: #fff;
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--primary-color);
+    color: white;
     border: none;
     border-radius: 12px;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: var(--transition-smooth);
-    box-shadow: 0 4px 10px rgba(30, 136, 229, 0.25);
+    font-family: 'Inter', sans-serif;
+    transition: background 0.2s, box-shadow 0.2s;
 }
 
 .book-btn:hover {
-    background: linear-gradient(135deg, #1976D2, #1565C0);
-    box-shadow: 0 6px 15px rgba(30, 136, 229, 0.4);
-}
-
-.book-btn:active {
-    transform: scale(0.98);
+    background: var(--secondary-color);
+    box-shadow: 0 4px 14px rgba(29, 137, 228, 0.3);
 }
 
 /* ============================================
-    PENDING CARDS STYLES — أضفها في آخر Patient.css
+   BOOK APPOINTMENT SPECIFIC (Doctor & Nurse)
    ============================================ */
-
-/* ---- Pending Grid ---- */
-.pending-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-}
-
-@media (max-width: 900px) {
-    .pending-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* ---- Pending Card ---- */
-.pending-card {
-    background: #fff;
-    border-radius: 16px;
-    border: 1px solid #f0f0f5;
-    padding: 24px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    transition: 0.3s ease;
-}
-
-.pending-card:hover {
-    box-shadow: 0 8px 28px rgba(29, 137, 228, 0.12);
-    transform: translateY(-5px);
-}
-
-/* ---- Card Top: Avatar + Info ---- */
-.pending-card-top {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-}
-
-.pending-avatar {
-    width: 90px;
-    height: 100px;
-    border-radius: 12px;
-    object-fit: cover;
-    flex-shrink: 0;
-    border: 1px solid #E1E6EC;
-}
-
-.pending-info {
-    flex: 1;
-}
-
-.pending-name-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 6px;
-}
-
-.pending-name {
-    font-size: 17px;
-    font-weight: 700;
-    color: #111827;
-}
-
-.pending-badge {
-    font-size: 11px;
-    font-weight: 700;
-    color: #EA580C;
-    background: #FFEDD5;
-    border-radius: 23px;
-    padding: 3px 10px;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-}
-
-.pending-date {
-    font-size: 13px;
-    color: #6b7280;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 10px;
-}
-
-.pending-note {
-    font-size: 13px;
-    color: #374151;
-    background: #F8FAFC;
-    border-radius: 10px;
-    padding: 10px 14px;
-    line-height: 1.6;
-    padding-right: 290px;
-    /* مساحة لزر الإلغاء */
-
-}
-
-/* ---- Location & Contact ---- */
-.pending-details {
-    display: flex;
-    gap: 24px;
-    padding-top: 16px;
-    border-top: 1px solid #F0F4F8;
-}
-
-.pending-detail-col {
-    flex: 1;
-}
-
-.detail-label {
-    font-size: 10px;
-    font-weight: 700;
-    color: #9ca3af;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    display: block;
-    margin-bottom: 8px;
-}
-
-.detail-place {
-    font-size: 13px;
-    color: #111827;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-bottom: 4px;
-}
-
-.detail-place i {
-    color: #94A3B8;
-    font-size: 13px;
-}
-
-.detail-phone i {
-    color: #94A3B8;
-    font-size: 17px;
-}
-
-.detail-address {
-    font-size: 12px;
-    color: #6b7280;
-    padding-left: 18px;
-    line-height: 1.5;
-}
-
-.detail-phone {
-    font-size: 13px;
-    color: #111827;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-
-/* ---- Card Footer: Price + Buttons ---- */
-.pending-card-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 16px;
-    border-top: 1px solid #F0F4F8;
-    flex-wrap: wrap;
-    gap: 12px;
-}
-
-.pending-price-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.price-label {
-    font-size: 10px;
-    font-weight: 700;
-    color: #9ca3af;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-}
-
-.price-val {
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--primary-color);
-}
-
-.pending-actions {
-    display: flex;
-    gap: 10px;
-}
-
-.btn-accept {
-    padding: 11px 28px;
-    background: var(--primary-color);
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    transition: var(--transition-smooth);
-}
-
-.btn-accept:hover {
-    background: var(--secondary-color);
-    transform: translateY(-2px) scale(1.03);
-    box-shadow: 0 4px 12px rgba(29, 137, 228, 0.3);
-}
-
-.btn-cancel {
-    padding: 11px 28px;
-    background: #fff;
-    color: #4b5563;
-    border: 1px solid #e1e6ec;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    transition: var(--transition-smooth);
-}
-
-.btn-cancel:hover {
-    background: #fdf2f2;
-    color: #e53e3e;
-    border-color: #feb2b2;
-    transform: translateY(-2px);
-}
-
-/* =========================================
-   Patient Profile Custom Styles
-   ========================================= */
-.patient-profile-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 32px;
-    display: flex;
-    gap: 32px;
-    align-items: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-    margin-bottom: 24px;
-    transition: 0.3s ease;
-}
-
-.patient-profile-card:hover {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    transform: translateY(-3px);
-}
-
-.patient-avatar-wrap {
-    position: relative;
-    width: 140px;
-    height: 140px;
-    flex-shrink: 0;
-}
-
-.patient-avatar {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 4px solid #fff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.patient-status-dot {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    width: 20px;
-    height: 20px;
-    background-color: #2ECC71;
-    border: 3px solid #fff;
-    border-radius: 50%;
-}
-
-.patient-details {
-    flex: 1;
-}
-
-.patient-name {
-    font-size: 24px;
-    font-weight: 700;
-    color: #1A1C1E;
-    margin-bottom: 17px;
-}
-
-.patient-contact {
-    display: flex;
-    gap: 24px;
-    color: #6B7280;
-    font-size: 14px;
-    margin-bottom: 20px;
-}
-
-.patient-contact span {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.medical-summary-box {
-    color: #4B5563;
-}
-
-.medical-summary-box h4 {
-    font-size: 15px;
-    font-weight: 700;
-    color: #4B5563;
-    margin-bottom: 6px;
-    letter-spacing: 0.5px;
-}
-
-.medical-summary-box p {
-    font-size: 13px;
-    line-height: 1.6;
-    color: #6B7280;
-    padding-right: 120px;
-}
-
-.requests-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-bottom: 24px;
-}
-
-.request-stat-card {
-    background: #fff;
-    border-radius: 16px;
-    padding: 30px 24px 24px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-    transition: 0.3s ease;
-    /* animation: fadeInUp 0.6s ease-out; */
-}
-
-.request-stat-card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
-}
-
-.req-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.req-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: #1A1C1E;
-}
-
-.req-count {
-    font-size: 28px;
-    font-weight: 800;
-}
-
-.req-count.blue {
-    color: #1E88E5;
-}
-
-.req-count.green {
-    color: #2ECC71;
-}
-
-.req-count.gold {
-    color: #C08A37;
-}
-
-.req-progress {
-    height: 8px;
-    background: #F1F5F9;
-    border-radius: 20px;
-    margin-bottom: 12px;
-    overflow: hidden;
-}
-
-.req-fill {
-    height: 100%;
-    border-radius: 20px;
-}
-
-.req-fill.bg-blue {
-    background: #1E88E5;
-}
-
-.req-fill.bg-green {
-    background: #2ECC71;
-}
-
-.req-fill.bg-gold {
-    background: #C08A37;
-}
-
-.req-progress.track-blue {
-    background: #F1F5F9;
-    height: 12px;
-}
-
-.req-progress.track-green {
-    background: #F1F5F9;
-    height: 12px;
-}
-
-.req-progress.track-gold {
-    background: #F1F5F9;
-    height: 12px;
-}
-
-.req-footer {
-    font-size: 11px;
-    color: #94A3B8;
-}
-
-.bottom-section {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 24px;
-}
-
-.profile-wallet-card {
-    background: #fff;
-    border-radius: 16px;
-    padding: 32px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: 0.3s ease;
-}
-
-.profile-wallet-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(30, 136, 229, 0.08);
-}
-
-.wallet-header-flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 32px;
-}
-
-.wallet-title-area h3 {
-    font-size: 20px;
-    font-weight: 700;
-    color: #1A1C1E;
-    margin-bottom: 6px;
-}
-
-.wallet-title-area p {
-    font-size: 13px;
-    color: #6B7280;
-}
-
-.wallet-icon-btn {
-    width: 44px;
-    height: 44px;
-    background: #F0F7FF;
-    color: #1E88E5;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 22px;
-}
-
-.wallet-balance-box {
-    background: #F8FAFC;
-    border-radius: 12px;
-    padding: 24px;
-}
-
-.balance-label {
-    font-size: 11px;
-    font-weight: 600;
-    color: #6B7280;
-    letter-spacing: 0.5px;
-    display: block;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-}
-
-.balance-amount {
-    font-size: 40px;
-    font-weight: 800;
-    color: #1E88E5;
-}
-
-.stats-column {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.small-stat-card {
-    background: #fff;
-    border-radius: 16px;
-    padding: 20px 24px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-    transition: 0.3s ease;
-}
-
-.small-stat-card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
-}
-
-.icon-circle {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 22px;
-}
-
-.icon-blue {
-    background: #F0F7FF;
-    color: #1E88E5;
-}
-
-.icon-green {
-    background: #E8F8F5;
-    color: #2ECC71;
-}
-
-.icon-orange {
-    background: #FFF3E0;
-    color: #EA580C;
-}
-
-.small-stat-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.small-stat-title {
-    font-size: 10px;
-    font-weight: 700;
-    color: #6B7280;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
-    text-transform: uppercase;
-}
-
-.small-stat-count {
-    font-size: 24px;
-    font-weight: 800;
-    color: #1A1C1E;
-}
-
-/* Booking Appointment Specific Styles */
 .booking-page-header {
     margin-top: 30px;
     margin-bottom: 30px;
@@ -1790,93 +909,7 @@ background: #fff;
     gap: 25px;
 }
 
-/* Governorate Select Styling */
-.form-group-booking {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.booking-label {
-    font-size: 14px;
-    font-weight: 700;
-    color: #333;
-}
-
-.custom-select-wrapper {
-    position: relative;
-    width: 100%;
-}
-
-.booking-select {
-    width: 100%;
-    padding: 14px 20px;
-    font-size: 14px;
-    color: #666;
-    background: #fff;
-    border: 1px solid #E2E8F0;
-    border-radius: 12px;
-    appearance: none;
-    cursor: pointer;
-    outline: none;
-    transition: all 0.2s ease;
-}
-
-.booking-select:focus {
-    border-color: #2b84ea;
-    box-shadow: 0 0 0 3px rgba(43, 132, 234, 0.1);
-}
-
-.custom-select-wrapper i {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #666;
-    pointer-events: none;
-}
-
-/* Grid for Symptoms & Address */
-.booking-inputs-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
-.address-input-wrapper {
-    position: relative;
-    width: 100%;
-}
-
-.address-input-wrapper i {
-    position: absolute;
-    left: 15px;
-    top: 12px;
-    color: #94A3B8;
-    font-size: 18px;
-}
-
-.address-input-wrapper textarea {
-    width: 100%;
-    min-height: 100px;
-    padding: 16px 16px 16px 39px;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    font-size: 14px;
-    font-family: inherit;
-    color: #333;
-    resize: none;
-    background: #fff;
-    transition: all 0.2s ease;
-}
-
-.address-input-wrapper textarea:focus {
-    outline: none;
-    border-color: #2b84ea;
-    box-shadow: 0 0 0 3px rgba(43, 132, 234, 0.1);
-}
-
-/* Card General CSS */
+/* General Cards */
 .booking-card {
     background: #fff;
     border-radius: 16px;
@@ -1906,7 +939,22 @@ background: #fff;
     font-size: 18px;
 }
 
-/* Doctor Card */
+.card-title-plain {
+    font-size: 15px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-title-plain i {
+    color: #1D89E4;
+    font-size: 18px;
+}
+
+/* Doctor Card (Booking) */
 .doc-card {
     background: #fff;
     border-radius: 20px;
@@ -1933,6 +981,7 @@ background: #fff;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    position: relative;
 }
 
 .doc-avatar {
@@ -1981,10 +1030,6 @@ background: #fff;
     gap: 4px;
 }
 
-.rating-badge i {
-    font-size: 12px;
-}
-
 .rating-text {
     font-size: 13px;
     color: #666;
@@ -1996,73 +1041,101 @@ background: #fff;
     margin-top: 15px;
 }
 
-.fee-label {
-    font-size: 11px;
-    font-weight: 700;
-    color: #666;
-    letter-spacing: 0.5px;
-    margin-bottom: 8px;
-}
-
 .fee-amount {
     font-size: 24px;
     font-weight: 700;
     color: #2b84ea;
 }
 
-/* Symptoms Card */
-.symptoms-chips {
+/* Governorate Select */
+.form-group-booking {
     display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 20px;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.chip {
-    padding: 8px 18px;
-    border-radius: 20px;
-    border: 1px solid #e0e0e0;
+.booking-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+}
+
+.custom-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.booking-select {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 14px;
+    color: #666;
     background: #fff;
-    color: #555;
-    font-size: 13px;
-    font-weight: 500;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    appearance: none;
     cursor: pointer;
-    transition: var(--transition-smooth);
+    outline: none;
+    transition: all 0.2s ease;
 }
 
-.chip:hover {
+.booking-select:focus {
     border-color: #2b84ea;
-    color: #2b84ea;
-    transform: translateY(-2px);
+    box-shadow: 0 0 0 3px rgba(43, 132, 234, 0.1);
 }
 
-.chip.active {
-    background: #e6f0fa;
-    border-color: #2b84ea;
-    color: #2b84ea;
+.custom-select-wrapper i {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    pointer-events: none;
 }
 
+/* Symptoms & Address Grid */
+.booking-inputs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.address-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.address-input-wrapper i {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    color: #9CA3AF;
+    font-size: 18px;
+}
+
+.address-input-wrapper textarea,
 .symptoms-card textarea {
     width: 100%;
     min-height: 100px;
-    padding: 16px;
-    border: 1px solid #e0e0e0;
+    padding: 15px;
+    border: 1px solid #E5E7EB;
     border-radius: 12px;
     font-size: 14px;
     font-family: inherit;
-    color: #333;
+    color: #374151;
     resize: none;
     box-sizing: border-box;
     transition: all 0.2s ease;
 }
 
-.symptoms-card textarea::placeholder {
-    color: #aaa;
+.address-input-wrapper textarea {
+    padding: 15px 15px 15px 42px;
 }
 
+.address-input-wrapper textarea:focus,
 .symptoms-card textarea:focus {
     outline: none;
-    border-color: #2b84ea;
+    border-color: #1D89E4;
 }
 
 /* Date & Time Card */
@@ -2115,8 +1188,10 @@ background: #fff;
     text-transform: uppercase;
 }
 
-.date-item.active .date-day {
-    color: rgba(255, 255, 255, 0.8);
+.date-item.active .date-day,
+.date-item.active .date-num,
+.date-item.active .date-month {
+    color: white;
 }
 
 .date-num {
@@ -2126,19 +1201,11 @@ background: #fff;
     color: #333;
 }
 
-.date-item.active .date-num {
-    color: #fff;
-}
-
 .date-month {
     font-size: 10px;
     font-weight: 700;
     color: #777;
     text-transform: uppercase;
-}
-
-.date-item.active .date-month {
-    color: rgba(255, 255, 255, 0.8);
 }
 
 .slot-title {
@@ -2174,9 +1241,9 @@ background: #fff;
 }
 
 .slot-btn.active {
-    background: #2b84ea;
+    background: #1D89E4;
     color: #fff;
-    box-shadow: 0 6px 15px rgba(43, 132, 234, 0.35);
+    box-shadow: 0 4px 10px rgba(29, 137, 228, 0.3);
     transform: scale(1.05);
 }
 
@@ -2192,6 +1259,7 @@ background: #fff;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 15px;
 }
 
 .summary-label {
@@ -2214,6 +1282,9 @@ background: #fff;
 
 .summary-total-row {
     margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .total-label {
@@ -2251,10 +1322,6 @@ background: #fff;
     box-shadow: 0 6px 15px rgba(43, 132, 234, 0.3);
 }
 
-.confirm-btn:active {
-    transform: scale(0.98);
-}
-
 .secure-payment-text {
     text-align: center;
     font-size: 12px;
@@ -2263,10 +1330,6 @@ background: #fff;
     align-items: center;
     justify-content: center;
     gap: 6px;
-}
-
-.secure-payment-text i {
-    font-size: 14px;
 }
 
 /* Help Card */
@@ -2303,31 +1366,25 @@ background: #fff;
     text-decoration: underline;
 }
 
-
-/* Accepted State Cards */
+/* ============================================
+   ACCEPTED CARDS (Doctor & Nurse)
+   ============================================ */
 .accepted-cards-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 25px;
-    padding: 18px 0 30px 0;
-
+    grid-template-columns: repeat(auto-fill, minmax(430px, 1fr));
+    gap: 24px;
+    margin-top: 0px;
 }
 
 .accepted-card {
-    background: #fff;
-    border-radius: 16px;
-    padding: 24px 30px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-    border: 1px solid #f1f1f1;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #E2E8F0;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    transition: 0.3s ease;
-}
-
-.accepted-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
 }
 
 .ac-header {
@@ -2352,8 +1409,7 @@ background: #fff;
 .ac-doc-name {
     font-size: 18px;
     font-weight: 700;
-    color: #1a1a1a;
-    margin-bottom: 4px;
+    color: #1a1c1e;
 }
 
 .ac-doc-spec {
@@ -2472,9 +1528,51 @@ background: #fff;
     background: #1e6ec4;
 }
 
+/* Nurse Accepted specific */
+.ac-services {
+    margin-bottom: 14px;
+}
 
+.ac-section-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #4b5563;
+    margin-bottom: 16px;
+    letter-spacing: 0.5px;
+}
 
-/* Done State Cards */
+.ac-service-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.ac-service-name {
+    font-size: 14px;
+    color: #4b5563;
+    font-weight: 600;
+}
+
+.ac-service-price {
+    font-size: 14px;
+    font-weight: 800;
+    color: #1a1c1e;
+}
+
+.ac-financial-box {
+    background-color: #F4F7FC;
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 9px;
+}
+
+/* ============================================
+   DONE CARDS (Doctor & Nurse)
+   ============================================ */
 .done-cards-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -2507,7 +1605,7 @@ background: #fff;
 
 .dc-divider {
     border: none;
-    border-top: 1px solid #f5f5f5;
+    border-top: 1px solid #F3F4F6;
     margin: 1px 0;
 }
 
@@ -2527,38 +1625,18 @@ background: #fff;
 .dc-doc-name {
     font-size: 18px;
     font-weight: 700;
-    color: #1a1a1a;
-    margin-bottom: 4px;
-}
-
-.dc-doc-spec {
-    font-size: 14px;
-    color: #2b84ea;
-    font-weight: 500;
-    margin-bottom: 6px;
-}
-
-.dc-doc-location {
-    font-size: 12px;
-    color: #777;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.dc-doc-location i {
-    font-size: 14px;
+    color: #1a1c1e;
 }
 
 .dc-badge {
-    background: #e6f7ef;
-    color: #1da364;
+    background: #D1FAE5;
+    color: #059669;
     font-size: 11px;
-    font-weight: 700;
-    padding: 6px 12px;
+    font-weight: 800;
+    padding: 6px 14px;
     border-radius: 20px;
-    letter-spacing: 0.5px;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
     margin-top: -10px;
 }
 
@@ -2575,19 +1653,15 @@ background: #fff;
 }
 
 .dc-label {
-    font-size: 14px;
-    font-weight: 500;
-    color: #555;
+    font-size: 13px;
+    font-weight: 600;
+    color: #718096;
 }
 
 .dc-value {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    color: #333;
-}
-
-.dc-description {
-    padding: 5px 0 10px 0;
+    color: #1a1c1e;
 }
 
 .dc-label-uppercase {
@@ -2603,6 +1677,30 @@ background: #fff;
     font-size: 13px;
     color: #666;
     line-height: 1.6;
+}
+
+.dc-services {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dc-service-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dc-service-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #718096;
+}
+
+.dc-service-price {
+    font-size: 14px;
+    font-weight: 800;
+    color: #1a1c1e;
 }
 
 .dc-financial {
@@ -2625,969 +1723,9 @@ background: #fff;
     color: #2b84ea;
 }
 
-
-/* ===== إضافات خاصة بصفحة حجز المواعيد (Book Appointment) ===== */
-/* هذه الإضافات لا تؤثر على باقي الصفحات لأنها تستخدم كلاسات جديدة أو تعزز الموجودة */
-
-/* تنسيق علامات الممرضة (Nurse Tags) */
-.nurse-tag {
-    display: inline-block;
-    background: #EBF5FF;
-    color: #1D89E4;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-
-/* مؤشر التواجد عبر الإنترنت (النقطة الخضراء) */
-.online-indicator {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    width: 14px;
-    height: 14px;
-    background-color: #2ECC71;
-    border-radius: 50%;
-    border: 2.5px solid white;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-/* تحسين محاذاة بطاقة الممرضة بحيث تكون كما في الصورة */
-.doc-card.nurse-doc-card {
-    align-items: center;
-    padding: 30px;
-}
-
-.name-rating-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-}
-
-.doc-info-main {
-    flex: 1;
-    width: 100%;
-}
-
-.doc-rating {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.stars {
-    color: #F59E0B;
-    font-size: 12px;
-}
-
-.rating-val {
-    font-size: 13px;
-    font-weight: 600;
-    color: #9CA3AF;
-}
-
-/* Services Card & Checkboxes */
-.services-card .card-title {
-    margin-bottom: 25px;
-}
-
-.services-list {
-    display: flex;
-    flex-direction: column;
-}
-
-.service-item {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    padding: 16px 0;
-    border-bottom: 1px solid #F3F4F6;
-}
-
-.service-item:first-child {
-    padding-top: 0;
-}
-
-.service-item:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
-.checkbox-box {
-    width: 22px;
-    height: 22px;
-    background: #fff;
-    border: 2px solid #D1D5DB;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 16px;
-    transition: 0.2s;
-    position: relative;
-}
-
-.checkbox-box i {
-    color: white;
-    font-size: 14px;
-    opacity: 0;
-    transition: 0.2s;
-}
-
-.service-item input[type="checkbox"] {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
-}
-
-.service-item input[type="checkbox"]:checked ~ .checkbox-box,
-.checkbox-box.checked {
-    background: #1D89E4;
-    border-color: #1D89E4;
-}
-
-.service-item input[type="checkbox"]:checked ~ .checkbox-box i,
-.checkbox-box.checked i {
-    opacity: 1;
-}
-
-.service-text-wrap {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    gap: 2px;
-}
-
-.service-name {
-    font-size: 15px;
-    font-weight: 600;
-    color: #1F2937;
-}
-
-.service-desc {
-    font-size: 13px;
-    color: #9CA3AF;
-    font-weight: 500;
-}
-
-.service-price {
-    font-size: 15px;
-    font-weight: 700;
-    color: #4B5563;
-}
-
-/* Card titles matching */
-.card-title-plain {
-    font-size: 15px;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.card-title-plain i {
-    color: #1D89E4;
-    font-size: 18px;
-}
-
-/* جعل صورة الممرضة تحتوي على positioning صحيح للنقطة الخضراء */
-.doc-avatar-bg {
-    position: relative;
-}
-
-/* ضمان أن عرض معلومات الممرضة يستخدم المساحة المتاحة */
-.doc-info-wrapper {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-/* تنسيق العنوان الفرعي للتخصص */
-.doc-title {
-    margin-bottom: 12px;
-    font-size: 14px;
-    color: #718096;
-}
-
-/* تنسيق حاوية علامات الممرضة */
-.nurse-tags {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-/* تنسيق رسوم الجلسة في الجهة اليمنى */
-.doc-fee {
-    text-align: right;
-    min-width: max-content;
-}
-
-.fee-label {
-    font-size: 10px;
-    font-weight: 800;
-    color: #718096;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
-    text-transform: uppercase;
-}
-
-.fee-amount {
-    color: #1D89E4;
-    font-size: 22px;
-    font-weight: 800;
-}
-
-/* تنسيق شريط التاريخ (date-scroll) للتأكد من أن العنصر النشط أبيض */
-.date-item.active {
-    background: #1D89E4;
-    border-color: #1D89E4;
-    color: white;
-}
-
-.date-item.active .date-day,
-.date-item.active .date-num,
-.date-item.active .date-month {
-    color: white;
-}
-
-/* تنسيق أزرار الوقت النشطة */
-.slot-btn.active {
-    background: #1D89E4;
-    color: white;
-    box-shadow: 0 4px 10px rgba(29, 137, 228, 0.3);
-}
-
-/* تحسين زر التأكيد */
-.confirm-btn {
-    background: #1D89E4;
-    transition: all 0.2s ease;
-}
-
-.confirm-btn:hover {
-    background: #0f6bc2;
-    transform: translateY(-1px);
-}
-
-/* جعل بطاقة المساعدة متناسقة مع الصورة */
-.help-card {
-    background: #F4F8FA;
-    border: none;
-}
-
-.help-title {
-    color: #1a5c9f;
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.help-text {
-    color: #4b80b5;
-    font-size: 13px;
-    margin-bottom: 15px;
-    line-height: 1.5;
-}
-
-.help-link {
-    color: #1a5c9f;
-    font-size: 13px;
-    font-weight: 700;
-    text-decoration: none;
-}
-
-.help-link:hover {
-    text-decoration: underline;
-}
-
-/* تنسيق ملخص الدفع */
-.payment-summary-card .summary-title {
-    color: #1D89E4;
-    margin-bottom: 36px;
-}
-
-.summary-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.summary-label {
-    color: #718096;
-    font-size: 14px;
-}
-
-.summary-value {
-    color: #4B5563;
-    font-weight: 600;
-    font-size: 14px;
-}
-
-.summary-total-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-}
-
-.total-label {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1F2937;
-}
-
-.total-value {
-    font-size: 24px;
-    font-weight: 800;
-    color: #1D89E4;
-}
-
-.secure-payment-text {
-    text-align: center;
-    font-size: 12px;
-    color: #888;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    margin-top: 8px;
-}
-
-/* تنسيق رأس الصفحة */
-.booking-page-header h1 {
-    font-size: 28px;
-    font-weight: 700;
-    color: #1a1a1a;
-    margin-bottom: 8px;
-}
-
-.booking-page-header p {
-    font-size: 15px;
-    color: #555;
-}
-
-/* ---- Nurse Booking Specific Styles ---- */
-.nurse-doc-card {
-    align-items: center;
-    padding-bottom: 39px;
-}
-
-.nurse-avatar-bg {
-    position: relative;
-    overflow: visible !important;
-}
-
-.nurse-online-indicator {
-    position: absolute;
-    bottom: 8px;
-    right: 3px;
-    width: 19px;
-    height: 19px;
-    background-color: #2ecc71;
-    border-radius: 50%;
-    border: 2px solid white;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.nurse-info-wrapper {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-.nurse-doc-title {
-    margin-bottom: 12px;
-    font-size: 14px;
-    color: #718096;
-}
-
-.nurse-tags-wrapper {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-
-.nurse-tag-gray {
-    background: #EAEEF1;
-    color: #005EA4;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.nurse-doc-fee {
-    text-align: right;
-    min-width: max-content;
-}
-
-.nurse-fee-label {
-    font-size: 10px;
-    font-weight: 800;
-    color: #718096;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
-    text-transform: uppercase;
-}
-
-.nurse-fee-amount {
-    color: #1D89E4;
-    font-size: 22px;
-    font-weight: 800;
-}
-
-.nurse-evening-slots {
-    margin-top: 25px;
-}
-
-.nurse-summary-title {
-    color: #1D89E4;
-    margin-bottom: 24px;
-}
-
-.nurse-summary-label {
-    color: #718096;
-    font-size: 14px;
-}
-
-.nurse-summary-value {
-    color: #4B5563;
-    font-weight: 600;
-    font-size: 14px;
-}
-
-.nurse-summary-row-mt {
-    margin-top: 8px;
-}
-
-.nurse-summary-divider {
-    height: 1px;
-    background-color: #E2E8F0;
-    margin: 20px 0;
-    border: none;
-}
-
-.nurse-total-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 35px;
-    margin-top: 26px;
-
-}
-
-.nurse-total-label {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1F2937;
-}
-
-.nurse-total-value {
-    font-size: 24px;
-    font-weight: 800;
-    color: #1D89E4;
-}
-
-.nurse-help-card {
-    background: #F4F8FA;
-    border: none;
-    margin-top: 25px;
-}
-
-.nurse-help-title {
-    color: #1a5c9f;
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.nurse-help-title i {
-    font-size: 18px;
-    position: relative;
-    top: 1px;
-}
-
-.nurse-help-text {
-    color: #4b80b5;
-    font-size: 13px;
-    margin-bottom: 15px;
-    line-height: 1.5;
-}
-
-.nurse-help-link {
-    color: #1a5c9f;
-    font-size: 13px;
-    font-weight: 700;
-    text-decoration: none;
-}
-
-/* جعل الشبكة متجاوبة */
-@media (max-width: 900px) {
-    .booking-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* ===== Nurse Pending Cards ===== */
-.npc-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    margin-top: 25px;
-}
-
-.npc-card {
-    background: white;
-    border-radius: 12px;
-    border: 1px solid #E2E8F0;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transition: 0.3s ease;
-}
-
-.npc-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-}
-
-.npc-header {
-    padding: 20px;
-    display: flex;
-    gap: 15px;
-    align-items: flex-start;
-}
-
-.npc-avatar-wrap {
-    position: relative;
-    width: 65px;
-    height: 65px;
-    flex-shrink: 0;
-}
-
-.npc-avatar {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.npc-dot {
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    width: 14px;
-    height: 14px;
-    background-color: #10B981;
-    border: 2px solid white;
-    border-radius: 50%;
-}
-
-.npc-info-col {
-    flex: 1;
-}
-
-.npc-title-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 6px;
-}
-
-.npc-name {
-    font-size: 16px;
-    font-weight: 700;
-    color: #1A202C;
-}
-
-.npc-badge {
-    font-size: 11px;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 20px;
-}
-
-.badge-rescheduled {
-    background-color: #FFF3E0;
-    color: #F59E0B;
-}
-.badge-rescheduled i {
-    margin-right: 4px;
-}
-.badge-pending-bg {
-    background-color: #FFEDD5;
-    color: #F97316;
-}
-
-.npc-date {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: #718096;
-    font-weight: 500;
-}
-
-.npc-body {
-    padding: 0 20px 20px 20px;
-    flex: 1;
-}
-
-.npc-section-title {
-    font-size: 11px;
-    font-weight: 700;
-    color: #718096;
-    letter-spacing: 0.5px;
-    margin-bottom: 15px;
-}
-
-.npc-service {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    align-items: center;
-}
-
-.npc-service:last-of-type {
-    margin-bottom: 0;
-}
-
-.npc-service-name {
-    font-size: 13px;
-    color: #4A5568;
-    font-weight: 600;
-}
-
-.npc-service-price {
-    font-size: 13px;
-    font-weight: 700;
-    color: #1A202C;
-}
-
-.npc-divider {
-    border: none;
-    border-top: 1px solid #E2E8F0;
-    margin: 20px 0;
-}
-
-.npc-details-grid {
-    display: flex;
-    gap: 20px;
-}
-
-.npc-col {
-    flex: 1;
-}
-
-.npc-detail-label {
-    display: block;
-    font-size: 9px;
-    font-weight: 700;
-    color: #A0AEC0;
-    letter-spacing: 0.5px;
-    margin-bottom: 6px;
-}
-
-.npc-detail-val {
-    display: flex;
-    gap: 6px;
-    font-size: 13px;
-    color: #4A5568;
-    font-weight: 700;
-    margin-bottom: 2px;
-}
-.npc-detail-val i {
-    color: #A0AEC0;
-    font-size: 14px;
-    position: relative;
-    top: 1px;
-}
-
-.npc-detail-sub {
-    font-size: 12px;
-    color: #A0AEC0;
-    padding-left: 20px;
-    line-height: 1.4;
-}
-
-.npc-footer {
-    background-color: #F8FAFC;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid #edf2f7;
-    margin-bottom: 46px;
-}
-
-.npc-price-label {
-    display: block;
-    font-size: 10px;
-    color: #A0AEC0;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
-}
-
-.npc-price-amount {
-    display: block;
-    font-size: 20px;
-    font-weight: 800;
-    color: #1D89E4;
-}
-
-.npc-actions {
-    display: flex;
-    gap: 12px;
-}
-
-.npc-btn-accept {
-    background-color: #1D89E4;
-    color: white;
-    border: none;
-    padding: 10px 24px;
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(29, 137, 228, 0.2);
-    transition: var(--transition-smooth);
-}
-
-.npc-btn-accept:hover {
-    background-color: #176bb8;
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 6px 15px rgba(29, 137, 228, 0.3);
-}
-
-.npc-btn-cancel {
-    background-color: white;
-    color: #4A5568;
-    border: 1px solid #E2E8F0;
-    padding: 10px 24px;
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: var(--transition-smooth);
-}
-
-.npc-btn-cancel:hover {
-    background-color: #F4F7FC;
-    transform: translateY(-2px);
-}
-
-@media (max-width: 900px) {
-    .npc-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* ===== ACCEPTED CARDS (NURSE) ===== */
-.accepted-cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(430px, 1fr));
-    gap: 24px;
-    margin-top: 0px;
-}
-
-@media (max-width: 900px) {
-    .accepted-cards-container {
-        grid-template-columns: 1fr;
-    }
-}
-
-.accepted-card {
-    background: #ffffff;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    border: 1px solid #E2E8F0;
-    display: flex;
-    flex-direction: column;
-}
-
-.ac-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-}
-
-.ac-doc-info {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.ac-avatar {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.ac-doc-name {
-    font-size: 18px;
-    font-weight: 700;
-    color: #1a1c1e;
-}
-
-.ac-badge {
-    background-color: #E6F3FF;
-    color: var(--primary-color);
-    font-size: 11px;
-    font-weight: 800;
-    padding: 6px 14px;
-    border-radius: 20px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-top: -20px;
-}
-
-.ac-details-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-bottom: 4px;
-}
-
-.ac-detail-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-}
-
-.ac-icon {
-    font-size: 18px;
-    margin-top: 2px;
-}
-
-.ac-icon.blue {
-    color: var(--primary-color);
-}
-
-.ac-icon.green {
-    color: #047857;
-}
-
-.ac-label {
-    font-size: 10px;
-    font-weight: 800;
-    color: #718096;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    margin-bottom: 4px;
-}
-
-.ac-value {
-    font-size: 13px;
-    font-weight: 700;
-    color: #1a1c1e;
-}
-
-.ac-value.text-green {
-    color: #047857;
-}
-
-.ac-services {
-    margin-bottom: 14px;
-}
-
-.ac-section-title {
-    font-size: 14px;
-    font-weight: 800;
-    color: #4b5563;
-    margin-bottom: 16px;
-    letter-spacing: 0.5px;
-}
-
-.ac-service-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
-.ac-service-item:last-of-type {
-    margin-bottom: 0px;
-}
-
-.ac-service-name {
-    font-size: 14px;
-    color: #4b5563;
-    font-weight: 600;
-}
-
-.ac-service-price {
-    font-size: 14px;
-    font-weight: 800;
-    color: #1a1c1e;
-}
-
-.ac-financial-box {
-    background-color: #F4F7FC; 
-    border-radius: 12px;
-    padding: 20px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 9px;
-}
-
-.ac-fin-label {
-    font-size: 14px;
-    font-weight: 800;
-    color: #4b5563;
-    letter-spacing: 0.5px;
-}
-
-.ac-fin-amount {
-    font-size: 26px;
-    font-weight: 800;
-    color: var(--primary-color);
-}
-
-.ac-footer {
-    display: flex;
-    justify-content: flex-end;
-}
-
-.ac-done-btn {
-    background-color: var(--primary-color);
-    color: white;
-    font-weight: 600;
-    font-size: 14px;
-    padding: 10px 32px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(29, 137, 228, 0.2);
-    transition: var(--transition-smooth);
-}
-
-.ac-done-btn:hover {
-    background-color: var(--secondary-color);
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 6px 18px rgba(29, 137, 228, 0.35);
-}
-
-/* ===== NURSE BOOKING CARDS ===== */
+/* ============================================
+   NURSE BOOKING CARDS (NBS)
+   ============================================ */
 .nbs-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
@@ -3713,7 +1851,6 @@ background: #fff;
     margin-bottom: 12px;
     letter-spacing: 0.5px;
     margin-left: 99px;
-
 }
 
 .nbs-service {
@@ -3722,11 +1859,6 @@ background: #fff;
     align-items: center;
     margin-bottom: 3px;
     margin-left: 102px;
-
-}
-
-.nbs-service:last-of-type {
-    margin-bottom: 24px;
 }
 
 .nbs-service-name {
@@ -3756,7 +1888,6 @@ background: #fff;
     letter-spacing: 1px;
     margin-bottom: -2px;
     margin-left: 102px;
-
 }
 
 .nbs-price-amount {
@@ -3767,11 +1898,6 @@ background: #fff;
     align-items: baseline;
     gap: 4px;
     margin-left: 102px;
-}
-
-.nbs-price-amount span {
-    font-size: 14px;
-    color: var(--primary-color);
 }
 
 .nbs-btn-book {
@@ -3792,216 +1918,13 @@ background: #fff;
     box-shadow: 0 6px 18px rgba(29, 137, 228, 0.3);
 }
 
-@media (max-width: 900px) {
-    .nbs-grid {
-        grid-template-columns: 1fr;
-    }
-} 
-
-/* ===== DONE CARDS (NURSE) ===== */
-.done-cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(430px, 1fr));
-    gap: 24px;
-    margin-top: 0px;
-}
-
-@media (max-width: 900px) {
-    .done-cards-container {
-        grid-template-columns: 1fr;
-    }
-}
-
-.done-card {
-    background: #ffffff;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    border: 1px solid #E2E8F0;
-    display: flex;
-    flex-direction: column;
-}
-
-.dc-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-.dc-doc-info {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-}
-
-.dc-avatar {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.dc-doc-name {
-    font-size: 18px;
-    font-weight: 700;
-    color: #1a1c1e;
-}
-
-.dc-badge {
-    background-color: #D1FAE5;
-    color: #059669;
-    font-size: 11px;
-    font-weight: 800;
-    padding: 6px 14px;
-    border-radius: 20px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-top: -10px;
-}
-
-.dc-divider {
-    border: none;
-    border-top: 1px solid #F3F4F6;
-}
-
-.dc-details-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.dc-detail-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.dc-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #718096;
-}
-
-.dc-value {
-    font-size: 13px;
-    font-weight: 700;
-    color: #1a1c1e;
-}
-
-
-
-.dc-label-uppercase {
-    font-size: 14px;
-    font-weight: 800;
-    color: #4b5563;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-}
-
-.dc-services {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.dc-service-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.dc-service-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: #718096;
-}
-
-.dc-service-price {
-    font-size: 14px;
-    font-weight: 800;
-    color: #1a1c1e;
-}
-
-.dc-financial {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.dc-fin-label {
-    font-size: 14px;
-    font-weight: 800;
-    color: #718096;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.dc-fin-amount {
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--primary-color);
-}
-
-/* ===== Profile Info Grid ===== */
-.profile-info {
-    display: grid;
-    grid-template-columns: 1fr 1fr;      /* عمودين متساويين */
-    gap: 28px 60px;                      /* مسافة رأسية 28px، أفقية 60px */
-    margin-top: 10px;
-}
-
-.dc111-divider {
-    border: none;
-    border-top: 1px solid #f5f5f5;
-    margin: 20px 0;
-}
-
-/* كل عنصر (أيقونة + نص) */
-.info-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-}
-
-/* الأيقونة */
-.info-item i {
-    font-size: 22px;
-    color: #94a3b8;      /* لون رمادي فاتح */
-    margin-top: 2px;
-}
-
-/* عنوان الحقل (مثال: Email Address) */
-.info-label {
-    font-size: 12px;
-    font-weight: 700;
-    color: #94a3b8;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 2px;
-}
-
-/* قيمة الحقل (البريد، الهاتف، المحافظة، العنوان) */
-.info-value,
-.info-value-phone {
-    font-size: 16px;
-    font-weight: 500;
-    color: #1e293b;
-    line-height: 1.4;
-}
-
-/* ===== Responsive: تظهر بشكل عمودي على الشاشات الصغيرة ===== */
-@media (max-width: 768px) {
-    .profile-info {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* ===== NURSE PENDING CARDS (NPC) ===== */
+/* ============================================
+   NURSE PENDING CARDS (NPC)
+   ============================================ */
 .npc-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
     margin-top: 25px;
 }
 
@@ -4064,13 +1987,6 @@ background: #fff;
     gap: 8px;
 }
 
-.npc-services-wrap {
-    margin-top: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
 .npc-title-row {
     display: flex;
     justify-content: space-between;
@@ -4102,10 +2018,6 @@ background: #fff;
     gap: 4px;
 }
 
-.badge-rescheduled i {
-    font-size: 12px;
-}
-
 .badge-pending-bg {
     background-color: #ffedd5;
     color: #ea580c;
@@ -4120,11 +2032,11 @@ background: #fff;
     font-weight: 500;
 }
 
-.npc-body {
-    padding: 24px;
+.npc-services-wrap {
+    margin-top: 12px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 4px;
 }
 
 .npc-section-title {
@@ -4187,11 +2099,6 @@ background: #fff;
     display: flex;
     align-items: center;
     gap: 6px;
-}
-
-.npc-detail-val i {
-    font-size: 16px;
-    color: #94a3b8;
 }
 
 .npc-detail-sub {
@@ -4268,76 +2175,493 @@ background: #fff;
     border-color: #cbd5e1;
 }
 
-/* Extra Nurse Booking layout adjustments */
-.address-input-wrapper {
-    position: relative;
-    width: 100%;
+/* ============================================
+   DONATION REQUESTS PAGE
+   ============================================ */
+.donation-status-tabs {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #E2E8F0;
+    padding-bottom: 0;
 }
 
-.address-input-wrapper i {
-    position: absolute;
-    left: 15px;
-    top: 15px;
-    color: #9CA3AF;
-    font-size: 18px;
-}
-
-.address-input-wrapper textarea {
-    width: 100%;
-    min-height: 100px;
-    padding: 15px 15px 15px 42px;
-    border: 1px solid #E5E7EB;
-    border-radius: 12px;
-    font-size: 14px;
-    font-family: inherit;
-    color: #374151;
-    resize: none;
-    box-sizing: border-box;
-    transition: all 0.2s ease;
-}
-
-.address-input-wrapper textarea:focus {
-    outline: none;
-    border-color: #1D89E4;
-}
-
-.symptoms-card textarea {
-    width: 100%;
-    min-height: 100px;
-    padding: 15px;
-    border: 1px solid #E5E7EB;
-    border-radius: 12px;
-    font-size: 14px;
-    font-family: inherit;
-    color: #374151;
-    resize: none;
-    box-sizing: border-box;
-    transition: all 0.2s ease;
-}
-
-.symptoms-card textarea::placeholder,
-.address-input-wrapper textarea::placeholder {
-    color: #9CA3AF;
-}
-
-.symptoms-card textarea:focus {
-    outline: none;
-    border-color: #1D89E4;
-}
-
-/* ===== Donor-Specific Styles ===== */
-
-/* --- Profile Info 2x2 Grid --- */
-.dc111-divider {
+.don-tab {
+    background: none;
     border: none;
-    border-top: 1px solid #E1E6EC;
-    margin: 12px 0 16px 0;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    color: #718096;
+    padding: 0 2px 12px 2px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    font-family: 'Inter', sans-serif;
+    transition: color 0.2s, border-color 0.2s;
 }
 
+.don-tab.active {
+    color: #1D89E4;
+    border-bottom: 2px solid #1D89E4;
+    font-weight: 600;
+}
+
+.don-tab:hover:not(.active) {
+    color: #1D89E4;
+}
+
+.donation-heading {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1c1e;
+    margin-bottom: 3px;
+}
+
+.don-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.don-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #E8EDF5;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: box-shadow 0.2s;
+}
+
+.don-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.don-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.don-left {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.don-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #EBF4FD;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.don-avatar i {
+    font-size: 24px;
+    color: #1D89E4;
+}
+
+.don-name-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.don-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1c1e;
+    margin: 0;
+}
+
+.don-location {
+    font-size: 12px;
+    color: #718096;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.don-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.don-badge-pending {
+    background: #FFF3E0;
+    color: #F57C00;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.don-badge-accepted {
+    background: #E8F4FD;
+    color: #1D89E4;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.don-badge-done {
+    background: #E6F4EA;
+    color: #276749;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.don-blood-type {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.don-blood-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1D89E4;
+    line-height: 1;
+    margin-right: 11px;
+}
+
+.don-blood-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    color: #718096;
+    text-transform: uppercase;
+}
+
+.don-desc {
+    font-size: 13px;
+    color: #4b5563;
+    line-height: 1.6;
+    margin-bottom: 13px;
+}
+
+.don-alert {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.don-alert.urgent {
+    background: #FFF3E8;
+    color: #C05621;
+}
+
+.don-alert.success {
+    background: #E6F4EA;
+    color: #276749;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.don-alert.normal {
+    background: #F0FFF4;
+    color: #276749;
+}
+
+.don-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.don-requested-time {
+    font-size: 12px;
+    color: #9CA3AF;
+}
+
+.don-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.don-btn-reject {
+    background: white;
+    border: 1.5px solid #D1D5DB;
+    color: #4B5563;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 22px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: 0.2s;
+}
+
+.don-btn-reject:hover {
+    border-color: #9CA3AF;
+    background: #F9FAFB;
+}
+
+.don-btn-accept {
+    background: #1D89E4;
+    border: none;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 22px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: 0.2s;
+}
+
+.don-btn-accept:hover {
+    background: #1570C4;
+}
+
+.don-btn-done {
+    background: #1D89E4;
+    border: none;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 28px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: 0.2s;
+}
+
+.don-btn-done:hover {
+    background: #1570C4;
+}
+
+/* ============================================
+   NOTIFICATIONS PAGE
+   ============================================ */
+.notifications-wrapper {
+    max-width: 900px;
+}
+
+.notif-header-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+
+.notif-title-area {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.notif-heading {
+    font-size: 26px;
+    font-weight: 800;
+    color: #1a202c;
+    margin: 0;
+}
+
+.notif-subtitle {
+    font-size: 14px;
+    color: #718096;
+    margin: 0;
+}
+
+.notif-header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.btn-mark-read {
+    background: #1D89E4;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-mark-read:hover {
+    background: #1570C4;
+}
+
+.btn-clear-all {
+    background: transparent;
+    border: none;
+    color: #718096;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.2s;
+}
+
+.btn-clear-all:hover {
+    background: #F7FAFC;
+    color: #4A5568;
+}
+
+.notif-section {
+    margin-bottom: 30px;
+}
+
+.notif-date-header {
+    font-size: 11px;
+    font-weight: 700;
+    color: #A0AEC0;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.notif-card {
+    background: white;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 12px;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.notif-card.primary-border {
+    border-left: 4px solid #1D89E4;
+}
+
+.notif-card.urgent-border {
+    border-left: 4px solid #DC2626;
+}
+
+.notif-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.notif-icon.primary-bg {
+    background: #E8F4FD;
+    color: #1D89E4;
+}
+
+.notif-icon.urgent-bg {
+    background: #FEE2E2;
+    color: #DC2626;
+}
+
+.notif-icon i {
+    font-size: 20px;
+}
+
+.notif-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.notif-content h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a202c;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.unread-dot {
+    width: 8px;
+    height: 8px;
+    background: #1D89E4;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.notif-content p {
+    font-size: 13px;
+    color: #4A5568;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.notif-time {
+    font-size: 11px;
+    color: #A0AEC0;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.notif-load-more {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    padding-bottom: 30px;
+}
+
+.btn-load-more {
+    background: transparent;
+    border: none;
+    color: #1D89E4;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-load-more:hover {
+    text-decoration: underline;
+}
+
+/* ============================================
+   DONOR PROFILE SPECIFIC
+   ============================================ */
 .profile-info {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 18px 40px;
+    margin-top: 10px;
+}
+
+.dc111-divider {
+    border: none;
+    border-top: 1px solid #E1E6EC;
+    margin: 12px 0 16px 0;
 }
 
 .info-item {
@@ -4368,18 +2692,16 @@ background: #fff;
     color: #1A1C1E;
 }
 
-/* --- 4-column grid override for donor profile requests --- */
 .donor-requests-grid {
     grid-template-columns: repeat(4, 1fr);
 }
 
-/* --- Red color variant — Donation Requests --- */
 .req-count.red {
-    color: #C0392B;
+    color: var(--color-red);
 }
 
 .req-fill.bg-red {
-    background: #C0392B;
+    background: var(--color-red);
 }
 
 .req-progress.track-red {
@@ -4387,15 +2709,13 @@ background: #fff;
     height: 12px;
 }
 
-/* --- Donor Bottom Section — 4-column layout --- */
 .donor-bottom-section {
     grid-template-columns: 3fr 1fr 1fr 1fr;
 }
 
-/* Donor stat card — vertically centered */
 .donor-stat-card {
     background: #fff;
-    border-radius: 16px;
+    border-radius: 12px;
     padding: 24px 20px;
     display: flex;
     flex-direction: column;
@@ -4405,6 +2725,22 @@ background: #fff;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
     transition: 0.3s ease;
     text-align: center;
+}
+
+.donor-stat-card .icon-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.donor-stat-card .icon-blue {
+    background: #F0F7FF;
+    color: var(--color-blue);
+    font-size: 20px;
 }
 
 .donor-stat-card:hover {
@@ -4432,63 +2768,67 @@ background: #fff;
     margin-bottom: 0;
 }
 
-/* --- Date input wrapper with icon --- */
-.date-wrapper-custom {
-    display: flex;
-    align-items: center;
-    padding: 0 14px;
-    border-radius: 12px;
-    background: #F8FAFC;
-    border: 1px solid #E2E8F0;
-    transition: 0.2s;
-    gap: 10px;
+/* ============================================
+   RESPONSIVE OVERRIDES
+   ============================================ */
+@media (max-width: 1100px) {
+    .doctors-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .don-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-.date-wrapper-custom input[type="date"] {
-    flex: 1;
-    outline: none;
-    font-size: 14px;
-    border: none !important;
-    padding: 12px 0 !important;
-    background: transparent !important;
-    font-family: 'Inter', sans-serif;
-    color: #9CA3AF;
-    cursor: pointer;
+@media (max-width: 900px) {
+    .booking-grid {
+        grid-template-columns: 1fr;
+    }
+    .pending-grid,
+    .npc-grid {
+        grid-template-columns: 1fr;
+    }
+    .nbs-grid {
+        grid-template-columns: 1fr;
+    }
+    .accepted-cards-container,
+    .done-cards-container {
+        grid-template-columns: 1fr;
+    }
 }
 
-.date-wrapper-custom input[type="date"]::-webkit-calendar-picker-indicator {
-    display: none;
-    -webkit-appearance: none;
+@media (max-width: 700px) {
+    .doctors-grid {
+        grid-template-columns: 1fr;
+    }
+    .search-bar {
+        flex-wrap: wrap;
+    }
+    .filter-select {
+        flex: 1;
+        min-width: 120px;
+    }
 }
 
-.date-wrapper-custom i {
-    font-size: 18px;
-    color: #9CA3AF;
+@media (max-width: 640px) {
+    .don-grid {
+        grid-template-columns: 1fr;
+    }
+    .donor-bottom-section {
+        grid-template-columns: 1fr;
+    }
+    .donor-requests-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-.date-wrapper-custom:focus-within {
-    border-color: var(--primary-color);
-    background: white;
-    box-shadow: 0 0 0 3px rgba(29, 137, 228, 0.1);
+@media (max-width: 768px) {
+    .profile-info {
+        grid-template-columns: 1fr;
+    }
 }
 
-.date-wrapper-custom:focus-within input,
-.date-wrapper-custom:focus-within i {
-    color: #1A1C1E;
-}
-
-/* --- Edit profile footer — right-aligned buttons --- */
-.edit-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 16px;
-    margin-top: 32px;
-    padding-top: 24px;
-    border-top: 1px solid #F0F4F8;
-}
-
-
-
+/* ===== Additional small fixes ===== */
 .rescheduled-badge {
     background: #FFF8EB;
     color: #D97706;
@@ -4501,319 +2841,464 @@ background: #fff;
     align-items: center;
 }
 
-/* ===== Requests / Booking Page ===== */
-
-.booking-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-/* --- Category Tabs --- */
-.category-tabs-wrapper {
-    display: flex;
-    justify-content: center;
-}
-
-.category-tabs {
-    display: flex;
+/* Nurse specific overrides (kept for compatibility) */
+.nurse-doc-card {
     align-items: center;
-    justify-content: center;
-    background: #EEF2F7;
-    padding: 6px;
-    border-radius: 16px;
-    width: 710px;
-    margin: 0 auto 30px;
-    gap: 51px;
+    padding-bottom: 39px;
 }
 
-.cat-tab {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding:9px 22px;
-    border: none;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #6b7280;
-    background: transparent;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-    font-family: 'Inter', sans-serif;
-}
-
-.cat-tab i {
-    font-size: 16px;
-}
-
-.cat-tab.active {
-background: #fff;
-    color: #1E88E5;
-    font-weight: 600;
-    padding: 12px 48px;
-    border-radius: 14px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-    width: 221px;
-    height: 45px;
-}
-
-.cat-tab:not(.active):hover {
-    background: #F4F7FC;
-    color: #374151;
-}
-
-/* --- Status Tabs --- */
-.status-tabs {
-    display: flex;
-    gap: 0;
-    border-bottom: 2px solid #E1E6EC;
-}
-
-.status-tab {
-    padding: 10px 20px;
-    border: none;
-    background: transparent;
-    font-size: 14px;
-    font-weight: 500;
-    color: #6b7280;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -2px;
-    transition: color 0.2s, border-color 0.2s;
-    font-family: 'Inter', sans-serif;
-}
-
-.status-tab.active {
-    color: var(--primary-color);
-    border-bottom-color: var(--primary-color);
-    font-weight: 600;
-}
-
-.status-tab:not(.active):hover {
-    color: #374151;
-}
-
-/* --- Search Bar & Filters --- */
-.search-bar {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    background: #ffffff;
-    border: 1px solid #E6EBF1;
-    border-radius: 16px;
-    padding: 14px 18px;
-    flex-wrap: wrap;
-}
-
-.search-input-wrap {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.search-input-wrap input {
-    flex: 1;
-    border: none;
-    outline: none;
-    font-size: 14px;
-    color: #374151;
-    font-family: 'Inter', sans-serif;
-    background: transparent;
-}
-
-.search-input-wrap input::placeholder {
-    color: #aab0bc;
-}
-
-.filter-select {
-border: none;
-    border-radius: 12px;
-    padding: 10px 32px 10px 12px;
-    font-size: 13px;
-    color: #374151;
-    appearance: none;
-    cursor: pointer;
-    outline: none;
-}
-
-.filter-select:focus {
-    border-color: var(--primary-color);
-}
-
-/* --- Doctor Cards Grid --- */
-.doctors-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-
-.doctor-card {
-    background: white;
-    border: 1px solid #E8EDF2;
-    border-radius: 18px;
-    padding: 24px 20px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 6px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-    transition: box-shadow 0.2s, transform 0.2s;
-}
-
-.doctor-card:hover {
-    box-shadow: 0 6px 24px rgba(29, 137, 228, 0.1);
-    transform: translateY(-2px);
-}
-
-/* Avatar */
-.doctor-avatar-wrap {
+.nurse-avatar-bg {
     position: relative;
-    margin-bottom: 10px;
+    overflow: visible !important;
 }
 
-.doctor-avatar-img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #EBF4FF;
-}
-
-.online-dot {
+.nurse-online-indicator {
     position: absolute;
-    bottom: 4px;
-    right: 4px;
-    width: 13px;
-    height: 13px;
-    background: #22C55E;
-    border: 2px solid white;
+    bottom: 8px;
+    right: 3px;
+    width: 19px;
+    height: 19px;
+    background-color: #2ecc71;
     border-radius: 50%;
+    border: 2px solid white;
 }
 
-/* Doctor info */
-.doctor-name {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1a1c1e;
-    margin-top: 2px;
-}
-
-.doctor-spec {
-    font-size: 13px;
-    color: var(--primary-color);
-    font-weight: 500;
-}
-
-.doctor-location {
-    font-size: 12px;
-    color: #6b7280;
+.name-rating-row {
     display: flex;
     align-items: center;
-    gap: 3px;
-    justify-content: center;
-    margin-top: 2px;
-}
-
-.doctor-location i {
-    font-size: 13px;
-    color: #9ca3af;
-}
-
-/* Stars */
-.doctor-rating {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-top: 4px;
-}
-
-.stars {
-    color: #F59E0B;
-    font-size: 14px;
-    letter-spacing: 1px;
-}
-
-.rating-val {
-    font-size: 12px;
-    color: #6b7280;
-}
-
-/* Fee row */
-.fee-row {
-    display: flex;
     justify-content: space-between;
-    align-items: center;
     width: 100%;
-    background: #F8FAFC;
-    border-radius: 10px;
-    padding: 10px 14px;
+}
+
+.nurse-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
     margin-top: 10px;
 }
 
-.fee-label {
-    font-size: 10px;
+.nurse-tag {
+    background: #EBF5FF;
+    color: #1D89E4;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
     font-weight: 600;
+}
+
+.nurse-evening-slots {
+    margin-top: 25px;
+}
+
+/* Pending cards (Doctor) - keep legacy */
+.pending-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.pending-card {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #f0f0f5;
+    padding: 24px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: 0.3s ease;
+}
+
+.pending-card:hover {
+    box-shadow: 0 8px 28px rgba(29, 137, 228, 0.12);
+    transform: translateY(-5px);
+}
+
+.pending-card-top {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.pending-avatar {
+    width: 90px;
+    height: 100px;
+    border-radius: 12px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #E1E6EC;
+}
+
+.pending-info {
+    flex: 1;
+}
+
+.pending-name-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.pending-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.pending-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: #EA580C;
+    background: #FFEDD5;
+    border-radius: 23px;
+    padding: 3px 10px;
+    white-space: nowrap;
+}
+
+.pending-date {
+    font-size: 13px;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.pending-note {
+    font-size: 13px;
+    color: #374151;
+    background: #F8FAFC;
+    border-radius: 10px;
+    padding: 10px 14px;
+    line-height: 1.6;
+    padding-right: 290px;
+}
+
+.pending-details {
+    display: flex;
+    gap: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #F0F4F8;
+}
+
+.pending-detail-col {
+    flex: 1;
+}
+
+.detail-label {
+    font-size: 10px;
+    font-weight: 700;
     color: #9ca3af;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.detail-place {
+    font-size: 13px;
+    color: #111827;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 4px;
+}
+
+.detail-address {
+    font-size: 12px;
+    color: #6b7280;
+    padding-left: 18px;
+    line-height: 1.5;
+}
+
+.detail-phone {
+    font-size: 13px;
+    color: #111827;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pending-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16px;
+    border-top: 1px solid #F0F4F8;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.pending-price-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.price-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #9ca3af;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
 }
 
-.fee-val {
-    font-size: 18px;
-    font-weight: 700;
-    color: #1a1c1e;
+.price-val {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--primary-color);
 }
 
-.fee-val small {
-    font-size: 11px;
-    font-weight: 500;
-    color: #6b7280;
-    margin-left: 2px;
+.pending-actions {
+    display: flex;
+    gap: 10px;
 }
 
-/* Book button */
-.book-btn {
-    width: 100%;
-    margin-top: 12px;
-    padding: 12px;
+.btn-accept {
+    padding: 11px 28px;
     background: var(--primary-color);
-    color: white;
+    color: #fff;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    transition: background 0.2s, box-shadow 0.2s;
+    transition: var(--transition-smooth);
 }
 
-.book-btn:hover {
+.btn-accept:hover {
     background: var(--secondary-color);
-    box-shadow: 0 4px 14px rgba(29, 137, 228, 0.3);
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 4px 12px rgba(29, 137, 228, 0.3);
 }
 
-/* Responsive */
-@media (max-width: 1100px) {
-    .doctors-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+.btn-cancel {
+    padding: 11px 28px;
+    background: #fff;
+    color: #4b5563;
+    border: 1px solid #e1e6ec;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
 }
 
-@media (max-width: 700px) {
-    .doctors-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .search-bar {
-        flex-wrap: wrap;
-    }
-
-    .filter-select {
-        flex: 1;
-        min-width: 120px;
-    }
+.btn-cancel:hover {
+    background: #fdf2f2;
+    color: #e53e3e;
+    border-color: #feb2b2;
+    transform: translateY(-2px);
 }
 
+/* Patient Profile card (general) */
+.patient-profile-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    margin-bottom: 54px;
+    transition: 0.3s ease;
+}
+
+.patient-profile-card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transform: translateY(-3px);
+}
+
+.patient-avatar-wrap {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    flex-shrink: 0;
+}
+
+.patient-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.patient-status-dot {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    background-color: #2ECC71;
+    border: 3px solid #fff;
+    border-radius: 50%;
+}
+
+.patient-details {
+    flex: 1;
+}
+
+.patient-actions {
+    margin-left: auto;
+    align-self: flex-end;
+}
+
+.patient-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1A1C1E;
+    margin-bottom: 17px;
+}
+
+.requests-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-bottom: 54px;
+}
+
+.request-stat-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px 24px 24px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    transition: 0.3s ease;
+}
+
+.request-stat-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+}
+
+.req-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.req-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1A1C1E;
+}
+
+.req-count {
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.req-count.blue {
+    color: var(--color-blue);
+}
+.req-count.green {
+    color: var(--color-green);
+}
+.req-count.gold {
+    color: var(--color-orange);
+}
+
+.req-progress {
+    height: 8px;
+    background: #F1F5F9;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+
+.req-fill {
+    height: 100%;
+    border-radius: 20px;
+}
+
+.req-fill.bg-blue { background: var(--color-blue); }
+.req-fill.bg-green { background: var(--color-green); }
+.req-fill.bg-gold { background: var(--color-orange); }
+
+.req-progress.track-blue,
+.req-progress.track-green,
+.req-progress.track-gold {
+    background: #F1F5F9;
+    height: 12px;
+}
+
+.req-footer {
+    font-size: 11px;
+    color: #94A3B8;
+}
+
+.bottom-section {
+    display: grid;
+    gap: 24px;
+}
+
+.profile-wallet-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: 0.3s ease;
+}
+
+.profile-wallet-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(30, 136, 229, 0.08);
+}
+
+.wallet-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+}
+
+.wallet-title-area h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1A1C1E;
+    margin-bottom: 6px;
+}
+
+.wallet-title-area p {
+    font-size: 13px;
+    color: #6B7280;
+}
+
+.wallet-icon-btn {
+    width: 44px;
+    height: 44px;
+    background: #F0F7FF;
+    color: #1E88E5;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+}
+
+.wallet-balance-box {
+    margin-top: 10px;
+}
+
+.balance-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6B7280;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.balance-amount {
+    font-size: 40px;
+    font-weight: 800;
+    color: #1E88E5;
+}
