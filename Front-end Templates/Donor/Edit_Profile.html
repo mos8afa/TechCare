@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Donor Profile Ã¢â‚¬â€œ Edit</title>
+
+    <link rel="stylesheet" href="Donor.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+</head>
+<body>  
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">
+                        <img src="../img/logo.png" alt="">
+                    </span>                
+                    <div>
+                        <h2>TechCare</h2>
+                        <p>Medical Portal</p>
+                    </div>
+                    <button class="sidebar-toggle">
+                        <i class="bi bi-layout-sidebar-inset-reverse"></i>
+                    </button>
+                </div>
+            </div>
+
+            <aside class="aside">
+                <a href="Profile.html" class="aside-item active">
+                    <i class="bi bi-person"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="Requests.html" class="aside-item">
+                    <i class="ri-file-list-line"></i>
+                    <span>Requests</span>
+                </a>
+                <a href="Notifications.html" class="aside-item">
+                    <i class="fa-regular fa-bell"></i>
+                    <span>Notifications</span>
+                </a>
+                <a href="Wallet.html" class="aside-item">
+                    <i class="ri-wallet-3-line"></i>
+                    <span>Wallet</span>
+                </a>
+                <a href="Complaints.html" class="aside-item">
+                    <i class="ri-error-warning-line"></i>
+                    <span>Complaints</span>
+                </a>
+            </aside>
+        </aside>
+
+        <div style="flex:1; display:flex; flex-direction:column;">
+        
+            <!-- Top Navbar -->
+            <div class="topbar">
+                <h2 class="topbar-title">Donor Profile</h2>
+
+                <div class="topbar-right">
+                    <div class="topbar-icon" id="notificationBtn">
+                        <i class="fa-regular fa-bell"></i>
+                        <div class="inbox" id="notificationBox">
+                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg">
+                                <div class="notification-content">
+                                    <h4>Ahmed Ali</h4>
+                                    <p>New Consultation Request</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
+                                <img src="https://randomuser.me/api/portraits/women/12.jpg">
+                                <div class="notification-content">
+                                    <h4>Sara Mohamed</h4>
+                                    <p>Appointment Confirmed</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="line">
+                    <div class="topbar-profile" onclick="window.location.href='Profile.html'">
+                        <div class="topbar-user-info">
+                            <h4>Adham Ali</h4>
+                        </div>
+                        <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="Donor">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="main-content">
+
+                <div class="edit-profile-wrapper">
+                    <div class="edit-profile-card">
+
+                        <!-- Header -->
+                        <div class="edit-header">
+                            <div>
+                                <h2>Edit  Profile</h2>
+                            </div>
+                        </div>
+                    
+                        <!-- Profile Photo Section -->
+                        <div class="edit-photo-section">
+                            <div class="edit-avatar">
+                                <div class="avatar-container">
+                                    <img id="profile-img" src="https://randomuser.me/api/portraits/men/41.jpg" alt="Donor">
+                                    <div class="online-badge"></div>
+                                </div>
+                            </div>
+                            <div class="edit-photo-info">
+                                <h4>Profile Photo</h4>
+                                <p>
+                                    New profile pictures require admin approval and verification.
+                                    Recommended size: 400x400px.
+                                </p>
+                                <div class="photo-buttons">
+                                    <input type="file" id="profile-upload" style="display: none;">
+                                    <button type="button" class="btn-primary-edit" onclick="document.getElementById('profile-upload').click()">
+                                        Change Photo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr style="margin:15px 0; border:1px solid #F0F4F8;">
+
+                        <!-- Form Ã¢â‚¬â€ 2-column grid matching design -->
+                        <div class="edit-form-grid">
+                        
+                            <!-- Row 1: Full Name | Full Address -->
+                            <div class="form-group-edit">
+                                <label>Full Name</label>
+                                <input type="text" value="adham Ali">
+                            </div>
+                        
+                            <div class="form-group-edit">
+                                <label>Full Address</label>
+                                <div class="address-wrapper-custom">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <input type="text" placeholder="Street, Building, Apartment" value="Maadi, Cairo, Egypt">
+                                </div>
+                            </div>
+
+                            <!-- Row 2: Governorate | Last Donation Date -->
+                            <div class="form-group-edit">
+                                <label>Governorate</label>
+                                <select>
+                                    <option value="" disabled>Select governorate</option>
+                                    <option value="alexandria">Alexandria</option>
+                                    <option value="aswan">Aswan</option>
+                                    <option value="asyut">Assiut</option>
+                                    <option value="beheira">Beheira</option>
+                                    <option value="beni_suef">Beni Suef</option>
+                                    <option value="cairo" selected>Cairo</option>
+                                    <option value="dakahlia">Dakahlia</option>
+                                    <option value="damietta">Damietta</option>
+                                    <option value="fayoum">Faiyum</option>
+                                    <option value="gharbia">Gharbia</option>
+                                    <option value="giza">Giza</option>
+                                    <option value="ismailia">Ismailia</option>
+                                    <option value="kafr_el_sheikh">Kafr El Sheikh</option>
+                                    <option value="luxor">Luxor</option>
+                                    <option value="matrouh">Matrouh</option>
+                                    <option value="minya">Minya</option>
+                                    <option value="monufia">Monufia</option>
+                                    <option value="new_valley">New Valley</option>
+                                    <option value="north_sinai">North Sinai</option>
+                                    <option value="port_said">Port Said</option>
+                                    <option value="qalyubia">Qalyubia</option>
+                                    <option value="qena">Qena</option>
+                                    <option value="red_sea">Red Sea</option>
+                                    <option value="sharqia">Sharqia</option>
+                                    <option value="sohag">Sohag</option>
+                                    <option value="south_sinai">South Sinai</option>
+                                    <option value="suez">Suez</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group-edit">
+                                <label>Last Donation Date</label>
+                                <div class="date-wrapper-custom">
+                                    <input type="date" id="donation-date" value="2026-11-12">
+                                    <i class="ri-calendar-line" style="cursor:pointer; pointer-events:auto;" onclick="document.getElementById('donation-date').showPicker()"></i>
+                                </div>
+                            </div>
+
+                            <!-- Row 3: Phone Number (full-width) -->
+                            <div class="form-group-edit full-width">
+                                <label>Phone Number</label>
+                                <div class="phone-wrapper-custom">
+                                    <span class="country-code">+20</span>
+                                    <input type="tel" placeholder="1001234567" value="1001234567">
+                                </div>
+                            </div>
+
+                        </div>
+                    
+                        <!-- Footer Buttons -->
+                        <div class="edit-footer">
+                            <button class="btn-light-edit" onclick="window.location.href='Profile.html'">Cancel Changes</button>
+                            <button class="btn-primary-edit">Save Changes</button>
+                        </div>
+                    </div>
+            
+                </div>
+
+            </main>
+        </div>
+    </div>
+</body>
+    <script src="../JS/Board.js"></script>
+
+</html>

@@ -1,0 +1,353 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Requests</title>
+
+    <link rel="stylesheet" href="Donor.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=bloodtype" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">
+                        <img src="../img/logo.png" alt="">
+                    </span>
+                    <div>
+                        <h2>TechCare</h2>
+                        <p>Medical Portal</p>
+                    </div>
+                    <button class="sidebar-toggle">
+                        <i class="bi bi-layout-sidebar-inset-reverse"></i>
+                    </button>
+                </div>
+            </div>
+
+            <aside class="aside">
+                <a href="Profile.html" class="aside-item">
+                    <i class="bi bi-person"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="Requests.html" class="aside-item active">
+                    <i class="ri-file-list-line"></i>
+                    <span>Requests</span>
+                </a>
+                <a href="Notifications.html" class="aside-item">
+                    <i class="fa-regular fa-bell"></i>
+                    <span>Notifications</span>
+                </a>
+                <a href="Wallet.html" class="aside-item">
+                    <i class="ri-wallet-3-line"></i>
+                    <span>Wallet</span>
+                </a>
+                <a href="Complaints.html" class="aside-item">
+                    <i class="ri-error-warning-line"></i>
+                    <span>Complaints</span>
+                </a>
+            </aside>
+        </aside>
+
+
+        <div style="flex:1; display:flex; flex-direction:column;">
+
+            <!-- Top Navbar -->
+            <div class="topbar">
+                <h2 class="topbar-title">Donor Profile</h2>
+
+                <div class="topbar-right">
+                    <div class="topbar-icon" id="notificationBtn">
+                        <i class="fa-regular fa-bell"></i>
+                        <div class="inbox" id="notificationBox">
+                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg">
+                                <div class="notification-content">
+                                    <h4>Ahmed Ali</h4>
+                                    <p>New Consultation Request</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
+                                <img src="https://randomuser.me/api/portraits/women/12.jpg">
+                                <div class="notification-content">
+                                    <h4>Sara Mohamed</h4>
+                                    <p>Appointment Confirmed</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="line">
+                    <div class="topbar-profile" onclick="window.location.href='Profile.html'">
+                        <div class="topbar-user-info">
+                            <h4>Adham Ali</h4>
+                        </div>
+                        <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="Donor">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="main-content">
+
+                <!-- ===== BOOKING SECTION ===== -->
+                <div class="booking-wrapper">
+
+                    <!-- Category Tabs Container -->
+                    <div class="category-tabs-wrapper">
+                        <div class="category-tabs">
+                            <button class="cat-tab" onclick="window.location.href='Requests.html'">
+                                <i class="ri-stethoscope-line"></i> Doctor
+                            </button>
+                            <button class="cat-tab active" data-status="pending" onclick="window.location.href='Book_nurse.html'">
+                                <i class="ri-first-aid-kit-line"></i> Nurse
+                            </button>
+                            <button class="cat-tab">
+                                <i class="ri-medicine-bottle-line"></i> Medicine
+                            </button>
+                            <button class="cat-tab" onclick="window.location.href='Donation_Pending.html'">
+                                <span class="material-symbols-outlined">bloodtype</span> Donations
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Status Tabs -->
+                    <div class="status-tabs">
+                        <button class="status-tab active" onclick="window.location.href='Book_nurse.html'">Booking</button>
+                        <button class="status-tab" data-status="pending"
+                            onclick="window.location.href='Nurse_pending.html'">Pending</button>
+                        <button class="status-tab" data-status="accepted"
+                            onclick="window.location.href='Nurse_accepted.html'">Accepted</button>
+                        <button class="status-tab" data-status="done"
+                            onclick="window.location.href='Nurse_done.html'">Done</button>
+                    </div>
+
+                    <div class="booking-page-header">
+                        <h1>Book Appointment</h1>
+                        <p>Select your preferred time for a consultation with our specialist.</p>
+                    </div>
+
+                    <div class="booking-grid">
+                        <!-- Left Column -->
+                        <div class="booking-left">
+
+                            <!-- Nurse Details Card -->
+                            <div class="doc-card nurse-doc-card">
+                                <div class="doc-avatar-bg nurse-avatar-bg">
+                                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Nurse"
+                                        class="doc-avatar">
+                                    <div class="online-indicator nurse-online-indicator"></div>
+                                </div>
+                                <div class="doc-info-wrapper nurse-info-wrapper">
+                                    <div class="doc-info-main">
+                                        <div class="name-rating-row">
+                                            <h2 class="doc-name">Sarah Ahmed</h2>
+                                            <div class="doc-rating">
+                                                <div class="stars">
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star" style="opacity: 0.3;"></i>
+                                                </div>
+                                                <span class="rating-val">(4.9/5)</span>
+                                            </div>
+                                        </div>
+                                        <p class="doc-title nurse-doc-title">Specialty: Wound Care & IV Therapy</p>
+                                        <div class="nurse-tags">
+                                            <span class="nurse-tag">Certified Specialist</span>
+                                            <span class="nurse-tag">Home Visits</span>
+                                            <span class="nurse-tag">Vaccinations</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Select Services -->
+                            <div class="booking-card services-card">
+                                <div class="card-title">
+                                    <i class="ri-file-list-3-line"></i> <span>Select Services</span>
+                                </div>
+                                <div class="services-list">
+                                    <label class="service-item">
+                                        <input type="checkbox" checked>
+                                        <div class="checkbox-box">
+                                            <i class="ri-check-line"></i>
+                                        </div>
+                                        <div class="service-text-wrap">
+                                            <span class="service-name">Insulin Injection</span>
+                                            <span class="service-desc">Safe and sterile procedure at home</span>
+                                        </div>
+                                        <span class="service-price">150 EGP</span>
+                                    </label>
+                                    <label class="service-item">
+                                        <input type="checkbox">
+                                        <div class="checkbox-box">
+                                            <i class="ri-check-line"></i>
+                                        </div>
+                                        <div class="service-text-wrap">
+                                            <span class="service-name">Vital Signs Monitoring</span>
+                                            <span class="service-desc">Check blood pressure, pulse, and temp</span>
+                                        </div>
+                                        <span class="service-price">250 EGP</span>
+                                    </label>
+                                    <label class="service-item">
+                                        <input type="checkbox">
+                                        <div class="checkbox-box">
+                                            <i class="ri-check-line"></i>
+                                        </div>
+                                        <div class="service-text-wrap">
+                                            <span class="service-name">Wound Dressing</span>
+                                            <span class="service-desc">Professional care for surgical wounds</span>
+                                        </div>
+                                        <span class="service-price">400 EGP</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Governorate -->
+                            <div class="form-group-booking">
+                                <label class="booking-label">Governorate</label>
+                                <div class="custom-select-wrapper">
+                                    <select class="booking-select">
+                                        <option value="Cairo">Cairo</option>
+                                        <option value="Giza">Giza</option>
+                                        <option value="Alexandria">Alexandria</option>
+                                    </select>
+                                    <i class="ri-arrow-down-s-line"></i>
+                                </div>
+                            </div>
+
+                            <!-- Symptoms & Address Grid -->
+                            <div class="booking-inputs-grid">
+                                <!-- Symptoms Card -->
+                                <div class="booking-card symptoms-card">
+                                    <div class="card-title-plain">
+                                        <i class="ri-file-text-line"></i> <span>Describe Your Symptoms</span>
+                                    </div>
+                                    <textarea
+                                        placeholder="Please provide more details about how you are feeling..."></textarea>
+                                </div>
+
+                                <!-- Full Address Card -->
+                                <div class="booking-card address-card">
+                                    <div class="card-title-plain">
+                                        <span>Full Address</span>
+                                    </div>
+                                    <div class="address-input-wrapper">
+                                        <i class="ri-map-pin-2-line"></i>
+                                        <textarea placeholder="Maadi, Cairo, Egypt"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Date & Time Card -->
+                            <div class="booking-card datetime-card">
+                                <div class="card-title">
+                                    <i class="ri-calendar-event-line"></i> <span>Select Date & Time</span>
+                                </div>
+
+                                <div class="date-scroll-container">
+                                    <div class="date-item">
+                                        <span class="date-day">Mon</span>
+                                        <span class="date-num">14</span>
+                                        <span class="date-month">Oct</span>
+                                    </div>
+                                    <div class="date-item active">
+                                        <span class="date-day">Tue</span>
+                                        <span class="date-num">15</span>
+                                        <span class="date-month">Oct</span>
+                                    </div>
+                                    <div class="date-item">
+                                        <span class="date-day">Wed</span>
+                                        <span class="date-num">16</span>
+                                        <span class="date-month">Oct</span>
+                                    </div>
+                                    <div class="date-item">
+                                        <span class="date-day">Thu</span>
+                                        <span class="date-num">17</span>
+                                        <span class="date-month">Oct</span>
+                                    </div>
+                                    <div class="date-item">
+                                        <span class="date-day">Fri</span>
+                                        <span class="date-num">18</span>
+                                        <span class="date-month">Oct</span>
+                                    </div>
+                                </div>
+
+                                <div class="slots-section">
+                                    <h5 class="slot-title">MORNING SLOTS</h5>
+                                    <div class="slots-grid">
+                                        <button class="slot-btn">09:00 AM</button>
+                                        <button class="slot-btn active">10:00 AM</button>
+                                        <button class="slot-btn">11:30 AM</button>
+                                        <button class="slot-btn">12:00 PM</button>
+                                    </div>
+                                </div>
+
+                                <div class="slots-section nurse-evening-slots">
+                                    <h5 class="slot-title">EVENING SLOTS</h5>
+                                    <div class="slots-grid">
+                                        <button class="slot-btn">05:00 PM</button>
+                                        <button class="slot-btn">06:00 PM</button>
+                                        <button class="slot-btn">07:30 PM</button>
+                                        <button class="slot-btn">08:00 PM</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div class="booking-right">
+                            <div class="booking-card payment-summary-card">
+                                <h3 class="summary-title nurse-summary-title">Payment Summary</h3>
+
+                                <div class="summary-row">
+                                    <span class="summary-label nurse-summary-label">Session Subtotal</span>
+                                    <span class="summary-value nurse-summary-value">350 EGP</span>
+                                </div>
+                                <div class="summary-row nurse-summary-row-mt">
+                                    <span class="summary-label nurse-summary-label">Service Fee</span>
+                                    <span class="summary-value nurse-summary-value">50 EGP</span>
+                                </div>
+
+
+                                <div class="summary-total-row nurse-total-row">
+                                    <div class="total-label nurse-total-label">Total Price</div>
+                                    <div class="total-value nurse-total-value">400 EGP</div>
+                                </div>
+
+                                <button class="confirm-btn">Confirm Booking</button>
+
+                                <div class="secure-payment-text">
+                                    <i class="ri-lock-2-line"></i> Secure encrypted payment
+                                </div>
+                            </div>
+
+                            <div class="booking-card help-card nurse-help-card">
+                                <h4 class="help-title nurse-help-title"><i class="ri-question-line"></i> Need Help?</h4>
+                                <p class="help-text nurse-help-text">Cancel or reschedule up to 24 hours before your
+                                    appointment for a full refund.</p>
+                                <a href="#" class="help-link nurse-help-link">Read Refund Policy</a>
+                            </div>
+                        </div>
+                    </div>
+
+            </main>
+        </div>
+
+    </div>
+</body>
+<script src="../JS/Board.js"></script>
+
+</html>
