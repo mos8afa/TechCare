@@ -6,7 +6,7 @@ from datetime import date, time, timedelta, datetime as dt, time as time_type
 # Django
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-from django.db.models import Avg
+from django.db.models import Avg, Min
 
 # Django REST Framework
 from rest_framework.decorators import api_view, permission_classes
@@ -26,7 +26,7 @@ from doctor.models import DoctorRequest
 
 # Local Apps - Nurse
 from nurse.models import NurseRequest, Service
-from nurse.views import _nurse_name, get_ordered_week_days
+
 ###################################### Nurse Rooole ###########################################
 # ─────────────────────────────────────────────
 # HELPERS
@@ -212,41 +212,56 @@ def nurse_requests(request, type):
     nurse = Nurse.objects.get(user=request.user)
     all_reqs = nurse.nurse_requests.all()
 
-    if type == 'pending' or type is None:
+    def base_fields(req):
+        """Shared fields across all statuses."""
+        return {
+            "id":                  req.id,
+            "status":              req.status,
+            "date":                str(req.date),
+            "time":                str(req.time),
+            "requester_name":      req.requester_name,
+            "requester_phone":     req.requester_phone,
+            "is_donor":            req.is_donor,
+            "disease_description": req.disease_description,
+            "address":             req.address,
+            "governorate":         req.governrate,
+            "services": [
+                {"id": s.id, "name": s.name, "price": str(s.price)}
+                for s in req.service.all()
+            ],
+        }
+
+    if type in ('pending', 'edited') or type is None:
         pending_list = []
         for req in all_reqs.filter(status='pending').order_by('-date', '-time'):
             req_day = req.date.strftime('%A').lower()
-            nurse_slots = TimeSlots.objects.filter(
+            day_slots = TimeSlots.objects.filter(
                 nurse=nurse, day=req_day).order_by('time')
             pending_list.append({
-                "id": req.id,
-                "status": req.status,
-                "date": str(req.date),
-                "time": str(req.time),
-                "available_slots": [s.time.strftime("%H:%M") for s in nurse_slots],
+                **base_fields(req),
+                "available_slots": [s.time.strftime("%H:%M") for s in day_slots],
             })
-        return Response({"pending": pending_list}, status=200)
+
+        edited_list = []
+        for req in all_reqs.filter(status='edited').order_by('-date', '-time'):
+            req_day = req.date.strftime('%A').lower()
+            day_slots = TimeSlots.objects.filter(
+                nurse=nurse, day=req_day).order_by('time')
+            edited_list.append({
+                **base_fields(req),
+                "available_slots": [s.time.strftime("%H:%M") for s in day_slots],
+            })
+
+        return Response({"pending": pending_list, "edited": edited_list}, status=200)
 
     elif type == 'accepted':
-        accepted_list = []
-        for req in all_reqs.filter(status='accepted').order_by('-date', '-time'):
-            accepted_list.append({
-                "id": req.id,
-                "status": req.status,
-                "date": str(req.date),
-                "time": str(req.time),
-            })
+        accepted_list = [base_fields(req)
+                         for req in all_reqs.filter(status='accepted').order_by('-date', '-time')]
         return Response({"accepted": accepted_list}, status=200)
 
     elif type == 'completed':
-        completed_list = []
-        for req in all_reqs.filter(status='completed').order_by('-date', '-time'):
-            completed_list.append({
-                "id": req.id,
-                "status": req.status,
-                "date": str(req.date),
-                "time": str(req.time),
-            })
+        completed_list = [base_fields(req)
+                          for req in all_reqs.filter(status='completed').order_by('-date', '-time')]
         return Response({"completed": completed_list}, status=200)
 
     return Response({"error": "Invalid request type"}, status=400)
@@ -254,7 +269,7 @@ def nurse_requests(request, type):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def request_action(request, request_id):
+def nurse_request_action(request, request_id):
     if request.user.role != 'nurse':
         return Response({"error": "Unauthorized"}, status=401)
 
@@ -268,27 +283,34 @@ def request_action(request, request_id):
         return Response({"message": "Request rejected"}, status=200)
 
     elif action == 'accept':
-        selected_time = request.data.get('selected_time')
-        if selected_time:
-            try:
-                h, m = selected_time.split(':')
-                new_t = time(int(h), int(m))
-                req.time = new_t
-                req.status = 'edited' if new_t != req.time else 'accepted'
-            except (ValueError, AttributeError):
-                req.status = 'accepted'
-        else:
-            req.status = 'accepted'
-
+        req.status = 'accepted'
         req.save()
-        return Response({"message": f"Request {req.status}"}, status=200)
+        return Response({"message": "Request accepted"}, status=200)
 
-    return Response({"error": "Invalid action. Use 'accept' or 'reject'."}, status=400)
+    elif action == 'reschedule':
+        new_time = request.data.get('new_time')
+        if not new_time:
+            return Response({"error": "new_time is required for reschedule."}, status=400)
+        try:
+            h, m = new_time.split(':')
+            new_t = time(int(h), int(m))
+            # Compare BEFORE overwriting req.time (fixes the original bug)
+            if new_t == req.time:
+                req.status = 'accepted'
+            else:
+                req.time = new_t
+                req.status = 'edited'
+            req.save()
+            return Response({"message": f"Request {req.status}"}, status=200)
+        except (ValueError, AttributeError):
+            return Response({"error": "Invalid time format. Use HH:MM."}, status=400)
+
+    return Response({"error": "Invalid action. Use 'accept', 'reject', or 'reschedule'."}, status=400)
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def mark_done(request, request_id):
+def nurse_mark_done(request, request_id):
     if request.user.role != 'nurse':
         return Response({"error": "Unauthorized"}, status=401)
 
@@ -303,9 +325,8 @@ def mark_done(request, request_id):
 
     return Response({
         "message": "Marked as done",
-        "status": req.status,
+        "status":  req.status,
     }, status=200)
-
 
 # ─────────────────────────────────────────────
 # SERVICES
@@ -402,7 +423,7 @@ def delete_service(request, service_id):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_time_slots(request):
+def get_nurse_time_slots(request):
     if request.user.role != 'nurse':
         return Response({"error": "Unauthorized"}, status=401)
 
@@ -434,7 +455,7 @@ def get_time_slots(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def save_time_slots(request):
+def save_nurse_time_slots(request):
     if request.user.role != 'nurse':
         return Response({"error": "Unauthorized"}, status=401)
 
@@ -471,7 +492,7 @@ def save_time_slots(request):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
-def delete_time_slot(request, slot_id):
+def delete_nurse_time_slot(request, slot_id):
     if request.user.role != 'nurse':
         return Response({"error": "Unauthorized"}, status=401)
 
@@ -622,7 +643,6 @@ def edit_doctor_profile(request):
 # ─────────────────────────────────────────────
 # REQUESTS
 # ─────────────────────────────────────────────
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def doctor_requests(request, type):
@@ -632,6 +652,23 @@ def doctor_requests(request, type):
     doctor = Doctor.objects.get(user=request.user)
     all_reqs = doctor.doctor_requests.all()
 
+    def base_fields(req):
+        """Shared fields across all statuses."""
+        return {
+            "id":                  req.id,
+            "status":              req.status,
+            "date":                str(req.date),
+            "time":                str(req.time),
+            "requester_name":      req.requester_name,
+            "requester_phone":     req.requester_phone,
+            "is_donor":            req.is_donor,
+            "disease_description": req.disease_description,
+            "address":             req.address,
+            "governorate":         req.governorate,
+            "total_price":         str(req.total_price),
+            "net_income":          str(req.net_income),
+        }
+
     if type in ('pending', 'edited') or type is None:
         pending_list = []
         for req in all_reqs.filter(status='pending').order_by('-date', '-time'):
@@ -639,11 +676,8 @@ def doctor_requests(request, type):
             day_slots = TimeSlots.objects.filter(
                 doctor=doctor, day=req_day).order_by('time')
             pending_list.append({
-                "id":               req.id,
-                "status":           req.status,
-                "date":             str(req.date),
-                "time":             str(req.time),
-                "available_slots":  [s.time.strftime("%H:%M") for s in day_slots],
+                **base_fields(req),
+                "available_slots": [s.time.strftime("%H:%M") for s in day_slots],
             })
 
         edited_list = []
@@ -652,35 +686,20 @@ def doctor_requests(request, type):
             day_slots = TimeSlots.objects.filter(
                 doctor=doctor, day=req_day).order_by('time')
             edited_list.append({
-                "id":              req.id,
-                "status":          req.status,
-                "date":            str(req.date),
-                "time":            str(req.time),
+                **base_fields(req),
                 "available_slots": [s.time.strftime("%H:%M") for s in day_slots],
             })
 
         return Response({"pending": pending_list, "edited": edited_list}, status=200)
 
     elif type == 'accepted':
-        accepted_list = []
-        for req in all_reqs.filter(status='accepted').order_by('-date', '-time'):
-            accepted_list.append({
-                "id":     req.id,
-                "status": req.status,
-                "date":   str(req.date),
-                "time":   str(req.time),
-            })
+        accepted_list = [base_fields(req)
+                         for req in all_reqs.filter(status='accepted').order_by('-date', '-time')]
         return Response({"accepted": accepted_list}, status=200)
 
     elif type == 'completed':
-        completed_list = []
-        for req in all_reqs.filter(status='completed').order_by('-date', '-time'):
-            completed_list.append({
-                "id":     req.id,
-                "status": req.status,
-                "date":   str(req.date),
-                "time":   str(req.time),
-            })
+        completed_list = [base_fields(req)
+                          for req in all_reqs.filter(status='completed').order_by('-date', '-time')]
         return Response({"completed": completed_list}, status=200)
 
     return Response({"error": "Invalid request type"}, status=400)
@@ -745,7 +764,6 @@ def mark_done_doctor(request, request_id):
         "message": "Marked as done",
         "status":  req.status,
     }, status=200)
-
 
 # ─────────────────────────────────────────────
 # TIME SLOTS
@@ -955,28 +973,81 @@ def edit_patient_profile(request):
 # REQUESTS — LIST
 # ─────────────────────────────────────────────
 
+# ── helpers ─────────────────────────────────────────────────────────────────
+
+def _get_patient(request):
+    """Returns (patient, None) or (None, error Response)."""
+    try:
+        return Patient.objects.get(user=request.user), None
+    except Patient.DoesNotExist:
+        return None, Response({"error": "Patient profile not found"}, status=404)
+
+
+def _doctor_request_fields(req):
+    return {
+        "id":                  req.id,
+        "status":              req.status,
+        "date":                str(req.date),
+        "time":                str(req.time),
+        "disease_description": req.disease_description,
+        "address":             req.address,
+        "governorate":         req.governorate,
+        "total_price":         str(req.total_price),
+        "doctor": {
+            "id":            req.doctor.id,
+            "name":          f"Dr. {req.doctor.user.first_name} {req.doctor.user.last_name}",
+            "specification": req.doctor.get_specification_display(),
+            "profile_pic":   req.doctor.profile_pic.url if req.doctor.profile_pic else None,
+        } if req.doctor else None,
+    }
+
+
+def _nurse_request_fields(req):
+    return {
+        "id":                  req.id,
+        "status":              req.status,
+        "date":                str(req.date),
+        "time":                str(req.time),
+        "disease_description": req.disease_description,
+        "address":             req.address,
+        "governorate":         req.governrate,
+        "net_income":          str(req.net_income),
+        "services": [
+            {"id": s.id, "name": s.name, "price": str(s.price)}
+            for s in req.service.all()
+        ],
+        "nurse": {
+            "id":          req.nurse.id,
+            "name":        f"{req.nurse.user.first_name} {req.nurse.user.last_name}",
+            "profile_pic": req.nurse.profile_pic.url if req.nurse.profile_pic else None,
+        } if req.nurse else None,
+    }
+
+
+# ── patient_requests ─────────────────────────────────────────────────────────
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def patient_requests(request, category, type):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    try:
-        patient = Patient.objects.get(user=request.user)
-    except Patient.DoesNotExist:
-        return Response({"error": "Patient profile not found"}, status=404)
+    patient, err = _get_patient(request)
+    if err:
+        return err
 
-    # ── DOCTOR ──────────────────────────────
+    # ── DOCTOR ──────────────────────────────────────────────────────────────
     if category == 'doctor':
         all_reqs = patient.doctor_requests.all()
 
         if type == 'booking':
             doctors = []
-            for doctor in Doctor.objects.all():
+            # Only doctors who actually have time slots (mirrors web view)
+            for doctor in Doctor.objects.filter(slots__isnull=False).distinct():
                 avg = doctor.rates.aggregate(Avg('rate'))['rate__avg'] or 0
                 doctors.append({
                     "id":            doctor.id,
-                    "name":          "Dr. " + doctor.user.first_name + " " + doctor.user.last_name,
+                    "name":          f"Dr. {doctor.user.first_name} {doctor.user.last_name}",
                     "specification": doctor.get_specification_display(),
                     "governorate":   doctor.get_governorate_display(),
                     "address":       doctor.address,
@@ -992,66 +1063,39 @@ def patient_requests(request, category, type):
             }, status=200)
 
         elif type == 'pending':
-            pending_list = []
-            for req in all_reqs.filter(status='pending').order_by('-date', '-time'):
-                pending_list.append({
-                    "id":     req.id,
-                    "status": req.status,
-                    "date":   str(req.date),
-                    "time":   str(req.time),
-                    "doctor": "Dr. " + req.doctor.user.first_name + " " + req.doctor.user.last_name,
-                })
-
-            edited_list = []
-            for req in all_reqs.filter(status='edited').order_by('-date', '-time'):
-                edited_list.append({
-                    "id":     req.id,
-                    "status": req.status,
-                    "date":   str(req.date),
-                    "time":   str(req.time),
-                    "doctor": "Dr. " + req.doctor.user.first_name + " " + req.doctor.user.last_name,
-                })
-
+            pending_list = [_doctor_request_fields(r)
+                            for r in all_reqs.filter(status='pending').order_by('-date', '-time')]
+            edited_list  = [_doctor_request_fields(r)
+                            for r in all_reqs.filter(status='edited').order_by('-date', '-time')]
             return Response({"pending": pending_list, "edited": edited_list}, status=200)
 
         elif type == 'accepted':
-            accepted_list = []
-            for req in all_reqs.filter(status='accepted').order_by('-date', '-time'):
-                accepted_list.append({
-                    "id":     req.id,
-                    "status": req.status,
-                    "date":   str(req.date),
-                    "time":   str(req.time),
-                    "doctor": "Dr. " + req.doctor.user.first_name + " " + req.doctor.user.last_name,
-                })
+            accepted_list = [_doctor_request_fields(r)
+                             for r in all_reqs.filter(status='accepted').order_by('-date', '-time')]
             return Response({"accepted": accepted_list}, status=200)
 
         elif type == 'done':
-            completed_list = []
-            for req in all_reqs.filter(status='completed').order_by('-date', '-time'):
-                completed_list.append({
-                    "id":     req.id,
-                    "status": req.status,
-                    "date":   str(req.date),
-                    "time":   str(req.time),
-                    "doctor": "Dr. " + req.doctor.user.first_name + " " + req.doctor.user.last_name,
-                })
+            completed_list = [_doctor_request_fields(r)
+                              for r in all_reqs.filter(status='completed').order_by('-date', '-time')]
             return Response({"completed": completed_list}, status=200)
 
-    # ── NURSE ───────────────────────────────
+    # ── NURSE ────────────────────────────────────────────────────────────────
     elif category == 'nurse':
         all_reqs = patient.nurse_requests.all()
 
         if type == 'booking':
             nurses = []
-            for nurse in Nurse.objects.all():
+            # Only nurses who have slots (mirrors web view)
+            for nurse in Nurse.objects.filter(slots__isnull=False).distinct():
                 avg = nurse.rates.aggregate(Avg('rate'))['rate__avg'] or 0
+                min_price = nurse.nurse_services.aggregate(Min('price'))['price__min']
                 nurses.append({
                     "id":          nurse.id,
-                    "name":        nurse.user.first_name + " " + nurse.user.last_name,
+                    "name":        f"{nurse.user.first_name} {nurse.user.last_name}",
                     "governorate": nurse.get_governorate_display(),
                     "address":     nurse.address,
                     "avg_rating":  round(avg),
+                    "min_price":   str(min_price) if min_price is not None else None,
                     "profile_pic": nurse.profile_pic.url if nurse.profile_pic else None,
                     "brief":       nurse.brief,
                 })
@@ -1061,58 +1105,26 @@ def patient_requests(request, category, type):
             }, status=200)
 
         elif type == 'pending':
-            pending_list = []
-            for req in all_reqs.filter(status='pending').order_by('-date', '-time'):
-                pending_list.append({
-                    "id":     req.id,
-                    "status": req.status,
-                    "date":   str(req.date),
-                    "time":   str(req.time),
-                    "nurse":  req.nurse.user.first_name + " " + req.nurse.user.last_name,
-                })
-
-            edited_list = []
-            for req in all_reqs.filter(status='edited').order_by('-date', '-time'):
-                edited_list.append({
-                    "id":     req.id,
-                    "status": req.status,
-                    "date":   str(req.date),
-                    "time":   str(req.time),
-                    "nurse":  req.nurse.user.first_name + " " + req.nurse.user.last_name,
-                })
-
+            pending_list = [_nurse_request_fields(r)
+                            for r in all_reqs.filter(status='pending').order_by('-date', '-time')]
+            edited_list  = [_nurse_request_fields(r)
+                            for r in all_reqs.filter(status='edited').order_by('-date', '-time')]
             return Response({"pending": pending_list, "edited": edited_list}, status=200)
 
         elif type == 'accepted':
-            accepted_list = []
-            for req in all_reqs.filter(status='accepted').order_by('-date', '-time'):
-                accepted_list.append({
-                    "id":    req.id,
-                    "status": req.status,
-                    "date":  str(req.date),
-                    "time":  str(req.time),
-                    "nurse": req.nurse.user.first_name + " " + req.nurse.user.last_name,
-                })
+            accepted_list = [_nurse_request_fields(r)
+                             for r in all_reqs.filter(status='accepted').order_by('-date', '-time')]
             return Response({"accepted": accepted_list}, status=200)
 
         elif type == 'done':
-            completed_list = []
-            for req in all_reqs.filter(status='completed').order_by('-date', '-time'):
-                completed_list.append({
-                    "id":    req.id,
-                    "status": req.status,
-                    "date":  str(req.date),
-                    "time":  str(req.time),
-                    "nurse": req.nurse.user.first_name + " " + req.nurse.user.last_name,
-                })
+            completed_list = [_nurse_request_fields(r)
+                              for r in all_reqs.filter(status='completed').order_by('-date', '-time')]
             return Response({"completed": completed_list}, status=200)
 
     return Response({"error": "Invalid category or type."}, status=400)
 
 
-# ─────────────────────────────────────────────
-# DOCTOR BOOKING
-# ─────────────────────────────────────────────
+# ── DOCTOR BOOKING ────────────────────────────────────────────────────────────
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
@@ -1120,10 +1132,10 @@ def book_appointment(request, doctor_id):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    try:
-        patient = Patient.objects.get(user=request.user)
-    except Patient.DoesNotExist:
-        return Response({"error": "Patient profile not found"}, status=404)
+    patient, err = _get_patient(request)
+    if err:
+        return err
+
     doctor = get_object_or_404(Doctor, id=doctor_id)
 
     raw_days = TimeSlots.objects.filter(
@@ -1151,7 +1163,7 @@ def book_appointment(request, doctor_id):
         return Response({
             "doctor": {
                 "id":            doctor.id,
-                "name":          "Dr. " + doctor.user.first_name + " " + doctor.user.last_name,
+                "name":          f"Dr. {doctor.user.first_name} {doctor.user.last_name}",
                 "specification": doctor.get_specification_display(),
                 "governorate":   doctor.get_governorate_display(),
                 "address":       doctor.address,
@@ -1165,12 +1177,12 @@ def book_appointment(request, doctor_id):
             "governorates": GOVERNORATES,
         }, status=200)
 
-    # POST — create booking
+    # POST
     disease_description = request.data.get('disease_description', '').strip()
-    governorate = request.data.get('governorate', '').strip()
-    address = request.data.get('address', '').strip()
-    selected_date = request.data.get('date', '').strip()
-    selected_time = request.data.get('time', '').strip()
+    governorate         = request.data.get('governorate', '').strip()
+    address             = request.data.get('address', '').strip()
+    selected_date       = request.data.get('date', '').strip()
+    selected_time       = request.data.get('time', '').strip()
 
     if not selected_date:
         return Response({"error": "Please select a day."}, status=400)
@@ -1191,7 +1203,6 @@ def book_appointment(request, doctor_id):
         address=address,
         status='pending',
     )
-
     return Response({"message": "Appointment booked successfully"}, status=201)
 
 
@@ -1201,14 +1212,13 @@ def cancel_request(request, request_id):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    try:
-        patient = Patient.objects.get(user=request.user)
-    except Patient.DoesNotExist:
-        return Response({"error": "Patient profile not found"}, status=404)
+    patient, err = _get_patient(request)
+    if err:
+        return err
+
     req = get_object_or_404(DoctorRequest, id=request_id, patient=patient)
     req.status = 'rejected'
     req.save()
-
     return Response({"message": "Request cancelled"}, status=200)
 
 
@@ -1218,15 +1228,14 @@ def accept_reschedule(request, request_id):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    try:
-        patient = Patient.objects.get(user=request.user)
-    except Patient.DoesNotExist:
-        return Response({"error": "Patient profile not found"}, status=404)
+    patient, err = _get_patient(request)
+    if err:
+        return err
+
     req = get_object_or_404(DoctorRequest, id=request_id,
                             patient=patient, status='edited')
     req.status = 'accepted'
     req.save()
-
     return Response({"message": "Reschedule accepted"}, status=200)
 
 
@@ -1236,27 +1245,20 @@ def mark_done(request, request_id):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    try:
-        patient = Patient.objects.get(user=request.user)
-    except Patient.DoesNotExist:
-        return Response({"error": "Patient profile not found"}, status=404)
+    patient, err = _get_patient(request)
+    if err:
+        return err
+
     req = get_object_or_404(DoctorRequest, id=request_id,
                             patient=patient, status='accepted')
-
     req.patient_done = True
     if req.doctor_done:
         req.status = 'completed'
     req.save()
-
-    return Response({
-        "message": "Marked as done",
-        "status":  req.status,
-    }, status=200)
+    return Response({"message": "Marked as done", "status": req.status}, status=200)
 
 
-# ─────────────────────────────────────────────
-# NURSE BOOKING
-# ─────────────────────────────────────────────
+# ── NURSE BOOKING ─────────────────────────────────────────────────────────────
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
@@ -1264,10 +1266,10 @@ def book_nurse(request, nurse_id):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    try:
-        patient = Patient.objects.get(user=request.user)
-    except Patient.DoesNotExist:
-        return Response({"error": "Patient profile not found"}, status=404)
+    patient, err = _get_patient(request)
+    if err:
+        return err
+
     nurse = get_object_or_404(Nurse, id=nurse_id)
 
     raw_days = TimeSlots.objects.filter(
@@ -1292,19 +1294,14 @@ def book_nurse(request, nurse_id):
 
     if request.method == 'GET':
         avg = nurse.rates.aggregate(Avg('rate'))['rate__avg'] or 0
-        services = []
-        for s in nurse.nurse_services.all():
-            services.append({
-                "id":          s.id,
-                "name":        s.name,
-                "description": s.description,
-                "price":       str(s.price),
-            })
-
+        services = [
+            {"id": s.id, "name": s.name, "description": s.description, "price": str(s.price)}
+            for s in nurse.nurse_services.all()
+        ]
         return Response({
             "nurse": {
                 "id":          nurse.id,
-                "name":        nurse.user.first_name + " " + nurse.user.last_name,
+                "name":        f"{nurse.user.first_name} {nurse.user.last_name}",
                 "governorate": nurse.get_governorate_display(),
                 "address":     nurse.address,
                 "avg_rating":  round(avg),
@@ -1317,13 +1314,13 @@ def book_nurse(request, nurse_id):
             "governorates": GOVERNORATES,
         }, status=200)
 
-    # POST — create booking
-    service_ids = request.data.get('services', [])
+    # POST
+    service_ids         = request.data.get('services', [])
     disease_description = request.data.get('disease_description', '').strip()
-    governorate = request.data.get('governorate', '').strip()
-    address = request.data.get('address', '').strip()
-    selected_date = request.data.get('date', '').strip()
-    selected_time = request.data.get('time', '').strip()
+    governorate         = request.data.get('governorate', '').strip()
+    address             = request.data.get('address', '').strip()
+    selected_date       = request.data.get('date', '').strip()
+    selected_time       = request.data.get('time', '').strip()
 
     if not service_ids:
         return Response({"error": "Please select at least one service."}, status=400)
@@ -1339,7 +1336,6 @@ def book_nurse(request, nurse_id):
         return Response({"error": "Invalid services selected."}, status=400)
 
     total = sum(s.price for s in selected_services)
-
     req = NurseRequest.objects.create(
         patient=patient,
         nurse=nurse,
@@ -1352,7 +1348,6 @@ def book_nurse(request, nurse_id):
         status='pending',
     )
     req.service.set(selected_services)
-
     return Response({"message": "Nurse appointment booked successfully"}, status=201)
 
 
@@ -1362,14 +1357,13 @@ def cancel_nurse_request(request, request_id):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    try:
-        patient = Patient.objects.get(user=request.user)
-    except Patient.DoesNotExist:
-        return Response({"error": "Patient profile not found"}, status=404)
+    patient, err = _get_patient(request)
+    if err:
+        return err
+
     req = get_object_or_404(NurseRequest, id=request_id, patient=patient)
     req.status = 'rejected'
     req.save()
-
     return Response({"message": "Nurse request cancelled"}, status=200)
 
 
@@ -1379,15 +1373,14 @@ def accept_nurse_reschedule(request, request_id):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    try:
-        patient = Patient.objects.get(user=request.user)
-    except Patient.DoesNotExist:
-        return Response({"error": "Patient profile not found"}, status=404)
+    patient, err = _get_patient(request)
+    if err:
+        return err
+
     req = get_object_or_404(NurseRequest, id=request_id,
                             patient=patient, status='edited')
     req.status = 'accepted'
     req.save()
-
     return Response({"message": "Nurse reschedule accepted"}, status=200)
 
 
@@ -1397,19 +1390,14 @@ def mark_nurse_done(request, request_id):
     if request.user.role != 'patient':
         return Response({"error": "Unauthorized"}, status=401)
 
-    try:
-        patient = Patient.objects.get(user=request.user)
-    except Patient.DoesNotExist:
-        return Response({"error": "Patient profile not found"}, status=404)
+    patient, err = _get_patient(request)
+    if err:
+        return err
+
     req = get_object_or_404(NurseRequest, id=request_id,
                             patient=patient, status='accepted')
-
     req.patient_done = True
     if req.nurse_done:
         req.status = 'completed'
     req.save()
-
-    return Response({
-        "message": "Marked as done",
-        "status":  req.status,
-    }, status=200)
+    return Response({"message": "Marked as done", "status": req.status}, status=200)
