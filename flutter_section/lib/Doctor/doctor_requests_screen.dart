@@ -59,6 +59,7 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
   List<dynamic> _done     = [];
 
   final Map<int, String> _selectedSlots = {};
+        Map<String, dynamic>? _profileData;
 
   @override
   void initState() {
@@ -68,12 +69,22 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
       if (!_tab.indexIsChanging) _loadCurrentTab();
     });
     _loadCurrentTab();
+    _loadProfile();
   }
 
   @override
   void dispose() {
     _tab.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadProfile() async {
+    final res = await ApiService.getDoctorDashboard();
+    if (res.success) {
+      setState(() {
+        _profileData = res.data;
+      });
+    }
   }
 
   Future<void> _loadCurrentTab() async {
@@ -643,6 +654,8 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
 
   // ── AppBar ─────────────────────────────────────────────────────────────────
   PreferredSizeWidget _buildAppBar(BuildContext context) {
+    final profilePic = _profileData?['profile_pic'];
+    final picUrl = ApiService.buildMediaUrl(profilePic);
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -666,9 +679,13 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
         const SizedBox(width: 4),
         const VerticalDivider(width: 1, thickness: 1, color: kBorderColor, indent: 16, endIndent: 16),
         const SizedBox(width: 12),
-        const CircleAvatar(
+        CircleAvatar(
           radius: 20,
-          backgroundImage: NetworkImage('https://randomuser.me/api/portraits/men/32.jpg'),
+          backgroundColor: kBgLight,
+          backgroundImage: picUrl.isNotEmpty
+              ? NetworkImage(picUrl)
+              : const NetworkImage(
+                  'https://ui-avatars.com/api/?name=Doctor&background=1D89E4&color=fff'),
         ),
         const SizedBox(width: 16),
       ],
