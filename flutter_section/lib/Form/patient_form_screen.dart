@@ -260,7 +260,7 @@ class _PatientFormState extends State<PatientForm> {
         Container(
           decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFE2E8F0))),
           child: DropdownButtonFormField<String>(
-            value: value,
+            initialValue: value,
             hint: Text(hint, style: const TextStyle(color: Color(0xFFA0AEC0), fontSize: 14)),
             isExpanded: true,
             decoration: InputDecoration(

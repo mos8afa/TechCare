@@ -396,7 +396,7 @@ class _DonorFormState extends State<DonorForm> {
             border: Border.all(color: const Color(0xFFE2E8F0)),
           ),
           child: DropdownButtonFormField<String>(
-            value: value,
+            initialValue: value,
             hint: Text(
               hint,
               style: const TextStyle(color: Color(0xFFA0AEC0), fontSize: 14),

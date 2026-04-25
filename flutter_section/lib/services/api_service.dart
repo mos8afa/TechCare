@@ -1078,8 +1078,9 @@ class ApiService {
         'address': address,
       });
       final data = jsonDecode(response.body);
-      if (response.statusCode == 201 || response.statusCode == 200)
+      if (response.statusCode == 201 || response.statusCode == 200) {
         return ApiResult.success(data);
+      }
       if (response.statusCode == 401) return ApiResult.error('Session expired');
       return ApiResult.error(data['error'] ?? 'Booking failed');
     } catch (e) {
@@ -1156,8 +1157,9 @@ class ApiService {
         'address': address,
       });
       final data = jsonDecode(response.body);
-      if (response.statusCode == 201 || response.statusCode == 200)
+      if (response.statusCode == 201 || response.statusCode == 200) {
         return ApiResult.success(data);
+      }
       if (response.statusCode == 401) return ApiResult.error('Session expired');
       return ApiResult.error(data['error'] ?? 'Booking failed');
     } catch (e) {
