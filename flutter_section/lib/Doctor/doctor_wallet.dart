@@ -4,14 +4,28 @@ import '../Doctor/doctor_requests_screen.dart';
 import '../Doctor/doctor_notifications.dart';
 import '../Doctor/doctor_complaints.dart';
 
-const Color kPrimary = Color(0xFF1D89E4);
-const Color kBgLight = Color(0xFFF4F7FC);
-const Color kTextGray = Color(0xFF718096);
+const Color kPrimary     = Color(0xFF1D89E4);
+const Color kBgLight     = Color(0xFFF4F7FC);
+const Color kTextGray    = Color(0xFF718096);
 const Color kBorderColor = Color(0xFFE1E6EC);
-const Color kDarkText = Color(0xFF1A1C1E);
-const Color kGreen = Color(0xFF10B981);
-const Color kAmber = Color(0xFFF59E0B);
-const Color kRed = Color(0xFFEF4444);
+const Color kDarkText    = Color(0xFF1A1C1E);
+const Color kGreen       = Color(0xFF10B981);
+const Color kAmber       = Color(0xFFF59E0B);
+const Color kRed         = Color(0xFFEF4444);
+
+class _Transaction {
+  final String name;
+  final String date;
+  final String type;   // 'Consultation' | 'Deduction'
+  final double amount;
+  final bool isDeduction;
+  final String? initials;
+
+  const _Transaction({
+    required this.name, required this.date, required this.type,
+    required this.amount, required this.isDeduction, this.initials,
+  });
+}
 
 class DoctorWalletScreen extends StatefulWidget {
   const DoctorWalletScreen({super.key});
@@ -22,76 +36,35 @@ class DoctorWalletScreen extends StatefulWidget {
 
 class _DoctorWalletScreenState extends State<DoctorWalletScreen>
     with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+  late TabController _tab;
+  bool _showAll = false;
 
-  final List<Map<String, dynamic>> _transactions = [
-    {
-      'name': 'Ahmed Ali',
-      'type': 'Consultation Fee',
-      'amount': 500,
-      'incoming': true,
-      'date': 'Today, 10:30 AM',
-      'avatar': 'https://randomuser.me/api/portraits/men/32.jpg',
-    },
-    {
-      'name': 'Sara Mohamed',
-      'type': 'Consultation Fee',
-      'amount': 500,
-      'incoming': true,
-      'date': 'Today, 09:00 AM',
-      'avatar': 'https://randomuser.me/api/portraits/women/12.jpg',
-    },
-    {
-      'name': 'Withdrawal',
-      'type': 'Bank Transfer',
-      'amount': 2000,
-      'incoming': false,
-      'date': 'Yesterday, 03:00 PM',
-      'avatar': null,
-    },
-    {
-      'name': 'Karim Hassan',
-      'type': 'Consultation Fee',
-      'amount': 500,
-      'incoming': true,
-      'date': 'Apr 4, 11:00 AM',
-      'avatar': 'https://randomuser.me/api/portraits/men/45.jpg',
-    },
-    {
-      'name': 'Nour El-Din',
-      'type': 'Consultation Fee',
-      'amount': 500,
-      'incoming': true,
-      'date': 'Apr 3, 02:00 PM',
-      'avatar': 'https://randomuser.me/api/portraits/men/67.jpg',
-    },
-    {
-      'name': 'Withdrawal',
-      'type': 'Bank Transfer',
-      'amount': 1500,
-      'incoming': false,
-      'date': 'Apr 2, 12:00 PM',
-      'avatar': null,
-    },
+  final List<_Transaction> _transactions = const [
+    _Transaction(name: 'Ahmed Samir',        date: 'Oct 24, 2023', type: 'Consultation', amount:  450, isDeduction: false, initials: 'AS'),
+    _Transaction(name: 'Platform Commission', date: 'Oct 24, 2023', type: 'Deduction',    amount:  67.5, isDeduction: true),
+    _Transaction(name: 'Mariam Ezzat',        date: 'Oct 23, 2023', type: 'Consultation', amount:  600, isDeduction: false, initials: 'ME'),
+    _Transaction(name: 'Khaled Mansour',      date: 'Oct 23, 2023', type: 'Consultation', amount:  450, isDeduction: false, initials: 'KM'),
+    _Transaction(name: 'Sara Mohamed',        date: 'Oct 22, 2023', type: 'Consultation', amount:  500, isDeduction: false, initials: 'SM'),
+    _Transaction(name: 'Platform Commission', date: 'Oct 22, 2023', type: 'Deduction',    amount:  75,  isDeduction: true),
+    _Transaction(name: 'Nour El-Din',         date: 'Oct 21, 2023', type: 'Consultation', amount:  500, isDeduction: false, initials: 'NE'),
   ];
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tab = TabController(length: 3, vsync: this);
+    _tab.addListener(() => setState(() {}));
   }
 
   @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
+  void dispose() { _tab.dispose(); super.dispose(); }
 
-  List<Map<String, dynamic>> get _filtered {
-    final tab = _tabController.index;
-    if (tab == 0) return _transactions;
-    if (tab == 1) return _transactions.where((t) => t['incoming'] == true).toList();
-    return _transactions.where((t) => t['incoming'] == false).toList();
+  List<_Transaction> get _filtered {
+    switch (_tab.index) {
+      case 1: return _transactions.where((t) => !t.isDeduction).toList();
+      case 2: return _transactions.where((t) => t.isDeduction).toList();
+      default: return _transactions;
+    }
   }
 
   @override
@@ -102,487 +75,527 @@ class _DoctorWalletScreenState extends State<DoctorWalletScreen>
       drawer: _buildDrawer(context),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            _buildBalanceCard(),
-            const SizedBox(height: 20),
-            _buildStatsRow(),
-            const SizedBox(height: 20),
-            _buildHistoryCard(),
-          ],
-        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          // ── Page header ────────────────────────────────────────────
+          const Text('Income & Earnings',
+              style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: kDarkText)),
+          const SizedBox(height: 4),
+          const Text('Overview of your professional earnings from consultations.',
+              style: TextStyle(fontSize: 13, color: kTextGray)),
+          const SizedBox(height: 24),
+
+          // ── Top section ────────────────────────────────────────────
+          _buildTopSection(),
+          const SizedBox(height: 24),
+
+          // ── Transactions ───────────────────────────────────────────
+          _buildTransactionsSection(),
+          const SizedBox(height: 20),
+        ]),
       ),
     );
   }
 
-  // ── AppBar ───────────────────────────────────────────────────────────────
+  // ── Top section: balance card + 3 metric cards ─────────────────────────────
+  Widget _buildTopSection() {
+    return LayoutBuilder(builder: (ctx, constraints) {
+      final isWide = constraints.maxWidth > 480;
+      if (isWide) {
+        return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          SizedBox(width: 260, child: _buildBalanceCard()),
+          const SizedBox(width: 16),
+          Expanded(child: Column(children: [
+            _buildMetricCard(icon: Icons.account_balance_wallet_outlined,
+                iconBg: const Color(0xFFEFF6FF), iconColor: kPrimary,
+                label: 'CONSULTATION INCOME', sublabel: 'This Month',
+                value: '53,270', valueColor: kDarkText),
+            const SizedBox(height: 12),
+            _buildMetricCard(icon: Icons.percent_rounded,
+                iconBg: const Color(0xFFFFF3E0), iconColor: kAmber,
+                label: 'PLATFORM FEES (15%)', sublabel: 'Standard Commission',
+                value: '-7,990', valueColor: kRed),
+            const SizedBox(height: 12),
+            _buildMetricCard(icon: Icons.savings_outlined,
+                iconBg: const Color(0xFFEFF6FF), iconColor: kPrimary,
+                label: 'NET PROFIT', sublabel: 'Final Earnings',
+                value: '45,280', valueColor: kPrimary, valueLarge: true),
+          ])),
+        ]);
+      }
+      return Column(children: [
+        _buildBalanceCard(),
+        const SizedBox(height: 12),
+        _buildMetricCard(icon: Icons.account_balance_wallet_outlined,
+            iconBg: const Color(0xFFEFF6FF), iconColor: kPrimary,
+            label: 'CONSULTATION INCOME', sublabel: 'This Month',
+            value: '53,270', valueColor: kDarkText),
+        const SizedBox(height: 12),
+        _buildMetricCard(icon: Icons.percent_rounded,
+            iconBg: const Color(0xFFFFF3E0), iconColor: kAmber,
+            label: 'PLATFORM FEES (15%)', sublabel: 'Standard Commission',
+            value: '-7,990', valueColor: kRed),
+        const SizedBox(height: 12),
+        _buildMetricCard(icon: Icons.savings_outlined,
+            iconBg: const Color(0xFFEFF6FF), iconColor: kPrimary,
+            label: 'NET PROFIT', sublabel: 'Final Earnings',
+            value: '45,280', valueColor: kPrimary, valueLarge: true),
+      ]);
+    });
+  }
+
+  Widget _buildBalanceCard() {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF1D89E4), Color(0xFF1565C0)],
+          begin: Alignment.topLeft, end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [BoxShadow(color: kPrimary.withOpacity(0.3), blurRadius: 16, offset: const Offset(0, 6))],
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const Text('AVAILABLE BALANCE',
+            style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
+                color: Colors.white70, letterSpacing: 1.2)),
+        const SizedBox(height: 8),
+        const Text('45,280.00',
+            style: TextStyle(fontSize: 34, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: -1)),
+        const Text('EGP', style: TextStyle(fontSize: 13, color: Colors.white70, fontWeight: FontWeight.w600)),
+        const SizedBox(height: 24),
+        _walletBtn(Icons.account_balance_outlined, 'Withdraw to Bank', () {}),
+        const SizedBox(height: 10),
+        _walletBtn(Icons.add_rounded, 'Add Funds', _showAddFundsModal),
+      ]),
+    );
+  }
+
+  Widget _walletBtn(IconData icon, String label, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.15),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.white.withOpacity(0.3)),
+        ),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Icon(icon, color: Colors.white, size: 16),
+          const SizedBox(width: 8),
+          Text(label, style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600)),
+        ]),
+      ),
+    );
+  }
+
+  Widget _buildMetricCard({
+    required IconData icon, required Color iconBg, required Color iconColor,
+    required String label, required String sublabel,
+    required String value, required Color valueColor, bool valueLarge = false,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white, borderRadius: BorderRadius.circular(16),
+        boxShadow: const [BoxShadow(color: Color(0x07000000), blurRadius: 8, offset: Offset(0, 2))],
+      ),
+      child: Row(children: [
+        Container(
+          width: 44, height: 44,
+          decoration: BoxDecoration(color: iconBg, borderRadius: BorderRadius.circular(12)),
+          child: Icon(icon, color: iconColor, size: 20),
+        ),
+        const SizedBox(width: 14),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
+              color: kTextGray, letterSpacing: 0.5)),
+          const SizedBox(height: 2),
+          Text(sublabel, style: const TextStyle(fontSize: 11, color: kTextGray)),
+        ])),
+        Text(value, style: TextStyle(
+          fontSize: valueLarge ? 22 : 18,
+          fontWeight: FontWeight.w800, color: valueColor,
+        )),
+      ]),
+    );
+  }
+
+  // ── Transactions section ────────────────────────────────────────────────────
+  Widget _buildTransactionsSection() {
+    final shown = _showAll ? _filtered : _filtered.take(4).toList();
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white, borderRadius: BorderRadius.circular(20),
+        boxShadow: const [BoxShadow(color: Color(0x07000000), blurRadius: 10, offset: Offset(0, 2))],
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          const Text('Recent Transactions',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: kDarkText)),
+          ElevatedButton(
+            onPressed: () => setState(() => _showAll = !_showAll),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: kPrimary, foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              elevation: 0,
+            ),
+            child: Text(_showAll ? 'Show Less' : 'View All',
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+          ),
+        ]),
+        const SizedBox(height: 16),
+
+        // ── Tab filter ────────────────────────────────────────────
+        TabBar(
+          controller: _tab,
+          labelColor: kPrimary, unselectedLabelColor: kTextGray,
+          labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+          unselectedLabelStyle: const TextStyle(fontSize: 12),
+          indicatorColor: kPrimary, indicatorSize: TabBarIndicatorSize.label,
+          tabs: const [Tab(text: 'All'), Tab(text: 'Income'), Tab(text: 'Deductions')],
+        ),
+        const SizedBox(height: 16),
+
+        // ── Table header ──────────────────────────────────────────
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: kBgLight, borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(children: const [
+            SizedBox(width: 1),
+            SizedBox(width: 10),
+            Expanded(flex: 2, child: Text('PATIENT',
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
+                    color: kTextGray, letterSpacing: 0.5))),
+            Expanded(flex: 2, child: Text('DATE',
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
+                    color: kTextGray, letterSpacing: 0.5))),
+            Expanded(flex: 2, child: Text('SERVICE',
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
+                    color: kTextGray, letterSpacing: 0.5))),
+            Expanded(flex: 2, child: Text('AMOUNT',
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
+                    color: kTextGray, letterSpacing: 0.5))),
+            Expanded(flex: 2, child: Text('STATUS',
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
+                    color: kTextGray, letterSpacing: 0.5))),
+          ]),
+        ),
+        const SizedBox(height: 8),
+
+        // ── Table rows ─────────────────────────────────────────────
+        ...shown.map((t) => _buildRow(t)),
+      ]),
+    );
+  }
+
+  Widget _buildRow(_Transaction t) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: kBorderColor, width: 0.5)),
+      ),
+      child: Row(children: [
+        // Avatar or icon
+        t.initials != null
+            ? CircleAvatar(
+                radius: 18,
+                backgroundColor: kPrimary.withOpacity(0.1),
+                child: Text(t.initials!,
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: kPrimary)),
+              )
+            : Container(
+                width: 36, height: 36,
+                decoration: BoxDecoration(
+                  color: kAmber.withOpacity(0.1), borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(Icons.account_balance_wallet_outlined, color: kAmber, size: 18),
+              ),
+        const SizedBox(width: 10),
+
+        // Name
+        Expanded(flex: 3, child: Text(t.name,
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kDarkText),
+            overflow: TextOverflow.visible)),
+
+        // Date
+        Expanded(flex: 2, child: Text(t.date,
+            style: const TextStyle(fontSize: 9, color: kTextGray))),
+
+        // Type badge
+        Expanded(flex: 2, child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: t.isDeduction ? kAmber.withOpacity(0.1) : kPrimary.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Text(t.type,
+              style: TextStyle(fontSize: 8, fontWeight: FontWeight.w700,
+                  color: t.isDeduction ? kAmber : kPrimary),
+              textAlign: TextAlign.center),
+        )),
+
+        // Amount
+        Expanded(flex: 2, child: Text(
+          '${t.isDeduction ? '-' : ''}${t.amount.toStringAsFixed(2)} EGP',
+          style: TextStyle(fontSize: 8, fontWeight: FontWeight.w800,
+              color: t.isDeduction ? kRed : kDarkText),
+        )),
+
+        // Status
+        Expanded(flex: 2, child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: kGreen.withOpacity(0.1), borderRadius: BorderRadius.circular(20),
+          ),
+          child: const Text('Completed',
+              style: TextStyle(fontSize: 8, fontWeight: FontWeight.w700, color: kGreen),
+              textAlign: TextAlign.center),
+        )),
+      ]),
+    );
+  }
+
+  // ── Add Funds Modal ─────────────────────────────────────────────────────────
+  void _showAddFundsModal() {
+    final amountCtrl  = TextEditingController(text: '0.00');
+    final nameCtrl    = TextEditingController(text: 'Dr. Alex Sterling');
+    final cardCtrl    = TextEditingController();
+    final expiryCtrl  = TextEditingController();
+    final cvvCtrl     = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.only(
+          left: 24, right: 24, top: 24,
+          bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+        ),
+        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          // Handle
+          Center(child: Container(width: 40, height: 4,
+              decoration: BoxDecoration(color: kBorderColor, borderRadius: BorderRadius.circular(2)))),
+          const SizedBox(height: 20),
+
+          const Text('Add Funds to Wallet',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: kDarkText)),
+          const SizedBox(height: 4),
+          const Text('Enter your card details to securely add funds.',
+              style: TextStyle(fontSize: 13, color: kTextGray)),
+          const SizedBox(height: 24),
+
+          // Amount
+          _modalLabel('AMOUNT TO ADD (EGP)'),
+          const SizedBox(height: 6),
+          _modalField(ctrl: amountCtrl, hint: '0.00', keyboardType: TextInputType.number),
+          const SizedBox(height: 14),
+
+          // Cardholder
+          _modalLabel('CARDHOLDER NAME'),
+          const SizedBox(height: 6),
+          _modalField(ctrl: nameCtrl, hint: 'Dr. Alex Sterling'),
+          const SizedBox(height: 14),
+
+          // Card number
+          _modalLabel('CARD NUMBER'),
+          const SizedBox(height: 6),
+          _modalField(ctrl: cardCtrl, hint: '0000 0000 0000 0000',
+              keyboardType: TextInputType.number,
+              suffix: const Icon(Icons.credit_card_rounded, color: kTextGray, size: 20)),
+          const SizedBox(height: 14),
+
+          // Expiry + CVV
+          Row(children: [
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              _modalLabel('EXPIRY DATE (MM/YY)'),
+              const SizedBox(height: 6),
+              _modalField(ctrl: expiryCtrl, hint: 'MM/YY'),
+            ])),
+            const SizedBox(width: 12),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: const [
+                Text('CVV', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
+                    color: kTextGray, letterSpacing: 0.5)),
+                SizedBox(width: 4),
+                Icon(Icons.info_outline_rounded, size: 13, color: kTextGray),
+              ]),
+              const SizedBox(height: 6),
+              _modalField(ctrl: cvvCtrl, hint: '•••', obscure: true),
+            ])),
+          ]),
+          const SizedBox(height: 24),
+
+          // Confirm button
+          SizedBox(width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () { Navigator.pop(ctx); },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: kPrimary, foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                elevation: 0,
+              ),
+              child: const Text('Confirm & Add Funds',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Center(child: TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel', style: TextStyle(color: kTextGray, fontSize: 13)),
+          )),
+          const SizedBox(height: 8),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
+            Icon(Icons.lock_outline_rounded, size: 12, color: kTextGray),
+            SizedBox(width: 4),
+            Text('PCI-DSS COMPLIANT SECURE PAYMENT',
+                style: TextStyle(fontSize: 10, color: kTextGray, letterSpacing: 0.5, fontWeight: FontWeight.w600)),
+          ]),
+        ]),
+      ),
+    );
+  }
+
+  Widget _modalLabel(String text) => Text(text,
+      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
+          color: kTextGray, letterSpacing: 0.5));
+
+  Widget _modalField({
+    required TextEditingController ctrl,
+    required String hint,
+    TextInputType? keyboardType,
+    Widget? suffix,
+    bool obscure = false,
+  }) {
+    return TextField(
+      controller: ctrl,
+      keyboardType: keyboardType,
+      obscureText: obscure,
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: const TextStyle(color: kTextGray, fontSize: 14),
+        suffixIcon: suffix != null ? Padding(padding: const EdgeInsets.only(right: 12), child: suffix) : null,
+        suffixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+        filled: true, fillColor: kBgLight,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: kBorderColor)),
+        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: kBorderColor)),
+        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: kPrimary, width: 1.5)),
+      ),
+    );
+  }
+
+  // ── AppBar ─────────────────────────────────────────────────────────────────
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
       surfaceTintColor: Colors.transparent,
-      leading: Builder(
-        builder: (ctx) => IconButton(
-          icon: const Icon(Icons.menu_rounded, color: kDarkText, size: 26),
-          onPressed: () => Scaffold.of(ctx).openDrawer(),
-        ),
-      ),
+      leading: Builder(builder: (ctx) => IconButton(
+        icon: const Icon(Icons.menu_rounded, color: kDarkText, size: 26),
+        onPressed: () => Scaffold.of(ctx).openDrawer(),
+      )),
       title: const Text('Wallet',
-          style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w700, color: kDarkText)),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kDarkText)),
       actions: [
         IconButton(
-          icon: Stack(
-            clipBehavior: Clip.none,
-            children: const [
-              Icon(Icons.notifications_none_rounded,
-                  color: Color(0xFF4B5563), size: 24),
-              Positioned(
-                  right: -2,
-                  top: -2,
-                  child: CircleAvatar(
-                      radius: 5, backgroundColor: Color(0xFFEF4444))),
-            ],
-          ),
+          icon: Stack(clipBehavior: Clip.none, children: const [
+            Icon(Icons.notifications_none_rounded, color: Color(0xFF4B5563), size: 24),
+            Positioned(right: -2, top: -2, child: CircleAvatar(radius: 5, backgroundColor: kRed)),
+          ]),
           onPressed: () {},
         ),
         const SizedBox(width: 4),
-        const VerticalDivider(
-            width: 1,
-            thickness: 1,
-            color: kBorderColor,
-            indent: 16,
-            endIndent: 16),
+        const VerticalDivider(width: 1, thickness: 1, color: kBorderColor, indent: 16, endIndent: 16),
         const SizedBox(width: 12),
-        const CircleAvatar(
-          radius: 20,
-          backgroundImage: NetworkImage(
-              'https://randomuser.me/api/portraits/women/44.jpg'),
-        ),
+        const CircleAvatar(radius: 20,
+            backgroundImage: NetworkImage('https://ui-avatars.com/api/?name=Doctor&background=1D89E4&color=fff')),
         const SizedBox(width: 16),
       ],
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(1),
-        child: Container(color: kBorderColor, height: 1),
-      ),
+      bottom: PreferredSize(preferredSize: const Size.fromHeight(1),
+          child: Container(color: kBorderColor, height: 1)),
     );
   }
 
-  // ── Drawer ───────────────────────────────────────────────────────────────
+  // ── Drawer ─────────────────────────────────────────────────────────────────
   Widget _buildDrawer(BuildContext context) {
     final items = [
-      {'icon': Icons.person_outline_rounded, 'label': 'Profile', 'active': false},
-      {'icon': Icons.list_alt_rounded, 'label': 'Requests', 'active': false},
-      {'icon': Icons.notifications_none_rounded, 'label': 'Notifications', 'active': false},
-      {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet', 'active': true},
-      {'icon': Icons.warning_amber_rounded, 'label': 'Complaints', 'active': false},
+      {'icon': Icons.person_outline_rounded,          'label': 'Profile',       'active': false},
+      {'icon': Icons.list_alt_rounded,                'label': 'Requests',      'active': false},
+      {'icon': Icons.notifications_none_rounded,      'label': 'Notifications', 'active': false},
+      {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet',        'active': true},
+      {'icon': Icons.warning_amber_rounded,           'label': 'Complaints',    'active': false},
     ];
-
     return Drawer(
       backgroundColor: Colors.white,
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.asset('img/logo.png',
-                        width: 44, height: 44, fit: BoxFit.cover),
+      child: SafeArea(child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            ClipRRect(borderRadius: BorderRadius.circular(12),
+                child: Image.asset('img/logo.png', width: 44, height: 44, fit: BoxFit.cover)),
+            const SizedBox(width: 12),
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
+              Text('TechCare', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: kPrimary)),
+              Text('Medical Portal', style: TextStyle(fontSize: 12, color: kTextGray)),
+            ]),
+          ]),
+          const SizedBox(height: 32),
+          ...items.map((item) {
+            final isActive = item['active'] as bool;
+            return Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              child: Material(
+                color: isActive ? kPrimary : Colors.transparent,
+                borderRadius: BorderRadius.circular(15),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(15),
+                  onTap: () { Navigator.pop(context); _handleNav(context, item['label'] as String); },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+                    child: Row(children: [
+                      Icon(item['icon'] as IconData,
+                          color: isActive ? Colors.white : const Color(0xFF4B5563), size: 22),
+                      const SizedBox(width: 12),
+                      Text(item['label'] as String,
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600,
+                              color: isActive ? Colors.white : const Color(0xFF4B5563))),
+                    ]),
                   ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text('TechCare',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: kPrimary)),
-                      Text('Medical Portal',
-                          style: TextStyle(fontSize: 12, color: kTextGray)),
-                    ],
-                  ),
-                ],
+                ),
               ),
-              const SizedBox(height: 32),
-              ...items.map((item) {
-                final isActive = item['active'] as bool;
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 8),
-                  child: Material(
-                    color: isActive ? kPrimary : Colors.transparent,
-                    borderRadius: BorderRadius.circular(15),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(15),
-                      onTap: () {
-                        Navigator.pop(context);
-                        _handleNav(context, item['label'] as String);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 13),
-                        child: Row(
-                          children: [
-                            Icon(item['icon'] as IconData,
-                                color: isActive
-                                    ? Colors.white
-                                    : const Color(0xFF4B5563),
-                                size: 22),
-                            const SizedBox(width: 12),
-                            Text(item['label'] as String,
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                    color: isActive
-                                        ? Colors.white
-                                        : const Color(0xFF4B5563))),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }),
-            ],
-          ),
-        ),
-      ),
+            );
+          }),
+        ]),
+      )),
     );
   }
 
   void _handleNav(BuildContext context, String label) {
     switch (label) {
       case 'Profile':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const DoctorProfileScreen()),
-        );
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DoctorProfileScreen()));
         break;
       case 'Requests':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const DoctorRequestsScreen()),
-        );
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DoctorRequestsScreen()));
         break;
       case 'Notifications':
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (_) => const DoctorNotificationsScreen()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DoctorNotificationsScreen()));
         break;
       case 'Complaints':
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (_) => const DoctorComplaintsScreen()));
-        break;
-      default:
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DoctorComplaintsScreen()));
         break;
     }
-  }
-
-  // ── Balance Card ──────────────────────────────────────────────────────────
-  Widget _buildBalanceCard() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(28),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF1D89E4), Color(0xFF2179C2)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: kPrimary.withOpacity(0.35),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Total Wallet Balance',
-                  style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white70,
-                      fontWeight: FontWeight.w500)),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: const Row(
-                  children: [
-                    Icon(Icons.account_balance_wallet_outlined,
-                        color: Colors.white, size: 14),
-                    SizedBox(width: 6),
-                    Text('EGP',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700)),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          const Text('12,450.00',
-              style: TextStyle(
-                  fontSize: 38,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                  letterSpacing: -0.5)),
-          const SizedBox(height: 24),
-          Row(
-            children: [
-              Expanded(
-                child: _balanceAction(
-                  icon: Icons.arrow_downward_rounded,
-                  label: 'Withdraw',
-                  onTap: () {},
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _balanceAction(
-                  icon: Icons.history_rounded,
-                  label: 'History',
-                  onTap: () {},
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _balanceAction(
-      {required IconData icon,
-      required String label,
-      required VoidCallback onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 13),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Colors.white.withOpacity(0.3)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: Colors.white, size: 18),
-            const SizedBox(width: 8),
-            Text(label,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ── Stats Row ─────────────────────────────────────────────────────────────
-  Widget _buildStatsRow() {
-    return Row(
-      children: [
-        Expanded(
-          child: _statCard(
-            label: 'Total Earned',
-            value: '14,450 EGP',
-            icon: Icons.trending_up_rounded,
-            color: kGreen,
-            bg: const Color(0xFFE6F7E6),
-          ),
-        ),
-        const SizedBox(width: 14),
-        Expanded(
-          child: _statCard(
-            label: 'Withdrawn',
-            value: '2,000 EGP',
-            icon: Icons.trending_down_rounded,
-            color: kRed,
-            bg: const Color(0xFFFEE2E2),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _statCard({
-    required String label,
-    required String value,
-    required IconData icon,
-    required Color color,
-    required Color bg,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-              color: Color(0x07000000), blurRadius: 10, offset: Offset(0, 2)),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration:
-                BoxDecoration(color: bg, borderRadius: BorderRadius.circular(12)),
-            child: Icon(icon, color: color, size: 20),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label,
-                    style: const TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: kTextGray)),
-                const SizedBox(height: 2),
-                Text(value,
-                    style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w800,
-                        color: kDarkText)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ── Transaction History Card ───────────────────────────────────────────────
-  Widget _buildHistoryCard() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
-          BoxShadow(
-              color: Color(0x07000000), blurRadius: 10, offset: Offset(0, 2)),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Transaction History',
-              style: TextStyle(
-                  fontSize: 16, fontWeight: FontWeight.w700, color: kDarkText)),
-          const SizedBox(height: 16),
-          // Tabs
-          TabBar(
-            controller: _tabController,
-            labelColor: kPrimary,
-            unselectedLabelColor: kTextGray,
-            labelStyle:
-                const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
-            unselectedLabelStyle:
-                const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-            indicatorColor: kPrimary,
-            indicatorSize: TabBarIndicatorSize.label,
-            onTap: (_) => setState(() {}),
-            tabs: const [
-              Tab(text: 'All'),
-              Tab(text: 'Income'),
-              Tab(text: 'Withdrawals'),
-            ],
-          ),
-          const SizedBox(height: 16),
-          // Transaction list
-          ..._filtered.map((t) => _transactionRow(t)),
-        ],
-      ),
-    );
-  }
-
-  Widget _transactionRow(Map<String, dynamic> t) {
-    final isIncoming = t['incoming'] as bool;
-    final amount = t['amount'] as int;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: kBgLight,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Row(
-        children: [
-          // Avatar or icon
-          t['avatar'] != null
-              ? CircleAvatar(
-                  radius: 22,
-                  backgroundImage: NetworkImage(t['avatar'] as String),
-                )
-              : Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: kRed.withOpacity(0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.account_balance_outlined,
-                      color: kRed, size: 20),
-                ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(t['name'] as String,
-                    style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: kDarkText)),
-                const SizedBox(height: 2),
-                Text(t['type'] as String,
-                    style:
-                        const TextStyle(fontSize: 12, color: kTextGray)),
-              ],
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '${isIncoming ? '+' : '-'} $amount EGP',
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w800,
-                    color: isIncoming ? kGreen : kRed),
-              ),
-              const SizedBox(height: 2),
-              Text(t['date'] as String,
-                  style:
-                      const TextStyle(fontSize: 11, color: kTextGray)),
-            ],
-          ),
-        ],
-      ),
-    );
   }
 }

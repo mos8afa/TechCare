@@ -8,6 +8,21 @@ const Color kBorderColor = Color(0xFFE1E6EC);
 const Color kDarkText    = Color(0xFF1A1C1E);
 const Color kAmber       = Color(0xFFF59E0B);
 
+// ── تنسيق الوقت من "09:00" → "9:00 AM" ──────────────────────────────────
+String _fmtSlotTime(String raw) {
+  try {
+    final clean = raw.split('+').first.trim();
+    final parts = clean.split(':');
+    final h = int.parse(parts[0]);
+    final m = parts[1].padLeft(2, '0');
+    final period = h >= 12 ? 'PM' : 'AM';
+    final hour = h == 0 ? 12 : (h > 12 ? h - 12 : h);
+    return '$hour:$m $period';
+  } catch (_) {
+    return raw;
+  }
+}
+
 const List<Map<String, String>> kGovernorates = [
   {'value': 'alexandria', 'label': 'Alexandria'}, {'value': 'aswan', 'label': 'Aswan'},
   {'value': 'asyut', 'label': 'Assiut'}, {'value': 'beheira', 'label': 'Beheira'},
@@ -35,18 +50,19 @@ class PatientBookAppointmentScreen extends StatefulWidget {
 
 class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScreen> {
   Map<String, dynamic>? _doctorData;
-  List<dynamic> _days     = [];
+  List<dynamic> _days           = [];
   Map<String, dynamic> _allSlots = {};
-  bool _isLoading  = true;
-  bool _isBooking  = false;
+  bool    _isLoading  = true;
+  bool    _isBooking  = false;
   String? _error;
 
-  int    _selectedDayIndex  = 0;
-  String? _selectedTime;
+  int     _selectedDayIndex    = 0;
+  String? _selectedTime;        // raw "HH:MM" — هنبعته للـ backend
   String? _selectedGovernorate;
 
   final _symptomsCtrl = TextEditingController();
   final _addressCtrl  = TextEditingController();
+  final _phoneCtrl = TextEditingController();
 
   @override
   void initState() {
@@ -67,8 +83,8 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
     if (result.success) {
       final data = result.data as Map<String, dynamic>;
       setState(() {
-        _doctorData = data['doctor'];
-        _days       = data['days'] ?? [];
+        _doctorData = Map<String, dynamic>.from(data['doctor'] ?? {});
+        _days       = List<dynamic>.from(data['days']      ?? []);
         _allSlots   = Map<String, dynamic>.from(data['all_slots'] ?? {});
         _isLoading  = false;
         _error      = null;
@@ -78,28 +94,30 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
     }
   }
 
+  // ── Computed getters ────────────────────────────────────────────────────
   String get _selectedDayKey {
     if (_days.isEmpty) return '';
-    return _days[_selectedDayIndex]['day'] as String? ?? '';
+    return (_days[_selectedDayIndex] as Map)['day'] as String? ?? '';
   }
 
   String get _selectedFullDate {
     if (_days.isEmpty) return '';
-    return _days[_selectedDayIndex]['full_date'] as String? ?? '';
+    return (_days[_selectedDayIndex] as Map)['full_date'] as String? ?? '';
   }
 
   List<String> get _morningSlots {
-    final daySlots = _allSlots[_selectedDayKey];
-    if (daySlots == null) return [];
-    return List<String>.from(daySlots['morning'] ?? []);
+    final s = _allSlots[_selectedDayKey];
+    if (s == null) return [];
+    return List<String>.from((s as Map)['morning'] ?? []);
   }
 
   List<String> get _eveningSlots {
-    final daySlots = _allSlots[_selectedDayKey];
-    if (daySlots == null) return [];
-    return List<String>.from(daySlots['evening'] ?? []);
+    final s = _allSlots[_selectedDayKey];
+    if (s == null) return [];
+    return List<String>.from((s as Map)['evening'] ?? []);
   }
 
+  // ── Build ────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,7 +136,15 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: kPrimary))
           : _error != null
-              ? Center(child: Text(_error!, style: const TextStyle(color: Colors.red)))
+              ? Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text(_error!, style: const TextStyle(color: Colors.red)),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: _load,
+                    style: ElevatedButton.styleFrom(backgroundColor: kPrimary),
+                    child: const Text('Retry', style: TextStyle(color: Colors.white)),
+                  ),
+                ]))
               : SingleChildScrollView(
                   padding: const EdgeInsets.all(16),
                   child: Column(
@@ -142,9 +168,10 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
     );
   }
 
+  // ── Doctor Card ──────────────────────────────────────────────────────────
   Widget _buildDoctorCard() {
-    final doc = _doctorData!;
-    final picUrl = ApiService.buildMediaUrl(doc['profile_pic']);
+    final doc    = _doctorData!;
+    final picUrl = ApiService.buildMediaUrl(doc['profile_pic'] as String?);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -161,26 +188,42 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
         ),
         const SizedBox(width: 14),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(doc['name'] ?? '', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: kDarkText)),
+          Text(doc['name'] as String? ?? '',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: kDarkText)),
           const SizedBox(height: 2),
-          Text(doc['specification'] ?? '', style: const TextStyle(fontSize: 13, color: kPrimary, fontWeight: FontWeight.w600)),
+          Text(doc['specification'] as String? ?? '',
+              style: const TextStyle(fontSize: 13, color: kPrimary, fontWeight: FontWeight.w600)),
           const SizedBox(height: 6),
           Row(children: [
             const Icon(Icons.star_rounded, color: kAmber, size: 15),
             const SizedBox(width: 3),
-            Text('${doc['avg_rating'] ?? 0}', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
+            Text('${doc['avg_rating'] ?? 0}',
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText)),
+          ]),
+          const SizedBox(height: 4),
+          Row(children: [
+            const Icon(Icons.location_on_outlined, size: 14, color: kTextGray),
+            const SizedBox(width: 3),
+            Expanded(child: Text(
+              '${doc['governorate'] ?? ''}, ${doc['address'] ?? ''}',
+              style: const TextStyle(fontSize: 12, color: kTextGray),
+              overflow: TextOverflow.ellipsis,
+            )),
           ]),
         ])),
+        const SizedBox(width: 8),
         Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          const Text('CONSULTATION FEE', style: TextStyle(fontSize: 10, color: kTextGray, letterSpacing: 0.5)),
+          const Text('CONSULTATION FEE',
+              style: TextStyle(fontSize: 9, color: kTextGray, letterSpacing: 0.5)),
           const SizedBox(height: 4),
           Text('${doc['price'] ?? ''} EGP',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: kPrimary)),
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: kPrimary)),
         ]),
       ]),
     );
   }
 
+  // ── Governorate ──────────────────────────────────────────────────────────
   Widget _buildGovernorateField() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -189,7 +232,8 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
         boxShadow: const [BoxShadow(color: Color(0x0A000000), blurRadius: 10, offset: Offset(0, 2))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const Text('Governorate', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText)),
+        const Text('Governorate',
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText)),
         const SizedBox(height: 10),
         DropdownButtonFormField<String>(
           value: _selectedGovernorate,
@@ -201,8 +245,12 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
           decoration: InputDecoration(
             filled: true, fillColor: kBgLight,
             contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorderColor)),
-            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorderColor)),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(color: kBorderColor)),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(color: kBorderColor)),
+            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(color: kPrimary, width: 1.5)),
           ),
           borderRadius: BorderRadius.circular(12),
           dropdownColor: Colors.white,
@@ -211,6 +259,7 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
     );
   }
 
+  // ── Symptoms ─────────────────────────────────────────────────────────────
   Widget _buildSymptomsCard() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -222,7 +271,8 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
         const Row(children: [
           Icon(Icons.description_outlined, size: 16, color: kPrimary),
           SizedBox(width: 6),
-          Text('Describe Your Symptoms', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText)),
+          Text('Describe Your Symptoms',
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText)),
         ]),
         const SizedBox(height: 10),
         TextField(
@@ -233,14 +283,19 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
             hintStyle: const TextStyle(color: kTextGray, fontSize: 13),
             filled: true, fillColor: kBgLight,
             contentPadding: const EdgeInsets.all(14),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorderColor)),
-            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorderColor)),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(color: kBorderColor)),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(color: kBorderColor)),
+            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(color: kPrimary, width: 1.5)),
           ),
         ),
       ]),
     );
   }
 
+  // ── Address ──────────────────────────────────────────────────────────────
   Widget _buildAddressCard() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -249,7 +304,8 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
         boxShadow: const [BoxShadow(color: Color(0x0A000000), blurRadius: 10, offset: Offset(0, 2))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const Text('Full Address', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText)),
+        const Text('Full Address',
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText)),
         const SizedBox(height: 10),
         TextField(
           controller: _addressCtrl,
@@ -259,14 +315,19 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
             prefixIcon: const Icon(Icons.location_on_outlined, color: kTextGray, size: 18),
             filled: true, fillColor: kBgLight,
             contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorderColor)),
-            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: kBorderColor)),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(color: kBorderColor)),
+            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(color: kBorderColor)),
+            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(color: kPrimary, width: 1.5)),
           ),
         ),
       ]),
     );
   }
 
+  // ── Date & Time ──────────────────────────────────────────────────────────
   Widget _buildDateTimeCard() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -278,11 +339,12 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
         const Row(children: [
           Icon(Icons.calendar_month_outlined, size: 16, color: kPrimary),
           SizedBox(width: 6),
-          Text('Select Date & Time', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText)),
+          Text('Select Date & Time',
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText)),
         ]),
         const SizedBox(height: 14),
 
-        // Days
+        // ── Days row ────────────────────────────────────────────
         if (_days.isNotEmpty)
           SizedBox(
             height: 80,
@@ -292,9 +354,12 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
               separatorBuilder: (_, __) => const SizedBox(width: 10),
               itemBuilder: (_, i) {
                 final active = _selectedDayIndex == i;
-                final day = _days[i];
+                final day    = _days[i] as Map;
                 return GestureDetector(
-                  onTap: () => setState(() { _selectedDayIndex = i; _selectedTime = null; }),
+                  onTap: () => setState(() {
+                    _selectedDayIndex = i;
+                    _selectedTime = null;
+                  }),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 180),
                     width: 62,
@@ -311,29 +376,43 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800,
                               color: active ? Colors.white : kDarkText)),
                       Text(day['month'] as String? ?? '',
-                          style: TextStyle(fontSize: 10, color: active ? Colors.white70 : kTextGray)),
+                          style: TextStyle(fontSize: 10,
+                              color: active ? Colors.white70 : kTextGray)),
                     ]),
                   ),
                 );
               },
             ),
-          ),
+          )
+        else
+          const Center(child: Text('No available days',
+              style: TextStyle(color: kTextGray, fontSize: 13))),
 
         const SizedBox(height: 16),
 
-        // Morning slots
+        // ── Morning slots ───────────────────────────────────────
         if (_morningSlots.isNotEmpty) ...[
-          const Text('MORNING SLOTS',
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: kTextGray, letterSpacing: 1.2)),
+          Row(children: const [
+            Icon(Icons.wb_sunny_outlined, size: 14, color: kAmber),
+            SizedBox(width: 6),
+            Text('MORNING SLOTS',
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
+                    color: kTextGray, letterSpacing: 1.2)),
+          ]),
           const SizedBox(height: 8),
           _buildSlots(_morningSlots),
           const SizedBox(height: 14),
         ],
 
-        // Evening slots
+        // ── Evening slots ───────────────────────────────────────
         if (_eveningSlots.isNotEmpty) ...[
-          const Text('EVENING SLOTS',
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: kTextGray, letterSpacing: 1.2)),
+          Row(children: const [
+            Icon(Icons.nightlight_round, size: 14, color: Color(0xFF6366F1)),
+            SizedBox(width: 6),
+            Text('EVENING SLOTS',
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
+                    color: kTextGray, letterSpacing: 1.2)),
+          ]),
           const SizedBox(height: 8),
           _buildSlots(_eveningSlots),
         ],
@@ -341,7 +420,8 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
         if (_morningSlots.isEmpty && _eveningSlots.isEmpty)
           const Center(child: Padding(
             padding: EdgeInsets.symmetric(vertical: 12),
-            child: Text('No slots available for this day', style: TextStyle(color: kTextGray, fontSize: 13)),
+            child: Text('No slots available for this day',
+                style: TextStyle(color: kTextGray, fontSize: 13)),
           )),
       ]),
     );
@@ -350,10 +430,11 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
   Widget _buildSlots(List<String> slots) {
     return Wrap(
       spacing: 8, runSpacing: 8,
-      children: slots.map((slot) {
-        final active = _selectedTime == slot;
+      children: slots.map((rawSlot) {
+        // rawSlot = "09:00" — نعرضه formatted ونحفظ الـ raw للـ backend
+        final active = _selectedTime == rawSlot;
         return GestureDetector(
-          onTap: () => setState(() => _selectedTime = slot),
+          onTap: () => setState(() => _selectedTime = rawSlot),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 160),
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
@@ -361,20 +442,29 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
               color: active ? kPrimary : kBgLight,
               border: Border.all(color: active ? kPrimary : kBorderColor),
               borderRadius: BorderRadius.circular(30),
+              boxShadow: active ? [
+                BoxShadow(color: kPrimary.withOpacity(0.2), blurRadius: 6, offset: const Offset(0, 2))
+              ] : [],
             ),
-            child: Text(slot, style: TextStyle(
+            child: Text(
+              _fmtSlotTime(rawSlot),   // ← display formatted
+              style: TextStyle(
                 fontSize: 13, fontWeight: FontWeight.w600,
-                color: active ? Colors.white : kDarkText)),
+                color: active ? Colors.white : kDarkText,
+              ),
+            ),
           ),
         );
       }).toList(),
     );
   }
 
+  // ── Summary & Confirm ────────────────────────────────────────────────────
   Widget _buildSummaryCard() {
-    final doc = _doctorData!;
-    final price = doc['price']?.toString() ?? '0';
-    final total = (double.tryParse(price) ?? 0) + 25;
+    final doc   = _doctorData!;
+    final price = double.tryParse(doc['price']?.toString() ?? '0') ?? 0;
+    final fee   = 25.0;
+    final total = price + fee;
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -386,13 +476,16 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
         const Text('Payment Summary',
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: kDarkText)),
         const SizedBox(height: 14),
-        _summaryRow('Consultation Fee', '$price EGP'),
+        _summaryRow('Consultation Fee', '${price.toStringAsFixed(2)} EGP'),
         const SizedBox(height: 8),
-        _summaryRow('Service Fee', '25 EGP'),
+        _summaryRow('Service Fee', '${fee.toStringAsFixed(2)} EGP'),
         const Divider(height: 20, color: kBorderColor),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          const Text('TOTAL AMOUNT', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: kTextGray, letterSpacing: 0.5)),
-          Text('$total EGP', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: kPrimary)),
+          const Text('TOTAL AMOUNT',
+              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
+                  color: kTextGray, letterSpacing: 0.5)),
+          Text('${total.toStringAsFixed(2)} EGP',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: kPrimary)),
         ]),
         const SizedBox(height: 16),
         SizedBox(
@@ -408,7 +501,8 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
             child: _isBooking
                 ? const SizedBox(width: 20, height: 20,
                     child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                : const Text('Confirm Booking', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                : const Text('Confirm Booking',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
           ),
         ),
         const SizedBox(height: 10),
@@ -428,45 +522,48 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
     ]);
   }
 
+  // ── Handle Book ──────────────────────────────────────────────────────────
   Future<void> _handleBook() async {
     if (_selectedTime == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a time slot'), backgroundColor: Colors.red));
-      return;
+      _snack('Please select a time slot', isError: true); return;
     }
     if (_symptomsCtrl.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please describe your symptoms'), backgroundColor: Colors.red));
-      return;
+      _snack('Please describe your symptoms', isError: true); return;
     }
     if (_selectedGovernorate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a governorate'), backgroundColor: Colors.red));
-      return;
+      _snack('Please select a governorate', isError: true); return;
+    }
+    if (_selectedFullDate.isEmpty) {
+      _snack('Please select a date', isError: true); return;
     }
 
     setState(() => _isBooking = true);
+
     final result = await ApiService.bookDoctor(
-      doctorId: widget.doctorId,
-      date: _selectedFullDate,
-      time: _selectedTime!,
+      doctorId:           widget.doctorId,
+      date:               _selectedFullDate,   // "YYYY-MM-DD"
+      time:               _selectedTime!,      // "HH:MM"
       diseaseDescription: _symptomsCtrl.text.trim(),
-      governorate: _selectedGovernorate!,
-      address: _addressCtrl.text.trim(),
+      governorate:        _selectedGovernorate!,
+      address:            _addressCtrl.text.trim(),
+      phoneNumber:        _phoneCtrl.text.trim(),
     );
+
     setState(() => _isBooking = false);
 
     if (result.success) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Appointment booked successfully!'), backgroundColor: Colors.green));
-        Navigator.pop(context);
-      }
+      _snack('Appointment booked successfully!', isError: false);
+      if (mounted) Navigator.pop(context);
     } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result.error ?? 'Booking failed'), backgroundColor: Colors.red));
-      }
+      _snack(result.error ?? 'Booking failed', isError: true);
     }
+  }
+
+  void _snack(String msg, {required bool isError}) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(msg),
+      backgroundColor: isError ? Colors.red : Colors.green,
+    ));
   }
 }
