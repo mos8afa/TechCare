@@ -10,6 +10,72 @@ const Color kTextGray = Color(0xFF718096);
 const Color kBorderColor = Color(0xFFE1E6EC);
 const Color kDarkText = Color(0xFF1A1C1E);
 const Color kGreen = Color(0xFF10B981);
+const Color kAmber = Color(0xFFF59E0B);
+const Color kRed = Color(0xFFEF4444);
+
+// ── Notification types for nurse ──────────────────────────────────────────
+enum _NotifType {
+  newCareRequest,
+  accepted,
+  confirmation,
+  modified,
+  approved,
+  shiftReminder,
+}
+
+extension _NotifTypeExt on _NotifType {
+  IconData get icon {
+    switch (this) {
+      case _NotifType.newCareRequest:
+        return Icons.person_add_outlined;
+      case _NotifType.accepted:
+        return Icons.check_circle_outline_rounded;
+      case _NotifType.confirmation:
+        return Icons.receipt_long_outlined;
+      case _NotifType.modified:
+        return Icons.edit_outlined;
+      case _NotifType.approved:
+        return Icons.verified_outlined;
+      case _NotifType.shiftReminder:
+        return Icons.access_time_rounded;
+    }
+  }
+
+  Color get color {
+    switch (this) {
+      case _NotifType.newCareRequest:
+        return kPrimary;
+      case _NotifType.accepted:
+        return kGreen;
+      case _NotifType.confirmation:
+        return kAmber;
+      case _NotifType.modified:
+        return kGreen;
+      case _NotifType.approved:
+        return const Color(0xFF6366F1);
+      case _NotifType.shiftReminder:
+        return kRed;
+    }
+  }
+}
+
+class _Notif {
+  final String title;
+  final String body;
+  final String time;
+  final String group;
+  final _NotifType type;
+  bool read;
+
+  _Notif({
+    required this.title,
+    required this.body,
+    required this.time,
+    required this.group,
+    required this.type,
+    this.read = false,
+  });
+}
 
 class NurseNotificationsScreen extends StatefulWidget {
   const NurseNotificationsScreen({super.key});
@@ -20,43 +86,204 @@ class NurseNotificationsScreen extends StatefulWidget {
 }
 
 class _NurseNotificationsScreenState extends State<NurseNotificationsScreen> {
-  final List<Map<String, dynamic>> _notifications = [
-    {
-      'name': 'Layla Mahmoud',
-      'message': 'New Care Request — Room 302',
-      'time': '2 min ago',
-      'avatar': 'https://randomuser.me/api/portraits/women/21.jpg',
-      'read': false,
-    },
-    {
-      'name': 'Omar Youssef',
-      'message': 'Medication Reminder — 10:00 AM',
-      'time': '15 min ago',
-      'avatar': 'https://randomuser.me/api/portraits/men/33.jpg',
-      'read': false,
-    },
-    {
-      'name': 'Dr. Salma Adel',
-      'message': 'Vital Signs Updated',
-      'time': '1 hr ago',
-      'avatar': 'https://randomuser.me/api/portraits/women/45.jpg',
-      'read': true,
-    },
-    {
-      'name': 'Hassan Ibrahim',
-      'message': 'New Care Request — Room 108',
-      'time': '3 hr ago',
-      'avatar': 'https://randomuser.me/api/portraits/men/67.jpg',
-      'read': true,
-    },
-    {
-      'name': 'Nadia Fathi',
-      'message': 'Discharge Request Approved',
-      'time': 'Yesterday',
-      'avatar': 'https://randomuser.me/api/portraits/women/55.jpg',
-      'read': true,
-    },
+  final List<_Notif> _all = [
+    _Notif(
+      title: 'New Care Request',
+      body: 'You have received a new care request from patient Layla Mahmoud (Room 302).',
+      time: '15 mins ago',
+      group: 'Today',
+      type: _NotifType.newCareRequest,
+    ),
+    _Notif(
+      title: 'Care Request Accepted',
+      body: 'Patient Omar Youssef accepted your care schedule for tomorrow.',
+      time: '2 hours ago',
+      group: 'Today',
+      type: _NotifType.accepted,
+      read: true,
+    ),
+    _Notif(
+      title: 'Shift Confirmation',
+      body: 'Administration has confirmed your night shift for May 12-14.',
+      time: '5 hours ago',
+      group: 'Today',
+      type: _NotifType.confirmation,
+      read: true,
+    ),
+    _Notif(
+      title: 'Care Plan Modified',
+      body: 'Care plan details for patient Hassan Ibrahim have been updated.',
+      time: 'Yesterday, 4:20 PM',
+      group: 'Yesterday',
+      type: _NotifType.modified,
+      read: true,
+    ),
+    _Notif(
+      title: 'Credentials Approved',
+      body: 'Your nursing license documents have been verified successfully.',
+      time: 'Yesterday, 9:00 AM',
+      group: 'Yesterday',
+      type: _NotifType.approved,
+      read: true,
+    ),
+    _Notif(
+      title: 'Upcoming Shift Reminder',
+      body: 'Your shift starts in 2 hours (Ward 3B). Please check in on time.',
+      time: '2 days ago',
+      group: 'Earlier',
+      type: _NotifType.shiftReminder,
+      read: true,
+    ),
   ];
+
+  List<String> get _groups {
+    final seen = <String>{};
+    return _all.map((n) => n.group).where(seen.add).toList();
+  }
+
+  List<_Notif> _forGroup(String g) => _all.where((n) => n.group == g).toList();
+  int get _unreadCount => _all.where((n) => !n.read).length;
+
+  Widget _buildGroup(String group) {
+    final items = _forGroup(group);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: Text(
+            group.toUpperCase(),
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w800,
+              color: kTextGray,
+              letterSpacing: 1.2,
+            ),
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x07000000),
+                blurRadius: 8,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            children: items.asMap().entries.map((entry) {
+              final i = entry.key;
+              final notif = entry.value;
+              return Column(
+                children: [
+                  _buildNotifTile(notif),
+                  if (i < items.length - 1)
+                    const Divider(
+                      height: 1,
+                      color: kBorderColor,
+                      indent: 16,
+                      endIndent: 16,
+                    ),
+                ],
+              );
+            }).toList(),
+          ),
+        ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Widget _buildNotifTile(_Notif notif) {
+    final isUnread = !notif.read;
+    return GestureDetector(
+      onTap: () => setState(() => notif.read = true),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isUnread ? const Color(0xFFF0F7FF) : Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (isUnread)
+              Container(
+                width: 3,
+                height: 48,
+                margin: const EdgeInsets.only(right: 12),
+                decoration: BoxDecoration(
+                  color: kPrimary,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              )
+            else
+              const SizedBox(width: 15),
+            Container(
+              width: 44,
+              height: 44,
+              margin: const EdgeInsets.only(right: 12),
+              decoration: BoxDecoration(
+                color: notif.type.color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(notif.type.icon, color: notif.type.color, size: 20),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          notif.title,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: kDarkText,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        notif.time,
+                        style: const TextStyle(fontSize: 11, color: kTextGray),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    notif.body,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: kTextGray,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (isUnread)
+              Container(
+                width: 8,
+                height: 8,
+                margin: const EdgeInsets.only(left: 8, top: 4),
+                decoration: const BoxDecoration(
+                  color: kPrimary,
+                  shape: BoxShape.circle,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,22 +291,75 @@ class _NurseNotificationsScreenState extends State<NurseNotificationsScreen> {
       backgroundColor: kBgLight,
       appBar: _buildAppBar(context),
       drawer: _buildDrawer(context),
-      body: _notifications.isEmpty
-          ? _buildEmpty()
-          : ListView.separated(
+      body: _all.isEmpty
+          ? _emptyState()
+          : ListView(
               padding: const EdgeInsets.all(20),
-              itemCount: _notifications.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
-              itemBuilder: (_, i) =>
-                  _buildNotificationCard(_notifications[i], i),
+              children: [
+                // Top actions row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    if (_unreadCount > 0)
+                      ElevatedButton.icon(
+                        onPressed: () => setState(() {
+                          for (final n in _all) n.read = true;
+                        }),
+                        icon: const Icon(Icons.done_all_rounded, size: 14),
+                        label: const Text(
+                          'Mark All as Read',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: kPrimary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          elevation: 0,
+                        ),
+                      ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      onPressed: () => setState(() => _all.clear()),
+                      icon: const Icon(
+                        Icons.delete_outline_rounded,
+                        color: kTextGray,
+                        size: 22,
+                      ),
+                      tooltip: 'Clear All',
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                ..._groups.map((group) => _buildGroup(group)),
+                const SizedBox(height: 8),
+                Center(
+                  child: TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      'Load older notifications',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: kPrimary,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
     );
   }
 
-  // ── AppBar ───────────────────────────────────────────────────────────────
   PreferredSizeWidget _buildAppBar(BuildContext context) {
-    final unreadCount =
-        _notifications.where((n) => !(n['read'] as bool)).length;
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -90,35 +370,44 @@ class _NurseNotificationsScreenState extends State<NurseNotificationsScreen> {
           onPressed: () => Scaffold.of(ctx).openDrawer(),
         ),
       ),
-      title: const Text('Notifications',
-          style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w700, color: kDarkText)),
+      title: const Text(
+        'Notifications',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+          color: kDarkText,
+        ),
+      ),
       actions: [
-        if (unreadCount > 0)
-          TextButton(
-            onPressed: () => setState(() {
-              for (final n in _notifications) {
-                n['read'] = true;
-              }
-            }),
-            child: const Text('Mark all read',
-                style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: kPrimary)),
+        IconButton(
+          icon: Stack(
+            clipBehavior: Clip.none,
+            children: const [
+              Icon(Icons.notifications_none_rounded,
+                  color: Color(0xFF4B5563), size: 24),
+              Positioned(
+                right: -2,
+                top: -2,
+                child: CircleAvatar(radius: 5, backgroundColor: kRed),
+              ),
+            ],
           ),
+          onPressed: () {},
+        ),
         const SizedBox(width: 4),
         const VerticalDivider(
-            width: 1,
-            thickness: 1,
-            color: kBorderColor,
-            indent: 16,
-            endIndent: 16),
+          width: 1,
+          thickness: 1,
+          color: kBorderColor,
+          indent: 16,
+          endIndent: 16,
+        ),
         const SizedBox(width: 12),
         const CircleAvatar(
           radius: 20,
           backgroundImage: NetworkImage(
-              'https://randomuser.me/api/portraits/women/44.jpg'),
+            'https://randomuser.me/api/portraits/women/44.jpg',
+          ),
         ),
         const SizedBox(width: 16),
       ],
@@ -129,34 +418,13 @@ class _NurseNotificationsScreenState extends State<NurseNotificationsScreen> {
     );
   }
 
-  // ── Drawer ───────────────────────────────────────────────────────────────
   Widget _buildDrawer(BuildContext context) {
     final items = [
-      {
-        'icon': Icons.person_outline_rounded,
-        'label': 'Profile',
-        'active': false
-      },
-      {
-        'icon': Icons.list_alt_rounded,
-        'label': 'Requests',
-        'active': false
-      },
-      {
-        'icon': Icons.notifications_none_rounded,
-        'label': 'Notifications',
-        'active': true
-      },
-      {
-        'icon': Icons.account_balance_wallet_outlined,
-        'label': 'Wallet',
-        'active': false
-      },
-      {
-        'icon': Icons.warning_amber_rounded,
-        'label': 'Complaints',
-        'active': false
-      },
+      {'icon': Icons.person_outline_rounded, 'label': 'Profile', 'active': false},
+      {'icon': Icons.list_alt_rounded, 'label': 'Requests', 'active': false},
+      {'icon': Icons.notifications_none_rounded, 'label': 'Notifications', 'active': true},
+      {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet', 'active': false},
+      {'icon': Icons.warning_amber_rounded, 'label': 'Complaints', 'active': false},
     ];
 
     return Drawer(
@@ -171,20 +439,29 @@ class _NurseNotificationsScreenState extends State<NurseNotificationsScreen> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: Image.asset('img/logo.png',
-                        width: 44, height: 44, fit: BoxFit.cover),
+                    child: Image.asset(
+                      'img/logo.png',
+                      width: 44,
+                      height: 44,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   const SizedBox(width: 12),
-                  Column(
+                  const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text('TechCare',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: kPrimary)),
-                      Text('Nurse Portal',
-                          style: TextStyle(fontSize: 12, color: kTextGray)),
+                    children: [
+                      Text(
+                        'TechCare',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: kPrimary,
+                        ),
+                      ),
+                      Text(
+                        'Nurse Portal',
+                        style: TextStyle(fontSize: 12, color: kTextGray),
+                      ),
                     ],
                   ),
                 ],
@@ -205,22 +482,29 @@ class _NurseNotificationsScreenState extends State<NurseNotificationsScreen> {
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 13),
+                          horizontal: 16,
+                          vertical: 13,
+                        ),
                         child: Row(
                           children: [
-                            Icon(item['icon'] as IconData,
+                            Icon(
+                              item['icon'] as IconData,
+                              color: isActive
+                                  ? Colors.white
+                                  : const Color(0xFF4B5563),
+                              size: 22,
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              item['label'] as String,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
                                 color: isActive
                                     ? Colors.white
                                     : const Color(0xFF4B5563),
-                                size: 22),
-                            const SizedBox(width: 12),
-                            Text(item['label'] as String,
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                    color: isActive
-                                        ? Colors.white
-                                        : const Color(0xFF4B5563))),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -261,114 +545,28 @@ class _NurseNotificationsScreenState extends State<NurseNotificationsScreen> {
           MaterialPageRoute(builder: (_) => const NurseComplaintsScreen()),
         );
         break;
-      default:
-        break;
     }
   }
 
-  // ── Notification Card ─────────────────────────────────────────────────────
-  Widget _buildNotificationCard(Map<String, dynamic> notif, int index) {
-    final isUnread = !(notif['read'] as bool);
-    return GestureDetector(
-      onTap: () => setState(() => notif['read'] = true),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isUnread ? Colors.white : Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isUnread ? kPrimary.withOpacity(0.25) : kBorderColor,
-            width: isUnread ? 1.5 : 1,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: isUnread
-                  ? kPrimary.withOpacity(0.06)
-                  : const Color(0x05000000),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Avatar + unread dot
-            Stack(
-              children: [
-                CircleAvatar(
-                  radius: 24,
-                  backgroundImage: NetworkImage(notif['avatar'] as String),
-                ),
-                if (isUnread)
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    child: Container(
-                      width: 12,
-                      height: 12,
-                      decoration: BoxDecoration(
-                        color: kPrimary,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(width: 14),
-            // Content
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(notif['name'] as String,
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: isUnread
-                                  ? FontWeight.w700
-                                  : FontWeight.w600,
-                              color: kDarkText)),
-                      Text(notif['time'] as String,
-                          style: const TextStyle(
-                              fontSize: 11, color: kTextGray)),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(notif['message'] as String,
-                      style: TextStyle(
-                          fontSize: 13,
-                          color: isUnread
-                              ? const Color(0xFF374151)
-                              : kTextGray,
-                          height: 1.4)),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ── Empty State ───────────────────────────────────────────────────────────
-  Widget _buildEmpty() {
+  Widget _emptyState() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.notifications_off_outlined,
-              size: 64, color: kTextGray.withOpacity(0.4)),
+          Icon(
+            Icons.notifications_off_outlined,
+            size: 64,
+            color: kTextGray.withOpacity(0.4),
+          ),
           const SizedBox(height: 16),
-          const Text('No notifications yet',
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: kTextGray)),
+          const Text(
+            'No notifications yet',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: kTextGray,
+            ),
+          ),
         ],
       ),
     );
