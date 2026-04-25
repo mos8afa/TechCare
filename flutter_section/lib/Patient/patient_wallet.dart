@@ -90,8 +90,9 @@ class _PatientWalletScreenState extends State<PatientWalletScreen>
   List<Map<String, dynamic>> get _filtered {
     final tab = _tabController.index;
     if (tab == 0) return _transactions;
-    if (tab == 1)
+    if (tab == 1) {
       return _transactions.where((t) => t['incoming'] == true).toList();
+    }
     return _transactions.where((t) => t['incoming'] == false).toList();
   }
 

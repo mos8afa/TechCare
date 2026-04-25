@@ -283,7 +283,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             border: Border.all(color: const Color(0xFFE2E8F0)),
           ),
           child: DropdownButtonFormField<String>(
-            value: _selectedRole,
+            initialValue: _selectedRole,
             hint: const Text('Select your role', style: TextStyle(color: Color(0xFFA0AEC0), fontSize: 14)),
             isExpanded: true,
             decoration: const InputDecoration(

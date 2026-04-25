@@ -4308,3 +4308,260 @@ background: #fff;
     outline: none;
     border-color: #1D89E4;
 }
+
+/* ============================================================
+   DONATION REQUEST PAGE REPLICA (.donation-page)
+   ============================================================ */
+
+.donation-page {
+    --blue-primary: #1b84e7;
+    --bg-light-gray: #f8fafc;
+    --text-dark: #1a1c1e;
+    --text-muted: #718096;
+}
+
+.donation-page .main-content {
+    background-color: #F4F7FC;
+    padding: 60px 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.donation-page .donation-container {
+    width: 100%;
+    max-width: 800px;
+}
+
+.donation-page .donation-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.donation-page .donation-header h2 {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+}
+
+.donation-page .donation-header p {
+    color: var(--text-muted);
+    font-size: 16px;
+    font-weight: 400;
+}
+
+/* Patient Photo Section */
+.donation-page .photo-upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.donation-page .photo-placeholder {
+    width: 110px;
+    height: 110px;
+    background-color: #EEF2F7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+.donation-page .photo-placeholder i {
+    font-size: 40px;
+    color: #94A3B8;
+}
+
+.donation-page .checkmark {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+    background-color: #2ECC71;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 11px;
+}
+
+.donation-page .photo-upload-container label {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text-dark);
+    margin-bottom: 2px;
+}
+
+.donation-page .photo-upload-container span {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Form Card */
+.donation-page .donation-card {
+    background: #fff;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.04);
+}
+
+.donation-page .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.donation-page .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.donation-page .form-group.full-width {
+    grid-column: span 2;
+}
+
+.donation-page .form-group label {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--text-muted);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.donation-page .form-group input, 
+.donation-page .form-group select, 
+.donation-page .form-group textarea {
+    background-color: var(--bg-light-gray);
+    border: none !important;
+    border-radius: 14px;
+    padding: 16px 20px;
+    font-size: 14px;
+    color: var(--text-dark);
+    outline: none;
+    transition: background-color 0.2s ease;
+    width: 100%;
+}
+
+.donation-page .form-group input::placeholder {
+    color: #A0AEC0;
+}
+
+.donation-page .form-group input:focus, 
+.donation-page .form-group select:focus, 
+.donation-page .form-group textarea:focus {
+    background-color: #EDF2F7;
+}
+
+.donation-page .form-group textarea {
+    resize: none;
+    line-height: 1.6;
+}
+
+/* Urgency Level Buttons */
+.donation-page .urgency-section label {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--text-muted);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    display: block;
+}
+
+.donation-page .urgency-toggles {
+    display: flex;
+    background-color: var(--bg-light-gray);
+    padding: 6px;
+    border-radius: 16px;
+    gap: 6px;
+}
+
+.donation-page .urgency-btn {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    background: transparent;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.donation-page .urgency-btn.active {
+    background-color: #fff;
+    color: var(--blue-primary) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1.5px solid var(--blue-primary) !important;
+}
+
+/* Actions */
+.donation-page .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    margin-top: 40px;
+}
+
+.donation-page .btn-cancel {
+    background: #F1F5F9;
+    border: none;
+    padding: 14px 40px;
+    border-radius: 14px;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.donation-page .btn-cancel:hover {
+    background: #E2E8F0;
+    color: var(--text-dark);
+}
+
+.donation-page .btn-broadcast {
+    background-color: var(--blue-primary);
+    color: white;
+    border: none;
+    padding: 14px 40px;
+    border-radius: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(27, 132, 231, 0.3);
+    transition: all 0.3s;
+}
+
+.donation-page .btn-broadcast:hover {
+    background-color: #1569b9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(27, 132, 231, 0.4);
+}
+
+/* Sidebar item override specifically for active donation */
+.donation-page .sidebar .aside-item[href="Patient_Donation.html"].active {
+    background-color: var(--blue-primary) !important;
+    color: white !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .donation-page .form-grid {
+        grid-template-columns: 1fr;
+    }
+    .donation-page .main-content {
+        padding: 40px 20px;
+    }
+    .donation-page .donation-card {
+        padding: 30px 20px;
+    }
+}

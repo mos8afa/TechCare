@@ -1,2 +1,77 @@
-# Created by venv; see https://docs.python.org/3/library/venv.html
-*
+# ==========================================
+# 🔹 Python & Django (الأساسيات)
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+db.sqlite3
+db.sqlite3-journal
+instance/
+.webassets-cache
+*.log
+staticfiles/
+media/
+
+# ==========================================
+# 🔹 Environments & Sensitive Data
+# ==========================================
+.env
+.envrc
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ==========================================
+# 🔹 Flutter & Dart (قسم الموبايل)
+# ==========================================
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+flutter_section/build/
+ios/.generated/
+android/app/debug/
+android/app/profile/
+android/app/release/
+
+# ==========================================
+# 🔹 IDEs & Editors (تنظيف بيئة العمل)
+# ==========================================
+.vscode/
+.idea/
+*.swp
+*.bak
+*.tmp
+.DS_Store
+Thumbs.db
+.pypirc
+.cursorignore
+.cursorindexingignore
+
+# ==========================================
+# 🔹 Testing & Coverage
+# ==========================================
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+
+# ==========================================
+# 🔹 Migrations (مهمة جداً للـ Teamwork)
+# ==========================================
+# بنستبعد ملفات الـ cache بتاعة الميجريشن بس، لكن بنسيب الملفات نفسها
+**/migrations/__pycache__/

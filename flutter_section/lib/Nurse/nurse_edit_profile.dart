@@ -272,7 +272,7 @@ class _NurseEditProfileScreenState extends State<NurseEditProfileScreen> {
   Widget _governorateField() => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
     _lbl('Governorate / Location'), const SizedBox(height: 6),
     DropdownButtonFormField<String>(
-      value: _selectedGov,
+      initialValue: _selectedGov,
       hint: const Text('Select governorate', style: TextStyle(fontSize: 14, color: kTextGray)),
       items: kGovernorates.map((g) => DropdownMenuItem(value: g, child: Text(g))).toList(),
       onChanged: (v) => setState(() => _selectedGov = v),

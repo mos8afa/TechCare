@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Wallet & Payments - TechCare</title>
+
+    <link rel="stylesheet" href="Donor.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <a href="Profile.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit;">
+                        <span class="logo-icon">
+                            <img src="../img/logo.png" alt="">
+                        </span>
+                        <div>
+                            <h2>TechCare</h2>
+                            <p>Medical Portal</p>
+                        </div>
+                    </a>
+                    <button class="sidebar-toggle">
+                        <i class="bi bi-layout-sidebar-inset-reverse"></i>
+                    </button>
+                </div>
+            </div>
+
+            <aside class="aside">
+                <a href="Profile.html" class="aside-item">
+                    <i class="bi bi-person"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="Requests.html" class="aside-item">
+                    <i class="ri-file-list-line"></i>
+                    <span>Requests</span>
+                </a>
+                <a href="Notifications1.html" class="aside-item">
+                    <i class="fa-regular fa-bell"></i>
+                    <span>Notifications</span>
+                </a>
+                <a href="Donation_Suggested.html" class="aside-item">
+                    <i class="ri-hand-heart-line"></i>
+                    <span style="white-space: nowrap; font-size: 13px;">Donation</span>
+                </a>
+                <a href="Wallet.html" class="aside-item active">
+                    <i class="ri-wallet-3-line"></i>
+                    <span>Wallet</span>
+                </a>
+                <a href="Complaints.html" class="aside-item">
+                    <i class="ri-error-warning-line"></i>
+                    <span>Complaints</span>
+                </a>
+            </aside>
+        </aside>
+
+        <div style="flex:1; display:flex; flex-direction:column; background-color: #f8fafc; min-height: 100vh;">
+
+            <!-- Top Navbar -->
+            <div class="topbar" style="background-color: #ffffff; border-bottom: 1px solid #e2e8f0;">
+                <h2 class="topbar-title">Patient Profile</h2>
+
+                <div class="topbar-right">
+                    <a href="Notifications1.html" class="topbar-icon" id="notificationBtn" style="color: inherit; text-decoration: none;">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-badge" style="background: #ef4444; width: 6px; height: 6px; border-radius: 50%; display: inline-block; position: absolute; top: 5px; right: 5px;"></span>
+                    </a>
+                    <hr class="line">
+                    <div class="topbar-profile">
+                        <div class="topbar-user-info">
+                            <h4 style="font-weight: 600; color: #1e293b;">Menna Ali</h4>
+                        </div>
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Donor" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="donation-main-wrapper wallet-main">
+                <div class="donation-title-block">
+                    <h1>My Wallet & Payments</h1>
+                    <p>Manage your clinical credits and payment history securely.</p>
+                </div>
+
+                <div class="wallet-container">
+                    <!-- Left Column -->
+                    <div class="wallet-col-left">
+                        
+                        <!-- Balance Card -->
+                        <div class="wallet-balance-card">
+                            <div class="wallet-balance-header">
+                                <div class="wallet-balance-amount">
+                                    <span class="wallet-balance-label">AVAILABLE BALANCE</span>
+                                    <div class="wallet-balance-value">2,450 <span class="wallet-balance-currency">EGP</span></div>
+                                </div>
+                                <div class="wallet-balance-actions">
+                                    <button class="wallet-btn-outline"><i class="bi bi-arrow-up-right-circle"></i> Withdraw</button>
+                                    <button class="wallet-btn-primary" id="openAddFundsBtn"><i class="bi bi-plus-circle"></i> Add Funds</button>
+                                </div>
+                            </div>
+
+                            </div>
+                            <div class="wallet-spent-box">
+                                <div class="wallet-spent-icon">
+                                    <i class="ri-bar-chart-box-line"></i>
+                                </div>
+                                <div class="wallet-spent-details">
+                                    <span class="wallet-spent-label">TOTAL SPENT</span>
+                                    <span class="wallet-spent-value">1,200 EGP</span>
+                                </div>
+                        </div>
+
+                        <!-- Recent Activity Table -->
+                        <div class="wallet-section-header">
+                            <h3 class="wallet-section-title">Recent Activity</h3>
+                            <a href="#" class="wallet-link">View All</a>
+                        </div>
+
+                        <div class="wallet-activity-table">
+                            <table class="wallet-table">
+                                <thead>
+                                    <tr>
+                                        <th>SERVICE / ENTITY</th>
+                                        <th>DATE</th>
+                                        <th>STATUS</th>
+                                        <th style="text-align: right;">AMOUNT</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Transaction 1 -->
+                                    <tr>
+                                        <td>
+                                            <div class="wallet-activity-service">
+                                                <div class="wallet-activity-icon" style="background-color: #E3F2FD; color: #1E88E5;">
+                                                    <i class="ri-money-dollar-box-line"></i>
+                                                </div>
+                                                <div class="wallet-activity-details">
+                                                    <span class="wallet-activity-name">Platform Service Fee</span>
+                                                    <span class="wallet-activity-sub">Booking #BK-9912</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="wallet-activity-date">
+                                                <span>Oct 25,</span>
+                                                <span>2023</span>
+                                            </div>
+                                        </td>
+                                        <td><span class="wallet-status-badge wallet-status-completed">COMPLETED</span></td>
+                                        <td class="wallet-amount negative">- 15 EGP</td>
+                                    </tr>
+
+                                    <!-- Transaction 2 -->
+                                    <tr>
+                                        <td>
+                                            <div class="wallet-activity-service">
+                                                <div class="wallet-activity-icon" style="background-color: #E3F2FD; color: #1E88E5;">
+                                                    <i class="ri-first-aid-kit-line"></i>
+                                                </div>
+                                                <div class="wallet-activity-details">
+                                                    <span class="wallet-activity-name">Payment: Dr. Ahmed Salem</span>
+                                                    <span class="wallet-activity-sub">General Consultation</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="wallet-activity-date">
+                                                <span>Oct 24,</span>
+                                                <span>2023</span>
+                                            </div>
+                                        </td>
+                                        <td><span class="wallet-status-badge wallet-status-completed">COMPLETED</span></td>
+                                        <td class="wallet-amount negative">- 450 EGP</td>
+                                    </tr>
+
+                                    <!-- Transaction 3 -->
+                                    <tr>
+                                        <td>
+                                            <div class="wallet-activity-service">
+                                                <div class="wallet-activity-icon" style="background-color: #E3F2FD; color: #1E88E5;">
+                                                    <i class="ri-capsule-line"></i>
+                                                </div>
+                                                <div class="wallet-activity-details">
+                                                    <span class="wallet-activity-name">Order: CarePoint Pharmacy</span>
+                                                    <span class="wallet-activity-sub">Prescription #8821</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="wallet-activity-date">
+                                                <span>Oct 22,</span>
+                                                <span>2023</span>
+                                            </div>
+                                        </td>
+                                        <td><span class="wallet-status-badge wallet-status-completed">COMPLETED</span></td>
+                                        <td class="wallet-amount negative">- 210 EGP</td>
+                                    </tr>
+
+                                    <!-- Transaction 4 -->
+                                    <tr>
+                                        <td>
+                                            <div class="wallet-activity-service">
+                                                <div class="wallet-activity-icon" style="background-color: #E3F2FD; color: #1E88E5;">
+                                                    <i class="ri-hospital-line"></i>
+                                                </div>
+                                                <div class="wallet-activity-details">
+                                                    <span class="wallet-activity-name">Home Visit: Nurse Sarah</span>
+                                                    <span class="wallet-activity-sub">Nursing Service</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="wallet-activity-date">
+                                                <span>Oct 20,</span>
+                                                <span>2023</span>
+                                            </div>
+                                        </td>
+                                        <td><span class="wallet-status-badge wallet-status-pending">PENDING</span></td>
+                                        <td class="wallet-amount negative">- 300 EGP</td>
+                                    </tr>
+
+                                    <!-- Transaction 5 -->
+                                    <tr>
+                                        <td>
+                                            <div class="wallet-activity-service">
+                                                <div class="wallet-activity-icon" style="background-color: #E3F2FD; color: #1E88E5;">
+                                                    <i class="ri-bank-line"></i>
+                                                </div>
+                                                <div class="wallet-activity-details">
+                                                    <span class="wallet-activity-name">Top-up: Visa Card</span>
+                                                    <span class="wallet-activity-sub">Ending in 4242</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="wallet-activity-date">
+                                                <span>Oct 18,</span>
+                                                <span>2023</span>
+                                            </div>
+                                        </td>
+                                        <td><span class="wallet-status-badge wallet-status-completed">COMPLETED</span></td>
+                                        <td class="wallet-amount positive">+ 1,000 EGP</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="wallet-col-right">
+                        
+                        <!-- Saved Cards -->
+                        <div class="wallet-saved-cards">
+                            <div class="wallet-saved-cards-header" style="display: flex; justify-content: space-between; align-items: center;">
+                                <h3 class="wallet-section-title" style="margin: 0; font-size: 16px;">Saved Cards</h3>
+                                <a href="#" class="wallet-link" style="font-size: 13px;">Edit</a>
+                            </div>
+
+                            <!-- Visa Card -->
+                            <div class="wallet-credit-card wallet-cc-dark">
+                                <div class="wallet-cc-circle"></div>
+                                <div class="wallet-cc-header">
+                                    <div class="wallet-cc-brand" style="font-style: italic;">VISA</div>
+                                    <i class="ri-wifi-line wallet-cc-nfc" style="transform: rotate(90deg);"></i>
+                                </div>
+                                <div class="wallet-cc-number">
+                                    <div class="wallet-cc-hidden-group">
+                                        <span>****</span>
+                                        <span>****</span>
+                                        <span>****</span>
+                                    </div>
+                                    <div class="wallet-cc-visible-group">
+                                        <span>4 2 4 2</span>
+                                    </div>
+                                </div>
+                                <div class="wallet-cc-footer">
+                                    <div>
+                                        <div class="wallet-cc-label">CARD HOLDER</div>
+                                    </div>
+                                    <div style="text-align: right; z-index: 1;">
+                                        <div class="wallet-cc-label">EXPIRES</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mastercard -->
+                            <div class="wallet-credit-card wallet-cc-blue">
+                                <div class="wallet-cc-circle" style="background-color: rgba(255,255,255,0.05);"></div>
+                                <div class="wallet-cc-header">
+                                    <div class="mc-logo" style="display: flex; align-items: center;">
+                                        <div style="width: 20px; height: 20px; border-radius: 50%; background-color: #EB001B;"></div>
+                                        <div style="width: 20px; height: 20px; border-radius: 50%; background-color: #F79E1B; margin-left: -8px;"></div>
+                                    </div>
+                                    <i class="ri-wifi-line wallet-cc-nfc" style="transform: rotate(90deg);"></i>
+                                </div>
+                                <div class="wallet-cc-number">
+                                    <div class="wallet-cc-hidden-group">
+                                        <span>****</span>
+                                        <span>****</span>
+                                        <span>****</span>
+                                    </div>
+                                    <div class="wallet-cc-visible-group">
+                                        <span>8 8 2 1</span>
+                                    </div>
+                                </div>
+                                <div class="wallet-cc-footer">
+                                    <div>
+                                        <div class="wallet-cc-label">CARD HOLDER</div>
+                                    </div>
+                                    <div style="text-align: right; z-index: 1;">
+                                        <div class="wallet-cc-label">EXPIRES</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="wallet-btn-add-card">
+                                <i class="ri-bank-card-line"></i> Add New Method
+                            </button>
+                        </div>
+
+                        <!-- Ad Card -->
+                        <div class="wallet-ad-card">
+                            <i class="ri-medicine-bottle-line" style="position: absolute; right: -20px; bottom: -20px; font-size: 100px; color: rgba(216, 67, 21, 0.05); transform: rotate(-15deg);"></i>
+                            <h4 class="wallet-ad-title">Health Saver Plan</h4>
+                            <p class="wallet-ad-desc">Deposit 5,000 EGP or more to unlock a 5% instant cashback on all pharmacy orders.</p>
+                            <a href="#" class="wallet-ad-link">Learn More <i class="ri-arrow-right-line"></i></a>
+                        </div>
+
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add Funds Modal Overlay -->
+    <div class="wallet-modal-overlay" id="addFundsModal">
+        <div class="wallet-modal-content">
+            <div class="wallet-modal-header">
+                <h2>Add Funds to Wallet</h2>
+                <p>Enter your card details to securely add funds.</p>
+            </div>
+
+            <form id="addFundsForm" class="wallet-modal-form">
+                <div class="wallet-form-group">
+                    <label for="fundAmount">AMOUNT TO ADD (EGP)</label>
+                    <input type="number" id="fundAmount" placeholder="0.00" required step="0.01">
+                </div>
+
+                <div class="wallet-form-group">
+                    <label for="cardName">CARDHOLDER NAME</label>
+                    <input type="text" id="cardName" placeholder="Dr. Alex Sterling" required>
+                </div>
+
+                <div class="wallet-form-group">
+                    <label for="cardNumber">CARD NUMBER</label>
+                    <div class="wallet-input-wrapper">
+                        <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                        <i class="ri-bank-card-line"></i>
+                    </div>
+                </div>
+
+                <div class="wallet-form-row">
+                    <div class="wallet-form-group">
+                        <label for="cardExpiry">EXPIRY DATE (MM/YY)</label>
+                        <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5" required>
+                    </div>
+                    <div class="wallet-form-group">
+                        <label for="cardCvv">CVV <i class="ri-information-line"></i></label>
+                        <input type="password" id="cardCvv" placeholder="•••" maxlength="3" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="wallet-btn-modal-primary">Confirm & Add Funds</button>
+                <button type="button" class="wallet-btn-modal-cancel" id="cancelAddFunds">Cancel</button>
+            </form>
+
+            <div class="wallet-modal-footer">
+                <i class="ri-lock-2-line"></i> PCI-DSS COMPLIANT SECURE PAYMENT
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../JS/Board.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const modal = document.getElementById("addFundsModal");
+        const openBtn = document.getElementById("openAddFundsBtn");
+        const closeBtn = document.getElementById("cancelAddFunds");
+        const form = document.getElementById("addFundsForm");
+
+        // Open Modal
+        openBtn.addEventListener("click", () => {
+            modal.classList.add("active");
+        });
+
+        // Close Modal
+        closeBtn.addEventListener("click", () => {
+            modal.classList.remove("active");
+        });
+
+        // Close when clicking outside content
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) {
+                modal.classList.remove("active");
+            }
+        });
+
+        // Form Validation
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            
+            const inputs = form.querySelectorAll("input[required]");
+            let isValid = true;
+            
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.style.borderColor = "#ef4444";
+                    isValid = false;
+                } else {
+                    input.style.borderColor = "#cbd5e1";
+                }
+            });
+
+            if (isValid) {
+                alert("Funds successfully added!");
+                modal.classList.remove("active");
+                form.reset();
+            }
+        });
+
+        // Reset border colors on input
+        form.querySelectorAll("input").forEach(input => {
+            input.addEventListener("input", () => {
+                input.style.borderColor = "";
+            });
+        });
+    });
+</script>
+</html>

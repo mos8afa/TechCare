@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Donation Request - TechCare</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="Patient.css">
+</head>
+<body>
+    <div class="dashboard donation-page">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-hand-holding-medical"></i>
+                </div>
+                <div>
+                    <h2>TechCare</h2>
+                    <p>MEDICAL PORTAL</p>
+                </div>
+            </div>
+
+            <nav class="aside">
+                <a href="profile.html" class="aside-item">
+                    <i class="far fa-user"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="Requests.html" class="aside-item">
+                    <i class="far fa-calendar-alt"></i>
+                    <span>Requests</span>
+                </a>
+                <a href="Notifications.html" class="aside-item">
+                    <i class="far fa-bell"></i>
+                    <span>Notifications</span>
+                </a>
+                <a href="Patient_Donation.html" class="aside-item active">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    <span>Donation</span>
+                </a>
+                <a href="Wallet.html" class="aside-item">
+                    <i class="fas fa-wallet"></i>
+                    <span>Wallet</span>
+                </a>
+                <a href="Complaints.html" class="aside-item">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Complaints</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main-wrapper">
+            <!-- Topbar -->
+            <header class="topbar">
+                <h1 class="topbar-title">Patient Profile</h1>
+                <div class="topbar-right">
+                    <div class="topbar-icon">
+                        <i class="far fa-bell"></i>
+                        <span class="notification-badge"></span>
+                    </div>
+                    <div class="line"></div>
+                    <div class="topbar-profile">
+                        <div class="topbar-user-info">
+                            <h4>Menna Ali</h4>
+                        </div>
+                        <img src="https://i.pravatar.cc/150?u=menna" alt="User Avatar">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="main-content">
+                <div class="donation-container">
+                    <div class="donation-header">
+                        <h2>Create Donation Request</h2>
+                        <p>Provide the patient details to broadcast your urgent request to local donors.</p>
+                    </div>
+
+                    <div class="photo-upload-container">
+                        <div class="photo-placeholder">
+                            <i class="far fa-user"></i>
+                            <div class="checkmark">
+                                <i class="fas fa-check"></i>
+                            </div>
+                        </div>
+                        <label>Patient Photo</label>
+                        <span>Optional, but recommended for faster response</span>
+                    </div>
+
+                    <div class="donation-card">
+                        <form id="donation-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="patient-name">PATIENT NAME</label>
+                                    <input type="text" id="patient-name" placeholder="Full legal name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="blood-type">REQUIRED BLOOD TYPE</label>
+                                    <select id="blood-type" required>
+                                        <option value="" disabled selected>Select type</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="governorate">GOVERNORATE</label>
+                                    <select id="governorate" required>
+                                        <option value="Cairo" selected>Cairo</option>
+                                        <option value="Giza">Giza</option>
+                                        <option value="Alexandria">Alexandria</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="address">DETAILED ADDRESS</label>
+                                    <input type="text" id="address" placeholder="Hospital wing, Room number or Street" required>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="case-description">CASE DESCRIPTION</label>
+                                    <textarea id="case-description" placeholder="Describe the medical situation..." rows="4" required></textarea>
+                                </div>
+                            </div>
+
+                            <div class="urgency-section">
+                                <label>URGENCY LEVEL</label>
+                                <div class="urgency-toggles">
+                                    <button type="button" class="urgency-btn active" data-level="normal">Normal</button>
+                                    <button type="button" class="urgency-btn" data-level="urgent">Urgent</button>
+                                    <button type="button" class="urgency-btn" data-level="critical">Critical</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel">Cancel</button>
+                        <button type="submit" form="donation-form" class="btn-broadcast">Broadcast Request</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urgencyBtns = document.querySelectorAll('.urgency-btn');
+            
+            urgencyBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    urgencyBtns.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    btn.classList.add('active');
+                });
+            });
+
+            // Form submission simulation
+            const form = document.getElementById('donation-form');
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Donation request broadcasted successfully!');
+            });
+        });
+    </script>
+</body>
+</html>
