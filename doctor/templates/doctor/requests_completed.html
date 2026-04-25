@@ -58,7 +58,7 @@
                             <i class="bi bi-person-circle"></i>
                         </div>
                         <div class="patient-name-info">
-                            <h3>{{ c.patient.user.first_name }} {{ c.patient.user.last_name }}</h3>
+                            <h3>{{ c.requester_name }} {% if c.is_donor %}<span style="background:#fef3c7;color:#b45309;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">DONOR</span>{% endif %}</h3>
                             <p>
                                 <i class="bi bi-calendar3"></i> {{ c.date|date:"M d, Y" }}
                                 &nbsp; • &nbsp;

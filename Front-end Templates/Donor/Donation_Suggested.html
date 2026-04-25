@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Donation Requests</title>
+
+    <link rel="stylesheet" href="Donor.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">
+                        <img src="../img/logo.png" alt="">
+                    </span>
+                    <div>
+                        <h2>TechCare</h2>
+                        <p>Medical Portal</p>
+                    </div>
+                    <button class="sidebar-toggle">
+                        <i class="bi bi-layout-sidebar-inset-reverse"></i>
+                    </button>
+                </div>
+            </div>
+
+            <aside class="aside">
+                <a href="Profile.html" class="aside-item">
+                    <i class="bi bi-person"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="Requests.html" class="aside-item">
+                    <i class="ri-file-list-line"></i>
+                    <span>Requests</span>
+                </a>
+                <a href="Notifications.html" class="aside-item">
+                    <i class="fa-regular fa-bell"></i>
+                    <span>Notifications</span>
+                </a>
+                <a href="Donation_Suggested.html" class="aside-item active">
+                    <i class="ri-hand-heart-line"></i>
+                    <span style="white-space: nowrap; font-size: 13px;">Donation</span>
+                </a>
+                <a href="Wallet.html" class="aside-item">
+                    <i class="ri-wallet-3-line"></i>
+                    <span>Wallet</span>
+                </a>
+                <a href="Complaints.html" class="aside-item">
+                    <i class="ri-error-warning-line"></i>
+                    <span>Complaints</span>
+                </a>
+            </aside>
+        </aside>
+
+        <div style="flex:1; display:flex; flex-direction:column; background-color: #f8fafc; min-height: 100vh;">
+
+            <!-- Top Navbar -->
+            <div class="topbar" style="background-color: #ffffff; border-bottom: 1px solid #e2e8f0;">
+                <h2 class="topbar-title">Patient Profile</h2>
+
+                <div class="topbar-right">
+                    <div class="topbar-icon" id="notificationBtn">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-badge" style="background: #ef4444; width: 6px; height: 6px; border-radius: 50%; display: inline-block; position: absolute; top: 5px; right: 5px;"></span>
+                    </div>
+                    <hr class="line">
+                    <div class="topbar-profile">
+                        <div class="topbar-user-info">
+                            <h4 style="font-weight: 600; color: #1e293b;">Menna Ali</h4>
+                        </div>
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Donor" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="donation-main-wrapper">
+                <div class="donation-title-block">
+                    <h1>Donation Requests</h1>
+                    <p>Find and manage suggested blood donors for urgent needs.</p>
+                </div>
+
+                <div class="donation-status-tabs" style="margin-bottom: 24px;">
+                    <button class="don-tab active">Suggested</button>
+                    <button class="don-tab" onclick="window.location.href='Donation_acc.html'">Accepted</button>
+                    <button class="don-tab" onclick="window.location.href='Donation_Don.html'">Done</button>
+                </div>
+
+                <div class="don-grid-2x2">
+                    <!-- Card 1 -->
+                    <div class="don-card-suggested">
+                        <div class="don-card-suggested__header">
+                            <div class="don-card-suggested__user">
+                                <div class="don-card-suggested__avatar">
+                                    <i class="ri-user-line"></i>
+                                </div>
+                                <div class="don-card-suggested__info">
+                                    <h3 class="don-card-suggested__name">Ahmed Mansour</h3>
+                                    <span class="don-card-suggested__loc">
+                                        <i class="ri-map-pin-line"></i> Cairo
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="don-card-suggested__blood">
+                                <span class="don-card-suggested__blood-val">O+</span>
+                                <span class="don-card-suggested__blood-label">BLOOD TYPE</span>
+                            </div>
+                        </div>
+                        <div class="don-card-suggested__address">
+                            <i class="ri-map-pin-line"></i>
+                            <span>12 Street 254, Degla, Near the Grand<br>Mosque area, 2nd floor.</span>
+                        </div>
+                        <div class="don-card-suggested__footer">
+                            <div class="don-card-suggested__badge don-card-suggested__badge--orange">
+                                <i class="ri-history-line"></i> Last Donated: 3 months ago
+                            </div>
+                            <button class="don-card-suggested__btn-outline">Accepted</button>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="don-card-suggested">
+                        <div class="don-card-suggested__header">
+                            <div class="don-card-suggested__user">
+                                <div class="don-card-suggested__avatar">
+                                    <i class="ri-user-line"></i>
+                                </div>
+                                <div class="don-card-suggested__info">
+                                    <h3 class="don-card-suggested__name">Laila Ibrahim</h3>
+                                    <span class="don-card-suggested__loc">
+                                        <i class="ri-map-pin-line"></i> Alexandria
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="don-card-suggested__blood">
+                                <span class="don-card-suggested__blood-val">A+</span>
+                                <span class="don-card-suggested__blood-label">BLOOD TYPE</span>
+                            </div>
+                        </div>
+                        <div class="don-card-suggested__address">
+                            <i class="ri-map-pin-line"></i>
+                            <span>Victory Towers, Fawzy Moaz St,<br>Building A, Apt 402.</span>
+                        </div>
+                        <div class="don-card-suggested__footer">
+                            <div class="don-card-suggested__badge don-card-suggested__badge--blue">
+                                <i class="ri-checkbox-circle-line"></i> Eligible to donate today
+                            </div>
+                            <button class="don-card-suggested__btn-outline">Accepted</button>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="don-card-suggested">
+                        <div class="don-card-suggested__header">
+                            <div class="don-card-suggested__user">
+                                <div class="don-card-suggested__avatar">
+                                    <i class="ri-user-line"></i>
+                                </div>
+                                <div class="don-card-suggested__info">
+                                    <h3 class="don-card-suggested__name">Ahmed Mansour</h3>
+                                    <span class="don-card-suggested__loc">
+                                        <i class="ri-map-pin-line"></i> Cairo
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="don-card-suggested__blood">
+                                <span class="don-card-suggested__blood-val">O+</span>
+                                <span class="don-card-suggested__blood-label">BLOOD TYPE</span>
+                            </div>
+                        </div>
+                        <div class="don-card-suggested__address">
+                            <i class="ri-map-pin-line"></i>
+                            <span>12 Street 254, Degla, Near the Grand<br>Mosque area, 2nd floor.</span>
+                        </div>
+                        <div class="don-card-suggested__footer">
+                            <div class="don-card-suggested__badge don-card-suggested__badge--orange">
+                                <i class="ri-history-line"></i> Last Donated: 3 months ago
+                            </div>
+                            <button class="don-card-suggested__btn-outline">Accepted</button>
+                        </div>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div class="don-card-suggested">
+                        <div class="don-card-suggested__header">
+                            <div class="don-card-suggested__user">
+                                <div class="don-card-suggested__avatar">
+                                    <i class="ri-user-line"></i>
+                                </div>
+                                <div class="don-card-suggested__info">
+                                    <h3 class="don-card-suggested__name">Laila Ibrahim</h3>
+                                    <span class="don-card-suggested__loc">
+                                        <i class="ri-map-pin-line"></i> Alexandria
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="don-card-suggested__blood">
+                                <span class="don-card-suggested__blood-val">A+</span>
+                                <span class="don-card-suggested__blood-label">BLOOD TYPE</span>
+                            </div>
+                        </div>
+                        <div class="don-card-suggested__address">
+                            <i class="ri-map-pin-line"></i>
+                            <span>Victory Towers, Fawzy Moaz St,<br>Building A, Apt 402.</span>
+                        </div>
+                        <div class="don-card-suggested__footer">
+                            <div class="don-card-suggested__badge don-card-suggested__badge--blue">
+                                <i class="ri-checkbox-circle-line"></i> Eligible to donate today
+                            </div>
+                            <button class="don-card-suggested__btn-outline">Accepted</button>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+
+    </div>
+</body>
+<script src="../JS/Board.js"></script>
+</html>

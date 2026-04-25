@@ -11,6 +11,7 @@ from .models import Service, NurseRequest
 from decimal import Decimal
 from datetime import time
 from doctor.views import get_ordered_week_days
+from donor import views as donation_views
 
 
 def _nurse_name(nurse):
@@ -121,13 +122,22 @@ def nurse_requests(request, type):
 
     all_reqs = nurse.nurse_requests.all()
 
-    if type == 'pending' or type is None:
-        pending_qs = list(all_reqs.filter(status='pending').order_by('-date', '-time'))
-        for req in pending_qs:
+    if type in ('pending', 'edited') or type is None:
+        pending_qs = []
+        for req in all_reqs.filter(status='pending').order_by('-date', '-time'):
             req_day = req.date.strftime('%A').lower()
             req.nurse_slots = TimeSlots.objects.filter(nurse=nurse, day=req_day).order_by('time')
             req.day_slots = req.nurse_slots  # alias for template compatibility
-        return render(request, 'nurse/requests_pending.html', {**context_base, 'pending': pending_qs})
+            pending_qs.append(req)
+
+        edited_qs = []
+        for req in all_reqs.filter(status='edited').order_by('-date', '-time'):
+            req_day = req.date.strftime('%A').lower()
+            req.nurse_slots = TimeSlots.objects.filter(nurse=nurse, day=req_day).order_by('time')
+            req.day_slots = req.nurse_slots
+            edited_qs.append(req)
+
+        return render(request, 'nurse/requests_pending.html', {**context_base, 'pending': pending_qs, 'edited': edited_qs})
 
     elif type == 'accepted':
         accepted = all_reqs.filter(status='accepted').order_by('-date', '-time')
@@ -140,7 +150,6 @@ def nurse_requests(request, type):
     return redirect('nurse:nurse_dashboard')
 
 
-@login_required
 @login_required
 @require_POST
 def request_action(request, request_id):
@@ -189,6 +198,8 @@ def mark_done(request, request_id):
         req.status = 'completed'
     req.save()
     return redirect('nurse:nurse_requests', type='accepted')
+
+
 
 
 @login_required
@@ -293,3 +304,33 @@ def save_time_slots(request):
                 continue
 
     return JsonResponse({'success': True})
+
+
+@login_required
+def create_blood_request(request):
+    return donation_views.create_blood_request(request)
+
+
+@login_required
+def my_blood_requests(request):
+    return donation_views.my_blood_requests(request)
+
+
+@login_required
+def request_offers(request, request_id):
+    return donation_views.request_offers(request, request_id)
+
+
+@login_required
+def accept_offer(request, offer_id):
+    return donation_views.accept_offer(request, offer_id)
+
+
+@login_required
+def requester_mark_done(request, offer_id):
+    return donation_views.requester_mark_done(request, offer_id)
+
+
+@login_required
+def cancel_blood_request(request, request_id):
+    return donation_views.cancel_blood_request(request, request_id)

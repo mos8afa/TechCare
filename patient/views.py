@@ -4,10 +4,12 @@ from accounts.models import Patient, Doctor, Nurse, SPECIFICATIONS, GOVERNORATES
 from doctor.models import DoctorRequest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg
+from django.db.models import Avg, Min
 from accounts.models import TimeSlots, get_provider_days_with_dates
 from datetime import time as time_type
 from datetime import datetime as dt
+import json as _json
+from donor import views as donation_views
 
 
 
@@ -32,7 +34,6 @@ def patient_dashboard(request):
     doctor_completed  = doctor_reqs.filter(status='completed').count()
 
     # Nurse requests
-    from nurse.models import NurseRequest
     nurse_reqs      = patient.nurse_requests.all()
     nurse_total     = nurse_reqs.count()
     nurse_pending   = nurse_reqs.filter(status__in=['pending', 'edited']).count()
@@ -159,7 +160,7 @@ def patient_requests(request, category, type):
         all_requests = patient.doctor_requests.all()
 
         if type == 'booking':
-            doctors = Doctor.objects.all()
+            doctors = Doctor.objects.filter(slots__isnull=False).distinct()
             for doctor in doctors:
                 avg = doctor.rates.aggregate(Avg('rate'))['rate__avg'] or 0
                 doctor.avg_rating = round(avg)
@@ -194,17 +195,18 @@ def patient_requests(request, category, type):
             })
 
     if category == 'nurse':
-        from nurse.models import NurseRequest
         all_nurse = patient.nurse_requests.all()
 
         if type == 'booking':
-            nurses = Nurse.objects.all()
+            nurses = Nurse.objects.filter(slots__isnull=False).distinct()
             for nurse in nurses:
                 avg = nurse.rates.aggregate(Avg('rate'))['rate__avg'] or 0
                 nurse.avg_rating = round(avg)
+                min_price = nurse.nurse_services.aggregate(Min('price'))['price__min']
             return render(request, 'patient/nurse_booking.html', {
                 **context_base,
                 'nurses': nurses,
+                'min_price': min_price,
                 'governorates': GOVERNORATES,
             })
 
@@ -254,9 +256,7 @@ def book_appointment(request, doctor_id):
 
     selected_day  = days_with_dates[0]['day'] if days_with_dates else None
     selected_date = days_with_dates[0]['full_date'] if days_with_dates else ''
-
-    # All slots per day as JSON for client-side switching
-    import json as _json
+    
     all_slots = {}
     for d in days_with_dates:
         slots = TimeSlots.objects.filter(doctor=doctor, day=d['day']).order_by('time')
@@ -492,3 +492,33 @@ def mark_nurse_done(request, request_id):
     except NurseRequest.DoesNotExist:
         pass
     return redirect('patient:patient_requests', category='nurse', type='accepted')
+
+
+@login_required
+def create_blood_request(request):
+    return donation_views.create_blood_request(request)
+
+
+@login_required
+def my_blood_requests(request):
+    return donation_views.my_blood_requests(request)
+
+
+@login_required
+def request_offers(request, request_id):
+    return donation_views.request_offers(request, request_id)
+
+
+@login_required
+def accept_offer(request, offer_id):
+    return donation_views.accept_offer(request, offer_id)
+
+
+@login_required
+def requester_mark_done(request, offer_id):
+    return donation_views.requester_mark_done(request, offer_id)
+
+
+@login_required
+def cancel_blood_request(request, request_id):
+    return donation_views.cancel_blood_request(request, request_id)

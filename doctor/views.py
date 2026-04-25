@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import date, time, timedelta
 from doctor.models import DoctorRequest
 from datetime import time as time_type
+from donor import views as donation_views
 
 
 @login_required
@@ -192,17 +193,22 @@ def doctor_requests(request, type):
     }
 
     if type in ('pending', 'edited') or type is None:
-        pending_list = list(pending) + list(edited)
-        for req in pending_list:
-            req_day = req.date.strftime('%A').lower()  
-            req.day_slots = TimeSlots.objects.filter(
-                doctor=doctor, day=req_day
-            ).order_by('time')
+        pending_list = []
+        for req in pending.order_by('-date', '-time'):
+            req_day = req.date.strftime('%A').lower()
+            req.day_slots = TimeSlots.objects.filter(doctor=doctor, day=req_day).order_by('time')
+            pending_list.append(req)
+
+        edited_list = []
+        for req in edited.order_by('-date', '-time'):
+            req_day = req.date.strftime('%A').lower()
+            req.day_slots = TimeSlots.objects.filter(doctor=doctor, day=req_day).order_by('time')
+            edited_list.append(req)
 
         return render(request, 'doctor/requests_pending.html', {
             **context_base,
-            "pending": pending,
-            "edited": edited,
+            "pending": pending_list,
+            "edited": edited_list,
         })
     elif type == 'accepted':
         return render(request, 'doctor/requests_accepted.html', {
@@ -247,7 +253,6 @@ def request_action(request, request_id):
             try:
                 h, m = new_time.split(':')
                 new_t = time_type(int(h), int(m))
-                # if same time → just accept, if different → reschedule (edited)
                 if new_t == req.time:
                     req.status = 'accepted'
                 else:
@@ -364,3 +369,33 @@ def save_time_slots(request):
 
     return JsonResponse({'success': True})
 
+
+
+@login_required
+def create_blood_request(request):
+    return donation_views.create_blood_request(request)
+
+
+@login_required
+def my_blood_requests(request):
+    return donation_views.my_blood_requests(request)
+
+
+@login_required
+def request_offers(request, request_id):
+    return donation_views.request_offers(request, request_id)
+
+
+@login_required
+def accept_offer(request, offer_id):
+    return donation_views.accept_offer(request, offer_id)
+
+
+@login_required
+def requester_mark_done(request, offer_id):
+    return donation_views.requester_mark_done(request, offer_id)
+
+
+@login_required
+def cancel_blood_request(request, request_id):
+    return donation_views.cancel_blood_request(request, request_id)
