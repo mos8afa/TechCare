@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notifications - TechCare</title>
+
+    <link rel="stylesheet" href="Donor.css">
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">
+                        <img src="../img/logo.png" alt="">
+                    </span>
+                    <div>
+                        <h2>TechCare</h2>
+                        <p>Medical Portal</p>
+                    </div>
+                    <button class="sidebar-toggle">
+                        <i class="bi bi-layout-sidebar-inset-reverse"></i>
+                    </button>
+                </div>
+            </div>
+
+            <aside class="aside">
+                <a href="Profile.html" class="aside-item">
+                    <i class="bi bi-person"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="Requests.html" class="aside-item">
+                    <i class="ri-file-list-line"></i>
+                    <span>Requests</span>
+                </a>
+                <a href="Notifications1.html" class="aside-item active">
+                    <i class="fa-regular fa-bell"></i>
+                    <span>Notifications</span>
+                </a>
+                <a href="Donation_Suggested.html" class="aside-item">
+                    <i class="ri-hand-heart-line"></i>
+                    <span style="white-space: nowrap; font-size: 13px;">Donation</span>
+                </a>
+                <a href="Wallet.html" class="aside-item">
+                    <i class="ri-wallet-3-line"></i>
+                    <span>Wallet</span>
+                </a>
+                <a href="Complaints.html" class="aside-item">
+                    <i class="ri-error-warning-line"></i>
+                    <span>Complaints</span>
+                </a>
+            </aside>
+        </aside>
+
+        <div style="flex:1; display:flex; flex-direction:column; background-color: #f8fafc; min-height: 100vh;">
+
+            <!-- Top Navbar -->
+            <div class="topbar" style="background-color: #ffffff; border-bottom: 1px solid #e2e8f0;">
+                <h2 class="topbar-title">Patient Profile</h2>
+
+                <div class="topbar-right">
+                    <div class="topbar-icon" id="notificationBtn">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-badge" style="background: #ef4444; width: 6px; height: 6px; border-radius: 50%; display: inline-block; position: absolute; top: 5px; right: 5px;"></span>
+                    </div>
+                    <hr class="line">
+                    <div class="topbar-profile">
+                        <div class="topbar-user-info">
+                            <h4 style="font-weight: 600; color: #1e293b;">Menna Ali</h4>
+                        </div>
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Donor" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="donation-main-wrapper">
+                <div class="notif-header-container">
+                    <div class="donation-title-block" style="margin-bottom: 0;">
+                        <h1>Notifications</h1>
+                        <p>Stay updated with your latest requests and system updates.</p>
+                    </div>
+                    <div class="notif-header-actions">
+                        <button class="notif-btn-read"><i class="bi bi-check-circle"></i> Mark All as Read</button>
+                        <button class="notif-btn-clear"><i class="bi bi-trash"></i> Clear All</button>
+                    </div>
+                </div>
+
+                <!-- Notifications List -->
+                <div class="notif-list">
+                    <!-- TODAY Section -->
+                    <div class="notif-section">
+                        <div class="notif-badge-container">
+                            <span class="notif-date-badge1">TODAY</span>
+                            <div class="notif-date-line"></div>
+                        </div>
+
+                        <!-- Card 1 -->
+                        <div class="notif-card">
+                            <div class="notif-card__icon" style="background-color: #E3F2FD; color: #1E88E5;">
+                                <i class="ri-calendar-todo-line"></i>
+                            </div>
+                            <div class="notif-card__content">
+                                <div class="notif-card__header">
+                                    <h4>Appointment Confirmed</h4>
+                                    <span class="notif-card__time">2h ago</span>
+                                </div>
+                                <p>Dr. Ahmed Salem has confirmed your cardiology appointment for tomorrow at 10:00 AM.</p>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="notif-card">
+                            <div class="notif-card__icon" style="background-color: #E3F2FD; color: #1E88E5;">
+                                <i class="ri-home-4-line"></i>
+                            </div>
+                            <div class="notif-card__content">
+                                <div class="notif-card__header">
+                                    <h4>Schedule Updated</h4>
+                                    <span class="notif-card__time">5h ago</span>
+                                </div>
+                                <p>Nurse Sarah Johnson has updated the home visit time to 02:30 PM.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- YESTERDAY Section -->
+                    <div class="notif-section">
+                        <div class="notif-badge-container">
+                            <span class="notif-date-badge">YESTERDAY</span>
+                            <div class="notif-date-line"></div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="notif-card">
+                            <div class="notif-card__icon" style="background-color: #FFF3E0; color: #F57C00;">
+                                <i class="ri-drop-line"></i>
+                            </div>
+                            <div class="notif-card__content">
+                                <div class="notif-card__header">
+                                    <h4>Donor Response Received</h4>
+                                    <span class="notif-card__time">1d ago</span>
+                                </div>
+                                <p>A blood donor has responded to your urgent request for O+ blood. View details to connect.</p>
+                            </div>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div class="notif-card">
+                            <div class="notif-card__icon" style="background-color: #F3E5F5; color: #8E24AA;">
+                                <i class="ri-megaphone-line"></i>
+                            </div>
+                            <div class="notif-card__content">
+                                <div class="notif-card__header">
+                                    <h4>Wallet Deduction</h4>
+                                    <span class="notif-card__time">2d ago</span>
+                                </div>
+                                <p>An amount has been deducted from your wallet for your recent medical service payment. <a href="Wallet.html" style="color: #1E88E5; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-left: 4px;">View Wallet <i class="ri-arrow-right-line"></i></a></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EARLIER Section -->
+                    <div class="notif-section">
+                        <div class="notif-badge-container">
+                            <span class="notif-date-badge">EARLIER</span>
+                            <div class="notif-date-line"></div>
+                        </div>
+
+                        <!-- Card 5 (Special Checkmark) -->
+                        <div class="notif-card">
+                            <div class="notif-card__icon special-icon-container">
+                                <img src="icon_vector.svg" alt="Approved">
+                            </div>
+                            <div class="notif-card__content">
+                                <div class="notif-card__header">
+                                    <h4>Account Verification Approved</h4>
+                                    <span class="notif-card__time">4d ago</span>
+                                </div>
+                                <p>Great news! Your account verification documents have been fully approved.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Link -->
+                <div class="notif-footer-link">
+                    <a href="#">Load older notifications</a>
+                </div>
+
+            </main>
+        </div>
+    </div>
+</body>
+<script src="../JS/Board.js"></script>
+</html>

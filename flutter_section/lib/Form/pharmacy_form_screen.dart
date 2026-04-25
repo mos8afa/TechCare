@@ -40,7 +40,7 @@ class _PharmacyFormStep1State extends State<PharmacyFormStep1> {
   File? _profilePic;
   File? _nationalIdFront;
   File? _nationalIdBack;
-  bool _isLoading = false;
+  final bool _isLoading = false;
   String? _phoneError;
   String? _dobError;
 
@@ -148,7 +148,7 @@ class _PharmacyFormStep1State extends State<PharmacyFormStep1> {
       const SizedBox(height: 8),
       Container(
         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFE2E8F0))),
-        child: DropdownButtonFormField<String>(value: value, hint: Text(hint, style: const TextStyle(color: Color(0xFFA0AEC0), fontSize: 14)), isExpanded: true, decoration: InputDecoration(border: InputBorder.none, prefixIcon: Icon(icon, color: const Color(0xFFA0AEC0), size: 20), contentPadding: const EdgeInsets.symmetric(vertical: 8)), items: items, onChanged: onChanged, validator: validator),
+        child: DropdownButtonFormField<String>(initialValue: value, hint: Text(hint, style: const TextStyle(color: Color(0xFFA0AEC0), fontSize: 14)), isExpanded: true, decoration: InputDecoration(border: InputBorder.none, prefixIcon: Icon(icon, color: const Color(0xFFA0AEC0), size: 20), contentPadding: const EdgeInsets.symmetric(vertical: 8)), items: items, onChanged: onChanged, validator: validator),
       ),
     ]);
   }
@@ -423,7 +423,7 @@ class _PharmacyFormStep2State extends State<PharmacyFormStep2> {
       const SizedBox(height: 8),
       Container(
         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFE2E8F0))),
-        child: DropdownButtonFormField<String>(value: value, hint: Text(hint, style: const TextStyle(color: Color(0xFFA0AEC0), fontSize: 14)), isExpanded: true, decoration: InputDecoration(border: InputBorder.none, prefixIcon: Icon(icon, color: const Color(0xFFA0AEC0), size: 20), contentPadding: const EdgeInsets.symmetric(vertical: 8)), items: items, onChanged: onChanged, validator: validator),
+        child: DropdownButtonFormField<String>(initialValue: value, hint: Text(hint, style: const TextStyle(color: Color(0xFFA0AEC0), fontSize: 14)), isExpanded: true, decoration: InputDecoration(border: InputBorder.none, prefixIcon: Icon(icon, color: const Color(0xFFA0AEC0), size: 20), contentPadding: const EdgeInsets.symmetric(vertical: 8)), items: items, onChanged: onChanged, validator: validator),
       ),
     ]);
   }

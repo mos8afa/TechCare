@@ -29,6 +29,18 @@ body {
     overflow-y: scroll;
 }
 
+<<<<<<< HEAD
+=======
+/* ---------- NO SCROLL PAGE ---------- */
+html.no-scroll-page,
+body.no-scroll-page {
+    overflow: hidden;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+>>>>>>> fixed-donor-dashboard
 /* ---------- DASHBOARD LAYOUT ---------- */
 .dashboard {
     display: flex;
@@ -49,6 +61,20 @@ body {
     border-right: #E1E6EC 1px solid;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     overflow-y: auto;
+<<<<<<< HEAD
+=======
+    z-index: 1050;
+    transition: all 0.3s ease-in-out;
+}
+
+.sidebar.sidebar-open {
+    width: 250px;
+}
+
+.sidebar.sidebar-closed {
+    width: 80px;
+    padding: 20px 10px;
+>>>>>>> fixed-donor-dashboard
 }
 
 .sidebar.collapsed {
@@ -184,6 +210,19 @@ body {
     border-bottom: 1px solid #E1E6EC;
     box-shadow: 0 2px 8px rgba(255, 0, 0, 0.03);
     z-index: 1000;
+<<<<<<< HEAD
+=======
+    transition: all 0.3s ease-in-out;
+}
+
+.sidebar-open ~ div .topbar {
+    left: 250px;
+}
+
+.sidebar-closed ~ div .topbar,
+.sidebar.collapsed ~ div .topbar {
+    left: 80px;
+>>>>>>> fixed-donor-dashboard
 }
 
 .topbar-title {
@@ -3301,4 +3340,1452 @@ body {
     font-size: 40px;
     font-weight: 800;
     color: #1E88E5;
+<<<<<<< HEAD
+=======
+}
+
+/* =========================================
+   Create Donation Request Page
+   ========================================= */
+.create-donation-main {
+    margin-top: 72px;
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    height: calc(100vh - 72px);
+    padding: 24px 40px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+    color: #0f172a;
+    transition: all 0.3s ease-in-out;
+}
+
+.sidebar-open ~ div .create-donation-main {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+}
+
+.sidebar-closed ~ div .create-donation-main,
+.sidebar.collapsed ~ div .create-donation-main {
+    margin-left: 80px;
+    width: calc(100% - 80px);
+}
+
+.create-donation__header {
+    text-align: center;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
+.create-donation__title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 10px;
+}
+
+.create-donation__subtitle {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.create-donation__photo-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
+.create-donation__photo-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 12px;
+}
+
+.create-donation__photo-circle i.ri-user-line {
+    font-size: 28px;
+    color: #94a3b8;
+}
+
+.create-donation__photo-badge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 20px;
+    height: 20px;
+    background-color: #22c55e;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #ffffff;
+}
+
+.create-donation__photo-badge i {
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.create-donation__photo-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.create-donation__photo-desc {
+    font-size: 12px;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.create-donation__card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 24px 36px;
+    width: 100%;
+    max-width: 700px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+    margin-bottom: 20px;
+    overflow-y: auto;
+    flex-shrink: 1;
+    min-height: 0;
+}
+
+.create-donation__form-row {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.create-donation__form-row--full {
+    flex-direction: column;
+}
+
+.create-donation__form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.create-donation__label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.create-donation__input,
+.create-donation__select,
+.create-donation__textarea {
+    background-color: #f8fafc;
+    border: 1px solid #f8fafc;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #1e293b;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: all 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+    font-weight: 500;
+}
+
+.create-donation__input::placeholder,
+.create-donation__textarea::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+.create-donation__input:focus,
+.create-donation__select:focus,
+.create-donation__textarea:focus {
+    border-color: #1e88e5;
+    background-color: #ffffff;
+}
+
+.create-donation__select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.create-donation__select {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    padding-right: 40px;
+}
+
+.create-donation__select-icon {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    pointer-events: none;
+}
+
+.create-donation__textarea {
+    resize: none;
+    min-height: 100px;
+}
+
+.create-donation__urgency-group {
+    display: flex;
+    gap: 16px;
+}
+
+.create-donation__urgency-btn {
+    flex: 1;
+    background-color: #f8fafc;
+    border: 1px solid #f8fafc;
+    border-radius: 24px;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.create-donation__urgency-btn--active {
+    background-color: #1E88E50D;
+    border-color: #1e88e5;
+    color: #0f172a;
+}
+
+.create-donation__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    width: 100%;
+    max-width: 700px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+}
+
+.create-donation__btn {
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s ease;
+}
+
+.create-donation__btn--cancel {
+    background-color: transparent;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+}
+
+.create-donation__btn--cancel:hover {
+    background-color: #f1f5f9;
+}
+
+.create-donation__btn--submit {
+    background-color: #1e88e5;
+    border: none;
+    color: #ffffff;
+}
+
+.create-donation__btn--submit:hover {
+    background-color: #1565c0;
+}
+
+/* =========================================
+   Donation Suggested (2x2 Grid)
+   ========================================= */
+.don-grid-2x2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.don-card-suggested {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #E2E8F0;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+}
+
+.don-card-suggested__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.don-card-suggested__user {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.don-card-suggested__avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #F0F7FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.don-card-suggested__avatar i {
+    font-size: 24px;
+    color: #1E88E5;
+}
+
+.don-card-suggested__info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.don-card-suggested__name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.don-card-suggested__loc {
+    font-size: 13px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.don-card-suggested__loc i {
+    font-size: 14px;
+}
+
+.don-card-suggested__blood {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.don-card-suggested__blood-val {
+    font-size: 28px;
+    font-weight: 800;
+    color: #1E88E5;
+    line-height: 1;
+}
+
+.don-card-suggested__blood-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+}
+
+.don-card-suggested__address {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.6;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.don-card-suggested__address i {
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.don-card-suggested__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 8px;
+}
+
+.don-card-suggested__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.don-card-suggested__badge--orange {
+    background-color: #FFF3E0;
+    color: #E85D04;
+}
+
+.don-card-suggested__badge--blue {
+    background-color: #1E88E50D;
+    color: #1E88E5;
+}
+
+.don-card-suggested__btn-outline {
+    background-color: transparent;
+    border: 1.5px solid #1E88E5;
+    color: #1E88E5;
+    padding: 10px 28px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.don-card-suggested__btn-outline:hover {
+    background-color: #F0F7FF;
+}
+
+.donation-main-wrapper {
+    padding: 120px 40px 60px;
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    box-sizing: border-box;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #f8fafc;
+    transition: all 0.3s ease-in-out;
+}
+
+.sidebar-open ~ div .donation-main-wrapper {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+}
+
+.sidebar-closed ~ div .donation-main-wrapper,
+.sidebar.collapsed ~ div .donation-main-wrapper {
+    margin-left: 80px;
+    width: calc(100% - 80px);
+}
+
+.donation-title-block {
+    margin-bottom: 32px;
+}
+
+.donation-title-block h1 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+
+.donation-title-block p {
+    font-size: 15px;
+    color: #64748b;
+    margin: 0;
+}
+
+/* =========================================
+   Donation Accepted (2x2 Grid)
+   ========================================= */
+.don-card-accepted {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #E2E8F0;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+}
+
+.don-card-acc__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.don-card-acc__avatars {
+    display: flex;
+}
+
+.don-card-acc__avatars img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    object-fit: cover;
+}
+
+.don-card-acc__avatars img:nth-child(2) {
+    margin-left: -12px;
+}
+
+.don-card-acc__badge {
+    background-color: #1E88E51A; /* 10% opacity */
+    color: #1E88E5;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.don-card-acc__split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.don-card-acc__col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.don-card-acc__label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #475569;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.don-card-acc__name {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 4px 0;
+}
+
+.don-card-acc__detail {
+    font-size: 13px;
+    color: #64748b;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    line-height: 1.5;
+}
+
+.don-card-acc__detail i {
+    color: #1E88E5;
+    margin-top: 2px;
+}
+
+.don-card-acc__detail.location i {
+    color: #94a3b8;
+}
+
+.don-card-acc__btn {
+    width: 100%;
+    background-color: #1E88E5;
+    color: #ffffff;
+    border: none;
+    padding: 14px;
+    border-radius: 24px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.don-card-acc__btn:hover {
+    background-color: #1565c0;
+}
+
+/* =========================================
+   Donation Done (2x2 Grid)
+   ========================================= */
+.don-card-done {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #E2E8F0;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+}
+
+.don-card-done__badge {
+    background-color: #E8F5E9;
+    color: #2E7D32;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.don-card-done__success-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    background-color: #F0FDF4; /* Lighter green */
+    color: #15803D; /* Deep green */
+    padding: 14px;
+    border-radius: 24px;
+    font-size: 15px;
+    font-weight: 600;
+    box-sizing: border-box;
+}
+
+.don-card-done__success-box img.success-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+/* =========================================
+   Notifications Page
+   ========================================= */
+
+.notif-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.notif-header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.notif-btn-read, .notif-btn-clear {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    font-family: 'Inter', sans-serif;
+}
+
+.notif-btn-read {
+    background-color: #1E88E5;
+    color: #ffffff;
+}
+
+.notif-btn-read:hover {
+    background-color: #1565c0;
+}
+
+.notif-btn-clear {
+    background-color: #F5F5F5;
+    color: #616161;
+}
+
+.notif-btn-clear:hover {
+    background-color: #e0e0e0;
+}
+
+.notif-list {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    width: 100%;
+}
+
+.notif-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.notif-badge-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.notif-date-badge {
+    background-color: #EAEEF1;
+    color: #404752;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.notif-date-badge1 {
+    background-color: #D3E4FF;
+    color: #005EA4;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.notif-date-line {
+    flex-grow: 1;
+    height: 1px;
+    background-color: #E2E8F0;
+}
+
+.notif-card {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #E2E8F0;
+    padding: 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+}
+
+.notif-card__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.notif-card__icon.special-icon-container {
+    background-color: transparent !important;
+}
+
+.notif-card__icon.special-icon-container img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.notif-card__content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-grow: 1;
+}
+
+.notif-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.notif-card__header h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.notif-card__time {
+    font-size: 13px;
+    color: #94a3b8;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.notif-card__content p {
+    margin: 0;
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+.notif-footer-link {
+    text-align: center;
+    margin-top: 24px;
+    margin-bottom: 40px;
+}
+
+.notif-footer-link a {
+    color: #1E88E5;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.notif-footer-link a:hover {
+    color: #1565c0;
+    text-decoration: underline;
+}
+
+/* =========================================
+   Wallet Page
+   ========================================= */
+
+.wallet-main {
+    padding-top: 100px; 
+}
+
+.wallet-container {
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+}
+
+.wallet-col-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.wallet-col-right {
+    width: 360px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* Balance Card */
+.wallet-balance-card {
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+    border: 1px solid #E2E8F0;
+    position: relative;
+    overflow: hidden;
+}
+
+.wallet-balance-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle at top right, rgba(227, 242, 253, 0.6) 0%, rgba(227, 242, 253, 0) 70%);
+    border-radius: 0 20px 0 100%;
+}
+
+.wallet-balance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: -11px;
+    position: relative;
+    z-index: 1;
+}
+
+.wallet-balance-amount {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.wallet-balance-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.wallet-balance-value {
+    font-size: 48px;
+    font-weight: 800;
+    color: #1e293b;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.wallet-balance-currency {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1E88E5;
+}
+
+.wallet-balance-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.wallet-btn-outline {
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    padding: 10px 24px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.wallet-btn-outline:hover {
+    background-color: #f8fafc;
+}
+
+.wallet-btn-primary {
+    background-color: #004D99; 
+    color: #ffffff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.wallet-btn-primary:hover {
+    background-color: #003a75;
+}
+
+.wallet-spent-box {
+    background-color: #F0F4F7;
+    border-radius: 16px;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.wallet-spent-icon {
+    width: 48px;
+    height: 48px;
+    background-color: #E3F2FD;
+    color: #1E88E5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.wallet-spent-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.wallet-spent-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.wallet-spent-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+/* Recent Activity Table */
+.wallet-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.wallet-section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.wallet-link {
+    color: #1E88E5;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.wallet-link:hover {
+    text-decoration: underline;
+}
+
+.wallet-activity-table {
+    background-color: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+    overflow: hidden;
+    width: 100%;
+}
+
+.wallet-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.wallet-table th {
+    text-align: left;
+    padding: 16px 24px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background-color: #f8fafc;
+    border-bottom: 1px solid #E2E8F0;
+}
+
+.wallet-table td {
+    padding: 24px;
+    border-bottom: 1px solid #E2E8F0;
+    vertical-align: middle;
+}
+
+.wallet-table tr:last-child td {
+    border-bottom: none;
+}
+
+.wallet-activity-service {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.wallet-activity-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.wallet-activity-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.wallet-activity-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.wallet-activity-sub {
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+.wallet-activity-date {
+    font-size: 13px;
+    color: #64748b;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.wallet-status-badge {
+    display: inline-flex;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.wallet-status-completed {
+    background-color: #E8F5E9;
+    color: #2E7D32;
+}
+
+.wallet-status-pending {
+    background-color: #E2E8F0;
+    color: #475569;
+}
+
+.wallet-amount {
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-align: right;
+}
+
+.wallet-amount.negative {
+    color: #ef4444;
+}
+
+.wallet-amount.positive {
+    color: #1E88E5;
+}
+
+/* Saved Cards Section */
+.wallet-saved-cards {
+    background-color: #f8fafc;
+    border-radius: 20px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.wallet-credit-card {
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.wallet-cc-dark {
+    background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 100%);
+}
+
+.wallet-cc-blue {
+    background: linear-gradient(135deg, #1E88E5 0%, #005EA4 100%);
+}
+
+/* Circles in credit cards */
+.wallet-cc-circle {
+    position: absolute;
+    bottom: -30px;
+    right: -30px;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background-color: rgba(255,255,255,0.08);
+}
+
+.wallet-cc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.wallet-cc-brand {
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+.wallet-cc-nfc {
+    font-size: 20px;
+}
+
+.wallet-cc-number {
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+}
+
+.wallet-cc-hidden-group {
+    display: flex;
+    gap: 16px;
+    font-size: 22px;
+    letter-spacing: 4px;
+    opacity: 0.6;
+    line-height: 1;
+    transform: translateY(4px);
+}
+
+.wallet-cc-visible-group {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    line-height: 1;
+    text-align: left;
+}
+
+.wallet-cc-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    position: relative;
+    z-index: 1;
+}
+
+.wallet-cc-label {
+    font-size: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+
+.wallet-btn-add-card {
+    border: 2px dashed #cbd5e1;
+    background-color: transparent;
+    color: #475569;
+    padding: 16px;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+    margin-top: 8px;
+}
+
+.wallet-btn-add-card:hover {
+    border-color: #94a3b8;
+    color: #1e293b;
+    background-color: #f1f5f9;
+}
+
+/* Ad Card */
+.wallet-ad-card {
+    background-color: #FFECC9;
+    border-radius: 20px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.wallet-ad-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #5D4037;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.wallet-ad-desc {
+    font-size: 13px;
+    color: #795548;
+    line-height: 1.5;
+    margin: 0 0 8px 0;
+    position: relative;
+    z-index: 1;
+}
+
+.wallet-ad-link {
+    color: #D84315;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Add Funds Modal */
+.wallet-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.wallet-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.wallet-modal-content {
+    background-color: #ffffff;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 480px;
+    padding: 32px 40px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.wallet-modal-header h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 8px;
+    margin-top: 0;
+}
+
+.wallet-modal-header p {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+}
+
+.wallet-modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.wallet-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.wallet-form-row {
+    display: flex;
+    gap: 16px;
+}
+
+.wallet-form-row .wallet-form-group {
+    flex: 1;
+}
+
+.wallet-form-group label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.wallet-form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 24px; 
+    font-size: 14px;
+    color: #1e293b;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: all 0.2s;
+    box-sizing: border-box;
+}
+
+.wallet-form-group input::placeholder {
+    color: #94a3b8;
+}
+
+.wallet-form-group input:focus {
+    border-color: #1E88E5;
+    box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+}
+
+.wallet-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.wallet-input-wrapper input {
+    padding-right: 40px;
+    width: 100%;
+}
+
+.wallet-input-wrapper i {
+    position: absolute;
+    right: 16px;
+    color: #64748b;
+    font-size: 18px;
+}
+
+.wallet-btn-modal-primary {
+    background-color: #1E88E5;
+    color: #ffffff;
+    border: none;
+    padding: 14px;
+    border-radius: 24px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+    width: 100%;
+}
+
+.wallet-btn-modal-primary:hover {
+    background-color: #1565c0;
+}
+
+.wallet-btn-modal-cancel {
+    background-color: transparent;
+    color: #64748b;
+    border: none;
+    padding: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.wallet-btn-modal-cancel:hover {
+    color: #1e293b;
+}
+
+.wallet-modal-footer {
+    border-top: 1px solid #f1f5f9;
+    padding-top: 24px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    letter-spacing: 0.5px;
+>>>>>>> fixed-donor-dashboard
 }
