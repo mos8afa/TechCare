@@ -256,12 +256,12 @@ def nurse_requests(request, type):
 
     elif type == 'accepted':
         accepted_list = [base_fields(req)
-                         for req in all_reqs.filter(status='accepted').order_by('-date', '-time')]
+                        for req in all_reqs.filter(status='accepted').order_by('-date', '-time')]
         return Response({"accepted": accepted_list}, status=200)
 
     elif type == 'completed':
         completed_list = [base_fields(req)
-                          for req in all_reqs.filter(status='completed').order_by('-date', '-time')]
+                        for req in all_reqs.filter(status='completed').order_by('-date', '-time')]
         return Response({"completed": completed_list}, status=200)
 
     return Response({"error": "Invalid request type"}, status=400)
