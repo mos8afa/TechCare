@@ -84,7 +84,7 @@ Depends on: Nurse_Board.css (global layout + variables)
 .requests-grid {
     gap: 24px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
 }
 
 /* ===== Request card ===== */

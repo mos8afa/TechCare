@@ -1462,7 +1462,7 @@ body {
 .timeslots-card1 {
     width: 100%;
     border-radius: 16px;
-    padding: 28px 32px;
+    padding: 0px 32px;
     margin-bottom: 32px;
 }
 
@@ -1477,10 +1477,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 16px;
+    gap: 20px;
 }
 
 .timeslots-container1 .timeslots-grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 24px;
 }
 
