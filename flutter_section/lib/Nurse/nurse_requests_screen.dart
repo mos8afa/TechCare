@@ -462,10 +462,6 @@ class _NurseRequestsScreenState extends State<NurseRequestsScreen>
       // Info row
       Row(children: [
         _infoBlock('DATE & TIME', '$date | $time'),
-        const SizedBox(width: 20),
-        _infoBlock('CONDITION', desc.isNotEmpty
-            ? (desc.length > 40 ? '${desc.substring(0, 40)}…' : desc)
-            : '—'),
       ]),
       const Padding(padding: EdgeInsets.symmetric(vertical: 12),
           child: Divider(color: kBorderColor)),

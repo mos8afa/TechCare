@@ -177,7 +177,7 @@ def patient_requests(request, category, type):
             return render(request, 'patient/doctor_pending.html', {
                 **context_base,
                 'pending': pending,
-                'edited': edited,
+                'edited' : edited,
             })
 
         elif type == 'accepted':

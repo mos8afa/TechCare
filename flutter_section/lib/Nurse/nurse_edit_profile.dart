@@ -281,7 +281,7 @@ class _NurseEditProfileScreenState extends State<NurseEditProfileScreen> {
   ]);
 
   Widget _addressField() => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-    _lbl('Address'), const SizedBox(height: 6),
+    _lbl('Clinic Address'), const SizedBox(height: 6),
     TextFormField(controller: _addressCtrl,
         decoration: _dec(hint: 'Street, Building, Apartment',
             prefix: const Icon(Icons.location_on_outlined, color: kTextGray, size: 18))),

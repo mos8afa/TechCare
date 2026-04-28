@@ -406,7 +406,7 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
             Row(children: [
               const Icon(Icons.location_on_outlined, size: 15, color: kPrimary),
               const SizedBox(width: 4),
-              Expanded(child: Text(r['address'] ?? '',
+              Expanded(child: Text('${r['governorate'] ?? ''} / ${r['address'] ?? ''}',
                   style: const TextStyle(fontSize: 13, color: kTextGray))),
             ]),
             const SizedBox(height: 2),
@@ -480,6 +480,7 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
     );
   }
 
+  // ── DONE TAB ───────────────────────────────────────────────────────────
   Widget _buildDoneCard(Map r) {
     return Container(
       decoration: BoxDecoration(
@@ -528,7 +529,7 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
             Row(children: [
               const Icon(Icons.location_on_outlined, size: 15, color: kPrimary),
               const SizedBox(width: 4),
-              Expanded(child: Text(r['address'] ?? '',
+              Expanded(child: Text('${r['governorate'] ?? ''} / ${r['address'] ?? ''}',
                   style: const TextStyle(fontSize: 13, color: kTextGray))),
             ]),
             const SizedBox(height: 2),
