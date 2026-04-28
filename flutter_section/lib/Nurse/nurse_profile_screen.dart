@@ -318,7 +318,7 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: kDarkText)),
             const SizedBox(height: 2),
-            const Text('Registered Nurse', style: TextStyle(fontSize: 13, color: kTextGray)),
+            const Text('Registered Nurse', style: TextStyle(fontSize: 13, color: kPrimary)),
           ])),
         ]),
         const Padding(padding: EdgeInsets.symmetric(vertical: 16), child: Divider(color: kBorderColor)),

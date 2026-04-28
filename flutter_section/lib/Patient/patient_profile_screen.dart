@@ -365,7 +365,6 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
   }
 
   Widget _buildBottomSection() {
-    final combined = _data!['combined'] as Map? ?? {};
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -408,58 +407,20 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
                   const Text('AVAILABLE BALANCE',
                       style: TextStyle(color: Colors.white60, fontSize: 10, letterSpacing: 0.8)),
                   const SizedBox(height: 4),
-                  const Text('2,450 EGP',  // يمكن استبدالها بقيمة من API لاحقاً
+                  const Text('2,450 EGP',  
                       style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w800)),
                 ],
               ),
             ),
           ),
         ),
-        const SizedBox(width: 12),
-        // Stats column
-        Expanded(
-          flex: 2,
-          child: Column(children: [
-            _smallStat(Icons.calendar_today_outlined, 'APPOINTMENTS',
-                combined['total'] ?? 0, kPrimary, const Color(0xFFEFF6FF)),
-            const SizedBox(height: 10),
-            _smallStat(Icons.check_circle_outline_rounded, 'COMPLETED',
-                combined['completed'] ?? 0, kGreen, const Color(0xFFE6F7E6)),
-            const SizedBox(height: 10),
-            _smallStat(Icons.article_outlined, 'PENDING',
-                combined['pending'] ?? 0, kAmber, const Color(0xFFFFFBEB)),
-          ]),
-        ),
       ],
-    );
-  }
-
-  Widget _smallStat(IconData icon, String label, int val, Color color, Color bg) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: bg, borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: color.withOpacity(0.2)),
-      ),
-      child: Row(children: [
-        Container(
-          width: 34, height: 34,
-          decoration: BoxDecoration(color: color.withOpacity(0.15), borderRadius: BorderRadius.circular(10)),
-          child: Icon(icon, color: color, size: 18),
-        ),
-        const SizedBox(width: 10),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(label, style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: color, letterSpacing: 0.5)),
-          Text('$val', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: kDarkText)),
-        ])),
-      ]),
     );
   }
 
   void _navigateTo(String label) {
     switch (label) {
       case 'Profile':
-        // بالفعل في نفس الصفحة
         break;
       case 'Requests':
         Navigator.pushReplacement(context,

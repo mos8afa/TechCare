@@ -29,6 +29,8 @@ String _formatTime(String raw) {
   }
 }
 
+// http://127.0.0.1:8000/api    Mobile Device
+// http://10.0.2.2:8000/api     Mobile emulator
 
 class ApiService {
   static const String baseUrl = 'http://10.0.2.2:8000/api';
@@ -1068,6 +1070,7 @@ class ApiService {
     required String diseaseDescription,
     required String governorate,
     required String address,
+    required String phoneNumber,
   }) async {
     try {
       final response = await _authPost('$baseUrl/doctor/$doctorId/book/', {
@@ -1076,6 +1079,7 @@ class ApiService {
         'disease_description': diseaseDescription,
         'governorate': governorate,
         'address': address,
+        'phone_number': phoneNumber,
       });
       final data = jsonDecode(response.body);
       if (response.statusCode == 201 || response.statusCode == 200) {
