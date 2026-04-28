@@ -1767,9 +1767,9 @@ body.no-scroll-page {
    ============================================ */
 .nbs-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 24px;
-    margin-top: 12px;
+    margin-top: 30px;
 }
 
 .nbs-card {
@@ -1778,12 +1778,13 @@ body.no-scroll-page {
     padding: 24px 28px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     border: 1.5px solid #94A3B8;
-    width: 536px;
-    height: 326px;
+    width: 100%;
     max-width: 100%;
     display: flex;
     flex-direction: column;
     transition: 0.3s ease;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .nbs-card:hover {
@@ -1889,7 +1890,7 @@ body.no-scroll-page {
     margin-top: 20px;
     margin-bottom: 12px;
     letter-spacing: 0.5px;
-    margin-left: 99px;
+    margin-left: 131px;
 }
 
 .nbs-service {
@@ -1897,7 +1898,11 @@ body.no-scroll-page {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 3px;
-    margin-left: 102px;
+    margin-left: 131px;
+}
+
+.nbs-service:last-of-type {
+    margin-bottom: 24px;
 }
 
 .nbs-service-name {
@@ -1915,8 +1920,12 @@ body.no-scroll-page {
 .nbs-footer {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
-    margin-top: 13px;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 16px;
+    gap: 12px;
+    flex-wrap: nowrap;
+    overflow: hidden;
 }
 
 .nbs-price-label {
@@ -1926,7 +1935,7 @@ body.no-scroll-page {
     color: #4b5563;
     letter-spacing: 1px;
     margin-bottom: -2px;
-    margin-left: 102px;
+    margin-left: 131px;
 }
 
 .nbs-price-amount {
@@ -1936,7 +1945,12 @@ body.no-scroll-page {
     display: flex;
     align-items: baseline;
     gap: 4px;
-    margin-left: 102px;
+    margin-left: 131px;
+}
+
+.nbs-price-amount span {
+    font-size: 14px;
+    color: var(--primary-color);
 }
 
 .nbs-btn-book {
@@ -1950,10 +1964,15 @@ body.no-scroll-page {
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(29, 137, 228, 0.2);
     transition: var(--transition-smooth);
+    white-space: nowrap;
+    flex-shrink: 0;
+    text-decoration: none;
+    display: inline-block;
 }
 
 .nbs-btn-book:hover {
     background-color: var(--secondary-color);
+    transform: translateY(-3px) scale(1.05);
     box-shadow: 0 6px 18px rgba(29, 137, 228, 0.3);
 }
 
@@ -3012,7 +3031,6 @@ body.no-scroll-page {
     border-radius: 10px;
     padding: 10px 14px;
     line-height: 1.6;
-    padding-right: 290px;
 }
 
 .pending-details {
@@ -3351,12 +3369,11 @@ body.no-scroll-page {
     margin-top: 72px;
     margin-left: 250px;
     width: calc(100% - 250px);
-    height: calc(100vh - 72px);
-    padding: 24px 40px;
+    min-height: calc(100vh - 72px);
+    padding: 40px 40px 60px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     font-family: 'Inter', sans-serif;
     color: #0f172a;
@@ -3460,9 +3477,7 @@ body.no-scroll-page {
     max-width: 700px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
     margin-bottom: 20px;
-    overflow-y: auto;
-    flex-shrink: 1;
-    min-height: 0;
+    overflow-y: visible;
 }
 
 .create-donation__form-row {
@@ -4788,4 +4803,610 @@ body.no-scroll-page {
     gap: 6px;
     letter-spacing: 0.5px;
 >>>>>>> fixed-donor-dashboard
+}
+
+
+/* ============================================================
+   DONOR — FULL RESPONSIVE OVERRIDES
+   Breakpoints: 1200px | 1024px | 768px | 640px | 480px
+   ============================================================ */
+
+/* ── Sidebar + Topbar + Main layout ── */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 220px;
+        padding: 20px 16px;
+    }
+    .topbar {
+        left: 220px;
+    }
+    .main-content {
+        margin-left: 220px;
+        padding: 24px 20px;
+    }
+}
+
+/* Mobile: sidebar becomes a top bar */
+@media (max-width: 768px) {
+    /* Sidebar collapses to a horizontal strip at the top */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100% !important;
+        height: auto;
+        flex-direction: row;
+        align-items: center;
+        padding: 10px 16px;
+        z-index: 1100;
+        overflow-x: auto;
+        overflow-y: hidden;
+        border-right: none;
+        border-bottom: 1px solid #E1E6EC;
+        gap: 0;
+    }
+
+    .sidebar-header {
+        flex-shrink: 0;
+        margin-right: 12px;
+    }
+
+    .logo {
+        margin-bottom: 0;
+        gap: 8px;
+    }
+
+    .logo p,
+    .sidebar-toggle {
+        display: none;
+    }
+
+    .logo h2 {
+        font-size: 14px;
+    }
+
+    .logo-icon img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .aside {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 4px;
+        overflow-x: auto;
+    }
+
+    .aside-item {
+        padding: 8px 12px;
+        border-radius: 10px;
+        white-space: nowrap;
+        font-size: 13px;
+        gap: 6px;
+    }
+
+    .aside-item i {
+        font-size: 16px;
+    }
+
+    /* Push topbar below the sidebar strip */
+    .topbar {
+        left: 0 !important;
+        top: 58px;
+        padding: 0 16px;
+        height: 60px;
+    }
+
+    .topbar-title {
+        font-size: 16px;
+    }
+
+    .topbar-user-info h4 {
+        font-size: 13px;
+    }
+
+    .topbar-profile img {
+        width: 34px;
+        height: 34px;
+    }
+
+    /* Main content shifts down for both bars */
+    .main-content {
+        margin-left: 0 !important;
+        margin-top: 130px;
+        padding: 20px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .topbar {
+        top: 56px;
+        padding: 0 12px;
+        height: 54px;
+    }
+
+    .main-content {
+        margin-top: 120px;
+        padding: 16px 12px;
+    }
+
+    .aside-item span {
+        display: none;
+    }
+
+    .aside-item {
+        padding: 8px 10px;
+    }
+}
+
+/* ── Dashboard profile card ── */
+@media (max-width: 900px) {
+    .patient-profile-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 24px;
+        margin-bottom: 32px;
+    }
+
+    .patient-avatar-wrap {
+        width: 100px;
+        height: 100px;
+    }
+
+    .patient-name {
+        font-size: 20px;
+    }
+
+    .patient-actions {
+        margin-left: 0;
+        align-self: flex-start;
+    }
+
+    .profile-info {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}
+
+/* ── Requests stat grid ── */
+@media (max-width: 900px) {
+    .requests-grid,
+    .donor-requests-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+}
+
+@media (max-width: 480px) {
+    .requests-grid,
+    .donor-requests-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Bottom section (wallet + stat cards) ── */
+@media (max-width: 1100px) {
+    .donor-bottom-section {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .profile-wallet-card {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 640px) {
+    .donor-bottom-section {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-wallet-card {
+        grid-column: auto;
+    }
+
+    .balance-amount {
+        font-size: 28px;
+    }
+}
+
+/* ── Category tabs ── */
+@media (max-width: 900px) {
+    .category-tabs {
+        width: 100%;
+        gap: 4px;
+        padding: 6px;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .cat-tab.active {
+        width: auto;
+        padding: 10px 20px;
+    }
+
+    .cat-tab {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .category-tabs {
+        gap: 4px;
+    }
+
+    .cat-tab {
+        padding: 7px 10px;
+        font-size: 12px;
+    }
+
+    .cat-tab.active {
+        padding: 8px 14px;
+    }
+
+    .status-tab {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+}
+
+/* ── Search bar ── */
+@media (max-width: 768px) {
+    .search-bar {
+        flex-direction: column;
+        gap: 10px;
+        padding: 12px 14px;
+    }
+
+    .search-input-wrap {
+        width: 100%;
+    }
+
+    .filter-select {
+        width: 100%;
+    }
+}
+
+/* ── Doctor cards grid ── */
+@media (max-width: 1200px) {
+    .doctors-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .doctors-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Nurse booking cards (NBS) ── */
+@media (max-width: 900px) {
+    .nbs-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .nbs-avatar-wrap {
+        width: 80px;
+        height: 80px;
+    }
+
+    .nbs-section-title,
+    .nbs-service,
+    .nbs-price-label,
+    .nbs-price-amount {
+        margin-left: 96px; /* 80px avatar + 16px gap */
+    }
+
+    .nbs-name {
+        font-size: 15px;
+    }
+}
+
+/* ── Nurse pending cards (NPC) ── */
+@media (max-width: 900px) {
+    .npc-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .npc-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .npc-avatar-wrap {
+        width: 80px;
+        height: 80px;
+    }
+
+    .npc-details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .npc-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .npc-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+/* ── Doctor pending cards ── */
+@media (max-width: 900px) {
+    .pending-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .pending-card-top {
+        flex-direction: column;
+    }
+
+    .pending-avatar {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+    }
+
+    .pending-note {
+        padding-right: 0;
+    }
+
+    .pending-details {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .pending-card-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .pending-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+/* ── Accepted cards ── */
+@media (max-width: 900px) {
+    .accepted-cards-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .accepted-card {
+        padding: 20px;
+    }
+
+    .ac-details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ac-header {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .ac-badge {
+        margin-top: 0;
+    }
+
+    .ac-fin-amount {
+        font-size: 20px;
+    }
+}
+
+/* ── Done cards ── */
+@media (max-width: 900px) {
+    .done-cards-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .done-card {
+        padding: 20px;
+    }
+
+    .dc-header {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .dc-badge {
+        margin-top: 0;
+    }
+
+    .dc-fin-amount {
+        font-size: 18px;
+    }
+}
+
+/* ── Book appointment grid ── */
+@media (max-width: 1024px) {
+    .booking-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .booking-right {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .booking-right .booking-card {
+        flex: 1;
+        min-width: 260px;
+    }
+}
+
+@media (max-width: 768px) {
+    .booking-inputs-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .doc-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 20px;
+    }
+
+    .doc-info-wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .booking-right {
+        flex-direction: column;
+    }
+
+    .booking-right .booking-card {
+        min-width: unset;
+    }
+
+    .slots-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .booking-page-header h1 {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 480px) {
+    .slots-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .date-item {
+        min-width: 60px;
+        height: 80px;
+    }
+
+    .date-num {
+        font-size: 18px;
+    }
+
+    .total-value {
+        font-size: 24px;
+    }
+}
+
+/* ── Edit profile ── */
+@media (max-width: 768px) {
+    .edit-profile-card {
+        padding: 20px;
+    }
+
+    .edit-form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .edit-photo-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .edit-footer {
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+
+    .btn-primary-edit,
+    .btn-light-edit {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* ── Nurse booking appointment (services card) ── */
+@media (max-width: 600px) {
+    .service-item {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .service-price {
+        margin-left: auto;
+    }
+
+    .nurse-tags {
+        gap: 6px;
+    }
+
+    .nurse-tag {
+        font-size: 11px;
+        padding: 4px 10px;
+    }
+}
+
+/* ── Donation grids ── */
+@media (max-width: 900px) {
+    .don-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .don-grid-2x2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .don-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .don-card-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .don-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .don-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+/* ── Notification inbox dropdown ── */
+@media (max-width: 480px) {
+    .inbox {
+        width: 280px;
+        right: -60px;
+    }
+}
+
+/* ── Topbar right section ── */
+@media (max-width: 480px) {
+    .topbar-right {
+        gap: 12px;
+    }
+
+    .line {
+        display: none;
+    }
+
+    .topbar-user-info {
+        display: none;
+    }
 }

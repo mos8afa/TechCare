@@ -1,122 +1,177 @@
-{% extends 'donor_base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nurse Requests – Accepted</title>
+    <link rel="stylesheet" href="{% static 'Css/Donor.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=bloodtype" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+<div class="dashboard">
 
-{% block sidebar %}
-<aside class="aside">
-    <a href="{% url 'donor:donor_dashboard' %}" class="aside-item">
-        <i class="bi bi-person"></i><span>Profile</span>
-    </a>
-    <a href="{% url 'donor:donor_requests' category='nurse' type='booking' %}" class="aside-item active">
-        <i class="ri-file-list-line"></i><span>Requests</span>
-    </a>
-    <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
-    <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
-    <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
-</aside>
-{% endblock %}
-
-{% block title %}
-<h2 class="topbar-title">Nurse Requests</h2>
-{% endblock title %}
-
-{% block content %}
-<main class="main-content">
-    <div class="booking-wrapper">
-
-        <!-- Category Tabs -->
-        <div class="category-tabs">
-            <button class="cat-tab" onclick="window.location.href='{% url 'donor:donor_requests' category='doctor' type='booking' %}'">
-                <i class="ri-stethoscope-line"></i> Doctor
-            </button>
-            <button class="cat-tab active" onclick="window.location.href='{% url 'donor:donor_requests' category='nurse' type='booking' %}'">
-                <i class="ri-nurse-line"></i> Nurse
-            </button>
-            <button class="cat-tab"><i class="ri-medicine-bottle-line"></i> Medicine</button>
-            <button class="cat-tab"><span class="material-symbols-outlined">bloodtype</span> Donations</button>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon"><img src="{% static 'img/logo.png' %}" alt=""></span>
+                <div><h2>TechCare</h2><p>Medical Portal</p></div>
+                <button class="sidebar-toggle"><i class="bi bi-layout-sidebar-inset-reverse"></i></button>
+            </div>
         </div>
+        <aside class="aside">
+            <a href="{% url 'donor:donor_dashboard' %}" class="aside-item">
+                <i class="bi bi-person"></i><span>Profile</span>
+            </a>
+            <a href="{% url 'donor:donor_requests' 'nurse' 'booking' %}" class="aside-item active">
+                <i class="ri-file-list-line"></i><span>Requests</span>
+            </a>
+            <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
+            <a href="{% url 'donation:my_requests' %}" class="aside-item"><i class="ri-hand-heart-line"></i><span>Donation</span></a>
+            <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
+            <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
+        </aside>
+    </aside>
 
-        <!-- Status Tabs -->
-        <div class="status-tabs">
-            <button class="status-tab" onclick="window.location.href='{% url 'donor:donor_requests' category='nurse' type='booking' %}'">Booking</button>
-            <button class="status-tab" onclick="window.location.href='{% url 'donor:donor_requests' category='nurse' type='pending' %}'">Pending</button>
-            <button class="status-tab active">Accepted</button>
-            <button class="status-tab" onclick="window.location.href='{% url 'donor:donor_requests' category='nurse' type='done' %}'">Done</button>
-        </div>
+    <div style="flex:1; display:flex; flex-direction:column;">
 
-        <div class="accepted-cards-container">
-            {% for req in accepted %}
-            <div class="accepted-card animate slide-up">
-                <div class="ac-header">
-                    <div class="ac-doc-info">
-                        <img src="{{ req.nurse.profile_pic.url }}" alt="{{ req.nurse.user.first_name }}" class="ac-avatar">
-                        <h3 class="ac-doc-name">{{ req.nurse.user.first_name }} {{ req.nurse.user.last_name }}</h3>
-                    </div>
-                    <div class="ac-badge">Accepted</div>
-                </div>
-
-                <div class="ac-details-grid">
-                    <div class="ac-detail-item">
-                        <i class="ri-calendar-event-line ac-icon blue"></i>
-                        <div>
-                            <p class="ac-label">DATE AND TIME</p>
-                            <p class="ac-value">{{ req.date|date:"M d, Y" }} • {{ req.time|time:"h:i A" }}</p>
-                        </div>
-                    </div>
-                    <div class="ac-detail-item">
-                        <i class="ri-phone-line ac-icon blue"></i>
-                        <div>
-                            <p class="ac-label">CONTACT INFO</p>
-                            <p class="ac-value">{{ req.nurse.phone_number }}</p>
-                        </div>
-                    </div>
-                    <div class="ac-detail-item">
-                        <i class="ri-map-pin-line ac-icon blue"></i>
-                        <div>
-                            <p class="ac-label">REGION AND ADDRESS</p>
-                            <p class="ac-value">{{ req.governrate }}, {{ req.address }}</p>
-                        </div>
-                    </div>
-                    <div class="ac-detail-item">
-                        <i class="ri-shield-check-line ac-icon green"></i>
-                        <div>
-                            <p class="ac-label">STATUS</p>
-                            <p class="ac-value text-green">Confirmed by Provider</p>
+        <!-- Top Navbar -->
+        <div class="topbar">
+            <h2 class="topbar-title">Donor Profile</h2>
+            <div class="topbar-right">
+                <div class="topbar-icon" id="notificationBtn">
+                    <i class="fa-regular fa-bell"></i>
+                    <div class="inbox" id="notificationBox">
+                        <div class="notification-item">
+                            <div class="notification-content"><p>No new notifications</p></div>
                         </div>
                     </div>
                 </div>
-
-                <div class="ac-services">
-                    <h4 class="ac-section-title">REQUESTED SERVICES</h4>
-                    {% for svc in req.service.all %}
-                    <div class="ac-service-item">
-                        <span class="ac-service-name">{{ svc.name }}</span>
-                        <span class="ac-service-price">{{ svc.price }} EGP</span>
-                    </div>
-                    {% endfor %}
-                </div>
-
-                <div class="ac-financial-box">
-                    <span class="ac-fin-label">FINANCIAL TOTAL</span>
-                    <span class="ac-fin-amount">{{ req.net_income }} EGP</span>
-                </div>
-
-                <div class="ac-footer">
-                    {% if req.patient_done %}
-                        <button class="ac-done-btn" disabled style="opacity:0.5; cursor:not-allowed;">Waiting for Nurse...</button>
+                <hr class="line">
+                <div class="topbar-profile" onclick="window.location.href='{% url 'donor:donor_dashboard' %}'">
+                    <div class="topbar-user-info"><h4>{{ name }}</h4></div>
+                    {% if profile_pic %}
+                        <img src="{{ profile_pic.url }}" alt="{{ name }}">
                     {% else %}
-                        <form method="POST" action="{% url 'donor:mark_nurse_done' req.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="ac-done-btn">Done</button>
-                        </form>
+                        <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="{{ name }}">
                     {% endif %}
                 </div>
             </div>
-            {% empty %}
-            <div class="no-requests-placeholder">
-                <h3>No Accepted Nurse Requests</h3>
-                <p>Once a nurse accepts your request, it will appear here.</p>
-            </div>
-            {% endfor %}
         </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="booking-wrapper">
+
+                <!-- Category Tabs -->
+                <div class="category-tabs">
+                    <button class="cat-tab"
+                            onclick="window.location.href='{% url 'donor:donor_requests' 'doctor' 'booking' %}'">
+                        <i class="ri-stethoscope-line"></i> Doctor
+                    </button>
+                    <button class="cat-tab active">
+                        <i class="ri-nurse-line"></i> Nurse
+                    </button>
+                    <button class="cat-tab"><i class="ri-medicine-bottle-line"></i> Medicine</button>
+                    <button class="cat-tab"
+                            onclick="window.location.href='{% url 'donation:available_requests' %}'">
+                        <span class="material-symbols-outlined">bloodtype</span> Donations
+                    </button>
+                </div>
+
+                <!-- Status Tabs -->
+                <div class="status-tabs">
+                    <button class="status-tab"
+                            onclick="window.location.href='{% url 'donor:donor_requests' 'nurse' 'booking' %}'">Booking</button>
+                    <button class="status-tab"
+                            onclick="window.location.href='{% url 'donor:donor_requests' 'nurse' 'pending' %}'">Pending</button>
+                    <button class="status-tab active">Accepted</button>
+                    <button class="status-tab"
+                            onclick="window.location.href='{% url 'donor:donor_requests' 'nurse' 'done' %}'">Done</button>
+                </div>
+
+                <div class="accepted-cards-container">
+                    {% for req in accepted %}
+                    <div class="accepted-card">
+                        <div class="ac-header">
+                            <div class="ac-doc-info">
+                                {% if req.nurse.profile_pic %}
+                                    <img src="{{ req.nurse.profile_pic.url }}" alt="{{ req.nurse.user.first_name }}" class="ac-avatar">
+                                {% else %}
+                                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Nurse" class="ac-avatar">
+                                {% endif %}
+                                <h3 class="ac-doc-name">{{ req.nurse.user.first_name }} {{ req.nurse.user.last_name }}</h3>
+                            </div>
+                            <div class="ac-badge">Accepted</div>
+                        </div>
+
+                        <div class="ac-details-grid">
+                            <div class="ac-detail-item">
+                                <i class="ri-calendar-event-line ac-icon blue"></i>
+                                <div>
+                                    <p class="ac-label">DATE AND TIME</p>
+                                    <p class="ac-value">{{ req.date }} • {{ req.time }}</p>
+                                </div>
+                            </div>
+                            <div class="ac-detail-item">
+                                <i class="ri-phone-line ac-icon blue"></i>
+                                <div>
+                                    <p class="ac-label">CONTACT INFO</p>
+                                    <p class="ac-value">{{ req.nurse.user.username }}</p>
+                                </div>
+                            </div>
+                            <div class="ac-detail-item">
+                                <i class="ri-map-pin-line ac-icon blue"></i>
+                                <div>
+                                    <p class="ac-label">REGION AND ADDRESS</p>
+                                    <p class="ac-value">{{ req.get_governrate_display }}, {{ req.address }}</p>
+                                </div>
+                            </div>
+                            <div class="ac-detail-item">
+                                <i class="ri-shield-check-line ac-icon green"></i>
+                                <div>
+                                    <p class="ac-label">STATUS</p>
+                                    <p class="ac-value text-green">Confirmed by Provider</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ac-services">
+                            <h4 class="ac-section-title">REQUESTED SERVICES</h4>
+                            {% for service in req.service.all %}
+                            <div class="ac-service-item">
+                                <span class="ac-service-name">{{ service.name }}</span>
+                                <span class="ac-service-price">{{ service.price }} EGP</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="ac-financial-box">
+                            <span class="ac-fin-label">FINANCIAL TOTAL</span>
+                            <span class="ac-fin-amount">{{ req.net_income }} EGP</span>
+                        </div>
+
+                        <div class="ac-footer">
+                            <form method="POST" action="{% url 'donor:mark_nurse_done' req.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="ac-done-btn">Done</button>
+                            </form>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p style="color:#888; padding:20px;">No accepted nurse requests.</p>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </main>
     </div>
-</main>
-{% endblock %}
+</div>
+<script src="{% static 'JS/Board.js' %}"></script>
+</body>
+</html>

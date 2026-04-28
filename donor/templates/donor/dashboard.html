@@ -1,253 +1,218 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Donor Profile</title>
-
     <link rel="stylesheet" href="{% static 'Css/Donor.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
 </head>
-
 <body>
-    <div class="dashboard">
+<div class="dashboard">
 
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <span class="logo-icon">
-                        <img src="{% static 'img/logo.png' %}" alt="">
-                    </span>
-                    <div>
-                        <h2>TechCare</h2>
-                        <p>Medical Portal</p>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon"><img src="{% static 'img/logo.png' %}" alt=""></span>
+                <div><h2>TechCare</h2><p>Medical Portal</p></div>
+                <button class="sidebar-toggle"><i class="bi bi-layout-sidebar-inset-reverse"></i></button>
+            </div>
+        </div>
+        <aside class="aside">
+            <a href="{% url 'donor:donor_dashboard' %}" class="aside-item active">
+                <i class="bi bi-person"></i><span>Profile</span>
+            </a>
+            <a href="{% url 'donor:donor_requests' 'doctor' 'booking' %}" class="aside-item">
+                <i class="ri-file-list-line"></i><span>Requests</span>
+            </a>
+            <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
+            <a href="{% url 'donation:my_requests' %}" class="aside-item"><i class="ri-hand-heart-line"></i><span>Donation</span></a>
+            <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
+            <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
+        </aside>
+    </aside>
+
+    <div style="flex:1; display:flex; flex-direction:column;">
+
+        <!-- Top Navbar -->
+        <div class="topbar">
+            <h2 class="topbar-title">Donor Profile</h2>
+            <div class="topbar-right">
+                <div class="topbar-icon" id="notificationBtn">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="notification-badge"></span>
+                    <div class="inbox" id="notificationBox">
+                        <div class="notification-item">
+                            <div class="notification-content"><p>No new notifications</p></div>
+                        </div>
                     </div>
-                    <button class="sidebar-toggle">
-                        <i class="bi bi-layout-sidebar-inset-reverse"></i>
+                </div>
+                <hr class="line">
+                <div class="topbar-profile" onclick="window.location.href='{% url 'donor:donor_dashboard' %}'">
+                    <div class="topbar-user-info"><h4>{{ name }}</h4></div>
+                    {% if profile_pic %}
+                        <img src="{{ profile_pic.url }}" alt="{{ name }}">
+                    {% else %}
+                        <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="{{ name }}">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Donor Profile Card -->
+            <div class="patient-profile-card">
+                <div class="patient-avatar-wrap">
+                    {% if profile_pic %}
+                        <img src="{{ profile_pic.url }}" alt="{{ name }}" class="patient-avatar">
+                    {% else %}
+                        <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="{{ name }}" class="patient-avatar">
+                    {% endif %}
+                    <div class="patient-status-dot"></div>
+                </div>
+                <div class="patient-details">
+                    <h2 class="patient-name">{{ name }}</h2>
+                    <div class="profile-info">
+                        <div class="info-item">
+                            <div><i class="ri-mail-line"></i></div>
+                            <div>
+                                <p class="info-label">Email Address</p>
+                                <p class="info-value">{{ email }}</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div><i class="ri-phone-line"></i></div>
+                            <div>
+                                <p class="info-label">Phone Number</p>
+                                <p class="info-value-phone">{{ phone_number }}</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div><i class="ri-map-pin-2-line"></i></div>
+                            <div>
+                                <p class="info-label">Governorate</p>
+                                <p class="info-value">{{ governorate }}</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div><i class="ri-home-4-line"></i></div>
+                            <div>
+                                <p class="info-label">Address</p>
+                                <p class="info-value">{{ address }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="patient-actions">
+                    <button class="btn-primary-edit" onclick="window.location.href='{% url 'donor:edit_donor_profile' %}'">
+                        Edit Profile
                     </button>
                 </div>
             </div>
 
-            <aside class="aside">
-                <a href="{% url 'donor:donor_dashboard' %}" class="aside-item active">
-                    <i class="bi bi-person"></i>
-                    <span>Profile</span>
-                </a>
-                <a href="{% url 'donor:donor_requests' category='doctor' type='booking' %}" class="aside-item">
-                    <i class="ri-file-list-line"></i>
-                    <span>Requests</span>
-                </a>
-                <a href="#" class="aside-item">
-                    <i class="fa-regular fa-bell"></i>
-                    <span>Notifications</span>
-                </a>
-                <a href="#" class="aside-item">
-                    <i class="ri-wallet-3-line"></i>
-                    <span>Wallet</span>
-                </a>
-                <a href="#" class="aside-item">
-                    <i class="ri-error-warning-line"></i>
-                    <span>Complaints</span>
-                </a>
-            </aside>
-        </aside>
-
-
-        <div style="flex:1; display:flex; flex-direction:column;">
-
-            <!-- Top Navbar -->
-            <div class="topbar">
-                <h2 class="topbar-title">Donor Profile</h2>
-
-                <div class="topbar-right">
-                    <div class="topbar-icon" id="notificationBtn">
-                        <i class="fa-regular fa-bell"></i>
-                        <span class="notification-badge"></span>
-                        <div class="inbox" id="notificationBox">
-                            <div class="notification-item">
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg">
-                                <div class="notification-content">
-                                    <h4>Ahmed Ali</h4>
-                                    <p>New Consultation Request</p>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="notification-item">
-                                <img src="https://randomuser.me/api/portraits/women/12.jpg">
-                                <div class="notification-content">
-                                    <h4>Sara Mohamed</h4>
-                                    <p>Appointment Confirmed</p>
-                                </div>
-                            </div>
-                        </div>
+            <!-- Requests Grid — 4 cards for Donor -->
+            <div class="requests-grid donor-requests-grid">
+                <div class="request-stat-card">
+                    <div class="req-header">
+                        <span class="req-title">Doctor Requests</span>
+                        <span class="req-count blue">{{ doctor_requests }}</span>
                     </div>
-                    <hr class="line">
-                    <div class="topbar-profile" onclick="window.location.href='{% url 'donor:donor_dashboard' %}'">
-                        <div class="topbar-user-info">
-                            <h4>{{ name }}</h4>
-                        </div>
-                        {% if profile_pic %}
-                            <img src="{{ profile_pic.url }}" alt="{{ name }}">
-                        {% else %}
-                            <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="{{ name }}">
-                        {% endif %}
+                    <div class="req-progress track-blue">
+                        <div class="req-fill bg-blue" style="width: 60%;"></div>
                     </div>
+                    <div class="req-footer">Total doctor appointments</div>
+                </div>
+                <div class="request-stat-card">
+                    <div class="req-header">
+                        <span class="req-title">Nurse Requests</span>
+                        <span class="req-count green">{{ nurse_requests }}</span>
+                    </div>
+                    <div class="req-progress track-green">
+                        <div class="req-fill bg-green" style="width: 40%;"></div>
+                    </div>
+                    <div class="req-footer">Total nurse appointments</div>
+                </div>
+                <div class="request-stat-card">
+                    <div class="req-header">
+                        <span class="req-title">Donation Offers</span>
+                        <span class="req-count gold">{{ donations }}</span>
+                    </div>
+                    <div class="req-progress track-gold">
+                        <div class="req-fill bg-gold" style="width: 75%;"></div>
+                    </div>
+                    <div class="req-footer">Total donation offers made</div>
+                </div>
+                <div class="request-stat-card">
+                    <div class="req-header">
+                        <span class="req-title">Blood Requests</span>
+                        <span class="req-count red">{{ donations_requests }}</span>
+                    </div>
+                    <div class="req-progress track-red">
+                        <div class="req-fill bg-red" style="width: 40%;"></div>
+                    </div>
+                    <div class="req-footer">Total blood requests posted</div>
                 </div>
             </div>
 
-            <!-- Main Content -->
-            <main class="main-content">
-                <!-- Donor Profile Card -->
-                <div class="patient-profile-card">
-                    <div class="patient-avatar-wrap">
-                        {% if profile_pic %}
-                            <img src="{{ profile_pic.url }}" alt="{{ name }}" class="patient-avatar">
-                        {% else %}
-                            <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="{{ name }}" class="patient-avatar">
-                        {% endif %}
-                        <div class="patient-status-dot"></div>
-                    </div>
-                    <div class="patient-details">
-                        <h2 class="patient-name">{{ name }}</h2>
-                        <div class="profile-info">
-                            <div class="info-item">
-                                <div><i class="ri-mail-line"></i></div>
-                                <div>
-                                    <p class="info-label">Email Address</p>
-                                    <p class="info-value">{{ email }}</p>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <div><i class="ri-phone-line"></i></div>
-                                <div>
-                                    <p class="info-label">Phone Number</p>
-                                    <p class="info-value-phone">{{ phone_number }}</p>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <div><i class="ri-map-pin-2-line"></i></div>
-                                <div>
-                                    <p class="info-label">Governorate</p>
-                                    <p class="info-value">{{ governorate }}</p>
-                                </div>
-                            </div>
-                            <div class="info-item">
-                                <div><i class="ri-home-4-line"></i></div>
-                                <div>
-                                    <p class="info-label">Address</p>
-                                    <p class="info-value">{{ address }}</p>
-                                </div>
-                            </div>
+            <!-- Bottom Section Layout -->
+            <div class="bottom-section donor-bottom-section">
+                <!-- Wallet Card -->
+                <div class="profile-wallet-card">
+                    <div class="wallet-header-flex">
+                        <div class="wallet-title-area">
+                            <h3>TechCare Wallet</h3>
+                            <p>Easily manage your healthcare payments</p>
+                        </div>
+                        <div class="wallet-icon-btn">
+                            <i class="ri-wallet-3-line"></i>
                         </div>
                     </div>
-                    <div class="patient-actions">
-                        <button class="btn-primary-edit" onclick="window.location.href='{% url 'donor:edit_donor_profile' %}'">
-                            Edit Profile
-                        </button>
+                    <div class="wallet-balance-box">
+                        <span class="balance-label">AVAILABLE BALANCE</span>
+                        <div class="balance-amount">0.00 EGP</div>
                     </div>
                 </div>
 
-                <!-- Requests Grid — 4 cards for Donor -->
-                <div class="requests-grid donor-requests-grid">
-                    <div class="request-stat-card">
-                        <div class="req-header">
-                            <span class="req-title">Doctor Requests</span>
-                            <span class="req-count blue">{{ doctor_requests }}</span>
-                        </div>
-                        <div class="req-progress track-blue">
-                            <div class="req-fill bg-blue" style="width: 60%;"></div>
-                        </div>
-                        <div class="req-footer">60% of monthly average</div>
+                <!-- Blood Type -->
+                <div class="donor-stat-card">
+                    <div class="icon-circle icon-blue">
+                        <i class="ri-drop-line"></i>
                     </div>
-                    <div class="request-stat-card">
-                        <div class="req-header">
-                            <span class="req-title">Nurse Requests</span>
-                            <span class="req-count green">{{ nurse_requests }}</span>
-                        </div>
-                        <div class="req-progress track-green">
-                            <div class="req-fill bg-green" style="width: 40%;"></div>
-                        </div>
-                        <div class="req-footer">40% of monthly average</div>
-                    </div>
-                    <div class="request-stat-card">
-                        <div class="req-header">
-                            <span class="req-title">Pharmacy Requests</span>
-                            <span class="req-count gold">0</span>
-                        </div>
-                        <div class="req-progress track-gold">
-                            <div class="req-fill bg-gold" style="width: 0%;"></div>
-                        </div>
-                        <div class="req-footer">0% of monthly average</div>
-                    </div>
-                    <div class="request-stat-card">
-                        <div class="req-header">
-                            <span class="req-title">Donation Requests</span>
-                            <span class="req-count red">{{ donations_requests }}</span>
-                        </div>
-                        <div class="req-progress track-red">
-                            <div class="req-fill bg-red" style="width: 40%;"></div>
-                        </div>
-                        <div class="req-footer">40% of monthly average</div>
-                    </div>
+                    <span class="donor-stat-title">BLOOD TYPE</span>
+                    <span class="donor-stat-value" style="font-weight:700; -webkit-text-stroke:0.6px currentColor;">{{ blood_type }}</span>
                 </div>
 
-                <!-- Bottom Section Layout -->
-                <div class="bottom-section donor-bottom-section">
-                    <!-- Wallet Card -->
-                    <div class="profile-wallet-card">
-                        <div class="wallet-header-flex">
-                            <div class="wallet-title-area">
-                                <h3>TechCare Wallet</h3>
-                                <p>Easily manage your healthcare payments</p>
-                            </div>
-                            <div class="wallet-icon-btn">
-                                <i class="ri-wallet-3-line"></i>
-                            </div>
-                        </div>
-                        <div class="wallet-balance-box">
-                            <span class="balance-label">AVAILABLE BALANCE</span>
-                            <div class="balance-amount">$0.00</div>
-                        </div>
+                <!-- Last Donation Date -->
+                <div class="donor-stat-card">
+                    <div class="icon-circle icon-blue">
+                        <i class="ri-calendar-line"></i>
                     </div>
-
-                    <!-- Blood Type -->
-                    <div class="donor-stat-card">
-                        <div class="icon-circle icon-blue">
-                            <i class="ri-drop-line"></i>
-                        </div>
-                        <span class="donor-stat-title">BLOOD TYPE</span>
-                        <span class="donor-stat-value" style="font-weight: 700; -webkit-text-stroke: 0.6px currentColor;">{{ blood_type }}</span>
-                    </div>
-
-                    <!-- Last Donation Date -->
-                    <div class="donor-stat-card">
-                        <div class="icon-circle icon-blue">
-                            <i class="ri-calendar-line"></i>
-                        </div>
-                        <span class="donor-stat-title">LAST DATE</span>
-                        <span class="donor-stat-value donor-stat-date" style="font-weight: 700; -webkit-text-stroke: 0.6px currentColor;">{{ last_donation_date }}</span>
-                    </div>
-
-                    <!-- Total Donations -->
-                    <div class="donor-stat-card">
-                        <div class="icon-circle icon-blue">
-                            <i class="ri-user-heart-line"></i>
-                        </div>
-                        <span class="donor-stat-title">TOTAL</span>
-                        <span class="donor-stat-value" style="font-weight: 700; -webkit-text-stroke: 0.6px currentColor;">{{ donations }} Times</span>
-                    </div>
+                    <span class="donor-stat-title">LAST DATE</span>
+                    <span class="donor-stat-value donor-stat-date" style="font-weight:700; -webkit-text-stroke:0.6px currentColor;">
+                        {% if last_donation_date %}{{ last_donation_date }}{% else %}—{% endif %}
+                    </span>
                 </div>
-            </main>
-        </div>
 
+                <!-- Total Donations -->
+                <div class="donor-stat-card">
+                    <div class="icon-circle icon-blue">
+                        <i class="ri-user-heart-line"></i>
+                    </div>
+                    <span class="donor-stat-title">TOTAL OFFERS</span>
+                    <span class="donor-stat-value" style="font-weight:700; -webkit-text-stroke:0.6px currentColor;">{{ donations }} Times</span>
+                </div>
+            </div>
+
+        </main>
     </div>
-</body>
+</div>
 <script src="{% static 'JS/Board.js' %}"></script>
-
+</body>
 </html>

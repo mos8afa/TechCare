@@ -112,7 +112,7 @@ def edit_donor_profile(request):
         donor.profile_pic = profile_pic
         donor.user.save()
         donor.save()
-        return redirect('donor_dashboard')
+        return redirect('donor:donor_dashboard')
 
     return render(request, 'donor/edit_profile.html', {
         'donor': donor,
@@ -171,6 +171,7 @@ def donor_requests(request, category, type):
                 'doctors': doctors,
                 'specializations': SPECIFICATIONS,
                 'governorates': GOVERNORATES,
+                'book_url_name': 'donor:book_doctor',
             })
 
         elif type == 'pending':
@@ -287,7 +288,7 @@ def book_doctor(request, doctor_id):
             )
             return redirect('donor:donor_requests', category='doctor', type='pending')
 
-    return render(request, 'patient/book_appointment.html', {
+    return render(request, 'donor/book_appointment.html', {
         'doctor': doctor,
         'patient': donor,          
         'days': days,
@@ -402,7 +403,7 @@ def book_nurse(request, nurse_id):
             req.service.set(selected_services)
             return redirect('donor:donor_requests', category='nurse', type='pending')
 
-    return render(request, 'patient/book_nurse_services.html', {
+    return render(request, 'donor/book_nurse_services.html', {
         'nurse': nurse,
         'patient': donor,          
         'services': services,
@@ -467,6 +468,39 @@ def mark_nurse_done(request, request_id):
 @login_required
 def create_blood_request(request):
     errors = {}
+
+    # Resolve profile pic + name for any user role
+    role = request.user.role
+    profile_pic = None
+    name = request.user.first_name + ' ' + request.user.last_name
+
+    if role == 'donor':
+        try:
+            _profile = Donor.objects.get(user=request.user)
+            profile_pic = _profile.profile_pic
+        except Donor.DoesNotExist:
+            pass
+    elif role == 'patient':
+        from patient.models import Patient
+        try:
+            _profile = Patient.objects.get(user=request.user)
+            profile_pic = _profile.profile_pic
+        except Exception:
+            pass
+    elif role == 'doctor':
+        try:
+            from accounts.models import Doctor as DoctorModel
+            _profile = DoctorModel.objects.get(user=request.user)
+            profile_pic = _profile.profile_pic
+        except Exception:
+            pass
+    elif role == 'nurse':
+        try:
+            _profile = Nurse.objects.get(user=request.user)
+            profile_pic = _profile.profile_pic
+        except Exception:
+            pass
+
     if request.method == 'POST':
         blood_type        = request.POST.get('blood_type', '').strip()
         governorate       = request.POST.get('governorate', '').strip()
@@ -483,37 +517,78 @@ def create_blood_request(request):
             errors['medical_condition'] = 'Please describe the medical condition.'
 
         if not errors:
-            BloodDonationRequest.objects.create(
+            blood_req = BloodDonationRequest.objects.create(
                 requester=request.user,
                 blood_type=blood_type,
                 governorate=governorate,
                 address=address,
                 medical_condition=medical_condition,
             )
-            return redirect('donation:my_requests')
+            return redirect('donation:request_offers', request_id=blood_req.id)
 
     return render(request, 'donor/blood_request.html', {
         'blood_types': BLOOD_TYPES,
         'governorates': GOV_CHOICES,
         'errors': errors,
+        'name': name,
+        'profile_pic': profile_pic,
+        'latest_request': BloodDonationRequest.objects.filter(
+            requester=request.user
+        ).exclude(status='cancelled').order_by('-created_at').first(),
     })
 
 @login_required
 def my_blood_requests(request):
-    requests_qs = BloodDonationRequest.objects.filter(
-        requester=request.user
-    ).order_by('-created_at')
-    return render(request, 'donor/my_blood_requests.html', {
-        'requests': requests_qs,
+    return redirect('donation:create_request')
+
+@login_required
+def my_blood_requests_accepted(request):
+    """All accepted offers on the current user's blood requests."""
+    donor_obj = Donor.objects.get(user=request.user)
+    accepted_offers = DonorOffer.objects.filter(
+        request__requester=request.user,
+        status='accepted',
+    ).select_related('donor__user', 'request').order_by('-created_at')
+    return render(request, 'donor/my_blood_requests_accepted.html', {
+        'accepted_offers': accepted_offers,
+        'name': donor_obj.user.first_name + ' ' + donor_obj.user.last_name,
+        'profile_pic': donor_obj.profile_pic,
+    })
+
+@login_required
+def my_blood_requests_done(request):
+    """All completed offers on the current user's blood requests."""
+    donor_obj = Donor.objects.get(user=request.user)
+    completed_offers = DonorOffer.objects.filter(
+        request__requester=request.user,
+        status='completed',
+    ).select_related('donor__user', 'request').order_by('-created_at')
+    return render(request, 'donor/my_blood_requests_done.html', {
+        'completed_offers': completed_offers,
+        'name': donor_obj.user.first_name + ' ' + donor_obj.user.last_name,
+        'profile_pic': donor_obj.profile_pic,
     })
 
 @login_required
 def request_offers(request, request_id):
     blood_req = BloodDonationRequest.objects.get(id=request_id, requester=request.user)
     offers    = blood_req.offers.filter(status__in=['offered', 'accepted']).select_related('donor__user')
+
+    # resolve profile for topbar
+    profile_pic = None
+    name = request.user.first_name + ' ' + request.user.last_name
+    if request.user.role == 'donor':
+        try:
+            _d = Donor.objects.get(user=request.user)
+            profile_pic = _d.profile_pic
+        except Donor.DoesNotExist:
+            pass
+
     return render(request, 'donor/blood_request_offers.html', {
         'blood_request': blood_req,
         'offers': offers,
+        'name': name,
+        'profile_pic': profile_pic,
     })
 
 @login_required
@@ -591,11 +666,24 @@ def my_offers(request):
     if request.user.role != 'donor':
         return redirect('login')
     donor  = Donor.objects.get(user=request.user)
-    offers = DonorOffer.objects.filter(donor=donor).select_related(
-        'request__requester'
-    ).order_by('-created_at')
+    offers = DonorOffer.objects.filter(donor=donor).exclude(
+        status='completed'
+    ).select_related('request__requester').order_by('-created_at')
     return render(request, 'donation/my_offers.html', {
         'offers': offers,
+    })
+
+
+@login_required
+def donation_done(request):
+    if request.user.role != 'donor':
+        return redirect('login')
+    donor = Donor.objects.get(user=request.user)
+    completed_offers = DonorOffer.objects.filter(
+        donor=donor, status='completed'
+    ).select_related('request__requester').order_by('-created_at')
+    return render(request, 'donation/donation_done.html', {
+        'completed_offers': completed_offers,
     })
 
 
