@@ -1,0 +1,239 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Donor Profile – Edit</title>
+
+    <link rel="stylesheet" href="{% static 'Css/Donor.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>  
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">
+                        <img src="{% static 'img/logo.png' %}" alt="">
+                    </span>                
+                    <div>
+                        <h2>TechCare</h2>
+                        <p>Medical Portal</p>
+                    </div>
+                    <button class="sidebar-toggle">
+                        <i class="bi bi-layout-sidebar-inset-reverse"></i>
+                    </button>
+                </div>
+            </div>
+
+            <aside class="aside">
+                <a href="{% url 'donor:donor_dashboard' %}" class="aside-item active">
+                    <i class="bi bi-person"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="{% url 'donor:donor_requests' category='doctor' type='booking' %}" class="aside-item">
+                    <i class="ri-file-list-line"></i>
+                    <span>Requests</span>
+                </a>
+                <a href="#" class="aside-item">
+                    <i class="fa-regular fa-bell"></i>
+                    <span>Notifications</span>
+                </a>
+                <a href="#" class="aside-item">
+                    <i class="ri-wallet-3-line"></i>
+                    <span>Wallet</span>
+                </a>
+                <a href="#" class="aside-item">
+                    <i class="ri-error-warning-line"></i>
+                    <span>Complaints</span>
+                </a>
+            </aside>
+        </aside>
+
+        <div style="flex:1; display:flex; flex-direction:column;">
+        
+            <!-- Top Navbar -->
+            <div class="topbar">
+                <h2 class="topbar-title">Donor Profile</h2>
+
+                <div class="topbar-right">
+                    <div class="topbar-icon" id="notificationBtn">
+                        <i class="fa-regular fa-bell"></i>
+                        <div class="inbox" id="notificationBox">
+                            <div class="notification-item">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg">
+                                <div class="notification-content">
+                                    <h4>Ahmed Ali</h4>
+                                    <p>New Consultation Request</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="notification-item">
+                                <img src="https://randomuser.me/api/portraits/women/12.jpg">
+                                <div class="notification-content">
+                                    <h4>Sara Mohamed</h4>
+                                    <p>Appointment Confirmed</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="line">
+                    <div class="topbar-profile" onclick="window.location.href='{% url 'donor:donor_dashboard' %}'">
+                        <div class="topbar-user-info">
+                            <h4>{{ name }}</h4>
+                        </div>
+                        {% if profile_pic %}
+                            <img src="{{ profile_pic.url }}" alt="{{ name }}">
+                        {% else %}
+                            <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="{{ name }}">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="main-content">
+
+                <div class="edit-profile-wrapper">
+                    <div class="edit-profile-card">
+
+                        <!-- Header -->
+                        <div class="edit-header">
+                            <div>
+                                <h2>Edit Profile</h2>
+                            </div>
+                        </div>
+
+                        <!-- Error Messages -->
+                        {% if errors %}
+                        <div style="margin-bottom:12px;">
+                            {% for key, msg in errors.items %}
+                                <p style="color:red; font-size:13px;">{{ msg }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    
+                        <!-- Profile Photo Section -->
+                        <div class="edit-photo-section">
+                            <div class="edit-avatar">
+                                <div class="avatar-container">
+                                    {% if profile_pic %}
+                                        <img id="profile-img" src="{{ profile_pic.url }}" alt="Donor">
+                                    {% else %}
+                                        <img id="profile-img" src="https://randomuser.me/api/portraits/men/41.jpg" alt="Donor">
+                                    {% endif %}
+                                    <div class="online-badge"></div>
+                                </div>
+                            </div>
+                            <div class="edit-photo-info">
+                                <h4>Profile Photo</h4>
+                                <p>
+                                    New profile pictures require admin approval and verification.
+                                    Recommended size: 400x400px.
+                                </p>
+                                <div class="photo-buttons">
+                                    <input type="file" id="profile-upload" name="profile_pic" form="edit-form" style="display: none;">
+                                    <button type="button" class="btn-primary-edit" onclick="document.getElementById('profile-upload').click()">
+                                        Change Photo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr style="margin:15px 0; border:1px solid #F0F4F8;">
+
+                        <!-- Form -->
+                        <form id="edit-form" method="POST" enctype="multipart/form-data" action="{% url 'donor:edit_donor_profile' %}">
+                            {% csrf_token %}
+                            <div class="edit-form-grid">
+                            
+                                <!-- Row 1: Username | Full Address -->
+                                <div class="form-group-edit">
+                                    <label>Username</label>
+                                    <input type="text" name="username" value="{{ donor.user.username }}">
+                                </div>
+                            
+                                <div class="form-group-edit">
+                                    <label>Full Address</label>
+                                    <div class="address-wrapper-custom">
+                                        <i class="bi bi-geo-alt"></i>
+                                        <input type="text" name="address" placeholder="Street, Building, Apartment" value="{{ donor.address }}">
+                                    </div>
+                                </div>
+
+                                <!-- Row 2: Governorate | Last Donation Date -->
+                                <div class="form-group-edit">
+                                    <label>Governorate</label>
+                                    <select name="governorate">
+                                        <option value="" disabled>Select governorate</option>
+                                        <option value="alexandria" {% if donor.governorate == 'alexandria' %}selected{% endif %}>Alexandria</option>
+                                        <option value="aswan" {% if donor.governorate == 'aswan' %}selected{% endif %}>Aswan</option>
+                                        <option value="asyut" {% if donor.governorate == 'asyut' %}selected{% endif %}>Assiut</option>
+                                        <option value="beheira" {% if donor.governorate == 'beheira' %}selected{% endif %}>Beheira</option>
+                                        <option value="beni_suef" {% if donor.governorate == 'beni_suef' %}selected{% endif %}>Beni Suef</option>
+                                        <option value="cairo" {% if donor.governorate == 'cairo' %}selected{% endif %}>Cairo</option>
+                                        <option value="dakahlia" {% if donor.governorate == 'dakahlia' %}selected{% endif %}>Dakahlia</option>
+                                        <option value="damietta" {% if donor.governorate == 'damietta' %}selected{% endif %}>Damietta</option>
+                                        <option value="fayoum" {% if donor.governorate == 'fayoum' %}selected{% endif %}>Faiyum</option>
+                                        <option value="gharbia" {% if donor.governorate == 'gharbia' %}selected{% endif %}>Gharbia</option>
+                                        <option value="giza" {% if donor.governorate == 'giza' %}selected{% endif %}>Giza</option>
+                                        <option value="ismailia" {% if donor.governorate == 'ismailia' %}selected{% endif %}>Ismailia</option>
+                                        <option value="kafr_el_sheikh" {% if donor.governorate == 'kafr_el_sheikh' %}selected{% endif %}>Kafr El Sheikh</option>
+                                        <option value="luxor" {% if donor.governorate == 'luxor' %}selected{% endif %}>Luxor</option>
+                                        <option value="matrouh" {% if donor.governorate == 'matrouh' %}selected{% endif %}>Matrouh</option>
+                                        <option value="minya" {% if donor.governorate == 'minya' %}selected{% endif %}>Minya</option>
+                                        <option value="monufia" {% if donor.governorate == 'monufia' %}selected{% endif %}>Monufia</option>
+                                        <option value="new_valley" {% if donor.governorate == 'new_valley' %}selected{% endif %}>New Valley</option>
+                                        <option value="north_sinai" {% if donor.governorate == 'north_sinai' %}selected{% endif %}>North Sinai</option>
+                                        <option value="port_said" {% if donor.governorate == 'port_said' %}selected{% endif %}>Port Said</option>
+                                        <option value="qalyubia" {% if donor.governorate == 'qalyubia' %}selected{% endif %}>Qalyubia</option>
+                                        <option value="qena" {% if donor.governorate == 'qena' %}selected{% endif %}>Qena</option>
+                                        <option value="red_sea" {% if donor.governorate == 'red_sea' %}selected{% endif %}>Red Sea</option>
+                                        <option value="sharqia" {% if donor.governorate == 'sharqia' %}selected{% endif %}>Sharqia</option>
+                                        <option value="sohag" {% if donor.governorate == 'sohag' %}selected{% endif %}>Sohag</option>
+                                        <option value="south_sinai" {% if donor.governorate == 'south_sinai' %}selected{% endif %}>South Sinai</option>
+                                        <option value="suez" {% if donor.governorate == 'suez' %}selected{% endif %}>Suez</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group-edit">
+                                    <label>Last Donation Date</label>
+                                    <div class="date-wrapper-custom">
+                                        <input type="date" id="donation-date" name="last_donation_date" value="{{ donor.last_donation_date|date:'Y-m-d' }}">
+                                        <i class="ri-calendar-line" style="cursor:pointer; pointer-events:auto;" onclick="document.getElementById('donation-date').showPicker()"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Row 3: Phone Number (full-width) -->
+                                <div class="form-group-edit full-width">
+                                    <label>Phone Number</label>
+                                    <div class="phone-wrapper-custom">
+                                        <span class="country-code">+20</span>
+                                        <input type="tel" name="phone_number" placeholder="1001234567" value="{{ donor.phone_number }}">
+                                    </div>
+                                </div>
+
+                            </div>
+                        
+                            <!-- Footer Buttons -->
+                            <div class="edit-footer">
+                                <button type="button" class="btn-light-edit" onclick="window.location.href='{% url 'donor:donor_dashboard' %}'">Cancel Changes</button>
+                                <button type="submit" class="btn-primary-edit">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+            
+                </div>
+
+            </main>
+        </div>
+    </div>
+</body>
+    <script src="{% static 'JS/Board.js' %}"></script>
+</html>

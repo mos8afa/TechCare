@@ -1,0 +1,172 @@
+{% extends 'donor_base.html' %}
+
+{% block sidebar %}
+<aside class="aside">
+    <a href="{% url 'donor:donor_dashboard' %}" class="aside-item">
+        <i class="bi bi-person"></i><span>Profile</span>
+    </a>
+    <a href="{% url 'donor:donor_requests' category='nurse' type='booking' %}" class="aside-item active">
+        <i class="ri-file-list-line"></i><span>Requests</span>
+    </a>
+    <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
+    <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
+    <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
+</aside>
+{% endblock %}
+
+{% block title %}
+<h2 class="topbar-title">Nurse Requests</h2>
+{% endblock title %}
+
+{% block content %}
+<main class="main-content">
+    <div class="booking-wrapper">
+
+        <!-- Category Tabs -->
+        <div class="category-tabs">
+            <button class="cat-tab" onclick="window.location.href='{% url 'donor:donor_requests' category='doctor' type='booking' %}'">
+                <i class="ri-stethoscope-line"></i> Doctor
+            </button>
+            <button class="cat-tab active">
+                <i class="ri-nurse-line"></i> Nurse
+            </button>
+            <button class="cat-tab"><i class="ri-medicine-bottle-line"></i> Medicine</button>
+            <button class="cat-tab"><span class="material-symbols-outlined">bloodtype</span> Donations</button>
+        </div>
+
+        <!-- Status Tabs -->
+        <div class="status-tabs">
+            <button class="status-tab" onclick="window.location.href='{% url 'donor:donor_requests' category='nurse' type='booking' %}'">Booking</button>
+            <button class="status-tab active">Pending</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'donor:donor_requests' category='nurse' type='accepted' %}'">Accepted</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'donor:donor_requests' category='nurse' type='done' %}'">Done</button>
+        </div>
+
+        <!-- Pending Cards -->
+        <div class="npc-grid">
+
+            {% for req in pending %}
+            <div class="npc-card animate slide-up">
+                <div class="npc-header">
+                    <div class="npc-avatar-wrap">
+                        <img src="{{ req.nurse.profile_pic.url }}" alt="{{ req.nurse.user.first_name }}" class="npc-avatar">
+                        <div class="npc-dot"></div>
+                    </div>
+                    <div class="npc-info-col">
+                        <div class="npc-title-row">
+                            <h3 class="npc-name">{{ req.nurse.user.first_name }} {{ req.nurse.user.last_name }}</h3>
+                            <span class="npc-badge badge-pending-bg">PENDING</span>
+                        </div>
+                        <div class="npc-date">
+                            <i class="ri-calendar-event-line"></i> {{ req.date|date:"M d, Y" }} | {{ req.time|time:"h:i A" }}
+                        </div>
+                        <div class="npc-services-wrap">
+                            <div class="npc-section-title">REQUESTED SERVICES</div>
+                            {% for svc in req.service.all %}
+                            <div class="npc-service">
+                                <span class="npc-service-name">{{ svc.name }}</span>
+                                <span class="npc-service-price">{{ svc.price }} EGP</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="npc-body" style="padding-top:8px;">
+                    <hr class="npc-divider" style="margin-top:0;">
+                    <div class="npc-details-grid">
+                        <div class="npc-col">
+                            <span class="npc-detail-label">LOCATION DETAILS</span>
+                            <div class="npc-detail-val"><i class="ri-map-pin-2-line"></i> {{ req.governrate }}</div>
+                            <div class="npc-detail-sub">{{ req.address }}</div>
+                        </div>
+                        <div class="npc-col">
+                            <span class="npc-detail-label">CONTACT INFORMATION</span>
+                            <div class="npc-detail-val"><i class="ri-phone-line"></i> {{ req.nurse.phone_number }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="npc-footer">
+                    <div>
+                        <span class="npc-price-label">TOTAL PRICE</span>
+                        <span class="npc-price-amount">{{ req.net_income }} EGP</span>
+                    </div>
+                    <div class="npc-actions">
+                        <form method="POST" action="{% url 'donor:cancel_nurse_request' req.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="npc-btn-cancel">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% for req in edited %}
+            <div class="npc-card animate slide-up">
+                <div class="npc-header">
+                    <div class="npc-avatar-wrap">
+                        <img src="{{ req.nurse.profile_pic.url }}" alt="{{ req.nurse.user.first_name }}" class="npc-avatar">
+                        <div class="npc-dot"></div>
+                    </div>
+                    <div class="npc-info-col">
+                        <div class="npc-title-row">
+                            <h3 class="npc-name">{{ req.nurse.user.first_name }} {{ req.nurse.user.last_name }}</h3>
+                            <span class="npc-badge badge-rescheduled"><i class="ri-restart-line"></i> Rescheduled</span>
+                        </div>
+                        <div class="npc-date">
+                            <i class="ri-calendar-event-line"></i> {{ req.date|date:"M d, Y" }} | {{ req.time|time:"h:i A" }}
+                        </div>
+                        <div class="npc-services-wrap">
+                            <div class="npc-section-title">REQUESTED SERVICES</div>
+                            {% for svc in req.service.all %}
+                            <div class="npc-service">
+                                <span class="npc-service-name">{{ svc.name }}</span>
+                                <span class="npc-service-price">{{ svc.price }} EGP</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="npc-body" style="padding-top:8px;">
+                    <hr class="npc-divider" style="margin-top:0;">
+                    <div class="npc-details-grid">
+                        <div class="npc-col">
+                            <span class="npc-detail-label">LOCATION DETAILS</span>
+                            <div class="npc-detail-val"><i class="ri-map-pin-2-line"></i> {{ req.governrate }}</div>
+                            <div class="npc-detail-sub">{{ req.address }}</div>
+                        </div>
+                        <div class="npc-col">
+                            <span class="npc-detail-label">CONTACT INFORMATION</span>
+                            <div class="npc-detail-val"><i class="ri-phone-line"></i> {{ req.nurse.phone_number }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="npc-footer">
+                    <div>
+                        <span class="npc-price-label">TOTAL PRICE</span>
+                        <span class="npc-price-amount">{{ req.net_income }} EGP</span>
+                    </div>
+                    <div class="npc-actions">
+                        <form method="POST" action="{% url 'donor:accept_nurse_reschedule' req.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="npc-btn-accept">Accept</button>
+                        </form>
+                        <form method="POST" action="{% url 'donor:cancel_nurse_request' req.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="npc-btn-cancel">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% if not pending and not edited %}
+            <div class="no-requests-placeholder">
+                <h3>No Pending Nurse Requests</h3>
+                <p>Once you book a nurse, it will appear here.</p>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="100 100 200 200" width="100%" height="100%">
+    <!-- Geometric Starburst Outline (12-Pointed, Pixel Perfect) -->
+    <polygon points="
+        200,110 218.12,132.39 245,122.06 249.50,150.50 
+        277.94,155 267.61,181.88 290,200 267.61,218.12 
+        277.94,245 249.50,249.50 245,277.94 218.12,267.61 
+        200,290 181.88,267.61 155,277.94 150.50,249.50 
+        122.06,245 132.39,218.12 110,200 132.39,181.88 
+        122.06,155 150.50,150.50 155,122.06 181.88,132.39" 
+        fill="none" stroke="#059669" stroke-width="12" stroke-linejoin="miter"/>
+        
+    <!-- Centered Crisp Checkmark -->
+    <path d="M 155 200 L 185 230 L 245 170" 
+        fill="none" stroke="#059669" stroke-width="14" stroke-linecap="butt" stroke-linejoin="miter"/>
+</svg>

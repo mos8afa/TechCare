@@ -413,3 +413,13 @@ document.addEventListener('DOMContentLoaded', function() {
         resizeTimeslots();
     }
 });
+
+// Helper functions for selecting days and slots
+function selectDay(el) {
+    document.querySelectorAll('.day-btn').forEach(d => d.classList.remove('active'));
+    el.classList.add('active');
+}
+
+function selectSlotPill(el) {
+    el.classList.toggle('active');
+}

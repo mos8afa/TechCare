@@ -1,0 +1,149 @@
+{% extends 'donor_base.html' %}
+
+{% block sidebar %}
+<aside class="aside">
+    <a href="{% url 'donor:donor_dashboard' %}" class="aside-item">
+        <i class="bi bi-person"></i><span>Profile</span>
+    </a>
+    <a href="{% url 'donor:donor_requests' category='doctor' type='booking' %}" class="aside-item active">
+        <i class="ri-file-list-line"></i><span>Requests</span>
+    </a>
+    <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
+    <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
+    <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
+</aside>
+{% endblock %}
+
+{% block title %}
+<h2 class="topbar-title">Doctor Requests</h2>
+{% endblock title %}
+
+{% block content %}
+<main class="main-content">
+    <div class="booking-wrapper">
+
+        <!-- Category Tabs -->
+        <div class="category-tabs-wrapper">
+            <div class="category-tabs">
+                <button class="cat-tab active" onclick="window.location.href='{% url 'donor:donor_requests' category='doctor' type='booking' %}'">
+                    <i class="ri-stethoscope-line"></i> Doctor
+                </button>
+                <button class="cat-tab" onclick="window.location.href='{% url 'donor:donor_requests' category='nurse' type='booking' %}'">
+                    <i class="ri-nurse-line"></i> Nurse
+                </button>
+                <button class="cat-tab"><i class="ri-medicine-bottle-line"></i> Medicine</button>
+                <button class="cat-tab"><span class="material-symbols-outlined">bloodtype</span> Donations</button>
+            </div>
+        </div>
+
+        <!-- Status Tabs -->
+        <div class="status-tabs">
+            <button class="status-tab active">Booking</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'donor:donor_requests' category='doctor' type='pending' %}'">Pending</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'donor:donor_requests' category='doctor' type='accepted' %}'">Accepted</button>
+            <button class="status-tab" onclick="window.location.href='{% url 'donor:donor_requests' category='doctor' type='done' %}'">Done</button>
+        </div>
+
+        <!-- Search & Filters -->
+        <div class="search-bar">
+            <div class="search-input-wrap">
+                <i class="bi bi-card-text" style="font-size:18px; color:#aab0bc;"></i>
+                <input type="text" id="searchInput" placeholder="Search by doctor..." oninput="filterDoctors()" />
+            </div>
+            <select class="filter-select" id="specFilter" onchange="filterDoctors()">
+                <option value="">Specialization</option>
+                {% for val, label in specializations %}
+                    <option value="{{ label }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+            <select class="filter-select" id="govFilter" onchange="filterDoctors()">
+                <option value="">Governorate</option>
+                {% for val, label in governorates %}
+                    <option value="{{ label }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+            <select class="filter-select" id="priceFilter" onchange="filterDoctors()">
+                <option value="">Price Range</option>
+                <option value="0-300">0 - 300 EGP</option>
+                <option value="300-600">300 - 600 EGP</option>
+                <option value="600+">600+ EGP</option>
+            </select>
+        </div>
+
+        <!-- Doctor Cards Grid -->
+        <div class="doctors-grid" id="doctorsGrid">
+            {% for doctor in doctors %}
+            <div class="doctor-card animate slide-up"
+                 data-name="Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}"
+                 data-spec="{{ doctor.get_specification_display }}"
+                 data-gov="{{ doctor.get_governorate_display }}"
+                 data-price="{{ doctor.price }}">
+
+                <div class="doctor-avatar-wrap">
+                    <img src="{{ doctor.profile_pic.url }}" alt="Dr. {{ doctor.user.first_name }}" class="doctor-avatar-img">
+                    <span class="online-dot"></span>
+                </div>
+
+                <h3 class="doctor-name">Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h3>
+                <p class="doctor-spec">{{ doctor.get_specification_display }}</p>
+                <p class="doctor-location">
+                    <i class="bi bi-geo-alt"></i>
+                    {{ doctor.get_governorate_display }}{% if doctor.address %}, {{ doctor.address }}{% endif %}
+                </p>
+
+                <div class="doctor-rating">
+                    <span class="stars">
+                        {% with avg=doctor.avg_rating %}
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= avg %}★{% else %}☆{% endif %}
+                            {% endfor %}
+                        {% endwith %}
+                    </span>
+                    <span class="rating-val">({{ doctor.avg_rating }}/5)</span>
+                </div>
+
+                <div class="fee-row">
+                    <span class="fee-label">CONSULTATION FEE</span>
+                    <span class="fee-val">{{ doctor.price }} <small>EGP</small></span>
+                </div>
+
+                <a href="{% url 'donor:book_doctor' doctor.id %}" class="book-btn">Book Now</a>
+            </div>
+            {% empty %}
+            <div class="no-requests-placeholder">
+                <h3>No Doctors Available</h3>
+                <p>There are no doctors registered yet. Please check back later.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</main>
+
+<script>
+function filterDoctors() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const spec   = document.getElementById('specFilter').value;
+    const gov    = document.getElementById('govFilter').value;
+    const price  = document.getElementById('priceFilter').value;
+
+    document.querySelectorAll('.doctor-card').forEach(card => {
+        const name      = card.dataset.name.toLowerCase();
+        const cardSpec  = card.dataset.spec;
+        const cardGov   = card.dataset.gov;
+        const cardPrice = parseFloat(card.dataset.price);
+
+        const matchSearch = !search || name.includes(search);
+        const matchSpec   = !spec   || cardSpec === spec;
+        const matchGov    = !gov    || cardGov === gov;
+
+        let matchPrice = true;
+        if (price === '0-300')   matchPrice = cardPrice <= 300;
+        if (price === '300-600') matchPrice = cardPrice > 300 && cardPrice <= 600;
+        if (price === '600+')    matchPrice = cardPrice > 600;
+
+        card.style.display = (matchSearch && matchSpec && matchGov && matchPrice) ? '' : 'none';
+    });
+}
+</script>
+{% endblock %}

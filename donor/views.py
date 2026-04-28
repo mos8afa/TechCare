@@ -166,18 +166,17 @@ def donor_requests(request, category, type):
             for doc in doctors:
                 avg = doc.rates.aggregate(Avg('rate'))['rate__avg'] or 0
                 doc.avg_rating = round(avg)
-            return render(request, 'patient/doctor_booking.html', {
+            return render(request, 'donor/doctor_booking.html', {
                 **context_base,
                 'doctors': doctors,
                 'specializations': SPECIFICATIONS,
                 'governorates': GOVERNORATES,
-                'book_url_name': 'donor:book_doctor',
             })
 
         elif type == 'pending':
             pending = all_reqs.filter(status='pending').order_by('-date', '-time')
             edited  = all_reqs.filter(status='edited').order_by('-date', '-time')
-            return render(request, 'patient/doctor_pending.html', {
+            return render(request, 'donor/doctor_pending.html', {
                 **context_base,
                 'pending': pending,
                 'edited': edited,
@@ -185,14 +184,14 @@ def donor_requests(request, category, type):
 
         elif type == 'accepted':
             accepted = all_reqs.filter(status='accepted').order_by('-date', '-time')
-            return render(request, 'patient/doctor_accepted.html', {
+            return render(request, 'donor/doctor_accepted.html', {
                 **context_base,
                 'accepted': accepted,
             })
 
         elif type == 'done':
             completed = all_reqs.filter(status='completed').order_by('-date', '-time')
-            return render(request, 'patient/doctor_done.html', {
+            return render(request, 'donor/doctor_done.html', {
                 **context_base,
                 'completed': completed,
             })
@@ -205,7 +204,7 @@ def donor_requests(request, category, type):
             for nurse in nurses:
                 avg = nurse.rates.aggregate(Avg('rate'))['rate__avg'] or 0
                 nurse.avg_rating = round(avg)
-            return render(request, 'patient/nurse_booking.html', {
+            return render(request, 'donor/nurse_booking.html', {
                 **context_base,
                 'nurses': nurses,
                 'governorates': GOVERNORATES,
@@ -214,7 +213,7 @@ def donor_requests(request, category, type):
         elif type == 'pending':
             pending = all_reqs.filter(status='pending').order_by('-date', '-time')
             edited  = all_reqs.filter(status='edited').order_by('-date', '-time')
-            return render(request, 'patient/nurse_pending.html', {
+            return render(request, 'donor/nurse_pending.html', {
                 **context_base,
                 'pending': pending,
                 'edited': edited,
@@ -222,14 +221,14 @@ def donor_requests(request, category, type):
 
         elif type == 'accepted':
             accepted = all_reqs.filter(status='accepted').order_by('-date', '-time')
-            return render(request, 'patient/nurse_accepted.html', {
+            return render(request, 'donor/nurse_accepted.html', {
                 **context_base,
                 'accepted': accepted,
             })
 
         elif type == 'done':
             completed = all_reqs.filter(status='completed').order_by('-date', '-time')
-            return render(request, 'patient/nurse_done.html', {
+            return render(request, 'donor/nurse_done.html', {
                 **context_base,
                 'completed': completed,
             })
