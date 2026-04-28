@@ -583,9 +583,24 @@ class _PatientRequestsScreenState extends State<PatientRequestsScreen>
                               ],
                             ),
 
-                          const SizedBox(height: 10),
+                        // Disease Description
+                        if ((r['disease_description'] ?? '').toString().isNotEmpty)
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Icon(Icons.medical_information_outlined, size: 14, color: kTextGray),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  r['disease_description'],
+                                  style: const TextStyle(fontSize: 12, color: kDarkText),
+                                ),
+                              ),
+                            ],
+                          ),
 
                           // Total Price
+                          const SizedBox(height: 10),
                           if (r['total_price'] != null)
                             Row(
                               children: [
@@ -611,23 +626,7 @@ class _PatientRequestsScreenState extends State<PatientRequestsScreen>
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-
-                        // Phone
-                        if ((r['phone_number'] ?? '').toString().isNotEmpty)
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(Icons.phone, size: 14, color: kTextGray),
-                              const SizedBox(width: 4),
-                              Text(
-                                r['phone_number'],
-                                style: const TextStyle(fontSize: 12, color: kDarkText),
-                              ),
-                            ],
-                          ),
-
                         const SizedBox(height: 12),
-
                         // Actions
                         Row(
                           children: [
@@ -740,6 +739,22 @@ class _PatientRequestsScreenState extends State<PatientRequestsScreen>
                 ],
               ),
 
+          // Disease Description
+          if ((r['disease_description'] ?? '').toString().isNotEmpty)
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(Icons.medical_information_outlined, size: 14, color: kTextGray),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    r['disease_description'],
+                    style: const TextStyle(fontSize: 12, color: kDarkText),
+                  ),
+                ),
+              ],
+            ),
+
             if (r['total_price'] != null) ...[
               const SizedBox(height: 8),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -840,7 +855,7 @@ class _PatientRequestsScreenState extends State<PatientRequestsScreen>
               Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 const Icon(Icons.location_on_outlined, size: 14, color: kTextGray),
                 const SizedBox(width: 4),
-                Expanded(child: Text(r['address'] ?? '',
+                Expanded(child: Text('${r['governorate'] ?? ''} / ${r['address'] ?? ''}',
                     style: const TextStyle(fontSize: 12, color: kTextGray))),
               ]),
 
