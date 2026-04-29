@@ -8,7 +8,6 @@ const Color kBorderColor = Color(0xFFE1E6EC);
 const Color kDarkText    = Color(0xFF1A1C1E);
 const Color kAmber       = Color(0xFFF59E0B);
 
-// ── تنسيق الوقت من "09:00" → "9:00 AM" ──────────────────────────────────
 String _fmtSlotTime(String raw) {
   try {
     final clean = raw.split('+').first.trim();
@@ -40,29 +39,31 @@ const List<Map<String, String>> kGovernorates = [
   {'value': 'suez', 'label': 'Suez'},
 ];
 
-class PatientBookAppointmentScreen extends StatefulWidget {
+class PatientDoctorBookAppointmentScreen extends StatefulWidget {
   final int doctorId;
-  const PatientBookAppointmentScreen({super.key, required this.doctorId});
+  const PatientDoctorBookAppointmentScreen({super.key, required this.doctorId});
 
   @override
-  State<PatientBookAppointmentScreen> createState() => _PatientBookAppointmentScreenState();
+  State<PatientDoctorBookAppointmentScreen> createState() =>
+      _PatientDoctorBookAppointmentScreenState();
 }
 
-class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScreen> {
+class _PatientDoctorBookAppointmentScreenState
+    extends State<PatientDoctorBookAppointmentScreen> {
   Map<String, dynamic>? _doctorData;
-  List<dynamic> _days           = [];
+  List<dynamic> _days            = [];
   Map<String, dynamic> _allSlots = {};
   bool    _isLoading  = true;
   bool    _isBooking  = false;
   String? _error;
 
   int     _selectedDayIndex    = 0;
-  String? _selectedTime;        // raw "HH:MM" — هنبعته للـ backend
+  String? _selectedTime;
   String? _selectedGovernorate;
 
   final _symptomsCtrl = TextEditingController();
   final _addressCtrl  = TextEditingController();
-  final _phoneCtrl = TextEditingController();
+  final _phoneCtrl    = TextEditingController();
 
   @override
   void initState() {
@@ -74,6 +75,7 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
   void dispose() {
     _symptomsCtrl.dispose();
     _addressCtrl.dispose();
+    _phoneCtrl.dispose();
     super.dispose();
   }
 
@@ -94,7 +96,6 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
     }
   }
 
-  // ── Computed getters ────────────────────────────────────────────────────
   String get _selectedDayKey {
     if (_days.isEmpty) return '';
     return (_days[_selectedDayIndex] as Map)['day'] as String? ?? '';
@@ -117,7 +118,6 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
     return List<String>.from((s as Map)['evening'] ?? []);
   }
 
-  // ── Build ────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -168,7 +168,6 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
     );
   }
 
-  // ── Doctor Card ──────────────────────────────────────────────────────────
   Widget _buildDoctorCard() {
     final doc    = _doctorData!;
     final picUrl = ApiService.buildMediaUrl(doc['profile_pic'] as String?);
@@ -223,7 +222,6 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
     );
   }
 
-  // ── Governorate ──────────────────────────────────────────────────────────
   Widget _buildGovernorateField() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -236,7 +234,7 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
             style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText)),
         const SizedBox(height: 10),
         DropdownButtonFormField<String>(
-          initialValue: _selectedGovernorate,
+          value: _selectedGovernorate,
           hint: const Text('Select governorate', style: TextStyle(fontSize: 14, color: kTextGray)),
           items: kGovernorates
               .map((g) => DropdownMenuItem(value: g['value'], child: Text(g['label']!)))
@@ -259,7 +257,6 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
     );
   }
 
-  // ── Symptoms ─────────────────────────────────────────────────────────────
   Widget _buildSymptomsCard() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -295,7 +292,6 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
     );
   }
 
-  // ── Address ──────────────────────────────────────────────────────────────
   Widget _buildAddressCard() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -327,7 +323,6 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
     );
   }
 
-  // ── Date & Time ──────────────────────────────────────────────────────────
   Widget _buildDateTimeCard() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -343,8 +338,6 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
               style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText)),
         ]),
         const SizedBox(height: 14),
-
-        // ── Days row ────────────────────────────────────────────
         if (_days.isNotEmpty)
           SizedBox(
             height: 80,
@@ -356,10 +349,7 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
                 final active = _selectedDayIndex == i;
                 final day    = _days[i] as Map;
                 return GestureDetector(
-                  onTap: () => setState(() {
-                    _selectedDayIndex = i;
-                    _selectedTime = null;
-                  }),
+                  onTap: () => setState(() { _selectedDayIndex = i; _selectedTime = null; }),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 180),
                     width: 62,
@@ -387,10 +377,7 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
         else
           const Center(child: Text('No available days',
               style: TextStyle(color: kTextGray, fontSize: 13))),
-
         const SizedBox(height: 16),
-
-        // ── Morning slots ───────────────────────────────────────
         if (_morningSlots.isNotEmpty) ...[
           Row(children: const [
             Icon(Icons.wb_sunny_outlined, size: 14, color: kAmber),
@@ -403,8 +390,6 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
           _buildSlots(_morningSlots),
           const SizedBox(height: 14),
         ],
-
-        // ── Evening slots ───────────────────────────────────────
         if (_eveningSlots.isNotEmpty) ...[
           Row(children: const [
             Icon(Icons.nightlight_round, size: 14, color: Color(0xFF6366F1)),
@@ -416,7 +401,6 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
           const SizedBox(height: 8),
           _buildSlots(_eveningSlots),
         ],
-
         if (_morningSlots.isEmpty && _eveningSlots.isEmpty)
           const Center(child: Padding(
             padding: EdgeInsets.symmetric(vertical: 12),
@@ -431,7 +415,6 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
     return Wrap(
       spacing: 8, runSpacing: 8,
       children: slots.map((rawSlot) {
-        // rawSlot = "09:00" — نعرضه formatted ونحفظ الـ raw للـ backend
         final active = _selectedTime == rawSlot;
         return GestureDetector(
           onTap: () => setState(() => _selectedTime = rawSlot),
@@ -446,24 +429,19 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
                 BoxShadow(color: kPrimary.withOpacity(0.2), blurRadius: 6, offset: const Offset(0, 2))
               ] : [],
             ),
-            child: Text(
-              _fmtSlotTime(rawSlot),   // ← display formatted
-              style: TextStyle(
-                fontSize: 13, fontWeight: FontWeight.w600,
-                color: active ? Colors.white : kDarkText,
-              ),
-            ),
+            child: Text(_fmtSlotTime(rawSlot),
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600,
+                    color: active ? Colors.white : kDarkText)),
           ),
         );
       }).toList(),
     );
   }
 
-  // ── Summary & Confirm ────────────────────────────────────────────────────
   Widget _buildSummaryCard() {
     final doc   = _doctorData!;
     final price = double.tryParse(doc['price']?.toString() ?? '0') ?? 0;
-    final fee   = 25.0;
+    const fee   = 25.0;
     final total = price + fee;
 
     return Container(
@@ -522,33 +500,22 @@ class _PatientBookAppointmentScreenState extends State<PatientBookAppointmentScr
     ]);
   }
 
-  // ── Handle Book ──────────────────────────────────────────────────────────
   Future<void> _handleBook() async {
-    if (_selectedTime == null) {
-      _snack('Please select a time slot', isError: true); return;
-    }
-    if (_symptomsCtrl.text.trim().isEmpty) {
-      _snack('Please describe your symptoms', isError: true); return;
-    }
-    if (_selectedGovernorate == null) {
-      _snack('Please select a governorate', isError: true); return;
-    }
-    if (_selectedFullDate.isEmpty) {
-      _snack('Please select a date', isError: true); return;
-    }
+    if (_selectedTime == null) { _snack('Please select a time slot', isError: true); return; }
+    if (_symptomsCtrl.text.trim().isEmpty) { _snack('Please describe your symptoms', isError: true); return; }
+    if (_selectedGovernorate == null) { _snack('Please select a governorate', isError: true); return; }
+    if (_selectedFullDate.isEmpty) { _snack('Please select a date', isError: true); return; }
 
     setState(() => _isBooking = true);
-
     final result = await ApiService.bookDoctor(
       doctorId:           widget.doctorId,
-      date:               _selectedFullDate,   // "YYYY-MM-DD"
-      time:               _selectedTime!,      // "HH:MM"
+      date:               _selectedFullDate,
+      time:               _selectedTime!,
       diseaseDescription: _symptomsCtrl.text.trim(),
       governorate:        _selectedGovernorate!,
       address:            _addressCtrl.text.trim(),
       phoneNumber:        _phoneCtrl.text.trim(),
     );
-
     setState(() => _isBooking = false);
 
     if (result.success) {

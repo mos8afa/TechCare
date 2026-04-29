@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../Patient/patient_profile_screen.dart';
-import '../Patient/patient_requests_screen.dart';
+import '../Patient/patient_doctor_requests_screen.dart';
 import '../Patient/patient_notifications.dart';
 import '../Patient/patient_wallet.dart';
 
@@ -248,7 +248,7 @@ class _PatientComplaintsScreenState extends State<PatientComplaintsScreen> {
       case 'Requests':
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const PatientRequestsScreen()),
+          MaterialPageRoute(builder: (_) => const PatientDoctorRequestsScreen()),
         );
         break;
       case 'Notifications':
