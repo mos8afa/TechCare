@@ -68,10 +68,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 8),
                   _buildInputField(
-                    controller: _usernameController, // ← غير
-                    hint: 'Enter your username',     // ← غير
-                    icon: Icons.person_outline,       // ← غير
-                    keyboardType: TextInputType.text, // ← غير
+                    controller: _usernameController, 
+                    hint: 'Enter your username',     
+                    icon: Icons.person_outline,       
+                    keyboardType: TextInputType.text, 
                     validator: (v) {
                       if (v == null || v.isEmpty) return 'Username is required';
                       return null;
@@ -170,26 +170,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Google + Apple Buttons
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildSocialButton(
-                          label: 'Google',
-                          icon: _googleIcon(),
-                          onTap: () {},
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _buildSocialButton(
-                          label: 'Apple',
-                          icon: const Icon(Icons.apple, size: 20, color: Colors.black),
-                          onTap: () {},
-                        ),
-                      ),
-                    ],
-                  ),
                   const SizedBox(height: 32),
 
                   // Register Link
@@ -276,40 +256,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildSocialButton({
-    required String label,
-    required Widget icon,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: const Color(0xFFE2E8F0)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            icon,
-            const SizedBox(width: 8),
-            Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF2D3748))),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _googleIcon() {
-    return SizedBox(
-      width: 20,
-      height: 20,
-      child: CustomPaint(painter: _GoogleIconPainter()),
-    );
-  }
-
   void _handleLogin() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() {
@@ -340,28 +286,4 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
     super.dispose();
   }
-}
-
-class _GoogleIconPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()..style = PaintingStyle.fill;
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2;
-
-    paint.color = const Color(0xFF4285F4);
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), -0.3, 1.9, true, paint);
-    paint.color = const Color(0xFF34A853);
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), 1.6, 1.6, true, paint);
-    paint.color = const Color(0xFFFBBC05);
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), 3.2, 0.8, true, paint);
-    paint.color = const Color(0xFFEA4335);
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), 4.0, 0.6, true, paint);
-
-    paint.color = Colors.white;
-    canvas.drawCircle(center, radius * 0.55, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

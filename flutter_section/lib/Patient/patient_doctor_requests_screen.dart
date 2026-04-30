@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 import '../Patient/patient_doctor_book_appointment_screen.dart';
-// import '../Patient/patient_nurse_requests_screen.dart';
+import '../Patient/patient_nurse_requests_screen.dart';
 import '../Patient/patient_profile_screen.dart';
 import '../Patient/patient_notifications.dart';
 import '../Patient/patient_wallet.dart';
@@ -77,7 +77,6 @@ class _PatientDoctorRequestsScreenState extends State<PatientDoctorRequestsScree
   List<dynamic> _done     = [];
 
   final _searchCtrl = TextEditingController();
-  final isDoctorPage = true;
 
   @override
   void initState() {
@@ -141,9 +140,9 @@ class _PatientDoctorRequestsScreenState extends State<PatientDoctorRequestsScree
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
             child: Row(
               children: [
-                _catTab(0, Icons.medical_services_outlined, 'Doctor'),
+                _catTab(0, Icons.medical_services_outlined, 'Doctor', true),
                 const SizedBox(width: 10),
-                _catTab(1, Icons.person_outlined, 'Nurse'),
+                _catTab(1, Icons.person_outlined, 'Nurse', true),
               ],
             ),
           ),
@@ -882,8 +881,7 @@ class _PatientDoctorRequestsScreenState extends State<PatientDoctorRequestsScree
       style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: kTextGray, letterSpacing: 1.2));
 
 
-  Widget _catTab(int idx, IconData icon, String label) {
-    final isDoctorPage = true; 
+  Widget _catTab(int idx, IconData icon, String label, bool isDoctorPage) {
     final active = (isDoctorPage && idx == 0) || (!isDoctorPage && idx == 1);
 
     return Expanded(
@@ -897,15 +895,15 @@ class _PatientDoctorRequestsScreenState extends State<PatientDoctorRequestsScree
                 builder: (_) => const PatientDoctorRequestsScreen(),
               ),
             );}
-          // else {
-          //   // Nurse
-          //   Navigator.pushReplacement(
-          //     context,
-          //     MaterialPageRoute(
-          //       builder: (_) => const PatientNurseRequestsScreen(),
-          //     ),
-          //   );
-          // }
+          else {
+            // Nurse
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const PatientNurseRequestsScreen(),
+              ),
+            );
+          }
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
