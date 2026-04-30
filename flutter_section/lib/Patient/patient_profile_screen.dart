@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 import '../Patient/patient_edit_profile_screen.dart';
-import '../Patient/patient_requests_screen.dart';
 import '../Patient/patient_notifications.dart';
 import '../Patient/patient_wallet.dart';
 import '../Patient/patient_complaints.dart';
+import '../Patient/patient_doctor_requests_screen.dart';
 
 const Color kPrimary    = Color(0xFF1D89E4);
 const Color kBgLight    = Color(0xFFF4F7FC);
@@ -424,7 +424,7 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
         break;
       case 'Requests':
         Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (_) => const PatientRequestsScreen()));
+            MaterialPageRoute(builder: (_) => const PatientDoctorRequestsScreen()));   
         break;
       case 'Notifications':
         Navigator.pushReplacement(context,

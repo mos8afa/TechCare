@@ -4,30 +4,30 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 // في أول الملف بعد الـ imports
-String _formatDate(String raw) {
-  try {
-    final dt = DateTime.parse(raw);
-    final months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return '${months[dt.month - 1]} ${dt.day}, ${dt.year}';
-  } catch (_) {
-    return raw.split('T').first.split(' ').first;
-  }
-}
+// String _formatDate(String raw) {
+//   try {
+//     final dt = DateTime.parse(raw);
+//     final months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+//     return '${months[dt.month - 1]} ${dt.day}, ${dt.year}';
+//   } catch (_) {
+//     return raw.split('T').first.split(' ').first;
+//   }
+// }
 
-String _formatTime(String raw) {
-  try {
-    // لو جه زي "09:00:00" أو "09:00:00+00:00"
-    final clean = raw.split('+').first.trim();
-    final parts = clean.split(':');
-    final h = int.parse(parts[0]);
-    final m = parts[1];
-    final period = h >= 12 ? 'PM' : 'AM';
-    final hour = h == 0 ? 12 : (h > 12 ? h - 12 : h);
-    return '$hour:$m $period';
-  } catch (_) {
-    return raw;
-  }
-}
+// String _formatTime(String raw) {
+//   try {
+//     // لو جه زي "09:00:00" أو "09:00:00+00:00"
+//     final clean = raw.split('+').first.trim();
+//     final parts = clean.split(':');
+//     final h = int.parse(parts[0]);
+//     final m = parts[1];
+//     final period = h >= 12 ? 'PM' : 'AM';
+//     final hour = h == 0 ? 12 : (h > 12 ? h - 12 : h);
+//     return '$hour:$m $period';
+//   } catch (_) {
+//     return raw;
+//   }
+// }
 
 // http://127.0.0.1:8000/api    Mobile Device
 // http://10.0.2.2:8000/api     Mobile emulator
