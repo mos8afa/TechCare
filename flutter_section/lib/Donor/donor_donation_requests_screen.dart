@@ -50,18 +50,25 @@ class _DonorDonationRequestsScreenState extends State<DonorDonationRequestsScree
   late TabController _statusTab;
   bool _isLoading = false;
 
-  // TODO: connect to API when ready
-  List<dynamic> _pending  = [];
-  List<dynamic> _edited   = [];
-  List<dynamic> _accepted = [];
-  List<dynamic> _done     = [];
+  List<dynamic> _pending  = [
+    {'blood_bank': {'name': 'Life Blood Center'}, 'donation_date': '2024-05-06', 'donation_time': '10:00:00', 'blood_type': 'O+', 'quantity_ml': 450, 'address': '123 Main St', 'city': 'Cairo', 'medical_notes': 'No chronic diseases.', 'total_amount': '500'}
+  ];
+  List<dynamic> _edited   = [
+    {'blood_bank': {'name': 'City Blood Bank'}, 'donation_date': '2024-05-07', 'donation_time': '11:00:00', 'blood_type': 'A-', 'quantity_ml': 500, 'address': '45 King St', 'city': 'Alexandria', 'medical_notes': 'Healthy', 'total_amount': '550'}
+  ];
+  List<dynamic> _accepted = [
+    {'blood_bank': {'name': 'Hope Hospital'}, 'donation_date': '2024-05-05', 'donation_time': '12:00:00', 'blood_type': 'A+', 'quantity_ml': 400, 'address': '45 Health Ave', 'city': 'Giza', 'total_amount': '450'}
+  ];
+  List<dynamic> _done     = [
+    {'blood_bank': {'name': 'Red Crescent'}, 'donation_date': '2024-04-10', 'donation_time': '09:30:00', 'blood_type': 'B+', 'quantity_ml': 500, 'address': '78 Care St', 'city': 'Alexandria', 'total_amount': '600'}
+  ];
 
   final _searchCtrl = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _statusTab = TabController(length: 4, vsync: this);
+    _statusTab = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -112,7 +119,6 @@ class _DonorDonationRequestsScreenState extends State<DonorDonationRequestsScree
             unselectedLabelStyle: const TextStyle(fontSize: 12),
             indicatorColor: kBlood,
             tabs: const [
-              Tab(text: 'Booking'),
               Tab(text: 'Pending'),
               Tab(text: 'Accepted'),
               Tab(text: 'Done'),
@@ -306,8 +312,8 @@ class _DonorDonationRequestsScreenState extends State<DonorDonationRequestsScree
     final name     = _centerName(r);
     final picUrl   = _centerPic(r);
     final dateStr  = '${_fmtDate(r['donation_date'] ?? '')} | ${_fmtTime(r['donation_time'] ?? '')}';
-    final bloodType = r['blood_type'] ?? 'Unknown';
-    final quantity = r['quantity_ml'] ?? 0;
+    final bloodType = (r['blood_type'] ?? 'Unknown').toString();
+    final quantity = (r['quantity_ml'] ?? 0).toString();
 
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
@@ -356,8 +362,8 @@ class _DonorDonationRequestsScreenState extends State<DonorDonationRequestsScree
           padding: const EdgeInsets.all(16),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
-              Expanded(child: _infoBlock(Icons.bloodtype, 'BLOOD TYPE', bloodType, valueBold: true)),
-              Expanded(child: _infoBlock(Icons.water_drop, 'QUANTITY (ml)', quantity.toString(), valueBold: true)),
+              Expanded(child: _infoBlock(Icons.bloodtype_outlined, 'BLOOD TYPE', bloodType, valueBold: true)),
+              Expanded(child: _infoBlock(Icons.water_drop_outlined, 'QUANTITY (ml)', quantity, valueBold: true)),
             ]),
             const SizedBox(height: 12),
             Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -417,8 +423,8 @@ class _DonorDonationRequestsScreenState extends State<DonorDonationRequestsScree
   Widget _acceptedCard(Map r) {
     final name     = _centerName(r);
     final picUrl   = _centerPic(r);
-    final bloodType = r['blood_type'] ?? 'Unknown';
-    final quantity = r['quantity_ml'] ?? 0;
+    final bloodType = (r['blood_type'] ?? 'Unknown').toString();
+    final quantity = (r['quantity_ml'] ?? 0).toString();
 
     return Container(
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16),
@@ -452,8 +458,8 @@ class _DonorDonationRequestsScreenState extends State<DonorDonationRequestsScree
             ]),
             const SizedBox(height: 14),
             Row(children: [
-              Expanded(child: _infoBlock(Icons.bloodtype, 'BLOOD TYPE', bloodType, valueBold: true)),
-              Expanded(child: _infoBlock(Icons.water_drop, 'QUANTITY (ml)', quantity.toString(), valueBold: true)),
+              Expanded(child: _infoBlock(Icons.bloodtype_outlined, 'BLOOD TYPE', bloodType, valueBold: true)),
+              Expanded(child: _infoBlock(Icons.water_drop_outlined, 'QUANTITY (ml)', quantity, valueBold: true)),
             ]),
             const SizedBox(height: 14),
             Container(
@@ -498,8 +504,8 @@ class _DonorDonationRequestsScreenState extends State<DonorDonationRequestsScree
   Widget _doneCard(Map r) {
     final name     = _centerName(r);
     final picUrl   = _centerPic(r);
-    final bloodType = r['blood_type'] ?? 'Unknown';
-    final quantity = r['quantity_ml'] ?? 0;
+    final bloodType = (r['blood_type'] ?? 'Unknown').toString();
+    final quantity = (r['quantity_ml'] ?? 0).toString();
 
     return Container(
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16),
@@ -531,9 +537,9 @@ class _DonorDonationRequestsScreenState extends State<DonorDonationRequestsScree
             ]),
             const SizedBox(height: 10),
             Row(children: [
-              _miniInfo(Icons.bloodtype, bloodType),
+              _miniInfo(Icons.bloodtype_outlined, bloodType),
               const SizedBox(width: 16),
-              _miniInfo(Icons.water_drop, '$quantity ml'),
+              _miniInfo(Icons.water_drop_outlined, '$quantity ml'),
             ]),
             const SizedBox(height: 10),
             Row(crossAxisAlignment: CrossAxisAlignment.start, children: [

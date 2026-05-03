@@ -50,12 +50,36 @@ class _DonorNurseRequestsScreenState extends State<DonorNurseRequestsScreen>
   late TabController _statusTab;
   bool _isLoading = false;
 
-  // TODO: connect to API when ready
-  List<dynamic> _nurses   = [];
-  List<dynamic> _pending  = [];
-  List<dynamic> _edited   = [];
-  List<dynamic> _accepted = [];
-  List<dynamic> _done     = [];
+  List<dynamic> _nurses   = [
+    {
+      'name': 'Nurse Mona', 'brief': 'Experienced in elder care', 'governorate': 'Cairo', 'address': 'Heliopolis', 'avg_rating': 4.9, 'min_price': '150',
+      'services': [{'name': 'Injection', 'price': 50}, {'name': 'Wound Dressing', 'price': 100}]
+    }
+  ];
+  List<dynamic> _pending  = [
+    {
+      'nurse': {'name': 'Nurse Mona'}, 'date': '2024-05-05', 'time': '10:00:00', 'governorate': 'Cairo', 'address': 'Heliopolis', 'phone_number': '01012345678', 'net_income': '150',
+      'services': [{'name': 'Injection', 'price': 50}, {'name': 'Wound Dressing', 'price': 100}]
+    }
+  ];
+  List<dynamic> _edited   = [
+    {
+      'nurse': {'name': 'Nurse Samira'}, 'date': '2024-05-06', 'time': '12:00:00', 'governorate': 'Alexandria', 'address': 'Smouha', 'phone_number': '01198765432', 'net_income': '250',
+      'services': [{'name': 'IV Drip', 'price': 200}]
+    }
+  ];
+  List<dynamic> _accepted = [
+    {
+      'nurse': {'name': 'Nurse Fatma'}, 'date': '2024-05-04', 'time': '11:30:00', 'governorate': 'Giza', 'address': 'Mohandeseen', 'net_income': '200',
+      'services': [{'name': 'IV Drip', 'price': 200}]
+    }
+  ];
+  List<dynamic> _done     = [
+    {
+      'nurse': {'name': 'Nurse Ali'}, 'date': '2024-04-15', 'time': '16:00:00', 'governorate': 'Alexandria', 'address': 'Miami', 'net_income': '100',
+      'services': [{'name': 'Blood Pressure Check', 'price': 100}]
+    }
+  ];
 
   final _searchCtrl = TextEditingController();
 
