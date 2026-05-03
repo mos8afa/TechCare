@@ -6,6 +6,7 @@ import '../Donor/donor_complaints_screen.dart';
 import '../Donor/donor_donation_screen.dart';
 import '../Donor/donor_nurse_requests_screen.dart';
 import '../Donor/donor_donation_requests_screen.dart';
+import '../Donor/donor_doctor_book_appointment_screen.dart';
 
 
 const Color kPrimary     = Color(0xFF1D89E4);
@@ -54,20 +55,17 @@ class _DonorDoctorRequestsScreenState extends State<DonorDoctorRequestsScreen>
   bool _isLoading = false;
 
   List<dynamic> _doctors  = [
-    {'name': 'Dr. Ahmed Ali', 'specification': 'Cardiologist', 'governorate': 'Cairo', 'address': 'Nasr City', 'avg_rating': 4.8, 'price': '300'},
-    {'name': 'Dr. Sarah Hassan', 'specification': 'Dermatologist', 'governorate': 'Alexandria', 'address': 'Smouha', 'avg_rating': 4.5, 'price': '250'}
+    {'id': 1,'name': 'Dr. Ahmed Ali', 'specification': 'Cardiologist', 'governorate': 'Cairo', 'address': 'Nasr City', 'avg_rating': 4.8, 'price': '300'},
+    {'id': 2,'name': 'Dr. Sarah Hassan', 'specification': 'Dermatologist', 'governorate': 'Alexandria', 'address': 'Smouha', 'avg_rating': 4.5, 'price': '250'}
   ];
   List<dynamic> _pending  = [
-    {'doctor': {'name': 'Dr. Ahmed Ali', 'specification': 'Cardiologist'}, 'date': '2024-05-05', 'time': '14:30:00', 'disease_description': 'Patient experiencing chest pain.', 'governorate': 'Cairo', 'address': 'Nasr City', 'total_price': '300'}
-  ];
-  List<dynamic> _edited   = [
-    {'doctor': {'name': 'Dr. Sarah Hassan', 'specification': 'Dermatologist'}, 'date': '2024-05-06', 'time': '10:00:00', 'disease_description': 'Skin rash follow-up.', 'governorate': 'Alexandria', 'address': 'Smouha', 'total_price': '280'}
+    {'doctor': {'id': 1,'name': 'Dr. Ahmed Ali', 'specification': 'Cardiologist'}, 'date': '2024-05-05', 'time': '14:30:00', 'disease_description': 'Patient experiencing chest pain.', 'governorate': 'Cairo', 'address': 'Nasr City', 'total_price': '300'}
   ];
   List<dynamic> _accepted = [
-    {'doctor': {'name': 'Dr. Mahmoud Zaki', 'specification': 'Neurologist'}, 'date': '2024-05-04', 'time': '18:00:00', 'disease_description': 'Frequent headaches.', 'governorate': 'Giza', 'address': 'Dokki', 'total_price': '400'}
+    {'doctor': {'id': 3,'name': 'Dr. Mahmoud Zaki', 'specification': 'Neurologist'}, 'date': '2024-05-04', 'time': '18:00:00', 'disease_description': 'Frequent headaches.', 'governorate': 'Giza', 'address': 'Dokki', 'total_price': '400'}
   ];
   List<dynamic> _done     = [
-    {'doctor': {'name': 'Dr. Youssef Omar', 'specification': 'Pediatrician'}, 'date': '2024-04-20', 'time': '09:00:00', 'disease_description': 'Routine checkup.', 'governorate': 'Cairo', 'address': 'Maadi', 'total_price': '200'}
+    {'doctor': {'id': 4,'name': 'Dr. Youssef Omar', 'specification': 'Pediatrician'}, 'date': '2024-04-20', 'time': '09:00:00', 'disease_description': 'Routine checkup.', 'governorate': 'Cairo', 'address': 'Maadi', 'total_price': '200'}
   ];
 
   final _searchCtrl = TextEditingController();
@@ -373,7 +371,7 @@ class _DonorDoctorRequestsScreenState extends State<DonorDoctorRequestsScreen>
         SizedBox(width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              // TODO: Navigator.push to DonorDoctorBookAppointmentScreen
+              Navigator.push(context, MaterialPageRoute(builder: (_) => DonorDoctorBookAppointmentScreen(doctorId: doc['id'] ?? 0,)));
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: kPrimary, foregroundColor: Colors.white,
@@ -391,21 +389,17 @@ class _DonorDoctorRequestsScreenState extends State<DonorDoctorRequestsScreen>
   // PENDING TAB
   // ══════════════════════════════════════════════════════════════════════════
   Widget _buildPendingTab() {
-    if (_pending.isEmpty && _edited.isEmpty) return _emptyState('No pending requests');
+    if (_pending.isEmpty) return _emptyState('No pending requests');
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        ..._pending.map((r) => _pendingCard(r as Map, isEdited: false)),
-        if (_edited.isNotEmpty) ...[
-          _sectionLabel('EDITED BY PROVIDER'),
-          const SizedBox(height: 10),
-          ..._edited.map((r) => _pendingCard(r as Map, isEdited: true)),
-        ],
+        ..._pending.map((r) => _pendingCard(r as Map)),
       ],
     );
   }
 
-  Widget _pendingCard(Map r, {required bool isEdited}) {
+
+  Widget _pendingCard(Map r) {
     final name   = _docName(r);
     final picUrl = _docPic(r);
     final dateStr = '${_fmtDate(r['date'] ?? '')} | ${_fmtTime(r['time'] ?? '')}';
@@ -415,7 +409,7 @@ class _DonorDoctorRequestsScreenState extends State<DonorDoctorRequestsScreen>
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: isEdited ? kAmber.withOpacity(0.4) : kBorderColor),
+        border: Border.all(color: kBorderColor),
         boxShadow: const [BoxShadow(color: Color(0x09000000), blurRadius: 10, offset: Offset(0, 2))],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -437,12 +431,12 @@ class _DonorDoctorRequestsScreenState extends State<DonorDoctorRequestsScreen>
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: isEdited ? const Color(0xFFFEF3C7) : const Color(0xFFFFF3E0),
+                    color: const Color(0xFFFFF3E0),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Text(isEdited ? 'EDITED' : 'PENDING',
+                  child: const Text('PENDING',
                       style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
-                          color: isEdited ? kAmber : const Color(0xFFE65100))),
+                          color: Color(0xFFE65100))),
                 ),
               ]),
               const SizedBox(height: 4),
@@ -492,13 +486,17 @@ class _DonorDoctorRequestsScreenState extends State<DonorDoctorRequestsScreen>
                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: kPrimary)),
               ],
             ])),
-            Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              if (isEdited) ...[
-                _solidBtn('Accept', kPrimary, () {}),
-                const SizedBox(height: 8),
+            Row(
+              children: [
+                _solidBtn('Accept', kPrimary, () {
+                  // TODO: accept logic
+                }),
+                const SizedBox(width: 8),
+                _outlineBtn('Cancel', kRed, () {
+                  // TODO: cancel logic
+                }),
               ],
-              _outlineBtn('Cancel', kRed, () {}),
-            ]),
+            ),
           ]),
         ),
       ]),
@@ -761,6 +759,4 @@ class _DonorDoctorRequestsScreenState extends State<DonorDoctorRequestsScreen>
     ]));
   }
 
-  Widget _sectionLabel(String text) => Text(text,
-      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: kTextGray, letterSpacing: 1.2));
 }

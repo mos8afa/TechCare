@@ -106,14 +106,16 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
       backgroundColor: Colors.white,
       elevation: 0,
       surfaceTintColor: Colors.transparent,
-      leading: Builder(
-        builder: (ctx) => IconButton(
-          icon: const Icon(Icons.menu_rounded, color: kDarkText, size: 26),
-          onPressed: () => Scaffold.of(ctx).openDrawer(),
-        ),
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back_ios_new_rounded,
+            color: kDarkText, size: 20),
+        onPressed: () => Navigator.pop(context),
       ),
       title: const Text('Time Slots',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kDarkText)),
+          style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: kDarkText)),
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
         child: Container(color: kBorderColor, height: 1),

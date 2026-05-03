@@ -3,6 +3,7 @@ import '../Patient/patient_profile_screen.dart';
 import '../Patient/patient_doctor_requests_screen.dart';
 import '../Patient/patient_wallet.dart';
 import '../Patient/patient_complaints.dart';
+import '../Patient/patient_donation.dart';
 
 const Color kPrimary = Color(0xFF1D89E4);
 const Color kBgLight = Color(0xFFF4F7FC);
@@ -144,6 +145,11 @@ class _PatientNotificationsScreenState
         'active': false
       },
       {
+        'icon': Icons.local_hospital_outlined,
+        'label': 'Donation',
+        'active': false
+      },
+      {
         'icon': Icons.notifications_none_rounded,
         'label': 'Notifications',
         'active': true
@@ -260,6 +266,12 @@ class _PatientNotificationsScreenState
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => const PatientComplaintsScreen()),
+        );
+        break;
+      case 'Donation':
+        Navigator.pushReplacement(
+          context,
+            MaterialPageRoute(builder: (_) => const PatientDonationScreen()),
         );
         break;
       default:

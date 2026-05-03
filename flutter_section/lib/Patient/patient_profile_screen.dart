@@ -5,6 +5,7 @@ import '../Patient/patient_notifications.dart';
 import '../Patient/patient_wallet.dart';
 import '../Patient/patient_complaints.dart';
 import '../Patient/patient_doctor_requests_screen.dart';
+import '../Patient/patient_donation.dart';
 
 const Color kPrimary    = Color(0xFF1D89E4);
 const Color kBgLight    = Color(0xFFF4F7FC);
@@ -137,11 +138,12 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
 
   Widget _buildDrawer() {
     final items = [
-      {'icon': Icons.person_outline_rounded, 'label': 'Profile', 'active': true},
-      {'icon': Icons.list_alt_rounded, 'label': 'Requests', 'active': false},
-      {'icon': Icons.notifications_none_rounded, 'label': 'Notifications', 'active': false},
-      {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet', 'active': false},
-      {'icon': Icons.warning_amber_rounded, 'label': 'Complaints', 'active': false},
+      {'icon': Icons.person_outline_rounded,           'label': 'Profile',       'active': true},
+      {'icon': Icons.list_alt_rounded,                 'label': 'Requests',      'active': false},
+      {'icon': Icons.local_hospital_outlined,          'label': 'Donation',      'active': false},
+      {'icon': Icons.notifications_none_rounded,       'label': 'Notifications', 'active': false},
+      {'icon': Icons.account_balance_wallet_outlined,  'label': 'Wallet',        'active': false},
+      {'icon': Icons.warning_amber_rounded,            'label': 'Complaints',    'active': false},
     ];
     return Drawer(
       backgroundColor: Colors.white,
@@ -437,6 +439,10 @@ class _PatientProfileScreenState extends State<PatientProfileScreen> {
       case 'Complaints':
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (_) => const PatientComplaintsScreen()));
+        break;
+      case 'Donation':
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (_) => const PatientDonationScreen()));
         break;
       default:
         break;

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import '../services/api_service.dart';
 import '../Doctor/doctor_profile_screen.dart';
 import '../Doctor/doctor_notifications.dart';
 import '../Doctor/doctor_wallet.dart';
 import '../Doctor/doctor_complaints.dart';
-import '../services/api_service.dart';
+import '../Doctor/doctor_donation.dart';
 
 const Color kPrimary     = Color(0xFF1D89E4);
 const Color kBgLight     = Color(0xFFF4F7FC);
@@ -702,6 +703,7 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
     final items = [
       {'icon': Icons.person_outline_rounded, 'label': 'Profile'},
       {'icon': Icons.list_alt_rounded, 'label': 'Requests'},
+      {'icon': Icons.local_hospital_outlined, 'label': 'Donation'},
       {'icon': Icons.notifications_none_rounded, 'label': 'Notifications'},
       {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet'},
       {'icon': Icons.warning_amber_rounded, 'label': 'Complaints'},
@@ -774,6 +776,9 @@ class _DoctorRequestsScreenState extends State<DoctorRequestsScreen>
         break;
       case 'Complaints':
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DoctorComplaintsScreen()));
+        break;
+      case 'Donation':
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DoctorDonationScreen()));
         break;
       default: break;
     }

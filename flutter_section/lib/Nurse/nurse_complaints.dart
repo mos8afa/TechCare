@@ -3,6 +3,7 @@ import '../Nurse/nurse_profile_screen.dart';
 import '../Nurse/nurse_requests_screen.dart';
 import '../Nurse/nurse_notifications.dart';
 import '../Nurse/nurse_wallet.dart';
+import '../Nurse/nurse_donation.dart';
 
 const Color kPrimary = Color(0xFF1D89E4);
 const Color kBgLight = Color(0xFFF4F7FC);
@@ -134,11 +135,12 @@ class _NurseComplaintsScreenState extends State<NurseComplaintsScreen> {
   // ── Drawer ───────────────────────────────────────────────────────────────
   Widget _buildDrawer(BuildContext context) {
     final items = [
-      {'icon': Icons.person_outline_rounded, 'label': 'Profile', 'active': false},
-      {'icon': Icons.list_alt_rounded, 'label': 'Requests', 'active': false},
-      {'icon': Icons.notifications_none_rounded, 'label': 'Notifications', 'active': false},
-      {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet', 'active': false},
-      {'icon': Icons.warning_amber_rounded, 'label': 'Complaints', 'active': true},
+      {'icon': Icons.person_outline_rounded,          'label': 'Profile',       'active': false},
+      {'icon': Icons.list_alt_rounded,                'label': 'Requests',      'active': false},
+      {'icon': Icons.local_hospital_outlined,         'label': 'Donation',      'active': false},
+      {'icon': Icons.notifications_none_rounded,      'label': 'Notifications', 'active': false},
+      {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet',        'active': false},
+      {'icon': Icons.warning_amber_rounded,           'label': 'Complaints',    'active': true},
     ];
 
     return Drawer(
@@ -241,6 +243,12 @@ class _NurseComplaintsScreenState extends State<NurseComplaintsScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => const NurseWalletScreen()),
+        );
+        break;
+      case 'Donation':
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const NurseDonationScreen()),
         );
         break;
       default:
