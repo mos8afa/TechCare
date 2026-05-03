@@ -18,6 +18,11 @@ OFFER_STATUS = (
     ("completed", "Completed"),  
 )
 
+CONDITION = (
+    ("normal", "Normal"),
+    ("urgent", "Urgent"),
+    ("critical", "Critical"),
+)
 
 class BloodDonationRequest(models.Model):
     """Submitted by any user who needs blood."""
@@ -29,6 +34,7 @@ class BloodDonationRequest(models.Model):
     status          = models.CharField(max_length=10, choices=REQUEST_STATUS, default='open')
     created_at      = models.DateTimeField(auto_now_add=True)
     requester_done  = models.BooleanField(default=False)
+    condition       = models.CharField(max_length=10, choices=CONDITION, default='normal')  
 
 
 class DonorOffer(models.Model):

@@ -6,7 +6,6 @@ app_name = 'donation'
 urlpatterns = [
     # Any user — submit & manage their own requests
     path('request/create/',                    views.create_blood_request,      name='create_request'),
-    path('request/my/',                        views.my_blood_requests,         name='my_requests'),
     path('request/my/accepted/',               views.my_blood_requests_accepted, name='my_requests_accepted'),
     path('request/my/done/',                   views.my_blood_requests_done,    name='my_requests_done'),
     path('request/<int:request_id>/offers/',   views.request_offers,            name='request_offers'),

@@ -1,3 +1,5 @@
+from urllib import request
+
 from django.shortcuts import redirect, render
 from accounts import validations
 from accounts.models import Patient, Doctor, Nurse, SPECIFICATIONS, GOVERNORATES
@@ -9,7 +11,8 @@ from accounts.models import TimeSlots, get_provider_days_with_dates
 from datetime import time as time_type
 from datetime import datetime as dt
 import json as _json
-from donor import views as donation_views
+from donor.models import BloodDonationRequest, DonorOffer
+from accounts.models import BLOOD_TYPES, GOVERNORATES as GOV_CHOICES
 
 
 
@@ -496,29 +499,97 @@ def mark_nurse_done(request, request_id):
 
 @login_required
 def create_blood_request(request):
-    return donation_views.create_blood_request(request)
-
-
-@login_required
-def my_blood_requests(request):
-    return donation_views.my_blood_requests(request)
-
+    errors = {}
+    patient = Patient.objects.get(user=request.user)
+    profile_pic = patient.profile_pic
+    name = patient.user.first_name + " " + patient.user.last_name
+    if request.method == 'POST':
+        blood_type = request.POST.get('blood_type', '').strip()
+        governorate = request.POST.get('governorate', '').strip()
+        address = request.POST.get('address', '').strip()
+        medical_condition = request.POST.get('medical_condition', '').strip()
+        condition = request.POST.get('urgency', 'normal').strip()
+        if not blood_type: errors['blood_type'] = 'Please select a blood type.'
+        if not governorate: errors['governorate'] = 'Please select a governorate.'
+        if not address: errors['address'] = 'Please enter your address.'
+        if not medical_condition: errors['medical_condition'] = 'Please describe the medical condition.'
+        if not errors:
+            blood_req = BloodDonationRequest.objects.create(
+                requester=request.user, blood_type=blood_type,
+                governorate=governorate, address=address,
+                medical_condition=medical_condition, condition=condition,
+            )
+            return redirect('patient:request_offers', request_id=blood_req.id)
+    return render(request, 'patient/blood_request.html', {
+        'blood_types': BLOOD_TYPES, 'governorates': GOV_CHOICES,
+        'errors': errors, 'name': name, 'profile_pic': profile_pic,
+        'latest_request': BloodDonationRequest.objects.filter(
+            requester=request.user).exclude(status='cancelled').order_by('-created_at').first(),
+    })
 
 @login_required
 def request_offers(request, request_id):
-    return donation_views.request_offers(request, request_id)
-
+    user = request.user
+    patient = Patient.objects.get(user=user)
+    name = patient.user.first_name + ' ' + patient.user.last_name
+    profile_pic = patient.profile_pic
+    blood_req = BloodDonationRequest.objects.get(id=request_id, requester=request.user)
+    offers = blood_req.offers.filter(status__in=['offered', 'accepted']).select_related('donor__user')
+    return render(request, 'patient/blood_request_offers.html', {
+        'blood_request': blood_req, 'offers': offers, 'name': name, 'profile_pic': profile_pic,
+    })
 
 @login_required
 def accept_offer(request, offer_id):
-    return donation_views.accept_offer(request, offer_id)
-
+    offer = DonorOffer.objects.get(id=offer_id, request__requester=request.user)
+    blood_req = offer.request
+    offer.status = 'accepted'
+    offer.save()
+    blood_req.status = 'matched'
+    blood_req.save()
+    return redirect('patient:request_offers', request_id=blood_req.id)
 
 @login_required
 def requester_mark_done(request, offer_id):
-    return donation_views.requester_mark_done(request, offer_id)
-
+    offer = DonorOffer.objects.get(id=offer_id, request__requester=request.user, status='accepted')
+    blood_req = offer.request
+    blood_req.requester_done = True
+    if offer.donor_done:
+        offer.status = 'completed'
+        blood_req.status = 'completed'
+        offer.save()
+    blood_req.save()
+    return redirect('patient:request_offers', request_id=blood_req.id)
 
 @login_required
 def cancel_blood_request(request, request_id):
-    return donation_views.cancel_blood_request(request, request_id)
+    blood_req = BloodDonationRequest.objects.get(id=request_id, requester=request.user)
+    blood_req.status = 'cancelled'
+    blood_req.save()
+    return redirect('patient:create_blood_request')
+
+@login_required
+def my_blood_requests_accepted(request):
+    user = request.user
+    patient = Patient.objects.get(user=user)
+    name = patient.user.first_name + ' ' + patient.user.last_name
+    accepted_offers = DonorOffer.objects.filter(
+        request__requester=request.user, status='accepted',
+    ).select_related('donor__user', 'request').order_by('-created_at')
+    profile_pic = patient.profile_pic
+    return render(request, 'patient/my_blood_requests_accepted.html', {
+        'accepted_offers': accepted_offers, 'name': name, 'profile_pic': profile_pic,
+    })
+
+@login_required
+def my_blood_requests_done(request):
+    user = request.user
+    patient = Patient.objects.get(user=user)
+    name = patient.user.first_name + ' ' + patient.user.last_name
+    profile_pic = patient.profile_pic
+    completed_offers = DonorOffer.objects.filter(
+        request__requester=request.user, status='completed',
+    ).select_related('donor__user', 'request').order_by('-created_at')
+    return render(request, 'patient/my_blood_requests_done.html', {
+        'completed_offers': completed_offers, 'name': name, 'profile_pic': profile_pic,
+    })

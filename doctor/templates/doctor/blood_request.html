@@ -35,11 +35,11 @@
             </div>
 
             <aside class="aside">
-                <a href="{% url 'donor:donor_dashboard' %}" class="aside-item">
+                <a href="{% url 'doctor:doctor_dashboard' %}" class="aside-item">
                     <i class="bi bi-person"></i>
                     <span>Profile</span>
                 </a>
-                <a href="{% url 'donor:donor_requests' 'doctor' 'booking' %}" class="aside-item">
+                <a href="{% url 'doctor:doctor_requests' 'pending' %}" class="aside-item">
                     <i class="ri-file-list-line"></i>
                     <span>Requests</span>
                 </a>
@@ -47,7 +47,7 @@
                     <i class="fa-regular fa-bell"></i>
                     <span>Notifications</span>
                 </a>
-                <a href="{% url 'donation:create_request' %}" class="aside-item active">
+                <a href="{% url 'doctor:create_blood_request' %}" class="aside-item active">
                     <i class="ri-hand-heart-line"></i>
                     <span style="white-space: nowrap; font-size: 13px;">Donation</span>
                 </a>
@@ -66,7 +66,7 @@
 
             <!-- Top Navbar -->
             <div class="topbar" style="background-color: #ffffff; border-bottom: 1px solid #e2e8f0;">
-                <h2 class="topbar-title">Donor Profile</h2>
+                <h2 class="topbar-title">Doctor Profile</h2>
 
                 <div class="topbar-right">
                     <div class="topbar-icon" id="notificationBtn">
@@ -78,7 +78,7 @@
                         </div>
                     </div>
                     <hr class="line">
-                    <div class="topbar-profile" onclick="window.location.href='{% url 'donor:donor_dashboard' %}'">
+                    <div class="topbar-profile" onclick="window.location.href='{% url 'doctor:doctor_dashboard' %}'">
                         <div class="topbar-user-info">
                             <h4 style="font-weight:600; color:#1e293b;">{{ name }}</h4>
                         </div>
@@ -119,7 +119,7 @@
 
                 {% if latest_request %}
                 <div style="width:100%; max-width:700px; display:flex; justify-content:flex-end; margin-bottom:16px;">
-                    <a href="{% url 'donation:request_offers' latest_request.id %}"
+                    <a href="{% url 'doctor:request_offers' latest_request.id %}"
                        style="background:#1D89E4; color:white; padding:10px 22px; border-radius:24px;
                               font-size:14px; font-weight:600; text-decoration:none; display:inline-flex;
                               align-items:center; gap:8px;">
@@ -134,7 +134,7 @@
                     {% endfor %}
                 {% endif %}
 
-                <form method="POST" id="donationForm" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+                <form method="POST" action="{% url 'doctor:create_blood_request' %}" id="donationForm" style="width:100%; display:flex; flex-direction:column; align-items:center;">
                 {% csrf_token %}
 
                 <div class="create-donation__card">
@@ -206,10 +206,10 @@
                 <!-- Footer Buttons -->
                 <div class="create-donation__footer">
                     {% if latest_request %}
-                        <a href="{% url 'donation:request_offers' latest_request.id %}"
+                        <a href="{% url 'doctor:request_offers' latest_request.id %}"
                            class="create-donation__btn create-donation__btn--cancel">Cancel</a>
                     {% else %}
-                        <a href="{% url 'donor:donor_dashboard' %}"
+                        <a href="{% url 'doctor:doctor_dashboard' %}"
                            class="create-donation__btn create-donation__btn--cancel">Cancel</a>
                     {% endif %}
                     <button type="submit" class="create-donation__btn create-donation__btn--submit">

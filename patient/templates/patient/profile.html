@@ -31,7 +31,7 @@
                 <i class="ri-file-list-line"></i><span>Requests</span>
             </a>
             <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
-            <a href="{% url 'donation:my_requests' %}" class="aside-item"><i class="ri-hand-heart-line"></i><span>Donation</span></a>
+            <a href="{% url 'patient:create_blood_request' %}" class="aside-item"><i class="ri-hand-heart-line"></i><span>Donation</span></a>
             <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
             <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
         </aside>
@@ -134,8 +134,8 @@
                 </div>
                 <div class="request-stat-card">
                     <div class="req-header">
-                        <span class="req-title">Total Requests</span>
-                        <span class="req-count gold">{{ total_requests }}</span>
+                        <span class="req-title">Medicine Requests</span>
+                        <span class="req-count gold">19</span>
                     </div>
                     <div class="req-progress track-gold">
                         <div class="req-fill bg-gold" style="width:{% if total_requests %}100{% else %}0{% endif %}%;"></div>

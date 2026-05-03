@@ -481,7 +481,7 @@ def create_blood_request(request):
         except Donor.DoesNotExist:
             pass
     elif role == 'patient':
-        from patient.models import Patient
+        from accounts.models import Patient
         try:
             _profile = Patient.objects.get(user=request.user)
             profile_pic = _profile.profile_pic
@@ -506,6 +506,7 @@ def create_blood_request(request):
         governorate       = request.POST.get('governorate', '').strip()
         address           = request.POST.get('address', '').strip()
         medical_condition = request.POST.get('medical_condition', '').strip()
+        condition         = request.POST.get('urgency', 'normal').strip()
 
         if not blood_type:
             errors['blood_type'] = 'Please select a blood type.'
@@ -523,6 +524,7 @@ def create_blood_request(request):
                 governorate=governorate,
                 address=address,
                 medical_condition=medical_condition,
+                condition=condition,
             )
             return redirect('donation:request_offers', request_id=blood_req.id)
 
@@ -538,35 +540,38 @@ def create_blood_request(request):
     })
 
 @login_required
-def my_blood_requests(request):
-    return redirect('donation:create_request')
-
-@login_required
 def my_blood_requests_accepted(request):
-    """All accepted offers on the current user's blood requests."""
-    donor_obj = Donor.objects.get(user=request.user)
+    user = request.user
+    donor = Donor.objects.get(user=user)
     accepted_offers = DonorOffer.objects.filter(
-        request__requester=request.user,
+        request__requester= user,
         status='accepted',
     ).select_related('donor__user', 'request').order_by('-created_at')
+
+    name = user.first_name + ' ' + user.last_name
+    profile_pic = donor.profile_pic
     return render(request, 'donor/my_blood_requests_accepted.html', {
         'accepted_offers': accepted_offers,
-        'name': donor_obj.user.first_name + ' ' + donor_obj.user.last_name,
-        'profile_pic': donor_obj.profile_pic,
+        'name': name,
+        'profile_pic': profile_pic,
     })
 
 @login_required
 def my_blood_requests_done(request):
-    """All completed offers on the current user's blood requests."""
-    donor_obj = Donor.objects.get(user=request.user)
+    user = request.user
+    donor = Donor.objects.get(user=user)
     completed_offers = DonorOffer.objects.filter(
         request__requester=request.user,
         status='completed',
     ).select_related('donor__user', 'request').order_by('-created_at')
+
+    name = user.first_name + ' ' + user.last_name
+    profile_pic = donor.profile_pic
+
     return render(request, 'donor/my_blood_requests_done.html', {
         'completed_offers': completed_offers,
-        'name': donor_obj.user.first_name + ' ' + donor_obj.user.last_name,
-        'profile_pic': donor_obj.profile_pic,
+        'name': name,
+        'profile_pic': profile_pic,
     })
 
 @login_required
@@ -574,7 +579,6 @@ def request_offers(request, request_id):
     blood_req = BloodDonationRequest.objects.get(id=request_id, requester=request.user)
     offers    = blood_req.offers.filter(status__in=['offered', 'accepted']).select_related('donor__user')
 
-    # resolve profile for topbar
     profile_pic = None
     name = request.user.first_name + ' ' + request.user.last_name
     if request.user.role == 'donor':

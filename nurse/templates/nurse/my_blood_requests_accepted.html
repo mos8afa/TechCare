@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Donation Requests</title>
+    <title>Donation Requests - Accepted</title>
 
     <link rel="stylesheet" href="{% static 'Css/Donor.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -35,11 +35,11 @@
             </div>
 
             <aside class="aside">
-                <a href="{% url 'donor:donor_dashboard' %}" class="aside-item">
+                <a href="{% url 'nurse:nurse_dashboard' %}" class="aside-item">
                     <i class="bi bi-person"></i>
                     <span>Profile</span>
                 </a>
-                <a href="{% url 'donor:donor_requests' 'doctor' 'booking' %}" class="aside-item">
+                <a href="{% url 'nurse:nurse_requests' 'pending' %}" class="aside-item">
                     <i class="ri-file-list-line"></i>
                     <span>Requests</span>
                 </a>
@@ -47,7 +47,7 @@
                     <i class="fa-regular fa-bell"></i>
                     <span>Notifications</span>
                 </a>
-                <a href="{% url 'donation:create_request' %}" class="aside-item active">
+                <a href="{% url 'nurse:create_blood_request' %}" class="aside-item active">
                     <i class="ri-hand-heart-line"></i>
                     <span style="white-space: nowrap; font-size: 13px;">Donation</span>
                 </a>
@@ -66,7 +66,7 @@
 
             <!-- Top Navbar -->
             <div class="topbar" style="background-color: #ffffff; border-bottom: 1px solid #e2e8f0;">
-                <h2 class="topbar-title">Donor Profile</h2>
+                <h2 class="topbar-title">Nurse Profile</h2>
 
                 <div class="topbar-right">
                     <div class="topbar-icon" id="notificationBtn">
@@ -79,7 +79,7 @@
                         </div>
                     </div>
                     <hr class="line">
-                    <div class="topbar-profile" onclick="window.location.href='{% url 'donor:donor_dashboard' %}'">
+                    <div class="topbar-profile" onclick="window.location.href='{% url 'nurse:nurse_dashboard' %}'">
                         <div class="topbar-user-info">
                             <h4 style="font-weight: 600; color: #1e293b;">{{ name }}</h4>
                         </div>
@@ -101,75 +101,74 @@
 
                 <!-- Status Tabs -->
                 <div class="donation-status-tabs" style="margin-bottom: 24px;">
-                    <button class="don-tab active">Suggested</button>
                     <button class="don-tab"
-                            onclick="window.location.href='{% url 'donation:my_requests_accepted' %}'">Accepted</button>
+                            onclick="window.location.href='{% url 'nurse:create_blood_request' %}'">Suggested</button>
+                    <button class="don-tab active">Accepted</button>
                     <button class="don-tab"
-                            onclick="window.location.href='{% url 'donation:my_requests_done' %}'">Done</button>
+                            onclick="window.location.href='{% url 'nurse:my_blood_requests_done' %}'">Done</button>
                 </div>
 
                 <div class="don-grid-2x2">
-                    {% for offer in offers %}
-                    <div class="don-card-suggested">
-                        <div class="don-card-suggested__header">
-                            <div class="don-card-suggested__user">
-                                <div class="don-card-suggested__avatar">
-                                    {% if offer.donor.profile_pic %}
-                                        <img src="{{ offer.donor.profile_pic.url }}" alt="{{ offer.donor.user.first_name }}"
-                                             style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
-                                    {% else %}
-                                        <i class="ri-user-line"></i>
-                                    {% endif %}
+                    {% for offer in accepted_offers %}
+                    <div class="don-card-accepted">
+                        <div class="don-card-acc__header">
+                            <div class="don-card-acc__avatars">
+                                {% if offer.request.requester.donor.profile_pic %}
+                                    <img src="{{ offer.request.requester.donor.profile_pic.url }}" alt="Requester">
+                                {% else %}
+                                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Requester">
+                                {% endif %}
+                                {% if offer.donor.profile_pic %}
+                                    <img src="{{ offer.donor.profile_pic.url }}" alt="Donor">
+                                {% else %}
+                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Donor">
+                                {% endif %}
+                            </div>
+                            <div class="don-card-acc__badge">Accepted</div>
+                        </div>
+                        <div class="don-card-acc__split">
+                            <div class="don-card-acc__col">
+                                <span class="don-card-acc__label">REQUESTER</span>
+                                <h4 class="don-card-acc__name">
+                                    {{ offer.request.requester.first_name }} {{ offer.request.requester.last_name }}
+                                </h4>
+                                <div class="don-card-acc__detail">
+                                    <i class="ri-drop-line"></i> Blood Type: {{ offer.request.blood_type }}
                                 </div>
-                                <div class="don-card-suggested__info">
-                                    <h3 class="don-card-suggested__name">
-                                        {{ offer.donor.user.first_name }} {{ offer.donor.user.last_name }}
-                                    </h3>
-                                    <span class="don-card-suggested__loc">
-                                        <i class="ri-map-pin-line"></i> {{ offer.donor.get_governorate_display }}
-                                    </span>
+                                <div class="don-card-acc__detail location">
+                                    <i class="ri-map-pin-line"></i>
+                                    <span>{{ offer.request.get_governorate_display }},<br>{{ offer.request.address }}</span>
                                 </div>
                             </div>
-                            <div class="don-card-suggested__blood">
-                                <span class="don-card-suggested__blood-val">{{ offer.donor.blood_type }}</span>
-                                <span class="don-card-suggested__blood-label">BLOOD TYPE</span>
+                            <div class="don-card-acc__col">
+                                <span class="don-card-acc__label">DONOR</span>
+                                <h4 class="don-card-acc__name">
+                                    {{ offer.donor.user.first_name }} {{ offer.donor.user.last_name }}
+                                </h4>
+                                <div class="don-card-acc__detail">
+                                    <i class="ri-drop-line"></i> Blood Type: {{ offer.donor.blood_type }}
+                                </div>
+                                <div class="don-card-acc__detail location">
+                                    <i class="ri-map-pin-line"></i>
+                                    <span>{{ offer.donor.get_governorate_display }},<br>{{ offer.donor.address|default:"—" }}</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="don-card-suggested__address">
-                            <i class="ri-map-pin-line"></i>
-                            <span>{{ offer.donor.address|default:"Address not provided" }}</span>
-                        </div>
-                        <div class="don-card-suggested__footer">
-                            {% if offer.donor.last_donation_date %}
-                                <div class="don-card-suggested__badge don-card-suggested__badge--orange">
-                                    <i class="ri-history-line"></i> Last Donated: {{ offer.donor.last_donation_date }}
-                                </div>
-                            {% else %}
-                                <div class="don-card-suggested__badge don-card-suggested__badge--blue">
-                                    <i class="ri-checkbox-circle-line"></i> Eligible to donate today
-                                </div>
-                            {% endif %}
-                            {% if offer.status == 'offered' %}
-                                <form method="POST" action="{% url 'donation:accept_offer' offer.id %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="don-card-suggested__btn-outline">Accept</button>
-                                </form>
-                            {% else %}
-                                <span class="don-card-suggested__btn-outline" style="opacity:0.6; cursor:default;">Accepted</span>
-                            {% endif %}
-                        </div>
+                        <form method="POST" action="{% url 'nurse:requester_done' offer.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="don-card-acc__btn">Mark as Done</button>
+                        </form>
                     </div>
                     {% empty %}
                     <div style="grid-column:1/-1; padding:40px; text-align:center; color:#888;">
-                        <i class="ri-drop-line" style="font-size:48px; color:#cbd5e1;"></i>
-                        <p style="margin-top:12px; font-size:16px;">No donors have offered yet.</p>
+                        <i class="ri-checkbox-circle-line" style="font-size:48px; color:#cbd5e1;"></i>
+                        <p style="margin-top:12px; font-size:16px;">No accepted donations yet.</p>
                     </div>
                     {% endfor %}
                 </div>
 
             </main>
         </div>
-
     </div>
 </body>
 <script src="{% static 'JS/Board.js' %}"></script>

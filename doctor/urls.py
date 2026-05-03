@@ -11,10 +11,11 @@ urlpatterns = [
     path('request/<int:request_id>/action/', views.request_action, name='request_action'),
     path('request/<int:request_id>/done/', views.mark_done_doctor, name='mark_done_doctor'),
     path('blood/request/create/', views.create_blood_request, name='create_blood_request'),
-    path('blood/request/my/', views.my_blood_requests, name='my_blood_requests'),
     path('blood/request/<int:request_id>/offers/', views.request_offers, name='request_offers'),
     path('blood/request/<int:request_id>/cancel/', views.cancel_blood_request, name='cancel_blood_request'),
     path('blood/offer/<int:offer_id>/accept/', views.accept_offer, name='accept_offer'),
     path('blood/offer/<int:offer_id>/requester-done/', views.requester_mark_done, name='requester_done'),
+    path('blood/request/my/accepted/', views.my_blood_requests_accepted, name='my_blood_requests_accepted'),
+    path('blood/request/my/done/', views.my_blood_requests_done, name='my_blood_requests_done'),
     path('<str:type>/', views.doctor_requests, name='doctor_requests'),
 ]
