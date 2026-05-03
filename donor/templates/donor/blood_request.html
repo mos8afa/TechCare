@@ -47,7 +47,7 @@
                     <i class="fa-regular fa-bell"></i>
                     <span>Notifications</span>
                 </a>
-                <a href="{% url 'donation:create_request' %}" class="aside-item active">
+                <a href="{% url 'donation:my_requests_pending' %}" class="aside-item active">
                     <i class="ri-hand-heart-line"></i>
                     <span style="white-space: nowrap; font-size: 13px;">Donation</span>
                 </a>
@@ -127,12 +127,21 @@
                     </a>
                 </div>
                 {% endif %}
+                {% if blocked %}
+                <div style="display:flex;align-items:flex-start;gap:12px;background:#fffbeb;border:1px solid #fde68a;border-left:4px solid #f59e0b;border-radius:10px;padding:16px 20px;max-width:700px;width:100%;margin-bottom:16px;">
+                    <i class="ri-time-line" style="font-size:22px;color:#f59e0b;flex-shrink:0;margin-top:2px;"></i>
+                    <div>
+                        <p style="font-weight:700;color:#92400e;margin:0 0 4px;">Active Request Exists</p>
+                        <p style="color:#92400e;font-size:13px;margin:0;">You already have an active blood request. A new one can be created after: 1 hour with no offers, 3 hours with unaccepted offers, or when the current request is completed.</p>
+                    </div>
+                </div>
+                {% endif %}
 
-                {% if errors %}
+                {% comment %} {% if errors %}
                     {% for key, msg in errors.items %}
                         <div style="color:red; margin-bottom:8px; padding:10px 14px; background:#fff0f0; border-radius:8px; max-width:700px; width:100%;">{{ msg }}</div>
                     {% endfor %}
-                {% endif %}
+                {% endif %} {% endcomment %}
 
                 <form method="POST" id="donationForm" style="width:100%; display:flex; flex-direction:column; align-items:center;">
                 {% csrf_token %}
@@ -212,7 +221,7 @@
                         <a href="{% url 'donor:donor_dashboard' %}"
                            class="create-donation__btn create-donation__btn--cancel">Cancel</a>
                     {% endif %}
-                    <button type="submit" class="create-donation__btn create-donation__btn--submit">
+                    <button type="submit" class="create-donation__btn create-donation__btn--submit" {% if blocked %}disabled style="opacity:0.45;cursor:not-allowed;"{% endif %}>
                         Broadcast Request
                     </button>
                 </div>

@@ -47,7 +47,7 @@
                     <i class="fa-regular fa-bell"></i>
                     <span>Notifications</span>
                 </a>
-                <a href="{% url 'doctor:create_blood_request' %}" class="aside-item active">
+                <a href="{% url 'doctor:my_blood_requests_pending' %>" class="aside-item active">
                     <i class="ri-hand-heart-line"></i>
                     <span style="white-space: nowrap; font-size: 13px;">Donation</span>
                 </a>
@@ -145,7 +145,7 @@
                                     <i class="ri-checkbox-circle-line"></i> Eligible to donate today
                                 </div>
                             {% endif %}
-                            {% if offer.status == 'offered' %}
+                            {% if offer.status == 'offered' and blood_request.status != 'matched' %}
                                 <form method="POST" action="{% url 'doctor:accept_offer' offer.id %}">
                                     {% csrf_token %}
                                     <button type="submit" class="don-card-suggested__btn-outline">Accept</button>

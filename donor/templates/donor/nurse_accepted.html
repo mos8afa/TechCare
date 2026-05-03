@@ -32,7 +32,7 @@
                 <i class="ri-file-list-line"></i><span>Requests</span>
             </a>
             <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
-            <a href="{% url 'donation:create_request' %}" class="aside-item"><i class="ri-hand-heart-line"></i><span>Donation</span></a>
+            <a href="{% url 'donation:my_requests_pending' %}" class="aside-item"><i class="ri-hand-heart-line"></i><span>Donation</span></a>
             <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
             <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
         </aside>
@@ -115,21 +115,21 @@
                                 <i class="ri-calendar-event-line ac-icon blue"></i>
                                 <div>
                                     <p class="ac-label">DATE AND TIME</p>
-                                    <p class="ac-value">{{ req.date }} • {{ req.time }}</p>
-                                </div>
-                            </div>
-                            <div class="ac-detail-item">
-                                <i class="ri-phone-line ac-icon blue"></i>
-                                <div>
-                                    <p class="ac-label">CONTACT INFO</p>
-                                    <p class="ac-value">{{ req.nurse.user.username }}</p>
+                                    <p class="ac-value">{{ req.date|date:"M d, Y" }} • {{ req.time|time:"h:i A" }}</p>
                                 </div>
                             </div>
                             <div class="ac-detail-item">
                                 <i class="ri-map-pin-line ac-icon blue"></i>
                                 <div>
-                                    <p class="ac-label">REGION AND ADDRESS</p>
-                                    <p class="ac-value">{{ req.get_governrate_display }}, {{ req.address }}</p>
+                                    <p class="ac-label">REGION</p>
+                                    <p class="ac-value">{{ req.get_governrate_display }}</p>
+                                </div>
+                            </div>
+                            <div class="ac-detail-item">
+                                <i class="ri-map-pin-line ac-icon blue"></i>
+                                <div>
+                                    <p class="ac-label">ADDRESS</p>
+                                    <p class="ac-value">{{ req.address }}</p>
                                 </div>
                             </div>
                             <div class="ac-detail-item">
@@ -157,10 +157,16 @@
                         </div>
 
                         <div class="ac-footer">
-                            <form method="POST" action="{% url 'donor:mark_nurse_done' req.id %}">
-                                {% csrf_token %}
-                                <button type="submit" class="ac-done-btn">Done</button>
-                            </form>
+                            {% if req.patient_done %}
+                                <button class="btn-waiting" disabled>
+                                    <i class="ri-time-line"></i> Waiting for provider to mark done...
+                                </button>
+                            {% else %}
+                                <form method="POST" action="{% url 'donor:mark_nurse_done' req.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="ac-done-btn">Done</button>
+                                </form>
+                            {% endif %}
                         </div>
                     </div>
                     {% empty %}

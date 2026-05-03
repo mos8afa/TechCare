@@ -12,9 +12,12 @@ urlpatterns = [
     path('request/<int:request_id>/cancel/', views.cancel_doctor_request, name='cancel_doctor_request'),
     path('request/<int:request_id>/accept/', views.accept_doctor_reschedule, name='accept_doctor_reschedule'),
     path('request/<int:request_id>/done/', views.mark_doctor_done, name='mark_doctor_done'),
+    path('request/<int:request_id>/rate/', views.rate_doctor, name='rate_doctor'),
     # nurse
     path('book-nurse/<int:nurse_id>/', views.book_nurse, name='book_nurse'),
     path('nurse-request/<int:request_id>/cancel/', views.cancel_nurse_request, name='cancel_nurse_request'),
     path('nurse-request/<int:request_id>/accept/', views.accept_nurse_reschedule, name='accept_nurse_reschedule'),
     path('nurse-request/<int:request_id>/done/', views.mark_nurse_done, name='mark_nurse_done'),
+    path('nurse-request/<int:request_id>/rate/', views.rate_nurse, name='rate_nurse'),
+    path('blood/request/my/pending/', views.my_blood_requests_pending, name='my_blood_requests_pending'),
 ]

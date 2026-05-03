@@ -1,0 +1,187 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Donation Requests — Pending</title>
+    <link rel="stylesheet" href="{% static 'Css/Donor.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+<div class="dashboard">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon"><img src="{% static 'img/logo.png' %}" alt=""></span>
+                <div><h2>TechCare</h2><p>Medical Portal</p></div>
+                <button class="sidebar-toggle"><i class="bi bi-layout-sidebar-inset-reverse"></i></button>
+            </div>
+        </div>
+        <aside class="aside">
+            <a href="{% url 'donor:donor_dashboard' %}" class="aside-item">
+                <i class="bi bi-person"></i><span>Profile</span>
+            </a>
+            <a href="{% url 'donor:donor_requests' 'doctor' 'booking' %}" class="aside-item">
+                <i class="ri-file-list-line"></i><span>Requests</span>
+            </a>
+            <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
+            <a href="{% url 'donation:my_requests_pending' %}" class="aside-item active">
+                <i class="ri-hand-heart-line"></i>
+                <span style="white-space:nowrap; font-size:13px;">Donation</span>
+            </a>
+            <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
+            <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
+        </aside>
+    </aside>
+
+    <div style="flex:1; display:flex; flex-direction:column; background-color:#f8fafc; min-height:100vh;">
+
+        <!-- Top Navbar -->
+        <div class="topbar" style="background-color:#ffffff; border-bottom:1px solid #e2e8f0;">
+            <h2 class="topbar-title">Donor Profile</h2>
+            <div class="topbar-right">
+                <div class="topbar-icon" id="notificationBtn">
+                    <i class="fa-regular fa-bell"></i>
+                    <div class="inbox" id="notificationBox">
+                        <div class="notification-item">
+                            <div class="notification-content"><p>No new notifications</p></div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="line">
+                <div class="topbar-profile" onclick="window.location.href='{% url 'donor:donor_dashboard' %}'">
+                    <div class="topbar-user-info">
+                        <h4 style="font-weight:600; color:#1e293b;">{{ name }}</h4>
+                    </div>
+                    {% if profile_pic %}
+                        <img src="{{ profile_pic.url }}" alt="{{ name }}" style="width:36px; height:36px; border-radius:50%; object-fit:cover;">
+                    {% else %}
+                        <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="{{ name }}" style="width:36px; height:36px; border-radius:50%; object-fit:cover;">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="donation-main-wrapper">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:28px;">
+                <div class="donation-title-block" style="margin-bottom:0; flex:1;">
+                    <h1>Donation Requests</h1>
+                    <p>Find and manage suggested blood donors for urgent needs.</p>
+                </div>
+                <a href="{% url 'donation:create_request' %}"
+                   style="display:inline-flex; align-items:center; gap:8px; background:#1D89E4; color:white;
+                          padding:10px 22px; border-radius:24px; font-size:14px; font-weight:600;
+                          text-decoration:none; white-space:nowrap; align-self:center;
+                          box-shadow:0 2px 8px rgba(29,137,228,0.25);">
+                    <i class="ri-add-line"></i> New Request
+                </a>
+            </div>
+
+            <!-- Status Tabs -->
+            <div class="donation-status-tabs" style="margin-bottom:28px; margin-top:4px;">
+                <button class="don-tab active">Pending</button>
+              <button class="don-tab"
+                        onclick="window.location.href='{% url 'donation:request_offers' latest_request.id %}'">Suggested</button>
+                <button class="don-tab"
+                        onclick="window.location.href='{% url 'donation:my_requests_accepted' %}'">Accepted</button>
+                <button class="don-tab"
+                        onclick="window.location.href='{% url 'donation:my_requests_done' %}'">Done</button>
+            </div>
+
+            <div class="don-grid">
+                {% for req in pending_requests %}
+                <div class="don-card">
+                    <div class="don-card-header">
+                        <div class="don-left">
+                            <div class="don-avatar"><i class="ri-drop-line" style="font-size:22px; color:#ef4444;"></i></div>
+                            <div class="don-name-wrap">
+                                <h3 class="don-name">{{ req.blood_type }} Blood Needed</h3>
+                                <div class="don-location">
+                                    <i class="ri-map-pin-2-line"></i>
+                                    {{ req.get_governorate_display }}, {{ req.address }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="don-right">
+                            <span class="don-badge-pending">PENDING</span>
+                            <div class="don-blood-type">
+                                <span class="don-blood-value">{{ req.blood_type }}</span>
+                                <span class="don-blood-label">Blood Type</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="don-desc">{{ req.medical_condition }}</p>
+
+                    <div class="don-alert {% if req.condition == 'critical' %}urgent{% elif req.condition == 'urgent' %}urgent{% else %}normal{% endif %}">
+                        {% if req.condition == 'critical' %}
+                            <i class="ri-alarm-warning-line"></i> Critical — immediate donation required
+                        {% elif req.condition == 'urgent' %}
+                            <i class="ri-error-warning-line"></i> Urgent — immediate donation requested
+                        {% else %}
+                            <i class="ri-calendar-check-line"></i> Normal request — scheduled donation
+                        {% endif %}
+                    </div>
+
+                    <div class="don-footer">
+                        <div class="don-actions" style="display:flex; gap:10px; align-items:center; margin-left:auto;">
+                            <span style="color:#94a3b8; font-size:13px; font-weight:500;">
+                                <i class="ri-time-line"></i> Waiting for donors...
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <form method="POST" action="{% url 'donation:cancel_request' req.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="don-btn-cancel"
+                                        onclick="return confirm('Cancel this request?')">
+                                    Cancel
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div style="grid-column:1/-1; padding:40px; text-align:center; color:#888;">
+                    <i class="ri-drop-line" style="font-size:48px; color:#cbd5e1;"></i>
+                    <p style="margin-top:12px; font-size:16px;">No pending requests. All your requests have received offers.</p>
+                    <a href="{% url 'donation:create_request' %}"
+                       style="display:inline-block; margin-top:16px; background:#1D89E4; color:white;
+                              padding:10px 24px; border-radius:24px; font-size:14px; font-weight:600;
+                              text-decoration:none;">
+                        Create New Request
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+
+        </main>
+    </div>
+</div>
+<script src="{% static 'JS/Board.js' %}"></script>
+</body>
+</html>

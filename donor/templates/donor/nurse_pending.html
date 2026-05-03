@@ -32,7 +32,7 @@
                 <i class="ri-file-list-line"></i><span>Requests</span>
             </a>
             <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
-            <a href="{% url 'donation:create_request' %}" class="aside-item"><i class="ri-hand-heart-line"></i><span>Donation</span></a>
+            <a href="{% url 'donation:my_requests_pending' %}" class="aside-item"><i class="ri-hand-heart-line"></i><span>Donation</span></a>
             <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
             <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
         </aside>
@@ -114,7 +114,7 @@
                                     <span class="npc-badge badge-pending-bg">PENDING</span>
                                 </div>
                                 <div class="npc-date">
-                                    <i class="ri-calendar-event-line"></i> {{ req.date }} | {{ req.time }}
+                                    <i class="ri-calendar-event-line"></i> {{ req.date|date:"M d, Y" }} | {{ req.time|time:"h:i A" }}
                                 </div>
                                 <div class="npc-services-wrap">
                                     <div class="npc-section-title">REQUESTED SERVICES</div>
@@ -131,13 +131,12 @@
                             <hr class="npc-divider" style="margin-top:0;">
                             <div class="npc-details-grid">
                                 <div class="npc-col">
-                                    <span class="npc-detail-label">LOCATION DETAILS</span>
+                                    <span class="npc-detail-label">GOVERNORATE</span>
                                     <div class="npc-detail-val"><i class="ri-map-pin-2-line"></i> {{ req.get_governrate_display }}</div>
-                                    <div class="npc-detail-sub">{{ req.address }}</div>
                                 </div>
                                 <div class="npc-col">
-                                    <span class="npc-detail-label">CONTACT INFORMATION</span>
-                                    <div class="npc-detail-val"><i class="ri-phone-line"></i> {{ req.nurse.user.username }}</div>
+                                    <span class="npc-detail-label">LOCATION DETAILS</span>
+                                    <div class="npc-detail-val"><i class="ri-map-pin-2-line"></i> {{ req.address }}</div>
                                 </div>
                             </div>
                         </div>
@@ -174,7 +173,7 @@
                                     <span class="npc-badge badge-rescheduled"><i class="ri-restart-line"></i> Rescheduled</span>
                                 </div>
                                 <div class="npc-date">
-                                    <i class="ri-calendar-event-line"></i> {{ req.date }} | {{ req.time }}
+                                    <i class="ri-calendar-event-line"></i> {{ req.date|date:"M d, Y" }} | {{ req.time|time:"h:i A" }}
                                 </div>
                                 <div class="npc-services-wrap">
                                     <div class="npc-section-title">REQUESTED SERVICES</div>

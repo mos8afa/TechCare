@@ -47,7 +47,7 @@
                     <i class="fa-regular fa-bell"></i>
                     <span>Notifications</span>
                 </a>
-                <a href="{% url 'donation:create_request' %}" class="aside-item active">
+                <a href="{% url 'donation:my_requests_pending' %}" class="aside-item active">
                     <i class="ri-hand-heart-line"></i>
                     <span style="white-space: nowrap; font-size: 13px;">Donation</span>
                 </a>
@@ -102,7 +102,8 @@
                 <!-- Status Tabs -->
                 <div class="donation-status-tabs" style="margin-bottom: 24px;">
                     <button class="don-tab"
-                            onclick="window.location.href='{% url 'donation:create_request' %}'">Suggested</button>
+                            onclick="window.location.href='{% url 'donation:my_requests_pending' %}'">Pending</button>
+                      {% if latest_request %}<button class="don-tab" onclick="window.location.href='{% url 'donation:request_offers' latest_request.id %}'">Suggested</button>{% else %}<button class="don-tab">Suggested</button>{% endif %}
                     <button class="don-tab"
                             onclick="window.location.href='{% url 'donation:my_requests_accepted' %}'">Accepted</button>
                     <button class="don-tab active">Done</button>

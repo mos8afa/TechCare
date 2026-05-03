@@ -31,7 +31,7 @@
                 <i class="ri-file-list-line"></i><span>Requests</span>
             </a>
             <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
-            <a href="{% url 'nurse:create_blood_request' %}" class="aside-item"><i class="ri-hand-heart-line"></i><span>Donation</span></a>
+            <a href="{% url 'nurse:my_blood_requests_pending' %}" class="aside-item"><i class="ri-hand-heart-line"></i><span>Donation</span></a>
             <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
             <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
         </aside>
@@ -85,7 +85,7 @@
                         <div class="patient-meta">
                             <div class="patient-avatar-mini"><i class="bi bi-person-circle"></i></div>
                             <div class="patient-name-info">
-                                <h3>{{ req.requester_name }} {% if req.is_donor %}<span style="background:#fef3c7;color:#b45309;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">DONOR</span>{% endif %}</h3>
+                                <h3>{{ req.requester_name }}</h3>
                                 <p>
                                     <i class="ri-map-pin-2-line"></i>
                                     {{ req.governrate }} — {{ req.address }}

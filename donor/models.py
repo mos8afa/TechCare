@@ -34,7 +34,25 @@ class BloodDonationRequest(models.Model):
     status          = models.CharField(max_length=10, choices=REQUEST_STATUS, default='open')
     created_at      = models.DateTimeField(auto_now_add=True)
     requester_done  = models.BooleanField(default=False)
-    condition       = models.CharField(max_length=10, choices=CONDITION, default='normal')  
+    condition       = models.CharField(max_length=10, choices=CONDITION, default='normal')
+
+    @property
+    def requester_phone(self):
+        """Return the phone number of the requester regardless of their role."""
+        user = self.requester
+        try:
+            role = user.role
+            if role == 'donor':
+                return user.donor.phone_number
+            elif role == 'patient':
+                return user.patient.phone_number
+            elif role == 'doctor':
+                return user.doctor.phone_number
+            elif role == 'nurse':
+                return user.nurse.phone_number
+        except Exception:
+            pass
+        return None
 
 
 class DonorOffer(models.Model):

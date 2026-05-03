@@ -32,7 +32,7 @@
                 <i class="ri-file-list-line"></i><span>Requests</span>
             </a>
             <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
-            <a href="{% url 'donation:create_request' %}" class="aside-item"><i class="ri-hand-heart-line"></i><span>Donation</span></a>
+            <a href="{% url 'donation:my_requests_pending' %}" class="aside-item"><i class="ri-hand-heart-line"></i><span>Donation</span></a>
             <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
             <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
         </aside>
@@ -113,19 +113,18 @@
                                     <h3 class="pending-name">Dr. {{ req.doctor.user.first_name }} {{ req.doctor.user.last_name }}</h3>
                                     <span class="pending-badge">PENDING</span>
                                 </div>
-                                <p class="pending-date"><i class="bi bi-calendar3"></i> {{ req.date }} | {{ req.time }}</p>
+                                <p class="pending-date"><i class="bi bi-calendar3"></i> {{ req.date|date:"M d, Y" }} | {{ req.time|time:"h:i A" }}</p>
                                 <p class="pending-note">"{{ req.disease_description }}"</p>
                             </div>
                         </div>
                         <div class="pending-details">
                             <div class="pending-detail-col">
-                                <span class="detail-label">LOCATION DETAILS</span>
+                                <span class="detail-label">GOVERNORATE</span>
                                 <p class="detail-place"><i class="ri-map-pin-2-line"></i> <strong>{{ req.get_governorate_display }}</strong></p>
-                                <p class="detail-address">{{ req.address }}</p>
                             </div>
                             <div class="pending-detail-col">
-                                <span class="detail-label">CONTACT INFORMATION</span>
-                                <strong class="detail-phone"><i class="ri-phone-line"></i> {{ req.doctor.user.username }}</strong>
+                                <span class="detail-label">LOCATION DETAILS</span>
+                                <strong class="detail-place"><i class="ri-map-pin-2-line"></i> {{ req.address }}</strong>
                             </div>
                         </div>
                         <div class="pending-card-footer">
@@ -158,7 +157,7 @@
                                     <h3 class="pending-name">Dr. {{ req.doctor.user.first_name }} {{ req.doctor.user.last_name }}</h3>
                                     <span class="pending-badge" style="background:#fff3cd; color:#856404;">RESCHEDULED</span>
                                 </div>
-                                <p class="pending-date"><i class="bi bi-calendar3"></i> {{ req.date }} | {{ req.time }}</p>
+                                <p class="pending-date"><i class="bi bi-calendar3"></i> {{ req.date|date:"M d, Y" }} | {{ req.time|time:"h:i A" }}</p>
                                 <p class="pending-note">"{{ req.disease_description }}"</p>
                             </div>
                         </div>

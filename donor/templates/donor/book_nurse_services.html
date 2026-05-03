@@ -1,231 +1,283 @@
-{% extends 'patient_base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Nurse Services</title>
+    <link rel="stylesheet" href="{% static 'Css/Donor.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=bloodtype" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+<div class="dashboard">
 
-{% block sidebar %}
-<aside class="aside">
-    <a href="{% url 'donor:donor_dashboard' %}" class="aside-item">
-        <i class="bi bi-person"></i><span>Profile</span>
-    </a>
-    <a href="{% url 'donor:donor_requests' 'nurse' 'booking' %}" class="aside-item active">
-        <i class="ri-file-list-line"></i><span>Requests</span>
-    </a>
-    <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
-    <a href="{% url 'donation:create_request' %}" class="aside-item"><i class="ri-hand-heart-line"></i><span>Donation</span></a>
-    <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
-    <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
-</aside>
-{% endblock %}
-
-{% block title %}
-<h2 class="topbar-title">Book Appointment</h2>
-{% endblock title %}
-
-{% block content %}
-<main class="main-content">
-    <div class="booking-wrapper">
-
-        <!-- Category Tabs -->
-        <div class="category-tabs">
-            <button class="cat-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'doctor' 'booking' %}'">
-                <i class="ri-stethoscope-line"></i> Doctor
-            </button>
-            <button class="cat-tab active">
-                <i class="ri-first-aid-kit-line"></i> Nurse
-            </button>
-            <button class="cat-tab">
-                <i class="ri-medicine-bottle-line"></i> Medicine
-            </button>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon"><img src="{% static 'img/logo.png' %}" alt=""></span>
+                <div><h2>TechCare</h2><p>Medical Portal</p></div>
+                <button class="sidebar-toggle"><i class="bi bi-layout-sidebar-inset-reverse"></i></button>
+            </div>
         </div>
+        <aside class="aside">
+            <a href="{% url 'donor:donor_dashboard' %}" class="aside-item">
+                <i class="bi bi-person"></i><span>Profile</span>
+            </a>
+            <a href="{% url 'donor:donor_requests' 'nurse' 'booking' %}" class="aside-item active">
+                <i class="ri-file-list-line"></i><span>Requests</span>
+            </a>
+            <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
+            <a href="{% url 'donation:my_requests_pending' %}" class="aside-item"><i class="ri-hand-heart-line"></i><span>Donation</span></a>
+            <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
+            <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
+        </aside>
+    </aside>
 
-        <!-- Status Tabs -->
-        <div class="status-tabs">
-            <button class="status-tab active" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'booking' %}'">Booking</button>
-            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'pending' %}'">Pending</button>
-            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'accepted' %}'">Accepted</button>
-            <button class="status-tab" onclick="window.location.href='{% url 'patient:patient_requests' 'nurse' 'done' %}'">Done</button>
-        </div>
+    <div style="flex:1; display:flex; flex-direction:column;">
 
-        <div class="booking-page-header">
-            <h1>Book Appointment</h1>
-            <p>Select your preferred time for a consultation with our specialist.</p>
-        </div>
-
-        {% if errors %}
-            {% for key, msg in errors.items %}
-                <div style="color:red; margin-bottom:8px; padding:10px 14px; background:#fff0f0; border-radius:8px;">{{ msg }}</div>
-            {% endfor %}
-        {% endif %}
-
-        <form method="GET" id="dayForm">
-            <input type="hidden" name="day" id="dayInput">
-        </form>
-
-        <form method="POST" id="bookingForm">
-        {% csrf_token %}
-
-        <div class="booking-grid">
-            <!-- Left Column -->
-            <div class="booking-left">
-
-                <!-- Nurse Details Card -->
-                <div class="doc-card nurse-doc-card">
-                    <div class="doc-avatar-bg nurse-avatar-bg">
-                        <img src="{{ nurse.profile_pic.url }}" alt="{{ nurse.user.first_name }}" class="doc-avatar">
-                        <div class="online-indicator nurse-online-indicator"></div>
+        <!-- Top Navbar -->
+        <div class="topbar">
+            <h2 class="topbar-title">Donor Profile</h2>
+            <div class="topbar-right">
+                <div class="topbar-icon" id="notificationBtn">
+                    <i class="fa-regular fa-bell"></i>
+                    <div class="inbox" id="notificationBox">
+                        <div class="notification-item">
+                            <div class="notification-content"><p>No new notifications</p></div>
+                        </div>
                     </div>
-                    <div class="doc-info-wrapper nurse-info-wrapper">
-                        <div class="doc-info-main">
-                            <div class="name-rating-row">
-                                <h2 class="doc-name">{{ nurse.user.first_name }} {{ nurse.user.last_name }}</h2>
-                                <div class="doc-rating">
-                                    <div class="stars">
-                                        {% with avg=nurse.avg_rating %}
-                                        {% for i in "12345" %}
-                                            {% if forloop.counter <= avg %}
-                                                <i class="fas fa-star"></i>
-                                            {% else %}
-                                                <i class="fas fa-star" style="opacity:0.3;"></i>
-                                            {% endif %}
-                                        {% endfor %}
-                                        {% endwith %}
+                </div>
+                <hr class="line">
+                <div class="topbar-profile" onclick="window.location.href='{% url 'donor:donor_dashboard' %}'">
+                    <div class="topbar-user-info"><h4>{{ name }}</h4></div>
+                    {% if profile_pic %}
+                        <img src="{{ profile_pic.url }}" alt="{{ name }}">
+                    {% else %}
+                        <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="{{ name }}">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="booking-wrapper">
+
+                <!-- Category Tabs -->
+                <div class="category-tabs-wrapper">
+                    <div class="category-tabs">
+                        <button class="cat-tab"
+                                onclick="window.location.href='{% url 'donor:donor_requests' 'doctor' 'booking' %}'">
+                            <i class="ri-stethoscope-line"></i> Doctor
+                        </button>
+                        <button class="cat-tab active">
+                            <i class="ri-nurse-line"></i> Nurse
+                        </button>
+                        <button class="cat-tab"><i class="ri-medicine-bottle-line"></i> Medicine</button>
+                        <button class="cat-tab"
+                                onclick="window.location.href='{% url 'donation:available_requests' %}'">
+                            <span class="material-symbols-outlined">bloodtype</span> Donations
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Status Tabs -->
+                <div class="status-tabs">
+                    <button class="status-tab active"
+                            onclick="window.location.href='{% url 'donor:donor_requests' 'nurse' 'booking' %}'">Booking</button>
+                    <button class="status-tab"
+                            onclick="window.location.href='{% url 'donor:donor_requests' 'nurse' 'pending' %}'">Pending</button>
+                    <button class="status-tab"
+                            onclick="window.location.href='{% url 'donor:donor_requests' 'nurse' 'accepted' %}'">Accepted</button>
+                    <button class="status-tab"
+                            onclick="window.location.href='{% url 'donor:donor_requests' 'nurse' 'done' %}'">Done</button>
+                </div>
+
+                <div class="booking-page-header">
+                    <h1>Book Nurse Services</h1>
+                    <p>Select your preferred time and services for a home visit.</p>
+                </div>
+
+                {% if errors %}
+                    {% for key, msg in errors.items %}
+                        <div style="color:red; margin-bottom:8px; padding:10px 14px; background:#fff0f0; border-radius:8px;">{{ msg }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST" id="bookingForm">
+                {% csrf_token %}
+
+                <div class="booking-grid">
+                    <!-- Left Column -->
+                    <div class="booking-left">
+
+                        <!-- Nurse Details Card -->
+                        <div class="doc-card nurse-doc-card">
+                            <div class="doc-avatar-bg nurse-avatar-bg">
+                                {% if nurse.profile_pic %}
+                                    <img src="{{ nurse.profile_pic.url }}" alt="{{ nurse.user.first_name }}" class="doc-avatar">
+                                {% else %}
+                                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Nurse" class="doc-avatar">
+                                {% endif %}
+                                <div class="online-indicator nurse-online-indicator"></div>
+                            </div>
+                            <div class="doc-info-wrapper nurse-info-wrapper">
+                                <div class="doc-info-main">
+                                    <div class="name-rating-row">
+                                        <h2 class="doc-name">{{ nurse.user.first_name }} {{ nurse.user.last_name }}</h2>
+                                        <div class="doc-rating">
+                                            <div class="stars">
+                                                {% with avg=nurse.avg_rating %}
+                                                {% for i in "12345" %}
+                                                    {% if forloop.counter <= avg %}
+                                                        <i class="fas fa-star"></i>
+                                                    {% else %}
+                                                        <i class="fas fa-star" style="opacity:0.3;"></i>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% endwith %}
+                                            </div>
+                                            <span class="rating-val">({{ nurse.avg_rating }}/5)</span>
+                                        </div>
                                     </div>
-                                    <span class="rating-val">({{ nurse.avg_rating }}/5)</span>
+                                    <p class="doc-title nurse-doc-title">{{ nurse.brief|truncatewords:6|default:"Registered Nurse" }}</p>
+                                    <div class="nurse-tags">
+                                        <span class="nurse-tag">{{ nurse.get_governorate_display }}</span>
+                                        <span class="nurse-tag">Home Visits</span>
+                                    </div>
                                 </div>
                             </div>
-                            <p class="doc-title nurse-doc-title">{{ nurse.brief|truncatewords:6|default:"Registered Nurse" }}</p>
-                            <div class="nurse-tags">
-                                <span class="nurse-tag">{{ nurse.get_governorate_display }}</span>
-                                <span class="nurse-tag">Home Visits</span>
+                        </div>
+
+                        <!-- Select Services -->
+                        <div class="booking-card services-card">
+                            <div class="card-title">
+                                <i class="ri-file-list-3-line"></i> <span>Select Services</span>
+                            </div>
+                            <div class="services-list">
+                                {% for svc in services %}
+                                <label class="service-item">
+                                    <input type="checkbox" name="services" value="{{ svc.id }}"
+                                           onchange="updateTotal()"
+                                           data-price="{{ svc.price }}"
+                                           data-name="{{ svc.name }}">
+                                    <div class="checkbox-box">
+                                        <i class="ri-check-line"></i>
+                                    </div>
+                                    <div class="service-text-wrap">
+                                        <span class="service-name">{{ svc.name }}</span>
+                                        <span class="service-desc">{{ svc.description|truncatewords:8 }}</span>
+                                    </div>
+                                    <span class="service-price">{{ svc.price }} EGP</span>
+                                </label>
+                                {% empty %}
+                                <p style="color:#888; padding:10px 0;">This nurse has no services listed.</p>
+                                {% endfor %}
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Select Services -->
-                <div class="booking-card services-card">
-                    <div class="card-title">
-                        <i class="ri-file-list-3-line"></i> <span>Select Services</span>
-                    </div>
-                    <div class="services-list">
-                        {% for svc in services %}
-                        <label class="service-item">
-                            <input type="checkbox" name="services" value="{{ svc.id }}"
-                                   onchange="updateTotal()"
-                                   data-price="{{ svc.price }}"
-                                   data-name="{{ svc.name }}">
-                            <div class="checkbox-box">
-                                <i class="ri-check-line"></i>
+                        <!-- Governorate -->
+                        <div class="form-group-booking">
+                            <label class="booking-label">Governorate</label>
+                            <div class="custom-select-wrapper">
+                                <select class="booking-select" name="governorate">
+                                    {% for val, label in governorates %}
+                                        <option value="{{ val }}" {% if val == patient.governorate %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                                <i class="ri-arrow-down-s-line"></i>
                             </div>
-                            <div class="service-text-wrap">
-                                <span class="service-name">{{ svc.name }}</span>
-                                <span class="service-desc">{{ svc.description|truncatewords:8 }}</span>
+                        </div>
+
+                        <!-- Symptoms & Address Grid -->
+                        <div class="booking-inputs-grid">
+                            <div class="booking-card symptoms-card">
+                                <div class="card-title">
+                                    <i class="ri-file-text-line"></i> <span>Describe Your Symptoms</span>
+                                </div>
+                                <textarea name="disease_description" placeholder="Please provide more details about how you are feeling..."></textarea>
                             </div>
-                            <span class="service-price">{{ svc.price }} EGP</span>
-                        </label>
-                        {% empty %}
-                        <p style="color:#888; padding:10px 0;">This nurse has no services listed.</p>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <!-- Governorate -->
-                <div class="form-group-booking">
-                    <label class="booking-label">Governorate</label>
-                    <div class="custom-select-wrapper">
-                        <select class="booking-select" name="governorate">
-                            {% for val, label in governorates %}
-                                <option value="{{ val }}" {% if val == patient.governorate %}selected{% endif %}>{{ label }}</option>
-                            {% endfor %}
-                        </select>
-                        <i class="ri-arrow-down-s-line"></i>
-                    </div>
-                </div>
-
-                <!-- Symptoms & Address Grid -->
-                <div class="booking-inputs-grid">
-                    <div class="booking-card symptoms-card">
-                        <div class="card-title">
-                            <i class="ri-file-text-line"></i> <span>Describe Your Symptoms</span>
+                            <div class="booking-card address-card">
+                                <div class="card-title"><span>Full Address</span></div>
+                                <div class="address-input-wrapper">
+                                    <i class="ri-map-pin-line"></i>
+                                    <textarea name="address" placeholder="Maadi, Cairo, Egypt">{{ patient.address }}</textarea>
+                                </div>
+                            </div>
                         </div>
-                        <textarea name="disease_description" placeholder="Please provide more details about how you are feeling..."></textarea>
+
+                        <!-- Date & Time Card -->
+                        <div class="booking-card datetime-card">
+                            <div class="card-title">
+                                <i class="ri-calendar-event-line"></i> <span>Select Date &amp; Time</span>
+                            </div>
+
+                            <div class="date-scroll-container">
+                                {% for day in days %}
+                                <div class="date-item {% if selected_day == day.day_name %}active{% endif %}"
+                                     onclick="selectDay(this, '{{ day.day_name }}', '{{ day.full_date }}')">
+                                    <span class="date-day">{{ day.short_name }}</span>
+                                    <span class="date-num">{{ day.date_num }}</span>
+                                    <span class="date-month">{{ day.month_name }}</span>
+                                </div>
+                                {% empty %}
+                                <p style="color:#888; padding:10px;">No available days yet.</p>
+                                {% endfor %}
+                            </div>
+
+                            <input type="hidden" name="date" id="selectedDate" value="{{ selected_date|default:'' }}">
+                            <input type="hidden" name="time" id="selectedTime" value="">
+
+                            <div class="slots-section" id="morningSlotsSection">
+                                <h5 class="slot-title">MORNING SLOTS</h5>
+                                <div class="slots-grid" id="morningSlots"></div>
+                            </div>
+
+                            <div class="slots-section" id="eveningSlotsSection" style="margin-top:25px;">
+                                <h5 class="slot-title">EVENING SLOTS</h5>
+                                <div class="slots-grid" id="eveningSlots"></div>
+                            </div>
+
+                            <p id="noSlotsMsg" style="color:#888; padding:10px 0; display:none;">No available time slots for this day.</p>
+                        </div>
+
                     </div>
-                    <div class="booking-card address-card">
-                        <div class="card-title"><span>Full Address</span></div>
-                        <div class="address-input-wrapper">
-                            <i class="ri-map-pin-line"></i>
-                            <textarea name="address" placeholder="Maadi, Cairo, Egypt">{{ patient.address }}</textarea>
+
+                    <!-- Right Column -->
+                    <div class="booking-right">
+                        <div class="booking-card payment-summary-card">
+                            <h3 class="summary-title nurse-summary-title">Payment Summary</h3>
+                            <div id="servicesSummary"></div>
+                            <hr class="summary-divider">
+                            <div class="summary-total-row nurse-total-row">
+                                <div class="total-label nurse-total-label">Total Price</div>
+                                <div class="total-value nurse-total-value" id="totalAmount">0 EGP</div>
+                            </div>
+                            <button type="submit" class="confirm-btn">Confirm Booking</button>
+                            <div class="secure-payment-text">
+                                <i class="ri-lock-2-line"></i> Secure encrypted payment
+                            </div>
+                        </div>
+
+                        <div class="booking-card help-card nurse-help-card">
+                            <h4 class="help-title nurse-help-title"><i class="ri-question-line"></i> Need Help?</h4>
+                            <p class="help-text nurse-help-text">Cancel or reschedule up to 24 hours before your appointment for a full refund.</p>
+                            <a href="#" class="help-link nurse-help-link">Read Refund Policy</a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Date & Time Card -->
-                <div class="booking-card datetime-card">
-                    <div class="card-title">
-                        <i class="ri-calendar-event-line"></i> <span>Select Date & Time</span>
-                    </div>
-
-                    <div class="date-scroll-container">
-                        {% for day in days %}
-                        <div class="date-item {% if selected_day == day.day_name %}active{% endif %}"
-                             onclick="selectDay(this, '{{ day.day_name }}', '{{ day.full_date }}')">
-                            <span class="date-day">{{ day.short_name }}</span>
-                            <span class="date-num">{{ day.date_num }}</span>
-                            <span class="date-month">{{ day.month_name }}</span>
-                        </div>
-                        {% empty %}
-                        <p style="color:#888; padding:10px;">No available days yet.</p>
-                        {% endfor %}
-                    </div>
-
-                    <input type="hidden" name="date" id="selectedDate" value="{{ selected_date|default:'' }}">
-                    <input type="hidden" name="time" id="selectedTime" value="">
-
-                    <div class="slots-section" id="morningSlotsSection">
-                        <h5 class="slot-title">MORNING SLOTS</h5>
-                        <div class="slots-grid" id="morningSlots"></div>
-                    </div>
-
-                    <div class="slots-section nurse-evening-slots" id="eveningSlotsSection" style="margin-top:25px;">
-                        <h5 class="slot-title">EVENING SLOTS</h5>
-                        <div class="slots-grid" id="eveningSlots"></div>
-                    </div>
-
-                    <p id="noSlotsMsg" style="color:#888; padding:10px 0; display:none;">No available time slots for this day.</p>
-                </div>
+                </form>
             </div>
-
-            <!-- Right Column -->
-            <div class="booking-right">
-                <div class="booking-card payment-summary-card">
-                    <h3 class="summary-title nurse-summary-title">Payment Summary</h3>
-
-                    <div id="servicesSummary"></div>
-
-                    <hr class="summary-divider">
-
-                    <div class="summary-total-row nurse-total-row">
-                        <div class="total-label nurse-total-label">Total Price</div>
-                        <div class="total-value nurse-total-value" id="totalAmount">0 EGP</div>
-                    </div>
-
-                    <button type="submit" class="confirm-btn">Confirm Booking</button>
-
-                    <div class="secure-payment-text">
-                        <i class="ri-lock-2-line"></i> Secure encrypted payment
-                    </div>
-                </div>
-
-                <div class="booking-card help-card nurse-help-card">
-                    <h4 class="help-title nurse-help-title"><i class="ri-question-line"></i> Need Help?</h4>
-                    <p class="help-text nurse-help-text">Cancel or reschedule up to 24 hours before your appointment for a full refund.</p>
-                    <a href="#" class="help-link nurse-help-link">Read Refund Policy</a>
-                </div>
-            </div>
-        </div>
-
-        </form>
+        </main>
     </div>
-</main>
-
+</div>
+<script src="{% static 'JS/Board.js' %}"></script>
 <script>
 const ALL_SLOTS = {{ all_slots_json|safe }};
 let currentDay = "{{ selected_day }}";
@@ -248,22 +300,24 @@ function renderSlots(day) {
     morningContainer.innerHTML = '';
     data.morning.forEach(t => {
         const btn = document.createElement('button');
-        btn.type = 'button'; btn.className = 'slot-btn';
+        btn.type = 'button';
+        btn.className = 'slot-btn';
         btn.textContent = formatTime(t);
         btn.onclick = () => selectTime(btn, t);
         morningContainer.appendChild(btn);
     });
-    document.getElementById('morningSlotsSection').style.display = data.morning.length ? '' : 'none';
+    morningContainer.closest('.slots-section').style.display = data.morning.length ? '' : 'none';
 
     eveningContainer.innerHTML = '';
     data.evening.forEach(t => {
         const btn = document.createElement('button');
-        btn.type = 'button'; btn.className = 'slot-btn';
+        btn.type = 'button';
+        btn.className = 'slot-btn';
         btn.textContent = formatTime(t);
         btn.onclick = () => selectTime(btn, t);
         eveningContainer.appendChild(btn);
     });
-    document.getElementById('eveningSlotsSection').style.display = data.evening.length ? '' : 'none';
+    eveningContainer.closest('.slots-section').style.display = data.evening.length ? '' : 'none';
 
     noSlotsMsg.style.display = (!data.morning.length && !data.evening.length) ? '' : 'none';
 }
@@ -277,7 +331,8 @@ function selectTime(el, timeVal) {
 function formatTime(t) {
     let [h, m] = t.split(':').map(Number);
     const p = h >= 12 ? 'PM' : 'AM';
-    if (h > 12) h -= 12; if (h === 0) h = 12;
+    if (h > 12) h -= 12;
+    if (h === 0) h = 12;
     return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')} ${p}`;
 }
 
@@ -295,11 +350,8 @@ function updateTotal() {
 }
 
 document.getElementById('bookingForm').addEventListener('submit', function(e) {
-    if (!document.querySelectorAll('input[name="services"]:checked').length) {
-        e.preventDefault(); alert('Please select at least one service.'); return;
-    }
     if (!document.getElementById('selectedDate').value) {
-        e.preventDefault(); alert('Please select a day.'); return;
+        e.preventDefault(); alert('Please select a day first.'); return;
     }
     if (!document.getElementById('selectedTime').value) {
         e.preventDefault(); alert('Please select a time slot.'); return;
@@ -308,4 +360,5 @@ document.getElementById('bookingForm').addEventListener('submit', function(e) {
 
 renderSlots(currentDay);
 </script>
-{% endblock %}
+</body>
+</html>

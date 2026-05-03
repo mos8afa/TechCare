@@ -31,7 +31,7 @@
                 <i class="ri-file-list-line"></i><span>Requests</span>
             </a>
             <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
-            <a href="{% url 'nurse:create_blood_request' %}" class="aside-item"><i class="ri-hand-heart-line"></i><span>Donation</span></a>
+            <a href="{% url 'nurse:my_blood_requests_pending' %}" class="aside-item"><i class="ri-hand-heart-line"></i><span>Donation</span></a>
             <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
             <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
         </aside>
@@ -241,25 +241,6 @@
 
                     <hr class="hr">
 
-                    <div class="edit-input">
-                        <label>Time Slots</label>
-                        <div class="time-slots-carousel">
-                            <button type="button" class="slot-nav prev-slot" onclick="slideSlots(-1, this)">&#8249;</button>
-                            <div class="slots-viewport">
-                                <div class="slots-track" data-offset="0">
-                                    {% for slot in req.day_slots %}
-                                    <button type="button" class="time-slot-btn {% if slot.time == req.time %}active{% endif %}"
-                                            onclick="selectSlot(this)">
-                                        {{ slot.time|time:"h:i A" }}
-                                    </button>
-                                    {% empty %}
-                                    <span style="color:#888; font-size:13px; padding:8px;">No slots for this day</span>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                            <button type="button" class="slot-nav next-slot" onclick="slideSlots(1, this)">&#8250;</button>
-                        </div>
-                    </div>
                     <div class="waiting-patient-msg">
                         <i class="ri-time-line"></i>
                         Waiting for patient acceptance...

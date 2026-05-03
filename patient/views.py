@@ -574,11 +574,20 @@ def rate_nurse(request, request_id):
 
 @login_required
 def create_blood_request(request):
+    from donor.blood_request_utils import can_create_blood_request
     errors = {}
     patient = Patient.objects.get(user=request.user)
     profile_pic = patient.profile_pic
     name = patient.user.first_name + " " + patient.user.last_name
-    if request.method == 'POST':
+
+    allowed, blocking = can_create_blood_request(request.user)
+    latest_request = blocking or BloodDonationRequest.objects.filter(
+        requester=request.user).exclude(status='cancelled').order_by('-created_at').first()
+
+    if not allowed:
+        errors['blocked'] = 'You already have an active blood request. You can create a new one once it expires or is completed.'
+
+    if request.method == 'POST' and allowed:
         blood_type = request.POST.get('blood_type', '').strip()
         governorate = request.POST.get('governorate', '').strip()
         address = request.POST.get('address', '').strip()
@@ -598,8 +607,8 @@ def create_blood_request(request):
     return render(request, 'patient/blood_request.html', {
         'blood_types': BLOOD_TYPES, 'governorates': GOV_CHOICES,
         'errors': errors, 'name': name, 'profile_pic': profile_pic,
-        'latest_request': BloodDonationRequest.objects.filter(
-            requester=request.user).exclude(status='cancelled').order_by('-created_at').first(),
+        'latest_request': latest_request,
+        'blocked': not allowed,
     })
 
 @login_required
@@ -609,7 +618,7 @@ def request_offers(request, request_id):
     name = patient.user.first_name + ' ' + patient.user.last_name
     profile_pic = patient.profile_pic
     blood_req = BloodDonationRequest.objects.get(id=request_id, requester=request.user)
-    offers = blood_req.offers.filter(status__in=['offered', 'accepted']).select_related('donor__user')
+    offers = blood_req.offers.filter(status='offered').select_related('donor__user')
     return render(request, 'patient/blood_request_offers.html', {
         'blood_request': blood_req, 'offers': offers, 'name': name, 'profile_pic': profile_pic,
     })
@@ -642,6 +651,25 @@ def cancel_blood_request(request, request_id):
     blood_req.status = 'cancelled'
     blood_req.save()
     return redirect('patient:create_blood_request')
+
+@login_required
+def my_blood_requests_pending(request):
+    from django.db.models import Count
+    pending_requests = BloodDonationRequest.objects.filter(
+        requester=request.user,
+        status='open',
+    ).annotate(offer_count=Count('offers')).filter(offer_count=0).order_by('-created_at')
+    patient = Patient.objects.get(user=request.user)
+    name = patient.user.first_name + ' ' + patient.user.last_name
+    latest_request = BloodDonationRequest.objects.filter(
+        requester=request.user).exclude(status='cancelled').order_by('-created_at').first()
+    return render(request, 'patient/my_blood_requests_pending.html', {
+        'pending_requests': pending_requests,
+        'name': name,
+        'profile_pic': patient.profile_pic,
+        'latest_request': latest_request,
+    })
+
 
 @login_required
 def my_blood_requests_accepted(request):

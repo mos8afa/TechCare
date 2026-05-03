@@ -32,7 +32,7 @@
                 <i class="ri-file-list-line"></i><span>Requests</span>
             </a>
             <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
-            <a href="{% url 'donation:create_request' %}" class="aside-item"><i class="ri-hand-heart-line"></i><span>Donation</span></a>
+            <a href="{% url 'donation:my_requests_pending' %}" class="aside-item"><i class="ri-hand-heart-line"></i><span>Donation</span></a>
             <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
             <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
         </aside>
@@ -115,11 +115,11 @@
                         <div class="dc-details-grid">
                             <div class="dc-detail-row">
                                 <p class="dc-label">Date &amp; Time</p>
-                                <p class="dc-value">{{ req.date }} • {{ req.time }}</p>
+                                <p class="dc-value">{{ req.date|date:"M d, Y" }} • {{ req.time|time:"h:i A" }}</p>
                             </div>
                             <div class="dc-detail-row">
                                 <p class="dc-label">Region</p>
-                                <p class="dc-value">{{ req.get_governrate_display }}</p>
+                                <p class="dc-value">{{req.address}}, {{ req.get_governrate_display }}</p>
                             </div>
                         </div>
 

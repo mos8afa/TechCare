@@ -334,12 +334,45 @@ def mark_doctor_done(request, request_id):
     donor = Donor.objects.get(user=request.user)
     try:
         req = DoctorRequest.objects.get(id=request_id, donor=donor, status='accepted')
-        req.patient_done = True   # donor acts as patient side
+        req.patient_done = True
         if req.doctor_done:
             req.status = 'completed'
         req.save()
     except DoctorRequest.DoesNotExist:
-        pass
+        return redirect('donor:donor_requests', category='doctor', type='accepted')
+
+    doctor = req.doctor
+    name = donor.user.first_name + ' ' + donor.user.last_name
+    return render(request, 'donor/rate_doctor.html', {
+        'req': req,
+        'doctor_name': doctor.user.first_name + ' ' + doctor.user.last_name,
+        'doctor_specialization': doctor.get_specification_display(),
+        'doctor_profile_pic': doctor.profile_pic,
+        'name': name,
+        'profile_pic': donor.profile_pic,
+    })
+
+
+@login_required
+def rate_doctor(request, request_id):
+    if request.user.role != 'donor':
+        return redirect('login')
+    from accounts.models import Rate
+    donor = Donor.objects.get(user=request.user)
+    try:
+        req = DoctorRequest.objects.get(id=request_id, donor=donor)
+    except DoctorRequest.DoesNotExist:
+        return redirect('donor:donor_requests', category='doctor', type='accepted')
+
+    if request.method == 'POST':
+        rate_value = request.POST.get('rate')
+        feedback = request.POST.get('feedback', '').strip()
+        if rate_value:
+            Rate.objects.create(rate=rate_value, feedback=feedback, doctor=req.doctor)
+        if req.doctor_done:
+            return redirect('donor:donor_requests', category='doctor', type='done')
+        return redirect('donor:donor_requests', category='doctor', type='accepted')
+
     return redirect('donor:donor_requests', category='doctor', type='accepted')
 
 
@@ -453,12 +486,45 @@ def mark_nurse_done(request, request_id):
     donor = Donor.objects.get(user=request.user)
     try:
         req = NurseRequest.objects.get(id=request_id, donor=donor, status='accepted')
-        req.patient_done = True   # donor acts as patient side
+        req.patient_done = True
         if req.nurse_done:
             req.status = 'completed'
         req.save()
     except NurseRequest.DoesNotExist:
-        pass
+        return redirect('donor:donor_requests', category='nurse', type='accepted')
+
+    nurse = req.nurse
+    name = donor.user.first_name + ' ' + donor.user.last_name
+    return render(request, 'donor/rate_nurse.html', {
+        'req': req,
+        'nurse_name': nurse.user.first_name + ' ' + nurse.user.last_name,
+        'nurse_profile_pic': nurse.profile_pic,
+        'name': name,
+        'profile_pic': donor.profile_pic,
+    })
+
+
+@login_required
+def rate_nurse(request, request_id):
+    if request.user.role != 'donor':
+        return redirect('login')
+    from nurse.models import NurseRequest
+    from accounts.models import Rate
+    donor = Donor.objects.get(user=request.user)
+    try:
+        req = NurseRequest.objects.get(id=request_id, donor=donor)
+    except NurseRequest.DoesNotExist:
+        return redirect('donor:donor_requests', category='nurse', type='accepted')
+
+    if request.method == 'POST':
+        rate_value = request.POST.get('rate')
+        feedback = request.POST.get('feedback', '').strip()
+        if rate_value:
+            Rate.objects.create(rate=rate_value, feedback=feedback, nurse=req.nurse)
+        if req.nurse_done:
+            return redirect('donor:donor_requests', category='nurse', type='done')
+        return redirect('donor:donor_requests', category='nurse', type='accepted')
+
     return redirect('donor:donor_requests', category='nurse', type='accepted')
 
 
@@ -467,9 +533,9 @@ def mark_nurse_done(request, request_id):
 # ═══════════════════════════════════════════════════════════════════════════════
 @login_required
 def create_blood_request(request):
+    from donor.blood_request_utils import can_create_blood_request
     errors = {}
 
-    # Resolve profile pic + name for any user role
     role = request.user.role
     profile_pic = None
     name = request.user.first_name + ' ' + request.user.last_name
@@ -501,7 +567,14 @@ def create_blood_request(request):
         except Exception:
             pass
 
-    if request.method == 'POST':
+    allowed, blocking = can_create_blood_request(request.user)
+    latest_request = blocking or BloodDonationRequest.objects.filter(
+        requester=request.user).exclude(status='cancelled').order_by('-created_at').first()
+
+    if not allowed:
+        errors['blocked'] = 'You already have an active blood request. You can create a new one once it expires or is completed.'
+
+    if request.method == 'POST' and allowed:
         blood_type        = request.POST.get('blood_type', '').strip()
         governorate       = request.POST.get('governorate', '').strip()
         address           = request.POST.get('address', '').strip()
@@ -534,26 +607,72 @@ def create_blood_request(request):
         'errors': errors,
         'name': name,
         'profile_pic': profile_pic,
-        'latest_request': BloodDonationRequest.objects.filter(
-            requester=request.user
-        ).exclude(status='cancelled').order_by('-created_at').first(),
+        'latest_request': latest_request,
+        'blocked': not allowed,
     })
+
+@login_required
+def my_blood_requests_pending(request):
+    """Blood requests the user created that have no offers yet."""
+    from django.db.models import Count
+    user = request.user
+
+    pending_requests = BloodDonationRequest.objects.filter(
+        requester=user,
+        status='open',
+    ).annotate(offer_count=Count('offers')).filter(offer_count=0).order_by('-created_at')
+
+    profile_pic = None
+    name = user.first_name + ' ' + user.last_name
+    if user.role == 'donor':
+        try:
+            _d = Donor.objects.get(user=user)
+            profile_pic = _d.profile_pic
+        except Donor.DoesNotExist:
+            pass
+
+    latest_request = BloodDonationRequest.objects.filter(
+        requester=user).exclude(status='cancelled').order_by('-created_at').first()
+
+    return render(request, 'donor/my_blood_requests_pending.html', {
+        'pending_requests': pending_requests,
+        'name': name,
+        'profile_pic': profile_pic,
+        'latest_request': latest_request,
+    })
+
 
 @login_required
 def my_blood_requests_accepted(request):
     user = request.user
-    donor = Donor.objects.get(user=user)
     accepted_offers = DonorOffer.objects.filter(
-        request__requester= user,
+        request__requester=user,
         status='accepted',
-    ).select_related('donor__user', 'request').order_by('-created_at')
+    ).select_related('donor__user', 'donor', 'request').order_by('-created_at')
 
     name = user.first_name + ' ' + user.last_name
-    profile_pic = donor.profile_pic
+    profile_pic = None
+    # Resolve profile pic for any role
+    try:
+        if user.role == 'donor':
+            profile_pic = Donor.objects.get(user=user).profile_pic
+        elif user.role == 'patient':
+            from accounts.models import Patient
+            profile_pic = Patient.objects.get(user=user).profile_pic
+        elif user.role == 'doctor':
+            profile_pic = Doctor.objects.get(user=user).profile_pic
+        elif user.role == 'nurse':
+            profile_pic = Nurse.objects.get(user=user).profile_pic
+    except Exception:
+        pass
+
+    latest_request = BloodDonationRequest.objects.filter(
+        requester=user).exclude(status='cancelled').order_by('-created_at').first()
     return render(request, 'donor/my_blood_requests_accepted.html', {
         'accepted_offers': accepted_offers,
         'name': name,
         'profile_pic': profile_pic,
+        'latest_request': latest_request,
     })
 
 @login_required
@@ -567,17 +686,20 @@ def my_blood_requests_done(request):
 
     name = user.first_name + ' ' + user.last_name
     profile_pic = donor.profile_pic
+    latest_request = BloodDonationRequest.objects.filter(
+        requester=user).exclude(status='cancelled').order_by('-created_at').first()
 
     return render(request, 'donor/my_blood_requests_done.html', {
         'completed_offers': completed_offers,
         'name': name,
         'profile_pic': profile_pic,
+        'latest_request': latest_request,
     })
 
 @login_required
 def request_offers(request, request_id):
     blood_req = BloodDonationRequest.objects.get(id=request_id, requester=request.user)
-    offers    = blood_req.offers.filter(status__in=['offered', 'accepted']).select_related('donor__user')
+    offers    = blood_req.offers.filter(status='offered').select_related('donor__user')
 
     profile_pic = None
     name = request.user.first_name + ' ' + request.user.last_name
@@ -597,9 +719,12 @@ def request_offers(request, request_id):
 
 @login_required
 def accept_offer(request, offer_id):
-    """Requester accepts one donor offer → others stay as offered."""
+    """Requester accepts one donor offer → redirect to accepted page."""
     offer     = DonorOffer.objects.get(id=offer_id, request__requester=request.user)
     blood_req = offer.request
+
+    # Reject all other offered offers on this request
+    blood_req.offers.filter(status='offered').exclude(id=offer_id).update(status='rejected')
 
     offer.status = 'accepted'
     offer.save()
@@ -607,7 +732,7 @@ def accept_offer(request, offer_id):
     blood_req.status = 'matched'
     blood_req.save()
 
-    return redirect('donation:request_offers', request_id=blood_req.id)
+    return redirect('donation:my_requests_accepted')
 
 @login_required
 def requester_mark_done(request, offer_id):
@@ -620,7 +745,7 @@ def requester_mark_done(request, offer_id):
         blood_req.status = 'completed'
         offer.save()
     blood_req.save()
-    return redirect('donation:request_offers', request_id=blood_req.id)
+    return redirect('donation:my_requests_accepted')
 
 @login_required
 def cancel_blood_request(request, request_id):
