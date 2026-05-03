@@ -2259,3 +2259,132 @@ input:checked + .edit-ts-slider:before {
 }
 
 
+
+/* ===== Time Slots — matches Dr_Board style ===== */
+.edit-input {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.edit-input > label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.time-slots-carousel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+    width: 100%;
+}
+
+.slots-viewport {
+    flex: 1;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.slots-track {
+    display: flex;
+    gap: 8px;
+    transition: transform 0.35s ease;
+}
+
+.time-slot-btn {
+    flex-shrink: 0;
+    width: 100px;
+    text-align: center;
+    background: #F0F4F8;
+    border: 1px solid #E2E8F0;
+    border-radius: 20px;
+    padding: 7px 0;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    color: #4b5563;
+    transition: all 0.25s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.time-slot-btn:hover:not(.active) {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background: rgba(29, 137, 228, 0.06);
+}
+
+.time-slot-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(29, 137, 228, 0.3);
+}
+
+.slot-nav {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 25px;
+    font-weight: 700;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid #E2E8F0;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    line-height: 1;
+}
+
+.slot-nav:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 2px 8px rgba(29, 137, 228, 0.25);
+}
+
+/* ===== Waiting for patient message (edited cards) ===== */
+.waiting-patient-msg {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    color: #92400e;
+    border: 1px solid #fde68a;
+    border-left: 4px solid #f59e0b;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
+}
+
+.waiting-patient-msg i {
+    font-size: 16px;
+    color: #f59e0b;
+    flex-shrink: 0;
+}
+
+.waiting-patient-msg::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #f59e0b;
+    flex-shrink: 0;
+    animation: pulse-amber 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-amber {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.35; transform: scale(0.7); }
+}

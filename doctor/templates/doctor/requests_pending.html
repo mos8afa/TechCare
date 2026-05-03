@@ -63,7 +63,7 @@
                 <div class="patient-meta">
                     <div class="patient-avatar-mini"><i class="bi bi-person-circle"></i></div>
                     <div class="patient-name-info">
-                        <h3>{{ p.requester_name }} {% if p.is_donor %}<span style="background:#fef3c7;color:#b45309;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">DONOR</span>{% endif %}</h3>
+                        <h3>{{ p.requester_name }}</h3>
                     </div>
                 </div>
                 <span class="status-pill pending">PENDING</span>
@@ -126,7 +126,7 @@
                 <div class="patient-meta">
                     <div class="patient-avatar-mini"><i class="bi bi-person-circle"></i></div>
                     <div class="patient-name-info">
-                        <h3>{{ p.requester_name }} {% if p.is_donor %}<span style="background:#fef3c7;color:#b45309;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">DONOR</span>{% endif %}</h3>
+                        <h3>{{ p.requester_name }}</h3>
                     </div>
                 </div>
                 <span class="status-pill" style="background:#fff3cd; color:#856404;">EDITED</span>
@@ -144,7 +144,7 @@
                 <div class="description-box">{{ p.disease_description }}</div>
             </div>
 
-            <div class="edit-input">
+            {% comment %} <div class="edit-input">
                 <label>Time Slots</label>
                 <div class="time-slots-carousel">
                     <button type="button" class="slot-nav prev-slot" onclick="slideSlots(-1, this)">&#8249;</button>
@@ -162,19 +162,17 @@
                     </div>
                     <button type="button" class="slot-nav next-slot" onclick="slideSlots(1, this)">&#8250;</button>
                 </div>
-            </div>
+            </div> {% endcomment %}
 
+            <div class="waiting-patient-msg">
+                <i class="ri-time-line"></i>
+                Waiting for patient acceptance...
+            </div>
             <div class="card-footer-actions">
                 <form method="POST" action="{% url 'doctor:request_action' p.id %}" style="display:inline;">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="reject">
                     <button type="submit" class="btn-action reject">Reject</button>
-                </form>
-                <form method="POST" action="{% url 'doctor:request_action' p.id %}" style="display:inline;" class="accept-form">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="reschedule">
-                    <input type="hidden" name="new_time" class="selected-time-input" value="{{ p.time|time:'H:i' }}" data-original="{{ p.time|time:'H:i' }}">
-                    <button type="submit" class="btn-action accept">Accept</button>
                 </form>
             </div>
         </div>

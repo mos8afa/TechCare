@@ -129,7 +129,7 @@ def nurse_requests(request, type):
         for req in all_reqs.filter(status='pending').order_by('-date', '-time'):
             req_day = req.date.strftime('%A').lower()
             req.nurse_slots = TimeSlots.objects.filter(nurse=nurse, day=req_day).order_by('time')
-            req.day_slots = req.nurse_slots  # alias for template compatibility
+            req.day_slots = req.nurse_slots
             pending_qs.append(req)
 
         edited_qs = []
