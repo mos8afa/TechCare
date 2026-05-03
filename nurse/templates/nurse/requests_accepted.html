@@ -69,7 +69,6 @@
                         <h2>Requests</h2>
                         <p>Manage incoming consultation requests</p>
                     </div>
-                    <button class="filter-button"><b><i class="bi bi-funnel"></i> Filter</b></button>
                 </div>
                 <div class="tabs-navigation">
                     <button class="tab-link" onclick="window.location.href='{% url 'nurse:nurse_requests' 'pending' %}'">Pending</button>
@@ -106,8 +105,6 @@
                     </div>
                     <div class="description-box-accepted" style="border-bottom: 1px solid #f1f5f9; padding-bottom: 16px; margin-bottom: 20px;">{{ a.disease_description }}</div>
 
-                    <hr style="margin:15px 0; border:1px solid #F0F4F8;">
-
                     <div class="Condition" style="margin-bottom: 15px; margin-top: 0;">
                             <span class="accepted-tag" style="color: #1a1a1a; font-weight: 800; font-size: 15px; text-transform: uppercase;">SERVICES REQUESTED</span>
                         </div>
@@ -128,14 +125,16 @@
                                 <i class="ri-phone-line"></i>
                                 <span>{{ a.requester_phone }}</span>
                             </div>
+                            {% if a.patient_done %}
                             <div class="user-confirmed-banner" style="width:auto; margin:0; background-color:#f0fdf4; color:#22c55e; border-radius:6px; padding:6px 12px; font-size:11px;">
                                 <i class="ri-checkbox-circle-line"></i>
                                 User Has Confirmed Appointment
                             </div>
+                            {% endif %}
                         </div>
 
                             {% if a.nurse_done %}
-                                <button class="btn-done" disabled style="opacity:0.5; cursor:not-allowed;">Waiting for Patient...</button>
+                                <button class="btn-waiting" disabled>Waiting for Patient...</button>
                             {% else %}
                                 <form method="POST" action="{% url 'nurse:mark_done' a.id %}">
                                     {% csrf_token %}

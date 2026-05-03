@@ -713,3 +713,34 @@ body {
 .request-card-item:nth-child(2) { animation-delay: 0.2s; }
 .request-card-item:nth-child(3) { animation-delay: 0.3s; }
 /* وهكذا حسب عدد البطاقات المتوقع */
+
+/* ===== Waiting state button ===== */
+.btn-waiting {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1.5px dashed #cbd5e1;
+    border-radius: 20px;
+    padding: 9px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: not-allowed;
+    letter-spacing: 0.01em;
+}
+
+.btn-waiting::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #94a3b8;
+    animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.75); }
+}

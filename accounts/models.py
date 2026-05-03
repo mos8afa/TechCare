@@ -288,6 +288,7 @@ class Pharmacist(models.Model):
 
 class Rate(models.Model):
     rate = models.DecimalField(choices=RATE, max_digits=1, decimal_places=0, default=0)
+    feedback = models.TextField(default="")
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, null=True, blank=True, related_name='rates')
     nurse = models.ForeignKey(Nurse, on_delete=models.CASCADE, null=True, blank=True, related_name='rates')
     pharmacist = models.ForeignKey(Pharmacist, on_delete=models.CASCADE, null=True, blank=True, related_name='rates')

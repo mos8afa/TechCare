@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Requests</title>
+    <title>My Requests</title>
     <link rel="stylesheet" href="{% static 'Css/Nurse_Board.css' %}">
+    <link rel="stylesheet" href="{% static 'Css/Accepted.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
@@ -39,7 +40,7 @@
     <div class="content-wrapper">
 
         <div class="topbar">
-            <h2 class="topbar-title">Requests</h2>
+            <h2 class="topbar-title">My Requests</h2>
             <div class="topbar-right">
                 <div class="topbar-icon" id="notificationBtn">
                     <i class="fa-regular fa-bell"></i>
@@ -52,9 +53,10 @@
                 <hr class="line">
                 <div class="topbar-profile" onclick="window.location.href='{% url 'nurse:nurse_dashboard' %}'">
                     <div class="topbar-user-info">
-                        <h4>{{ name }}</h4><span>Registered Nurse</span>
+                        <h4>{{ name }}</h4>
+                        <span>Registered Nurse</span>
                     </div>
-                    <img src="{{ profile_pic.url }}" alt="Nurse">
+                    <img src="{{ profile_pic.url }}" alt="{{ name }}">
                 </div>
             </div>
         </div>
@@ -67,7 +69,6 @@
                         <h2>Requests</h2>
                         <p>Manage incoming consultation requests</p>
                     </div>
-                    <button class="filter-button"><b><i class="bi bi-funnel"></i> Filter</b></button>
                 </div>
                 <div class="tabs-navigation">
                     <button class="tab-link" onclick="window.location.href='{% url 'nurse:nurse_requests' 'pending' %}'">Pending</button>
@@ -77,56 +78,54 @@
             </div>
 
             <div class="requests-grid">
-                {% for c in completed %}
-                <div class="request-card-item animate slide-up">
+                {% for req in completed %}
+                <div class="request-card-item animate slide-up" style="border: 1px solid #f1f5f9; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border-radius: 16px; padding: 24px;">
 
                     <div class="card-top-section">
                         <div class="patient-meta">
                             <div class="patient-avatar-mini"><i class="bi bi-person-circle"></i></div>
                             <div class="patient-name-info">
-                                <h3>{{ c.requester_name }} {% if c.is_donor %}<span style="background:#fef3c7;color:#b45309;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">DONOR</span>{% endif %}</h3>
+                                <h3>{{ req.requester_name }} {% if req.is_donor %}<span style="background:#fef3c7;color:#b45309;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">DONOR</span>{% endif %}</h3>
                                 <p>
                                     <i class="ri-map-pin-2-line"></i>
-                                    {{ c.governrate }}, {{ c.address }}
+                                    {{ req.governrate }} — {{ req.address }}
                                 </p>
                             </div>
                         </div>
-                        <span class="status-pill done">DONE</span>
+                        <span class="status-pill done" style="background:#dcfce7; color:#166534; padding:6px 14px; font-size:11px; font-weight:700; border-radius:20px; text-transform:uppercase;">DONE</span>
                     </div>
 
-                    <hr class="hr">
-
-                    <div class="info-row">
-                        <div class="info-block">
-                            <span class="info-label">DATE & TIME</span>
-                            <span class="info-value">{{ c.date|date:"d M, Y" }} | {{ c.time|time:"h:i A" }}</span>
+                    <div class="info-row" style="display:flex; gap:16px; margin: 16px 0;">
+                        <div class="info-block" style="background:#f8fafc; border-radius:10px; padding:14px 16px; flex:1;">
+                            <span style="display:block; font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">DATE & TIME</span>
+                            <span style="display:block; font-size:14px; color:#1e293b; font-weight:700;">{{ req.date|date:"M d, Y" }} &bull; {{ req.time|time:"h:i A" }}</span>
                         </div>
                     </div>
 
-                    <hr class="hr">
+                    <label style="display:block; font-size:11px; font-weight:700; color:#94a3b8; letter-spacing:0.5px; text-transform:uppercase; margin-bottom:8px;">CONDITION DESCRIPTION</label>
+                    <div style="padding:16px 20px; background-color:#f8fafc; border-radius:10px; border-left:4px solid #93c5fd; color:#475569; font-size:14px; line-height:1.6; margin-bottom:24px;">
+                        {{ req.disease_description }}
+                    </div>
 
-                    <label class="l1">DISEASE DESCRIPTION</label>
-                    <div class="disease-box">{{ c.disease_description }}</div>
+                    <div class="Condition" style="margin-bottom:12px;">
+                        <span class="accepted-tag" style="color:#1a1a1a; font-weight:800; font-size:13px; text-transform:uppercase;">SERVICES REQUESTED</span>
+                    </div>
+                    {% for svc in req.service.all %}
+                    <div class="services-each">
+                        <label>{{ svc.name }}</label>
+                        <p>{{ svc.price }} EGP</p>
+                    </div>
+                    {% endfor %}
 
-                    <div class="services-total">
-                        <label>SERVICES REQUESTED</label>
-                        {% for svc in c.service.all %}
-                        <div class="services-each">
-                            <label>{{ svc.name }}</label>
-                            <p>{{ svc.price }} EGP</p>
-                        </div>
-                        {% endfor %}
+                    <hr style="margin:16px 0; border:none; border-top:1px dashed #e2e8f0;">
 
-                        <hr class="hr">
-
-                        <div class="services-each">
-                            <label>Total Price</label>
-                            <p>{{ c.net_income }} EGP</p>
-                        </div>
-                        <div class="services-eachs earning-row">
-                            <label>Your Earning</label>
-                            <p class="earning">{{ c.net_income }} EGP</p>
-                        </div>
+                    <div class="services-each" style="margin-bottom:8px;">
+                        <label style="font-size:13px; color:#64748b; font-weight:600;">Total Price</label>
+                        <p style="font-size:15px; color:#1e293b; font-weight:700;">{{ req.total_price }} EGP</p>
+                    </div>
+                    <div class="services-each earning-row">
+                        <label style="font-size:16px; color:#111827; font-weight:800;">Your Earning</label>
+                        <p style="font-size:24px; color:#2b84ea; font-weight:900; margin:0;">{{ req.net_income }} EGP</p>
                     </div>
 
                 </div>

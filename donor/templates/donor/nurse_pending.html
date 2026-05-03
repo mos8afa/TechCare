@@ -144,7 +144,7 @@
                         <div class="npc-footer">
                             <div>
                                 <span class="npc-price-label">TOTAL PRICE</span>
-                                <span class="npc-price-amount">{{ req.net_income }} EGP</span>
+                                <span class="npc-price-amount">{{ req.total_price }} EGP</span>
                             </div>
                             <div class="npc-actions">
                                 <form method="POST" action="{% url 'donor:cancel_nurse_request' req.id %}">
@@ -204,7 +204,7 @@
                         <div class="npc-footer">
                             <div>
                                 <span class="npc-price-label">TOTAL PRICE</span>
-                                <span class="npc-price-amount">{{ req.net_income }} EGP</span>
+                                <span class="npc-price-amount">{{ req.total_price }} EGP</span>
                             </div>
                             <div class="npc-actions">
                                 <form method="POST" action="{% url 'donor:accept_nurse_reschedule' req.id %}" style="display:inline;">

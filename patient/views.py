@@ -358,7 +358,44 @@ def mark_done(request, request_id):
             req.status = 'completed'
         req.save()
     except DoctorRequest.DoesNotExist:
-        pass
+        return redirect('patient:patient_requests', category='doctor', type='accepted')
+
+    doctor = req.doctor
+    name = patient.user.first_name + ' ' + patient.user.last_name
+    return render(request, 'patient/rate_doctor.html', {
+        'req': req,
+        'doctor_name': doctor.user.first_name + ' ' + doctor.user.last_name,
+        'doctor_specialization': doctor.get_specification_display(),
+        'doctor_profile_pic': doctor.profile_pic,
+        'name': name,
+        'profile_pic': patient.profile_pic,
+    })
+
+
+@login_required
+def rate_doctor(request, request_id):
+    if request.user.role != 'patient':
+        return redirect('login')
+
+    from accounts.models import Rate
+    patient = Patient.objects.get(user=request.user)
+    try:
+        req = DoctorRequest.objects.get(id=request_id, patient=patient)
+    except DoctorRequest.DoesNotExist:
+        return redirect('patient:patient_requests', category='doctor', type='accepted')
+
+    if request.method == 'POST':
+        rate_value = request.POST.get('rate')
+        feedback = request.POST.get('feedback', '').strip()
+        if rate_value:
+            Rate.objects.create(
+                rate=rate_value,
+                feedback=feedback,
+                doctor=req.doctor,
+            )
+        if req.doctor_done:
+            return redirect('patient:patient_requests', category='doctor', type='done')
+        return redirect('patient:patient_requests', category='doctor', type='accepted')
 
     return redirect('patient:patient_requests', category='doctor', type='accepted')
 
@@ -432,7 +469,7 @@ def book_nurse(request, nurse_id):
                 governrate=governorate,
                 address=address,
                 disease_description=disease_description,
-                net_income=total,
+                net_income=total * 80 / 100,
                 status='pending',
             )
             req.service.set(selected_services)
@@ -493,7 +530,45 @@ def mark_nurse_done(request, request_id):
             req.status = 'completed'
         req.save()
     except NurseRequest.DoesNotExist:
-        pass
+        return redirect('patient:patient_requests', category='nurse', type='accepted')
+
+    nurse = req.nurse
+    name = patient.user.first_name + ' ' + patient.user.last_name
+    return render(request, 'patient/rate_nurse.html', {
+        'req': req,
+        'nurse_name': nurse.user.first_name + ' ' + nurse.user.last_name,
+        'nurse_profile_pic': nurse.profile_pic,
+        'name': name,
+        'profile_pic': patient.profile_pic,
+    })
+
+
+@login_required
+def rate_nurse(request, request_id):
+    if request.user.role != 'patient':
+        return redirect('login')
+
+    from nurse.models import NurseRequest
+    from accounts.models import Rate
+    patient = Patient.objects.get(user=request.user)
+    try:
+        req = NurseRequest.objects.get(id=request_id, patient=patient)
+    except NurseRequest.DoesNotExist:
+        return redirect('patient:patient_requests', category='nurse', type='accepted')
+
+    if request.method == 'POST':
+        rate_value = request.POST.get('rate')
+        feedback = request.POST.get('feedback', '').strip()
+        if rate_value:
+            Rate.objects.create(
+                rate=rate_value,
+                feedback=feedback,
+                nurse=req.nurse,
+            )
+        if req.nurse_done:
+            return redirect('patient:patient_requests', category='nurse', type='done')
+        return redirect('patient:patient_requests', category='nurse', type='accepted')
+
     return redirect('patient:patient_requests', category='nurse', type='accepted')
 
 

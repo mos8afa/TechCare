@@ -437,8 +437,6 @@ body {
     font-weight: 500;
     color: #1e293b;
     line-height: 1.4;
-    word-break: break-word;
-    overflow-wrap: break-word;
 }
 
 /* ---- About Section ---- */
@@ -827,28 +825,14 @@ body {
     animation: fadeIn 0.8s ease-out 0.6s both;
 }
 
-.service-actions a,
-.service-actions .remove-service {
+.service-actions a {
     color: var(--primary-color);
     text-decoration: none;
-    background: none;
-    border: none;
-    padding: 0;
-    font-size: 14px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
     transition: transform 0.3s ease;
 }
 
-.service-actions a:hover,
-.service-actions .remove-service:hover {
+.service-actions a:hover {
     transform: scale(1.15);
-}
-
-.service-actions .remove-service {
-    color: var(--primary-color);
 }
 
 .empty-slot {
@@ -984,8 +968,6 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     opacity: 0;
     animation: fadeInUp 0.5s ease-out forwards;
-    overflow: hidden;
-    min-width: 0;
 }
 
 .request-card-item:nth-child(1) {
@@ -1480,7 +1462,7 @@ body {
 .timeslots-card1 {
     width: 100%;
     border-radius: 16px;
-    padding: 28px 32px;
+    padding: 0px 32px;
     margin-bottom: 32px;
 }
 
@@ -1494,21 +1476,15 @@ body {
 .timeslots-container1 {
     display: flex;
     align-items: center;
-    gap: 8px;
-    width: 100%;
-}
-
-.timeslots-viewport1 {
-    flex: 1;
-    overflow: hidden;
-    min-width: 0;
+    justify-content: center;
+    gap: 20px;
 }
 
 .timeslots-container1 .timeslots-grid {
     display: flex;
-    gap: 12px;
-    flex-wrap: nowrap;
-    transition: transform 0.3s ease;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
 }
 
 .timeslot-nav-btn {
@@ -2104,15 +2080,13 @@ input:checked + .edit-ts-slider:before {
     transform: translateX(20px);
 }
 
-
-/* ===== Available Time Slots Section (Profile Page) ===== */
+/* ===== Refined Time Slots (v2) - Matching Image ===== */
 .ats-card-v2 {
     background: #FFFFFF;
     border-radius: 20px;
     padding: 30px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
     border: 1px solid #f8fafc;
-    margin-top: 30px;
 }
 
 .header-icon-circle {
@@ -2134,7 +2108,9 @@ input:checked + .edit-ts-slider:before {
     padding-bottom: 5px;
 }
 
-.days-carousel::-webkit-scrollbar { display: none; }
+.days-carousel::-webkit-scrollbar {
+    display: none;
+}
 
 .days-track {
     display: flex;
@@ -2174,10 +2150,17 @@ input:checked + .edit-ts-slider:before {
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
-.day-btn.active .day-name { color: rgba(255, 255, 255, 0.8); }
-.day-btn.active .day-num  { color: #ffffff; }
+.day-btn.active .day-name {
+    color: rgba(255, 255, 255, 0.8);
+}
 
-.slots-container { margin-top: 10px; }
+.day-btn.active .day-num {
+    color: #ffffff;
+}
+
+.slots-container {
+    margin-top: 10px;
+}
 
 .slots-grid {
     display: flex;
@@ -2188,7 +2171,7 @@ input:checked + .edit-ts-slider:before {
 
 .slot-pill {
     padding: 10px 24px;
-    background: #f1f5f9;
+    background: #f1f5f9; /* Very light blue/gray matching photo */
     border: none;
     border-radius: 50px;
     font-size: 14px;
@@ -2199,7 +2182,9 @@ input:checked + .edit-ts-slider:before {
     min-width: 110px;
 }
 
-.slot-pill:hover { background: #e2e8f0; }
+.slot-pill:hover {
+    background: #e2e8f0;
+}
 
 .slot-pill.active {
     background: #3b82f6;
@@ -2233,94 +2218,44 @@ input:checked + .edit-ts-slider:before {
     transform: translateY(-1px);
 }
 
+/* My Services Refinement */
+.Services-Card {
+    margin-top: 40px;
+}
 
-/* ===== Time Slots Carousel (Pending Requests) ===== */
-.time-slots-carousel {
+.services-header {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin: 10px 0;
-    width: 100%;
-    min-width: 0;
-    overflow: hidden;
+    justify-content: space-between;
+    margin-bottom: 30px;
 }
 
-.slots-viewport {
-    flex: 1;
-    overflow: hidden;
-    min-width: 0;
+.services-header h3 {
+    font-size: 18px;
+    font-weight: 700;
 }
 
-.slots-track {
-    display: flex;
-    gap: 8px;
-    transition: transform 0.35s ease;
-}
-
-.time-slot-btn {
-    flex-shrink: 0;
-    width: 100px;
-    text-align: center;
-    background: #F0F4F8;
-    border: 1px solid #E2E8F0;
-    border-radius: 20px;
-    padding: 7px 0;
-    font-size: 13px;
+.count-pill {
+    color: #3b82f6;
     font-weight: 500;
-    cursor: pointer;
-    white-space: nowrap;
-    color: #4b5563;
-    transition: all 0.25s ease;
+    margin-left: 2px;
 }
 
-.time-slot-btn:hover:not(.active) {
-    border-color: var(--primary-color);
-    color: var(--primary-color);
-    background: rgba(29, 137, 228, 0.06);
-}
-
-.time-slot-btn.active {
-    background: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
+.btn-add-services-v2 {
+    background: #3b82f6;
+    color: #ffffff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-size: 14px;
     font-weight: 600;
-    box-shadow: 0 2px 8px rgba(29, 137, 228, 0.3);
-}
-
-.slot-nav {
-    flex-shrink: 0;
-    width: 30px;
-    height: 30px;
     cursor: pointer;
-    font-size: 25px;
-    font-weight: 700;
-    border-radius: 50%;
-    background: white;
-    border: 1px solid #E2E8F0;
-    color: var(--primary-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
     transition: all 0.2s ease;
-    line-height: 1;
 }
 
-.slot-nav:hover {
-    background: var(--primary-color);
-    border-color: var(--primary-color);
-    color: white;
+.btn-add-services-v2:hover {
+    background: #2563eb;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
 }
 
-.edit-input {
-    margin: 16px 0 8px;
-}
 
-.edit-input > label {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--primary-color);
-    display: block;
-    margin-bottom: 8px;
-    letter-spacing: 0.3px;
-    white-space: nowrap;
-}

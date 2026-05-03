@@ -68,7 +68,6 @@
                         <h2>Requests</h2>
                         <p>Manage incoming consultation requests</p>
                     </div>
-                    <button class="filter-button"><i class="bi bi-funnel"></i> <b>Filter</b></button>
                 </div>
                 <div class="tabs-navigation">
                     <button class="tab-link active" onclick="window.location.href='{% url 'nurse:nurse_requests' 'pending' %}'">Pending</button>
@@ -117,7 +116,7 @@
                     <hr class="hr">
 
                     <div class="discription-service">
-                        <label>Description</label>
+                        <label>Condition Description</label>
                         <div class="description-box">{{ req.disease_description }}</div>
                     </div>
 

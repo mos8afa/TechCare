@@ -1,4 +1,4 @@
-{% extends 'patient_base.html' %}
+{% extends 'patient_base.html' %}
 
 {% block sidebar %}
 <aside class="aside">
@@ -93,12 +93,12 @@
 
                 <div class="ac-financial-box">
                     <span class="ac-fin-label">FINANCIAL TOTAL</span>
-                    <span class="ac-fin-amount">{{ req.net_income }} EGP</span>
+                    <span class="ac-fin-amount">{{ req.total_price }} EGP</span>
                 </div>
 
                 <div class="ac-footer">
                     {% if req.patient_done %}
-                        <button class="btn-done" disabled style="opacity:0.5; cursor:not-allowed;">Waiting for Nurse...</button>
+                        <button class="btn-waiting" disabled>Waiting for Nurse mark done...</button>
                     {% else %}
                         <form method="POST" action="{% url 'patient:mark_nurse_done' req.id %}">
                             {% csrf_token %}

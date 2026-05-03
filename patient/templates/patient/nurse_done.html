@@ -1,4 +1,4 @@
-{% extends 'patient_base.html' %}
+{% extends 'patient_base.html' %}
 
 {% block sidebar %}
 <aside class="aside">
@@ -81,7 +81,7 @@
 
                 <div class="dc-financial">
                     <p class="dc-fin-label">TOTAL PAID</p>
-                    <p class="dc-fin-amount">{{ req.net_income }} EGP</p>
+                    <p class="dc-fin-amount">{{ req.total_price }} EGP</p>
                 </div>
             </div>
             {% empty %}

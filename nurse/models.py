@@ -50,4 +50,8 @@ class NurseRequest(models.Model):
     @property
     def is_donor(self):
         return self.donor is not None and self.patient is None
+
+    @property
+    def total_price(self):
+        return sum(s.price for s in self.service.all())
     

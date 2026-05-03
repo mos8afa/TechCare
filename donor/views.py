@@ -397,7 +397,7 @@ def book_nurse(request, nurse_id):
                 governrate=governorate,
                 address=address,
                 disease_description=disease_description,
-                net_income=total,
+                net_income=total * 80 / 100,
                 status='pending',
             )
             req.service.set(selected_services)

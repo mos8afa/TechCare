@@ -1,4 +1,4 @@
-{% extends 'patient_base.html' %}
+{% extends 'patient_base.html' %}
 
 {% block sidebar %}
 <aside class="aside">
@@ -88,7 +88,7 @@
                 <div class="npc-footer">
                     <div>
                         <span class="npc-price-label">TOTAL PRICE</span>
-                        <span class="npc-price-amount">{{ req.net_income }} EGP</span>
+                        <span class="npc-price-amount">{{ req.total_price }} EGP</span>
                     </div>
                     <div class="npc-actions">
                         <form method="POST" action="{% url 'patient:cancel_nurse_request' req.id %}">
@@ -143,7 +143,7 @@
                 <div class="npc-footer">
                     <div>
                         <span class="npc-price-label">TOTAL PRICE</span>
-                        <span class="npc-price-amount">{{ req.net_income }} EGP</span>
+                        <span class="npc-price-amount">{{ req.total_price }} EGP</span>
                     </div>
                     <div class="npc-actions">
                         <form method="POST" action="{% url 'patient:accept_nurse_reschedule' req.id %}">

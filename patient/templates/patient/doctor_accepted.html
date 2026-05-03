@@ -115,7 +115,7 @@
 
                 <div style="display:flex; justify-content:flex-end; margin-top:16px;">
                     {% if req.patient_done %}
-                        <button class="btn-done" disabled>Waiting for Doctor...</button>
+                        <button class="btn-waiting" disabled>Waiting for Doctor...</button>
                     {% else %}
                         <form method="POST" action="{% url 'patient:mark_done' req.id %}">
                             {% csrf_token %}
