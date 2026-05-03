@@ -3,7 +3,7 @@ import '../Donor/donor_profile_screen.dart';
 import '../Donor/donor_doctor_requests_screen.dart';
 import '../Donor/donor_wallet_screen.dart';
 import '../Donor/donor_complaints_screen.dart';
-import '../Donor/donor_donation_screen.dart';
+import '../Donor/donor_notifications_screen.dart';
 
 const Color _kPrimary     = Color(0xFF1D89E4);
 const Color _kBgLight     = Color(0xFFF4F7FC);
@@ -21,8 +21,8 @@ const List<Map<String, dynamic>> _navItems = [
   {'icon': Icons.warning_amber_rounded,           'label': 'Complaints'},
 ];
 
-class DonorNotificationsScreen extends StatelessWidget {
-  const DonorNotificationsScreen({super.key});
+class DonorDonationScreen extends StatelessWidget {
+  const DonorDonationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class DonorNotificationsScreen extends StatelessWidget {
             onPressed: () => Scaffold.of(ctx).openDrawer(),
           ),
         ),
-        title: const Text('Notifications',
+        title: const Text('Donation',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: _kDarkText)),
         actions: [
           IconButton(
@@ -63,22 +63,30 @@ class DonorNotificationsScreen extends StatelessWidget {
           child: Container(color: _kBorderColor, height: 1),
         ),
       ),
+
       drawer: _buildDrawer(context),
+
       body: Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Container(
-            padding: const EdgeInsets.all(28),
-            decoration: BoxDecoration(
-              color: _kPrimary.withOpacity(0.06),
-              shape: BoxShape.circle,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(28),
+              decoration: BoxDecoration(
+                color: _kPrimary.withOpacity(0.06),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.local_hospital_outlined,
+                  size: 52, color: _kPrimary.withOpacity(0.4)),
             ),
-            child: Icon(Icons.notifications_none_rounded, size: 52, color: _kPrimary.withOpacity(0.4)),
-          ),
-          const SizedBox(height: 20),
-          const Text('Notifications', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: _kDarkText)),
-          const SizedBox(height: 8),
-          const Text('No notifications yet', style: TextStyle(fontSize: 14, color: _kTextGray)),
-        ]),
+            const SizedBox(height: 20),
+            const Text('Donation',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: _kDarkText)),
+            const SizedBox(height: 8),
+            const Text('No donations yet',
+                style: TextStyle(fontSize: 14, color: _kTextGray)),
+          ],
+        ),
       ),
     );
   }
@@ -104,8 +112,10 @@ class DonorNotificationsScreen extends StatelessWidget {
                 ]),
               ]),
               const SizedBox(height: 32),
+
               ..._navItems.map((item) {
-                final isActive = item['label'] == 'Notifications';
+                final isActive = item['label'] == 'Donation';
+
                 return Container(
                   margin: const EdgeInsets.only(bottom: 8),
                   child: Material(
@@ -115,19 +125,32 @@ class DonorNotificationsScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(15),
                       onTap: () {
                         Navigator.pop(context);
+
                         switch (item['label']) {
                           case 'Profile':
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DonorProfileScreen())); break;
+                            Navigator.pushReplacement(context,
+                                MaterialPageRoute(builder: (_) => const DonorProfileScreen()));
+                            break;
+
                           case 'Requests':
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DonorDoctorRequestsScreen())); break;
+                            Navigator.pushReplacement(context,
+                                MaterialPageRoute(builder: (_) => const DonorDoctorRequestsScreen()));
+                            break;
+
                           case 'Notifications':
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DonorNotificationsScreen())); break;
+                            Navigator.pushReplacement(context,
+                                MaterialPageRoute(builder: (_) => const DonorNotificationsScreen()));
+                            break;
+
                           case 'Wallet':
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DonorWalletScreen())); break;
+                            Navigator.pushReplacement(context,
+                                MaterialPageRoute(builder: (_) => const DonorWalletScreen()));
+                            break;
+
                           case 'Complaints':
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DonorComplaintsScreen())); break;
-                          case 'Donation':
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DonorDonationScreen())); break;
+                            Navigator.pushReplacement(context,
+                                MaterialPageRoute(builder: (_) => const DonorComplaintsScreen()));
+                            break;
                         }
                       },
                       child: Padding(

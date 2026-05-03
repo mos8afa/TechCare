@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'donor_requests_screen.dart';
-import 'donor_notifications_screen.dart';
-import 'donor_wallet_screen.dart';
-import 'donor_complaints_screen.dart';
-import 'donor_edit_profile_screen.dart';
+import '../Donor/donor_doctor_requests_screen.dart';
+import '../Donor/donor_notifications_screen.dart';
+import '../Donor/donor_wallet_screen.dart';
+import '../Donor/donor_complaints_screen.dart';
+import '../Donor/donor_edit_profile_screen.dart';
+import '../Donor/donor_donation_screen.dart';
 
 // ─── Colors ───────────────────────────────────────────────────────────────
 const Color kPrimary     = Color(0xFF1D89E4);
@@ -179,6 +180,7 @@ class DonorProfileScreen extends StatelessWidget {
     final items = [
       {'icon': Icons.person_outline_rounded,          'label': 'Profile'},
       {'icon': Icons.list_alt_rounded,                'label': 'Requests'},
+      {'icon': Icons.local_hospital_outlined,         'label': 'Donation'},
       {'icon': Icons.notifications_none_rounded,      'label': 'Notifications'},
       {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet'},
       {'icon': Icons.warning_amber_rounded,           'label': 'Complaints'},
@@ -246,7 +248,7 @@ class DonorProfileScreen extends StatelessWidget {
     switch (label) {
       case 'Requests':
         Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (_) => const DonorRequestsScreen()));
+            MaterialPageRoute(builder: (_) => const DonorDoctorRequestsScreen()));
         break;
       case 'Notifications':
         Navigator.pushReplacement(context,
@@ -260,6 +262,9 @@ class DonorProfileScreen extends StatelessWidget {
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (_) => const DonorComplaintsScreen()));
         break;
+      case 'Donation':
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (_) => const DonorDonationScreen()));
       default:
         break;
     }
