@@ -6,6 +6,7 @@ import '../Nurse/nurse_requests_screen.dart';
 import '../Nurse/nurse_notifications.dart';
 import '../Nurse/nurse_wallet.dart';
 import '../Nurse/nurse_complaints.dart';
+import '../Nurse/nurse_donation.dart';
 
 // ─── Colors ───────────────────────────────────────────────────────────────
 const Color kPrimary    = Color(0xFF1D89E4);
@@ -100,8 +101,6 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
   }
 
   Future<void> _loadTimeSlots() async {
-    // Get day string like "Monday", "Tuesday" etc based on selected day index
-    // For now we'll use the day name from _days mapping
     final dayName = _getDayName(_selectedDayIndex);
     final result = await ApiService.getNurseTimeSlots(day: dayName);
     if (result.success) {
@@ -112,7 +111,6 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
   }
 
   String _getDayName(int index) {
-    // Map index to day name expected by backend (e.g., "Monday")
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     return days[index];
   }
@@ -125,7 +123,6 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
       price: price.toStringAsFixed(0),
     );
     if (result.success) {
-      // Reload dashboard to get updated services
       await _loadProfile();
     } else {
       _showSnackBar(result.error ?? 'Failed to add service');
@@ -150,7 +147,6 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
   }
 
   Future<void> _deleteService(int serviceId) async {
-    // Confirm deletion
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -268,6 +264,7 @@ class _NurseProfileScreenState extends State<NurseProfileScreen> {
         case 'Notifications':Navigator.pushReplacement(ctx, MaterialPageRoute(builder: (_) => const NurseNotificationsScreen())); break;
         case 'Wallet':       Navigator.pushReplacement(ctx, MaterialPageRoute(builder: (_) => const NurseWalletScreen())); break;
         case 'Complaints':   Navigator.pushReplacement(ctx, MaterialPageRoute(builder: (_) => const NurseComplaintsScreen())); break;
+        case 'Donation':     Navigator.pushReplacement(ctx, MaterialPageRoute(builder: (_) => const NurseDonationScreen())); break;
         default: break;
       }
     });
@@ -694,6 +691,7 @@ class _NurseDrawer extends StatelessWidget {
     final items = [
       {'icon': Icons.person_outline_rounded,          'label': 'Profile'},
       {'icon': Icons.list_alt_rounded,                'label': 'Requests'},
+      {'icon': Icons.local_hospital_outlined,         'label': 'Donation'},
       {'icon': Icons.notifications_none_rounded,      'label': 'Notifications'},
       {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet'},
       {'icon': Icons.warning_amber_rounded,           'label': 'Complaints'},

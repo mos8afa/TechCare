@@ -1089,11 +1089,21 @@ def patient_requests(request, category, type):
             for nurse in Nurse.objects.filter(slots__isnull=False).distinct():
                 avg = nurse.rates.aggregate(Avg('rate'))['rate__avg'] or 0
                 min_price = nurse.nurse_services.aggregate(Min('price'))['price__min']
+                services = [
+                    {
+                        "id": s.id,
+                        "name": s.name,
+                        "description": s.description,
+                        "price": str(s.price),
+                    }
+                    for s in nurse.nurse_services.all()
+                ]
                 nurses.append({
                     "id":          nurse.id,
                     "name":        f"{nurse.user.first_name} {nurse.user.last_name}",
                     "governorate": nurse.get_governorate_display(),
                     "address":     nurse.address,
+                    "services": services,
                     "avg_rating":  round(avg),
                     "min_price":   str(min_price) if min_price is not None else None,
                     "profile_pic": nurse.profile_pic.url if nurse.profile_pic else None,

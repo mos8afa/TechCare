@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import '../services/api_service.dart';
 import '../Doctor/doctor_edit_profile.dart';
 import '../Doctor/doctor_edit_slots.dart';
 import '../Doctor/doctor_requests_screen.dart';
+import '../Doctor/doctor_donation.dart';
 import '../Doctor/doctor_notifications.dart';
 import '../Doctor/doctor_wallet.dart';
 import '../Doctor/doctor_complaints.dart';
-import '../services/api_service.dart';
 
 const Color kPrimary = Color(0xFF1D89E4);
 const Color kSecondary = Color(0xFF2179C2);
@@ -164,11 +165,12 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
 
   Widget _buildDrawer(BuildContext context) {
     final items = [
-      {'icon': Icons.person_outline_rounded, 'label': 'Profile', 'active': true},
-      {'icon': Icons.list_alt_rounded, 'label': 'Requests', 'active': false},
-      {'icon': Icons.notifications_none_rounded, 'label': 'Notifications', 'active': false},
-      {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet', 'active': false},
-      {'icon': Icons.warning_amber_rounded, 'label': 'Complaints', 'active': false},
+      {'icon': Icons.person_outline_rounded,          'label': 'Profile',       'active': true},
+      {'icon': Icons.list_alt_rounded,                'label': 'Requests',      'active': false},
+      {'icon': Icons.local_hospital_outlined,         'label': 'Donation',      'active': false},
+      {'icon': Icons.notifications_none_rounded,      'label': 'Notifications', 'active': false},
+      {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet',        'active': false},
+      {'icon': Icons.warning_amber_rounded,           'label': 'Complaints',    'active': false},
     ];
 
     return Drawer(
@@ -787,6 +789,10 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
             context,
             MaterialPageRoute(
                 builder: (_) => const DoctorComplaintsScreen()));
+        break;
+      case 'Donation':
+        Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const DoctorDonationScreen()));
         break;
     }
   }

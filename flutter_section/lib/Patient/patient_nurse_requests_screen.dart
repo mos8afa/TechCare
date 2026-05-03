@@ -6,6 +6,7 @@ import '../Patient/patient_profile_screen.dart';
 import '../Patient/patient_notifications.dart';
 import '../Patient/patient_wallet.dart';
 import '../Patient/patient_complaints.dart';
+import '../Patient/patient_donation.dart';
 
 const Color kPrimary     = Color(0xFF1D89E4);
 const Color kBgLight     = Color(0xFFF4F7FC);
@@ -210,6 +211,7 @@ class _PatientNurseRequestsScreenState extends State<PatientNurseRequestsScreen>
     final items = [
       {'icon': Icons.person_outline_rounded,          'label': 'Profile',       'active': false},
       {'icon': Icons.list_alt_rounded,                'label': 'Requests',      'active': true},
+      {'icon': Icons.local_hospital_outlined,         'label': 'Donation',      'active': false},
       {'icon': Icons.notifications_none_rounded,      'label': 'Notifications', 'active': false},
       {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet',        'active': false},
       {'icon': Icons.warning_amber_rounded,           'label': 'Complaints',    'active': false},
@@ -273,6 +275,11 @@ class _PatientNurseRequestsScreenState extends State<PatientNurseRequestsScreen>
       case 'Complaints':
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const PatientComplaintsScreen()));
         break;
+      case 'Donation':
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const PatientDonationScreen()));
+        break;
+      default:
+        break;
     }
   }
 
@@ -286,7 +293,6 @@ class _PatientNurseRequestsScreenState extends State<PatientNurseRequestsScreen>
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (_) => const PatientDoctorRequestsScreen()));
           }
-          // idx == 1 → already here
         },
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
@@ -346,8 +352,7 @@ class _PatientNurseRequestsScreenState extends State<PatientNurseRequestsScreen>
         (item['name'] as String? ?? '').toLowerCase().contains(q)).toList();
   }
 
-  /// Booking card — matches the Sara EL-Alfy design:
-  /// big photo, brief, services list, starting-from price, Book Now
+  /// Booking card 
   Widget _nurseBookingCard(Map nurse) {
     final picUrl  = ApiService.buildMediaUrl(nurse['profile_pic']);
     final services = (nurse['services'] as List? ?? []);

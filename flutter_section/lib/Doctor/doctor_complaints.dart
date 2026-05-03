@@ -3,6 +3,7 @@ import '../Doctor/doctor_profile_screen.dart';
 import '../Doctor/doctor_requests_screen.dart';
 import '../Doctor/doctor_notifications.dart';
 import '../Doctor/doctor_wallet.dart';
+import '../Doctor/doctor_donation.dart';
 
 const Color kPrimary = Color(0xFF1D89E4);
 const Color kBgLight = Color(0xFFF4F7FC);
@@ -136,6 +137,7 @@ class _DoctorComplaintsScreenState extends State<DoctorComplaintsScreen> {
     final items = [
       {'icon': Icons.person_outline_rounded, 'label': 'Profile', 'active': false},
       {'icon': Icons.list_alt_rounded, 'label': 'Requests', 'active': false},
+      {'icon': Icons.local_hospital_outlined, 'label': 'Donation', 'active': false},
       {'icon': Icons.notifications_none_rounded, 'label': 'Notifications', 'active': false},
       {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet', 'active': false},
       {'icon': Icons.warning_amber_rounded, 'label': 'Complaints', 'active': true},
@@ -240,6 +242,12 @@ class _DoctorComplaintsScreenState extends State<DoctorComplaintsScreen> {
       case 'Wallet':
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (_) => const DoctorWalletScreen()));
+        break;
+      case 'Donation':
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const DoctorDonationScreen()),
+        );
         break;
       default:
         break;
