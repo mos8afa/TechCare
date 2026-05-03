@@ -53,12 +53,22 @@ class _DonorDoctorRequestsScreenState extends State<DonorDoctorRequestsScreen>
   late TabController _statusTab;
   bool _isLoading = false;
 
-  // TODO: connect to API when ready
-  List<dynamic> _doctors  = [];
-  List<dynamic> _pending  = [];
-  List<dynamic> _edited   = [];
-  List<dynamic> _accepted = [];
-  List<dynamic> _done     = [];
+  List<dynamic> _doctors  = [
+    {'name': 'Dr. Ahmed Ali', 'specification': 'Cardiologist', 'governorate': 'Cairo', 'address': 'Nasr City', 'avg_rating': 4.8, 'price': '300'},
+    {'name': 'Dr. Sarah Hassan', 'specification': 'Dermatologist', 'governorate': 'Alexandria', 'address': 'Smouha', 'avg_rating': 4.5, 'price': '250'}
+  ];
+  List<dynamic> _pending  = [
+    {'doctor': {'name': 'Dr. Ahmed Ali', 'specification': 'Cardiologist'}, 'date': '2024-05-05', 'time': '14:30:00', 'disease_description': 'Patient experiencing chest pain.', 'governorate': 'Cairo', 'address': 'Nasr City', 'total_price': '300'}
+  ];
+  List<dynamic> _edited   = [
+    {'doctor': {'name': 'Dr. Sarah Hassan', 'specification': 'Dermatologist'}, 'date': '2024-05-06', 'time': '10:00:00', 'disease_description': 'Skin rash follow-up.', 'governorate': 'Alexandria', 'address': 'Smouha', 'total_price': '280'}
+  ];
+  List<dynamic> _accepted = [
+    {'doctor': {'name': 'Dr. Mahmoud Zaki', 'specification': 'Neurologist'}, 'date': '2024-05-04', 'time': '18:00:00', 'disease_description': 'Frequent headaches.', 'governorate': 'Giza', 'address': 'Dokki', 'total_price': '400'}
+  ];
+  List<dynamic> _done     = [
+    {'doctor': {'name': 'Dr. Youssef Omar', 'specification': 'Pediatrician'}, 'date': '2024-04-20', 'time': '09:00:00', 'disease_description': 'Routine checkup.', 'governorate': 'Cairo', 'address': 'Maadi', 'total_price': '200'}
+  ];
 
   final _searchCtrl = TextEditingController();
 
