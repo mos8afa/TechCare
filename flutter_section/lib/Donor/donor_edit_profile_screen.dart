@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'donor_profile_screen.dart';
-import 'donor_requests_screen.dart';
-import 'donor_notifications_screen.dart';
-import 'donor_wallet_screen.dart';
-import 'donor_complaints_screen.dart';
+import '../Donor/donor_profile_screen.dart';
+import '../Donor/donor_doctor_requests_screen.dart';
+import '../Donor/donor_notifications_screen.dart';
+import '../Donor/donor_wallet_screen.dart';
+import '../Donor/donor_complaints_screen.dart';
+import '../Donor/donor_donation_screen.dart';
+
 
 const Color _kPrimary     = Color(0xFF1D89E4);
 const Color _kBgLight     = Color(0xFFF4F7FC);
@@ -27,8 +29,9 @@ class _DonorEditProfileScreenState extends State<DonorEditProfileScreen> {
   String _governorate = 'Cairo';
 
   static const _governorates = [
-    'Cairo', 'Giza', 'Alexandria', 'Aswan', 'Luxor',
-    'Mansoura', 'Tanta', 'Zagazig', 'Ismailia', 'Suez',
+    'Alexandria','Aswan','Asyut','Beheira','Beni Suef','Cairo','Dakahlia','Damietta','Fayoum',
+    'Gharbia','Giza','Ismailia','Kafr El Sheikh','Luxor','Matrouh','Menoufia','Minya','New Valley',
+    'North Sinai','Port Said','Qalyubia','Qena','Red Sea','Sharqia','Sohag','South Sinai','Suez'
   ];
 
   @override
@@ -254,6 +257,7 @@ class _DonorEditProfileScreenState extends State<DonorEditProfileScreen> {
     final items = [
       {'icon': Icons.person_outline_rounded,          'label': 'Profile'},
       {'icon': Icons.list_alt_rounded,                'label': 'Requests'},
+      {'icon': Icons.local_hospital_outlined,         'label': 'Donation'},
       {'icon': Icons.notifications_none_rounded,      'label': 'Notifications'},
       {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet'},
       {'icon': Icons.warning_amber_rounded,           'label': 'Complaints'},
@@ -291,7 +295,7 @@ class _DonorEditProfileScreenState extends State<DonorEditProfileScreen> {
                         Navigator.pop(context);
                         switch (item['label']) {
                           case 'Requests':
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DonorRequestsScreen())); break;
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DonorDoctorRequestsScreen())); break;
                           case 'Notifications':
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DonorNotificationsScreen())); break;
                           case 'Wallet':
@@ -300,6 +304,8 @@ class _DonorEditProfileScreenState extends State<DonorEditProfileScreen> {
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DonorComplaintsScreen())); break;
                           case 'Profile':
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DonorProfileScreen())); break;
+                          case 'Donation':
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DonorDonationScreen())); break;
                         }
                       },
                       child: Padding(

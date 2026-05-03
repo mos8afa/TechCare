@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'donor_profile_screen.dart';
-import 'donor_requests_screen.dart';
-import 'donor_notifications_screen.dart';
-import 'donor_wallet_screen.dart';
+import '../Donor/donor_profile_screen.dart';
+import '../Donor/donor_doctor_requests_screen.dart';
+import '../Donor/donor_notifications_screen.dart';
+import '../Donor/donor_wallet_screen.dart';
+import '../Donor/donor_donation_screen.dart';
 
 const Color _kPrimary     = Color(0xFF1D89E4);
 const Color _kBgLight     = Color(0xFFF4F7FC);
@@ -14,6 +15,7 @@ const Color _kRed         = Color(0xFFEF4444);
 const List<Map<String, dynamic>> _navItems = [
   {'icon': Icons.person_outline_rounded,          'label': 'Profile'},
   {'icon': Icons.list_alt_rounded,                'label': 'Requests'},
+  {'icon': Icons.local_hospital_outlined,         'label': 'Donation'},
   {'icon': Icons.notifications_none_rounded,      'label': 'Notifications'},
   {'icon': Icons.account_balance_wallet_outlined, 'label': 'Wallet'},
   {'icon': Icons.warning_amber_rounded,           'label': 'Complaints'},
@@ -117,13 +119,15 @@ class DonorComplaintsScreen extends StatelessWidget {
                           case 'Profile':
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DonorProfileScreen())); break;
                           case 'Requests':
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DonorRequestsScreen())); break;
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DonorDoctorRequestsScreen())); break;
                           case 'Notifications':
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DonorNotificationsScreen())); break;
                           case 'Wallet':
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DonorWalletScreen())); break;
                           case 'Complaints':
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DonorComplaintsScreen())); break;
+                          case 'Donation':
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DonorDonationScreen())); break;
                         }
                       },
                       child: Padding(
