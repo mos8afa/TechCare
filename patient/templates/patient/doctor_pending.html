@@ -96,13 +96,12 @@
 
                 <div class="pending-details">
                     <div class="pending-detail-col">
-                        <span class="detail-label">LOCATION DETAILS</span>
-                        <p class="detail-place"><i class="ri-map-pin-2-line"></i> <strong>{{ req.governorate }}</strong></p>
-                        <p class="detail-address">{{ req.address }}</p>
+                        <span class="detail-label">GOVERNORATE</span>
+                        <p class="detail-place"><i class="ri-map-pin-2-line"></i> <strong>{{ req.get_governorate_display }}</strong></p>
                     </div>
                     <div class="pending-detail-col">
-                        <span class="detail-label">CONTACT INFORMATION</span>
-                        <strong class="detail-phone"><i class="ri-phone-line"></i> {{ req.doctor.phone_number }}</strong>
+                        <span class="detail-label">LOCATION DETAILS</span>
+                        <strong class="detail-place"><i class="ri-map-pin-2-line"></i> {{ req.address }}</strong>
                     </div>
                 </div>
 

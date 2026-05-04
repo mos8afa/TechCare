@@ -1,4 +1,5 @@
-{% extends 'patient_base.html' %}
+{% extends 'patient_base.html' %}
+
 
 {% block sidebar %}
 <aside class="aside">
@@ -75,13 +76,12 @@
                     <hr class="npc-divider" style="margin-top:0;">
                     <div class="npc-details-grid">
                         <div class="npc-col">
-                            <span class="npc-detail-label">LOCATION DETAILS</span>
-                            <div class="npc-detail-val"><i class="ri-map-pin-2-line"></i> {{ req.governrate }}</div>
-                            <div class="npc-detail-sub">{{ req.address }}</div>
+                            <span class="npc-detail-label">GOVERNORATE</span>
+                            <div class="npc-detail-val"><i class="ri-map-pin-2-line"></i> {{ req.get_governrate_display }}</div>
                         </div>
                         <div class="npc-col">
-                            <span class="npc-detail-label">CONTACT INFORMATION</span>
-                            <div class="npc-detail-val"><i class="ri-phone-line"></i> {{ req.nurse.phone_number }}</div>
+                            <span class="npc-detail-label">LOCATION DETAILS</span>
+                            <div class="npc-detail-val"><i class="ri-map-pin-2-line"></i> {{ req.address }}</div>
                         </div>
                     </div>
                 </div>

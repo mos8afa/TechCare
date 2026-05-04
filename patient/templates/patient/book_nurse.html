@@ -166,7 +166,7 @@
                     <div class="date-scroll-container">
                         {% for day in days %}
                         <div class="date-item {% if selected_day == day.day_name %}active{% endif %}"
-                             onclick="selectDay(this, '{{ day.day_name }}', '{{ day.full_date }}')">
+                             onclick="pickDay(this, '{{ day.day_name }}', '{{ day.full_date }}')">
                             <span class="date-day">{{ day.short_name }}</span>
                             <span class="date-num">{{ day.date_num }}</span>
                             <span class="date-month">{{ day.month_name }}</span>
@@ -230,7 +230,7 @@
 const ALL_SLOTS = {{ all_slots_json|safe }};
 let currentDay = "{{ selected_day }}";
 
-function selectDay(el, dayName, fullDate) {
+function pickDay(el, dayName, fullDate) {
     document.querySelectorAll('.date-item').forEach(d => d.classList.remove('active'));
     el.classList.add('active');
     currentDay = dayName;

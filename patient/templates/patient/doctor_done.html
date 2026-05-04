@@ -85,14 +85,14 @@
                     </div>
                     <div class="dc-detail-row">
                         <p class="dc-label">Region</p>
-                        <p class="dc-value">{{ req.patient.get_governorate_display }}</p>
+                        <p class="dc-value">{{req.address}}, {{ req.patient.get_governorate_display }}</p>
                     </div>
                 </div>
 
                 <hr class="dc-divider">
 
                 <div class="dc-description">
-                    <p class="dc-label-uppercase">DESCRIPTION</p>
+                    <p class="dc-label-uppercase">CONDITION DESCRIPTION</p>
                     <p class="dc-desc-text">{{ req.disease_description }}</p>
                 </div>
 

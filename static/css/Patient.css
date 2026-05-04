@@ -2097,15 +2097,13 @@ body {
 }
 
 .date-item:hover {
-    border-color: #2b84ea;
+    border-color: #1D89E4;
 }
 
 .date-item.active {
-    background: #2b84ea;
-    border-color: #2b84ea;
+    background: #1D89E4;
+    border-color: #1D89E4;
     color: #fff;
-    box-shadow: 0 8px 20px rgba(43, 132, 234, 0.4);
-    transform: scale(1.05);
 }
 
 .date-day {
@@ -2116,8 +2114,10 @@ body {
     text-transform: uppercase;
 }
 
-.date-item.active .date-day {
-    color: rgba(255, 255, 255, 0.8);
+.date-item.active .date-day,
+.date-item.active .date-num,
+.date-item.active .date-month {
+    color: white;
 }
 
 .date-num {
@@ -2127,19 +2127,11 @@ body {
     color: #333;
 }
 
-.date-item.active .date-num {
-    color: #fff;
-}
-
 .date-month {
     font-size: 10px;
     font-weight: 700;
     color: #777;
     text-transform: uppercase;
-}
-
-.date-item.active .date-month {
-    color: rgba(255, 255, 255, 0.8);
 }
 
 .slot-title {
@@ -2175,9 +2167,9 @@ body {
 }
 
 .slot-btn.active {
-    background: #2b84ea;
+    background: #1D89E4;
     color: #fff;
-    box-shadow: 0 6px 15px rgba(43, 132, 234, 0.35);
+    box-shadow: 0 4px 10px rgba(29, 137, 228, 0.3);
     transform: scale(1.05);
 }
 
@@ -2841,26 +2833,6 @@ body {
     color: #1D89E4;
     font-size: 22px;
     font-weight: 800;
-}
-
-/* تنسيق شريط التاريخ (date-scroll) للتأكد من أن العنصر النشط أبيض */
-.date-item.active {
-    background: #1D89E4;
-    border-color: #1D89E4;
-    color: white;
-}
-
-.date-item.active .date-day,
-.date-item.active .date-num,
-.date-item.active .date-month {
-    color: white;
-}
-
-/* تنسيق أزرار الوقت النشطة */
-.slot-btn.active {
-    background: #1D89E4;
-    color: white;
-    box-shadow: 0 4px 10px rgba(29, 137, 228, 0.3);
 }
 
 /* تحسين زر التأكيد */
@@ -4071,16 +4043,54 @@ body {
     border-radius: 25px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 12px rgba(29, 137, 228, 0.3);
 }
 
 .btn-done:hover {
     background: #1570c4;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(29, 137, 228, 0.4);
+}
+
+.btn-done:active {
+    transform: scale(0.97);
 }
 
 .btn-done:disabled {
     background: #93c5fd;
     cursor: not-allowed;
+}
+
+.btn-waiting {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #f1f5f9;
+    color: #94a3b8;
+    border: 1.5px dashed #cbd5e1;
+    padding: 10px 22px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: not-allowed;
+    letter-spacing: 0.3px;
+}
+
+.btn-waiting::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #94a3b8;
+    animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.7); }
 }
 
 /* ===== NURSE PENDING CARDS (NPC) ===== */
@@ -4410,4 +4420,149 @@ body {
 .symptoms-card textarea:focus {
     outline: none;
     border-color: #1D89E4;
+}
+
+/* ===== Rate Experience Modal ===== */
+.rate-modal-container {
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    width: 90%;
+    max-width: 480px;
+    padding: 32px;
+    font-family: 'Inter', sans-serif;
+}
+
+.rate-modal-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 24px;
+}
+
+.rate-modal-profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.rate-modal-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 16px;
+}
+
+.rate-modal-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.rate-modal-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.rate-modal-role {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.rate-modal-section {
+    margin-bottom: 32px;
+}
+
+.rate-modal-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+}
+
+.rate-modal-stars {
+    display: flex;
+    gap: 6px;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.rate-modal-stars .fas.fa-star { color: #FFB800; }
+.rate-modal-stars .far.fa-star { color: #d1d5db; }
+
+.rate-modal-label-normal {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1f2937;
+    margin-bottom: 12px;
+}
+
+.rate-modal-textarea {
+    width: 100%;
+    background-color: #F3F4F6;
+    border: 1px solid transparent;
+    border-radius: 16px;
+    padding: 16px;
+    font-size: 14px;
+    color: #374151;
+    outline: none;
+    resize: none;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.rate-modal-textarea::placeholder { color: #9ca3af; }
+
+.rate-modal-textarea:focus {
+    background-color: #ffffff;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(29, 137, 228, 0.2);
+}
+
+.rate-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.rate-modal-cancel-btn {
+    font-size: 15px;
+    font-weight: 500;
+    color: #4b5563;
+    background: transparent;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.rate-modal-cancel-btn:hover {
+    color: #111827;
+    background-color: #f3f4f6;
+}
+
+.rate-modal-submit-btn {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px -1px rgba(29, 137, 228, 0.2);
+}
+
+.rate-modal-submit-btn:hover {
+    background-color: var(--secondary-color);
 }

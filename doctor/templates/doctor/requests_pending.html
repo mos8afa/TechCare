@@ -16,7 +16,7 @@
             <i class="fa-regular fa-bell"></i>
             <span>Notifications</span>
         </a>
-        <a href="{% url 'doctor:my_blood_requests_pending' %>" class="aside-item">
+        <a href="{% url 'doctor:my_blood_requests_pending' %}" class="aside-item">
             <i class="ri-hand-heart-line"></i>
             <span>Donation</span>
         </a>
@@ -45,7 +45,6 @@
                 <h2>Requests</h2>
                 <p>Manage incoming consultation requests</p>
             </div>
-            <button class="filter-button"><b><i class="bi bi-funnel"></i> Filter</b></button>
         </div>
         <div class="tabs-navigation">
             <button class="tab-link active" onclick="window.location.href='{% url 'doctor:doctor_requests' 'pending' %}'">Pending</button>
@@ -74,10 +73,11 @@
                 <div class="info-group"><label>Time</label><p>{{ p.time|time:"h:i A" }}</p></div>
                 <div class="info-group"><label>Governorate</label><p>{{ p.governorate }}</p></div>
                 <div class="info-group"><label>Total Price</label><p>{{ p.total_price }} EGP</p></div>
+                <div class="info-group" style="grid-column:1/-1;"><label>Full Address</label><p>{{ p.address }}</p></div>
             </div>
 
             <div class="disease-section">
-                <label>DESCRIPTION</label>
+                <label>CONDITION DESCRIPTION</label>
                 <div class="description-box">{{ p.disease_description }}</div>
             </div>
 
@@ -137,10 +137,11 @@
                 <div class="info-group"><label>Time</label><p>{{ p.time|time:"h:i A" }}</p></div>
                 <div class="info-group"><label>Governorate</label><p>{{ p.governorate }}</p></div>
                 <div class="info-group"><label>Total Price</label><p>{{ p.total_price }} EGP</p></div>
+                <div class="info-group" style="grid-column:1/-1;"><label>Full Address</label><p>{{ p.address }}</p></div>
             </div>
 
             <div class="disease-section">
-                <label>DESCRIPTION</label>
+                <label>CONDITION DESCRIPTION</label>
                 <div class="description-box">{{ p.disease_description }}</div>
             </div>
 

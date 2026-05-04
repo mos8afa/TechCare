@@ -1,4 +1,5 @@
-{% extends 'patient_base.html' %}
+{% extends 'patient_base.html' %}
+
 
 {% block sidebar %}
 <aside class="aside">
@@ -45,7 +46,13 @@
                 <div class="dc-header">
                     <div class="dc-doc-info">
                         <img src="{{ req.nurse.profile_pic.url }}" alt="{{ req.nurse.user.first_name }}" class="dc-avatar">
-                        <h3 class="dc-doc-name">{{ req.nurse.user.first_name }} {{ req.nurse.user.last_name }}</h3>
+                        <div>
+                            <h3 class="dc-doc-name">{{ req.nurse.user.first_name }} {{ req.nurse.user.last_name }}</h3>
+                            <p class="dc-doc-location">
+                                <i class="ri-map-pin-line"></i>
+                                {{ req.nurse.get_governorate_display }}{% if req.nurse.address %}, {{ req.nurse.address }}{% endif %}
+                            </p>
+                        </div>
                     </div>
                     <div class="dc-badge">DONE</div>
                 </div>

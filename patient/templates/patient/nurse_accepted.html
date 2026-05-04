@@ -1,4 +1,5 @@
-{% extends 'patient_base.html' %}
+{% extends 'patient_base.html' %}
+
 
 {% block sidebar %}
 <aside class="aside">
@@ -59,17 +60,17 @@
                         </div>
                     </div>
                     <div class="ac-detail-item">
-                        <i class="ri-phone-line ac-icon blue"></i>
+                        <i class="ri-map-pin-line ac-icon blue"></i>
                         <div>
-                            <p class="ac-label">CONTACT INFO</p>
-                            <p class="ac-value">{{ req.nurse.phone_number }}</p>
+                            <p class="ac-label">REGION</p>
+                            <p class="ac-value">{{ req.get_governrate_display }}</p>
                         </div>
                     </div>
                     <div class="ac-detail-item">
                         <i class="ri-map-pin-line ac-icon blue"></i>
                         <div>
-                            <p class="ac-label">REGION AND ADDRESS</p>
-                            <p class="ac-value">{{ req.governrate }}, {{ req.address }}</p>
+                            <p class="ac-label">ADDRESS</p>
+                            <p class="ac-value">{{ req.address }}</p>
                         </div>
                     </div>
                     <div class="ac-detail-item">
@@ -98,11 +99,11 @@
 
                 <div class="ac-footer">
                     {% if req.patient_done %}
-                        <button class="btn-waiting" disabled>Waiting for Nurse mark done...</button>
+                        <button class="btn-waiting" disabled>Waiting for Nurse...</button>
                     {% else %}
                         <form method="POST" action="{% url 'patient:mark_nurse_done' req.id %}">
                             {% csrf_token %}
-                            <button type="submit" class="ac-done-btn btn-done">Done</button>
+                            <button type="submit" class="btn-done">Mark as Done</button>
                         </form>
                     {% endif %}
                 </div>

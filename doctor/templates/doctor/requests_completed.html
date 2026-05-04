@@ -13,7 +13,7 @@
         <a href="../Dr_Board/Notifications.html" class="aside-item">
             <i class="fa-regular fa-bell"></i><span>Notifications</span>
         </a>
-        <a href="{% url 'doctor:my_blood_requests_pending' %>" class="aside-item">
+        <a href="{% url 'doctor:my_blood_requests_pending' %}" class="aside-item">
             <i class="ri-hand-heart-line"></i><span>Donation</span>
         </a>
         <a href="../Dr_Board/Wallet.html" class="aside-item">
@@ -61,7 +61,7 @@
                             <i class="bi bi-person-circle"></i>
                         </div>
                         <div class="patient-name-info">
-                            <h3>{{ c.requester_name }} {% if c.is_donor %}<span style="background:#fef3c7;color:#b45309;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">DONOR</span>{% endif %}</h3>
+                            <h3>{{ c.requester_name }}</h3>
                             <p>
                                 <i class="bi bi-calendar3"></i> {{ c.date|date:"M d, Y" }}
                                 &nbsp; • &nbsp;
@@ -78,7 +78,7 @@
                 <hr style="margin:15px 0; border:1px solid #F0F4F8;">
 
                 <div class="disease-section">
-                    <label>DESCRIPTION</label>
+                    <label>CONDITION DESCRIPTION</label>
                 </div>
                 <div class="description-box">
                     {{ c.disease_description }}

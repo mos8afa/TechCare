@@ -101,25 +101,30 @@
                     </div>
 
                     <div class="Condition">
-                        <span class="accepted-tag" style="text-transform: uppercase;">Description</span>
+                        <span class="accepted-tag" style="text-transform:uppercase;">CONDITION DESCRIPTION</span>
                     </div>
-                    <div class="description-box-accepted" style="border-bottom: 1px solid #f1f5f9; padding-bottom: 16px; margin-bottom: 20px;">{{ a.disease_description }}</div>
+                    <div class="description-box-accepted" style="border-bottom:1px solid #f1f5f9; padding-bottom:16px; margin-bottom:20px;">{{ a.disease_description }}</div>
 
-                    <div class="Condition" style="margin-bottom: 15px; margin-top: 0;">
-                            <span class="accepted-tag" style="color: #1a1a1a; font-weight: 800; font-size: 15px; text-transform: uppercase;">SERVICES REQUESTED</span>
-                        </div>
-                        {% for svc in a.service.all %}
-                        <div class="services-each">
-                            <label>{{ svc.name }}</label>
-                            <p>{{ svc.price }} EGP</p>
-                        </div>
-                        {% endfor %}
-                        <hr style="margin:13px 0; border:none; border-top: 1px dashed #e2e8f0;">
-                        <div class="services-each total-row" style="margin-bottom: 24px;">
-                            <label style="color: #1a1a1a; font-size: 16px; font-weight: 800;">Total Price</label>
-                            <p style="color: #2b84ea; font-size: 16px;">{{ a.net_income }} EGP</p>
-                        </div>
-                        <div class="request-footer">
+                    <div class="Condition" style="margin-bottom:15px; margin-top:0;">
+                        <span class="accepted-tag" style="color:#1a1a1a; font-weight:800; font-size:15px; text-transform:uppercase;">SERVICES REQUESTED</span>
+                    </div>
+                    {% for svc in a.service.all %}
+                    <div class="services-each">
+                        <label>{{ svc.name }}</label>
+                        <p>{{ svc.price }} EGP</p>
+                    </div>
+                    {% endfor %}
+                    <hr style="margin:13px 0; border:none; border-top:1px dashed #e2e8f0;">
+                    <div class="services-each total-row" style="margin-bottom:8px;">
+                        <label style="color:#1a1a1a; font-size:16px; font-weight:800;">Total Price</label>
+                        <p style="color:#2b84ea; font-size:16px;">{{ a.total_price }} EGP</p>
+                    </div>
+                    <div class="services-each total-row" style="margin-bottom:24px;">
+                        <label style="color:#6b7280; font-size:13px; font-weight:600;">Your Earnings</label>
+                        <p style="color:#22c55e; font-size:14px; font-weight:700;">{{ a.net_income }} EGP</p>
+                    </div>
+
+                    <div class="request-footer">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
                             <div class="phone-display">
                                 <i class="ri-phone-line"></i>
@@ -132,18 +137,16 @@
                             </div>
                             {% endif %}
                         </div>
-
-                            {% if a.nurse_done %}
-                                <button class="btn-waiting" disabled>Waiting for Patient...</button>
-                            {% else %}
-                                <form method="POST" action="{% url 'nurse:mark_done' a.id %}">
-                                    {% csrf_token %}
-                                    <div style="display: flex; justify-content: flex-end;">
-                                        <button class="btn-done" style="border-radius: 20px; padding: 12px 32px; font-size: 14px; background: #2B84EA;">Done</button>
-                                    </div>
-                                </form>
-                            {% endif %}
-                        </div>
+                        {% if a.nurse_done %}
+                            <button class="btn-waiting" disabled>Waiting for Patient...</button>
+                        {% else %}
+                            <form method="POST" action="{% url 'nurse:mark_done' a.id %}">
+                                {% csrf_token %}
+                                <div style="display:flex; justify-content:flex-end;">
+                                    <button class="btn-done">Mark as Done</button>
+                                </div>
+                            </form>
+                        {% endif %}
                     </div>
 
                 </div>

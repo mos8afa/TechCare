@@ -105,7 +105,13 @@
                                 {% else %}
                                     <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Nurse" class="dc-avatar">
                                 {% endif %}
-                                <h3 class="dc-doc-name">{{ req.nurse.user.first_name }} {{ req.nurse.user.last_name }}</h3>
+                                <div>
+                                    <h3 class="dc-doc-name">{{ req.nurse.user.first_name }} {{ req.nurse.user.last_name }}</h3>
+                                    <p class="dc-doc-location">
+                                        <i class="ri-map-pin-line"></i>
+                                        {{ req.nurse.get_governorate_display }}{% if req.nurse.address %}, {{ req.nurse.address }}{% endif %}
+                                    </p>
+                                </div>
                             </div>
                             <div class="dc-badge">DONE</div>
                         </div>

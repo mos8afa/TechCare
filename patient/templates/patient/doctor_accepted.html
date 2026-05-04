@@ -81,17 +81,17 @@
                         </div>
                     </div>
                     <div class="ac-detail-item">
-                        <i class="ri-phone-line ac-icon blue"></i>
+                        <i class="ri-map-pin-line ac-icon blue"></i>
                         <div>
-                            <p class="ac-label">CONTACT INFO</p>
-                            <p class="ac-value">{{ req.doctor.phone_number }}</p>
+                            <p class="ac-label">GOVERNORATE</p>
+                            <p class="ac-value">{{ req.get_governorate_display }}</p>
                         </div>
                     </div>
                     <div class="ac-detail-item">
-                        <i class="ri-map-pin-line ac-icon blue"></i>
+                        <i class="ri-home-4-line ac-icon blue"></i>
                         <div>
-                            <p class="ac-label">REGION AND ADDRESS</p>
-                            <p class="ac-value">{{ req.patient.get_governorate_display }}, {{ req.patient.address }}</p>
+                            <p class="ac-label">ADDRESS</p>
+                            <p class="ac-value">{{ req.address }}</p>
                         </div>
                     </div>
                     <div class="ac-detail-item">
@@ -113,13 +113,13 @@
                     <p class="ac-fin-amount">{{ req.total_price }} EGP</p>
                 </div>
 
-                <div style="display:flex; justify-content:flex-end; margin-top:16px;">
+                <div class="ac-footer">
                     {% if req.patient_done %}
                         <button class="btn-waiting" disabled>Waiting for Doctor...</button>
                     {% else %}
                         <form method="POST" action="{% url 'patient:mark_done' req.id %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn-done">Done</button>
+                            <button type="submit" class="btn-done">Mark as Done</button>
                         </form>
                     {% endif %}
                 </div>
