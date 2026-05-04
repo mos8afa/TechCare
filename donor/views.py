@@ -734,9 +734,17 @@ def accept_offer(request, offer_id):
     """Requester accepts one donor offer → redirect to accepted page."""
     offer     = DonorOffer.objects.get(id=offer_id, request__requester=request.user)
     blood_req = offer.request
+    donor     = offer.donor
 
-    # Reject all other offered offers on this request
+    # ── Rule 1a: reject all other offers on THIS request ──
     blood_req.offers.filter(status='offered').exclude(id=offer_id).update(status='rejected')
+
+    # ── Rule 1b: reject all OTHER pending offers this donor made on OTHER requests ──
+    # (a donor can only fulfill one donation at a time)
+    DonorOffer.objects.filter(
+        donor=donor,
+        status='offered',
+    ).exclude(id=offer_id).update(status='rejected')
 
     offer.status = 'accepted'
     offer.save()
@@ -772,15 +780,28 @@ def cancel_blood_request(request, request_id):
 def available_requests(request):
     if request.user.role != 'donor':
         return redirect('login')
+    from datetime import date
     donor = Donor.objects.get(user=request.user)
+
+    # ── Rule 3: donor must wait 3 months since last donation ──
+    eligible = True
+    days_remaining = 0
+    if donor.last_donation_date:
+        from dateutil.relativedelta import relativedelta
+        eligible_date = donor.last_donation_date + relativedelta(months=3)
+        if date.today() < eligible_date:
+            eligible = False
+            days_remaining = (eligible_date - date.today()).days
 
     open_reqs = BloodDonationRequest.objects.filter(
         blood_type=donor.blood_type,
         governorate=donor.governorate,
         status='open',
+    ).exclude(
+        # ── Rule 4: donor cannot offer on their own request ──
+        requester=request.user
     ).order_by('-created_at')
 
-    # Annotate which ones this donor already offered on
     offered_ids = DonorOffer.objects.filter(
         donor=donor
     ).values_list('request_id', flat=True)
@@ -789,6 +810,8 @@ def available_requests(request):
         'donor': donor,
         'open_requests': open_reqs,
         'offered_ids': list(offered_ids),
+        'eligible': eligible,
+        'days_remaining': days_remaining,
     })
 
 
@@ -796,8 +819,20 @@ def available_requests(request):
 def offer_to_donate(request, request_id):
     if request.user.role != 'donor':
         return redirect('login')
+    from datetime import date
     donor     = Donor.objects.get(user=request.user)
     blood_req = BloodDonationRequest.objects.get(id=request_id, status='open')
+
+    # ── Rule 4: cannot offer on own request ──
+    if blood_req.requester == request.user:
+        return redirect('donation:available_requests')
+
+    # ── Rule 3: must wait 3 months since last donation ──
+    if donor.last_donation_date:
+        from dateutil.relativedelta import relativedelta
+        eligible_date = donor.last_donation_date + relativedelta(months=3)
+        if date.today() < eligible_date:
+            return redirect('donation:available_requests')
 
     DonorOffer.objects.get_or_create(donor=donor, request=blood_req)
     return redirect('donation:available_requests')
@@ -835,6 +870,7 @@ def donation_done(request):
 def donor_mark_done(request, offer_id):
     if request.user.role != 'donor':
         return redirect('login')
+    from datetime import date
     donor = Donor.objects.get(user=request.user)
     offer = DonorOffer.objects.get(id=offer_id, donor=donor, status='accepted')
     offer.donor_done = True
@@ -842,5 +878,8 @@ def donor_mark_done(request, offer_id):
         offer.status         = 'completed'
         offer.request.status = 'completed'
         offer.request.save()
+        # ── Rule 2: update last_donation_date when donation is fully completed ──
+        donor.last_donation_date = date.today()
+        donor.save()
     offer.save()
     return redirect('donation:my_offers')

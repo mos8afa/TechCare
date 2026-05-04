@@ -114,16 +114,9 @@
                     <div class="don-card-accepted">
                         <div class="don-card-acc__header">
                             <div class="don-card-acc__avatars">
-                                {% if offer.request.requester.donor.profile_pic %}
-                                    <img src="{{ offer.request.requester.donor.profile_pic.url }}" alt="Requester">
-                                {% else %}
-                                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Requester">
-                                {% endif %}
-                                {% if offer.donor.profile_pic %}
+                                    <img src="{{profile_pic.url }}" alt="Requester">
+                                
                                     <img src="{{ offer.donor.profile_pic.url }}" alt="Donor">
-                                {% else %}
-                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Donor">
-                                {% endif %}
                             </div>
                             <div class="don-card-acc__badge">Accepted</div>
                         </div>
