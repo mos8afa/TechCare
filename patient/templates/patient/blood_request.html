@@ -137,11 +137,11 @@
                 </div>
                 {% endif %}
 
-                {% if errors %}
+                {% comment %} {% if errors %}
                     {% for key, msg in errors.items %}
                         <div style="color:red; margin-bottom:8px; padding:10px 14px; background:#fff0f0; border-radius:8px; max-width:700px; width:100%;">{{ msg }}</div>
                     {% endfor %}
-                {% endif %}
+                {% endif %} {% endcomment %}
 
                 <form method="POST" action="{% url 'patient:create_blood_request' %}" id="donationForm" style="width:100%; display:flex; flex-direction:column; align-items:center;">
                 {% csrf_token %}

@@ -20,6 +20,7 @@ urlpatterns = [
     path('nurse-request/<int:request_id>/accept/', views.accept_nurse_reschedule, name='accept_nurse_reschedule'),
     path('nurse-request/<int:request_id>/done/', views.mark_nurse_done, name='mark_nurse_done'),
     path('nurse-request/<int:request_id>/rate/', views.rate_nurse, name='rate_nurse'),
+    # blood donation
     path('blood/request/create/', views.create_blood_request, name='create_blood_request'),
     path('blood/request/<int:request_id>/offers/', views.request_offers, name='request_offers'),
     path('blood/request/<int:request_id>/cancel/', views.cancel_blood_request, name='cancel_blood_request'),

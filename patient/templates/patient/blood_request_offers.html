@@ -97,6 +97,8 @@
 
                 <!-- Status Tabs -->
                 <div class="donation-status-tabs" style="margin-bottom: 24px;">
+                    <button class="don-tab"
+                            onclick="window.location.href='{% url 'patient:my_blood_requests_pending' %}'">Pending</button>
                     <button class="don-tab active">Suggested</button>
                     <button class="don-tab"
                             onclick="window.location.href='{% url 'patient:my_blood_requests_accepted' %}'">Accepted</button>

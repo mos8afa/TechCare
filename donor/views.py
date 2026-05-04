@@ -678,14 +678,26 @@ def my_blood_requests_accepted(request):
 @login_required
 def my_blood_requests_done(request):
     user = request.user
-    donor = Donor.objects.get(user=user)
     completed_offers = DonorOffer.objects.filter(
-        request__requester=request.user,
+        request__requester=user,
         status='completed',
     ).select_related('donor__user', 'request').order_by('-created_at')
 
     name = user.first_name + ' ' + user.last_name
-    profile_pic = donor.profile_pic
+    profile_pic = None
+    try:
+        if user.role == 'donor':
+            profile_pic = Donor.objects.get(user=user).profile_pic
+        elif user.role == 'patient':
+            from accounts.models import Patient
+            profile_pic = Patient.objects.get(user=user).profile_pic
+        elif user.role == 'doctor':
+            profile_pic = Doctor.objects.get(user=user).profile_pic
+        elif user.role == 'nurse':
+            profile_pic = Nurse.objects.get(user=user).profile_pic
+    except Exception:
+        pass
+
     latest_request = BloodDonationRequest.objects.filter(
         requester=user).exclude(status='cancelled').order_by('-created_at').first()
 
@@ -774,6 +786,7 @@ def available_requests(request):
     ).values_list('request_id', flat=True)
 
     return render(request, 'donation/available_requests.html', {
+        'donor': donor,
         'open_requests': open_reqs,
         'offered_ids': list(offered_ids),
     })
@@ -799,6 +812,7 @@ def my_offers(request):
         status='completed'
     ).select_related('request__requester').order_by('-created_at')
     return render(request, 'donation/my_offers.html', {
+        'donor': donor,
         'offers': offers,
     })
 
@@ -813,6 +827,7 @@ def donation_done(request):
     ).select_related('request__requester').order_by('-created_at')
     return render(request, 'donation/donation_done.html', {
         'completed_offers': completed_offers,
+        'donor': donor,
     })
 
 

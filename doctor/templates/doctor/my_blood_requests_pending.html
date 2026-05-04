@@ -31,7 +31,7 @@
                 <i class="ri-file-list-line"></i><span>Requests</span>
             </a>
             <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
-            <a href="{% url 'doctor:my_blood_requests_pending' %>" class="aside-item active">
+            <a href="{% url 'doctor:my_blood_requests_pending' %}" class="aside-item active">
                 <i class="ri-hand-heart-line"></i>
                 <span style="white-space:nowrap; font-size:13px;">Donation</span>
             </a>
@@ -87,8 +87,12 @@
             <!-- Status Tabs -->
             <div class="donation-status-tabs" style="margin-bottom:28px; margin-top:4px;">
                 <button class="don-tab active">Pending</button>
+                {% if latest_request %}
                 <button class="don-tab"
-                        {% if latest_request %}onclick="window.location.href='{% url 'doctor:request_offers' latest_request.id %}'"{% endif %}>Suggested</button>
+                        onclick="window.location.href='{% url 'doctor:request_offers' latest_request.id %}'">Suggested</button>
+                {% else %}
+                <button class="don-tab" disabled>Suggested</button>
+                {% endif %}
                 <button class="don-tab"
                         onclick="window.location.href='{% url 'doctor:my_blood_requests_accepted' %}'">Accepted</button>
                 <button class="don-tab"
@@ -136,6 +140,24 @@
                             <span style="color:#94a3b8; font-size:13px; font-weight:500;">
                                 <i class="ri-time-line"></i> Waiting for donors...
                             </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
                             <form method="POST" action="{% url 'doctor:cancel_blood_request' req.id %}">
                                 {% csrf_token %}
                                 <button type="submit" class="don-btn-cancel"
@@ -150,7 +172,7 @@
                 <div style="grid-column:1/-1; padding:40px; text-align:center; color:#888;">
                     <i class="ri-drop-line" style="font-size:48px; color:#cbd5e1;"></i>
                     <p style="margin-top:12px; font-size:16px;">No pending requests. All your requests have received offers.</p>
-                    <a href="{% url 'doctor:my_blood_requests_pending' %>"
+                    <a href="{% url 'doctor:create_blood_request' %}"
                        style="display:inline-block; margin-top:16px; background:#1D89E4; color:white;
                               padding:10px 24px; border-radius:24px; font-size:14px; font-weight:600;
                               text-decoration:none;">

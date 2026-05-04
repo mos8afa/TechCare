@@ -58,9 +58,9 @@
                 <hr class="line">
                 <div class="topbar-profile" onclick="window.location.href='{% url 'donor:donor_dashboard' %}'">
                     <div class="topbar-user-info">
-                        <h4>{{ offers.0.donor.user.first_name|default:request.user.first_name }} {{ offers.0.donor.user.last_name|default:request.user.last_name }}</h4>
+                        <h4>{{ request.user.first_name }} {{ request.user.last_name }}</h4>
                     </div>
-                    <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="Donor">
+                    <img src="{{donor.profile_pic.url}}" alt="{{ donor.user.first_name }}" class="topbar-avatar">
                 </div>
             </div>
         </div>

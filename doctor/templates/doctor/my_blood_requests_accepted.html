@@ -47,7 +47,7 @@
                     <i class="fa-regular fa-bell"></i>
                     <span>Notifications</span>
                 </a>
-                <a href="{% url 'doctor:my_blood_requests_pending' %>" class="aside-item active">
+                <a href="{% url 'doctor:my_blood_requests_pending' %}" class="aside-item active">
                     <i class="ri-hand-heart-line"></i>
                     <span style="white-space: nowrap; font-size: 13px;">Donation</span>
                 </a>
@@ -102,7 +102,8 @@
                 <!-- Status Tabs -->
                 <div class="donation-status-tabs" style="margin-bottom: 24px;">
                     <button class="don-tab"
-                            onclick="window.location.href='{% url 'doctor:create_blood_request' %}'">Suggested</button>
+                            onclick="window.location.href='{% url 'doctor:my_blood_requests_pending' %}'">Pending</button>
+                    {% if latest_request %}<button class="don-tab" onclick="window.location.href='{% url 'doctor:request_offers' latest_request.id %}'">Suggested</button>{% else %}<button class="don-tab">Suggested</button>{% endif %}
                     <button class="don-tab active">Accepted</button>
                     <button class="don-tab"
                             onclick="window.location.href='{% url 'doctor:my_blood_requests_done' %}'">Done</button>
@@ -156,7 +157,11 @@
                         </div>
                         <form method="POST" action="{% url 'doctor:requester_done' offer.id %}">
                             {% csrf_token %}
-                            <button type="submit" class="don-card-acc__btn">Mark as Done</button>
+                            {% if offer.request.requester_done %}
+                                <button class="btn-waiting" disabled>Waiting for donor to mark done...</button>
+                            {% else %}
+                                <button type="submit" class="don-card-acc__btn">Mark as Done</button>
+                            {% endif %}
                         </form>
                     </div>
                     {% empty %}

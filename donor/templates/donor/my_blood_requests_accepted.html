@@ -103,7 +103,7 @@
                 <div class="donation-status-tabs" style="margin-bottom: 24px;">
                     <button class="don-tab"
                             onclick="window.location.href='{% url 'donation:my_requests_pending' %}'">Pending</button>
-                      {% if latest_request %}<button class="don-tab" onclick="window.location.href='{% url 'donation:request_offers' latest_request.id %}'">Suggested</button>{% else %}<button class="don-tab">Suggested</button>{% endif %}
+                    {% if latest_request %}<button class="don-tab" onclick="window.location.href='{% url 'donation:request_offers' latest_request.id %}'">Suggested</button>{% else %}<button class="don-tab">Suggested</button>{% endif %}
                     <button class="don-tab active">Accepted</button>
                     <button class="don-tab"
                             onclick="window.location.href='{% url 'donation:my_requests_done' %}'">Done</button>

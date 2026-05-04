@@ -87,8 +87,12 @@
             <!-- Status Tabs -->
             <div class="donation-status-tabs" style="margin-bottom:28px; margin-top:4px;">
                 <button class="don-tab active">Pending</button>
+                {% if latest_request %}
                 <button class="don-tab"
-                        {% if latest_request %}onclick="window.location.href='{% url 'nurse:request_offers' latest_request.id %}'"{% endif %}>Suggested</button>
+                        onclick="window.location.href='{% url 'nurse:request_offers' latest_request.id %}'">Suggested</button>
+                {% else %}
+                <button class="don-tab" disabled>Suggested</button>
+                {% endif %}
                 <button class="don-tab"
                         onclick="window.location.href='{% url 'nurse:my_blood_requests_accepted' %}'">Accepted</button>
                 <button class="don-tab"
@@ -135,6 +139,24 @@
                         <div class="don-actions" style="display:flex; gap:10px; align-items:center; margin-left:auto;">
                             <span style="color:#94a3b8; font-size:13px; font-weight:500;">
                                 <i class="ri-time-line"></i> Waiting for donors...
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
+                            </span>
+                            <span>
                             </span>
                             <form method="POST" action="{% url 'nurse:cancel_blood_request' req.id %}">
                                 {% csrf_token %}

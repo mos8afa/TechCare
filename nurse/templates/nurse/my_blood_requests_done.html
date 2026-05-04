@@ -102,12 +102,12 @@
                 <!-- Status Tabs -->
                 <div class="donation-status-tabs" style="margin-bottom: 24px;">
                     <button class="don-tab"
-                            onclick="window.location.href='{% url 'nurse:create_blood_request' %}'">Suggested</button>
+                            onclick="window.location.href='{% url 'nurse:my_blood_requests_pending' %}'">Pending</button>
+                    {% if latest_request %}<button class="don-tab" onclick="window.location.href='{% url 'nurse:request_offers' latest_request.id %}'">Suggested</button>{% else %}<button class="don-tab" disabled>Suggested</button>{% endif %}
                     <button class="don-tab"
                             onclick="window.location.href='{% url 'nurse:my_blood_requests_accepted' %}'">Accepted</button>
                     <button class="don-tab active">Done</button>
                 </div>
-
                 <div class="don-grid-2x2">
                     {% for offer in completed_offers %}
                     <div class="don-card-done">

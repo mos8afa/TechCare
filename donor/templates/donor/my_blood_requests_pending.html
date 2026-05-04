@@ -87,8 +87,12 @@
             <!-- Status Tabs -->
             <div class="donation-status-tabs" style="margin-bottom:28px; margin-top:4px;">
                 <button class="don-tab active">Pending</button>
-              <button class="don-tab"
+                {% if latest_request %}
+                <button class="don-tab"
                         onclick="window.location.href='{% url 'donation:request_offers' latest_request.id %}'">Suggested</button>
+                {% else %}
+                <button class="don-tab" disabled>Suggested</button>
+                {% endif %}
                 <button class="don-tab"
                         onclick="window.location.href='{% url 'donation:my_requests_accepted' %}'">Accepted</button>
                 <button class="don-tab"
