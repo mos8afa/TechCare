@@ -17,7 +17,7 @@ const Color kRed         = Color(0xFFEF4444);
 class _Transaction {
   final String name;
   final String date;
-  final String type;   // 'Consultation' | 'Deduction'
+  final String type;  
   final double amount;
   final bool isDeduction;
   final String? initials;
