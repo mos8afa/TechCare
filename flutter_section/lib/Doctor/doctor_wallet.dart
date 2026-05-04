@@ -77,19 +77,14 @@ class _DoctorWalletScreenState extends State<DoctorWalletScreen>
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          // ── Page header ────────────────────────────────────────────
           const Text('Income & Earnings',
               style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: kDarkText)),
           const SizedBox(height: 4),
           const Text('Overview of your professional earnings from consultations.',
               style: TextStyle(fontSize: 13, color: kTextGray)),
           const SizedBox(height: 24),
-
-          // ── Top section ────────────────────────────────────────────
           _buildTopSection(),
           const SizedBox(height: 24),
-
-          // ── Transactions ───────────────────────────────────────────
           _buildTransactionsSection(),
           const SizedBox(height: 20),
         ]),
@@ -97,7 +92,6 @@ class _DoctorWalletScreenState extends State<DoctorWalletScreen>
     );
   }
 
-  // ── Top section: balance card + 3 metric cards ─────────────────────────────
   Widget _buildTopSection() {
     return LayoutBuilder(builder: (ctx, constraints) {
       final isWide = constraints.maxWidth > 480;
@@ -222,7 +216,6 @@ class _DoctorWalletScreenState extends State<DoctorWalletScreen>
     );
   }
 
-  // ── Transactions section ────────────────────────────────────────────────────
   Widget _buildTransactionsSection() {
     final shown = _showAll ? _filtered : _filtered.take(4).toList();
 
@@ -249,8 +242,6 @@ class _DoctorWalletScreenState extends State<DoctorWalletScreen>
           ),
         ]),
         const SizedBox(height: 16),
-
-        // ── Tab filter ────────────────────────────────────────────
         TabBar(
           controller: _tab,
           labelColor: kPrimary, unselectedLabelColor: kTextGray,
@@ -260,36 +251,6 @@ class _DoctorWalletScreenState extends State<DoctorWalletScreen>
           tabs: const [Tab(text: 'All'), Tab(text: 'Income'), Tab(text: 'Deductions')],
         ),
         const SizedBox(height: 16),
-
-        // ── Table header ──────────────────────────────────────────
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: kBgLight, borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(children: const [
-            SizedBox(width: 1),
-            SizedBox(width: 10),
-            Expanded(flex: 2, child: Text('PATIENT',
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
-                    color: kTextGray, letterSpacing: 0.5))),
-            Expanded(flex: 2, child: Text('DATE',
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
-                    color: kTextGray, letterSpacing: 0.5))),
-            Expanded(flex: 2, child: Text('SERVICE',
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
-                    color: kTextGray, letterSpacing: 0.5))),
-            Expanded(flex: 2, child: Text('AMOUNT',
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
-                    color: kTextGray, letterSpacing: 0.5))),
-            Expanded(flex: 2, child: Text('STATUS',
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
-                    color: kTextGray, letterSpacing: 0.5))),
-          ]),
-        ),
-        const SizedBox(height: 8),
-
-        // ── Table rows ─────────────────────────────────────────────
         ...shown.map((t) => _buildRow(t)),
       ]),
     );
@@ -297,78 +258,68 @@ class _DoctorWalletScreenState extends State<DoctorWalletScreen>
 
   Widget _buildRow(_Transaction t) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: kBorderColor, width: 0.5)),
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: kBgLight,
+        borderRadius: BorderRadius.circular(14),
       ),
       child: Row(children: [
-        // Avatar or icon
         t.initials != null
             ? CircleAvatar(
-                radius: 18,
+                radius: 22,
                 backgroundColor: kPrimary.withOpacity(0.1),
                 child: Text(t.initials!,
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: kPrimary)),
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: kPrimary)),
               )
             : Container(
-                width: 36, height: 36,
-                decoration: BoxDecoration(
-                  color: kAmber.withOpacity(0.1), borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(Icons.account_balance_wallet_outlined, color: kAmber, size: 18),
+                width: 44, height: 44,
+                decoration: BoxDecoration(color: kAmber.withOpacity(0.1), shape: BoxShape.circle),
+                child: const Icon(Icons.account_balance_wallet_outlined, color: kAmber, size: 20),
               ),
-        const SizedBox(width: 10),
-
-        // Name
-        Expanded(flex: 3, child: Text(t.name,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kDarkText),
-            overflow: TextOverflow.visible)),
-
-        // Date
-        Expanded(flex: 2, child: Text(t.date,
-            style: const TextStyle(fontSize: 9, color: kTextGray))),
-
-        // Type badge
-        Expanded(flex: 2, child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: t.isDeduction ? kAmber.withOpacity(0.1) : kPrimary.withOpacity(0.08),
-            borderRadius: BorderRadius.circular(20),
+        const SizedBox(width: 12),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(t.name,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: kDarkText),
+              overflow: TextOverflow.ellipsis),
+          const SizedBox(height: 3),
+          Row(children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: t.isDeduction ? kAmber.withOpacity(0.1) : kPrimary.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(t.type, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700,
+                  color: t.isDeduction ? kAmber : kPrimary)),
+            ),
+            const SizedBox(width: 8),
+            Text(t.date, style: const TextStyle(fontSize: 11, color: kTextGray)),
+          ]),
+        ])),
+        Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          Text(
+            '${t.isDeduction ? '-' : '+'}${t.amount.toStringAsFixed(0)} EGP',
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800,
+                color: t.isDeduction ? kRed : kGreen),
           ),
-          child: Text(t.type,
-              style: TextStyle(fontSize: 8, fontWeight: FontWeight.w700,
-                  color: t.isDeduction ? kAmber : kPrimary),
-              textAlign: TextAlign.center),
-        )),
-
-        // Amount
-        Expanded(flex: 2, child: Text(
-          '${t.isDeduction ? '-' : ''}${t.amount.toStringAsFixed(2)} EGP',
-          style: TextStyle(fontSize: 8, fontWeight: FontWeight.w800,
-              color: t.isDeduction ? kRed : kDarkText),
-        )),
-
-        // Status
-        Expanded(flex: 2, child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: kGreen.withOpacity(0.1), borderRadius: BorderRadius.circular(20),
+          const SizedBox(height: 4),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(color: kGreen.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
+            child: const Text('Completed', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: kGreen)),
           ),
-          child: const Text('Completed',
-              style: TextStyle(fontSize: 8, fontWeight: FontWeight.w700, color: kGreen),
-              textAlign: TextAlign.center),
-        )),
+        ]),
       ]),
     );
   }
 
-  // ── Add Funds Modal ─────────────────────────────────────────────────────────
   void _showAddFundsModal() {
-    final amountCtrl  = TextEditingController(text: '0.00');
-    final nameCtrl    = TextEditingController(text: 'Dr. Alex Sterling');
-    final cardCtrl    = TextEditingController();
-    final expiryCtrl  = TextEditingController();
-    final cvvCtrl     = TextEditingController();
+    final amountCtrl = TextEditingController(text: '0.00');
+    final nameCtrl = TextEditingController(text: 'Dr. Alex Sterling');
+    final cardCtrl = TextEditingController();
+    final expiryCtrl = TextEditingController();
+    final cvvCtrl = TextEditingController();
 
     showModalBottomSheet(
       context: context,
@@ -381,39 +332,29 @@ class _DoctorWalletScreenState extends State<DoctorWalletScreen>
           bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
         ),
         child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-          // Handle
           Center(child: Container(width: 40, height: 4,
               decoration: BoxDecoration(color: kBorderColor, borderRadius: BorderRadius.circular(2)))),
           const SizedBox(height: 20),
-
           const Text('Add Funds to Wallet',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: kDarkText)),
           const SizedBox(height: 4),
           const Text('Enter your card details to securely add funds.',
               style: TextStyle(fontSize: 13, color: kTextGray)),
           const SizedBox(height: 24),
-
-          // Amount
           _modalLabel('AMOUNT TO ADD (EGP)'),
           const SizedBox(height: 6),
           _modalField(ctrl: amountCtrl, hint: '0.00', keyboardType: TextInputType.number),
           const SizedBox(height: 14),
-
-          // Cardholder
           _modalLabel('CARDHOLDER NAME'),
           const SizedBox(height: 6),
           _modalField(ctrl: nameCtrl, hint: 'Dr. Alex Sterling'),
           const SizedBox(height: 14),
-
-          // Card number
           _modalLabel('CARD NUMBER'),
           const SizedBox(height: 6),
           _modalField(ctrl: cardCtrl, hint: '0000 0000 0000 0000',
               keyboardType: TextInputType.number,
               suffix: const Icon(Icons.credit_card_rounded, color: kTextGray, size: 20)),
           const SizedBox(height: 14),
-
-          // Expiry + CVV
           Row(children: [
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               _modalLabel('EXPIRY DATE (MM/YY)'),
@@ -433,8 +374,6 @@ class _DoctorWalletScreenState extends State<DoctorWalletScreen>
             ])),
           ]),
           const SizedBox(height: 24),
-
-          // Confirm button
           SizedBox(width: double.infinity,
             child: ElevatedButton(
               onPressed: () { Navigator.pop(ctx); },
@@ -497,7 +436,6 @@ class _DoctorWalletScreenState extends State<DoctorWalletScreen>
     );
   }
 
-  // ── AppBar ─────────────────────────────────────────────────────────────────
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
@@ -529,7 +467,6 @@ class _DoctorWalletScreenState extends State<DoctorWalletScreen>
     );
   }
 
-  // ── Drawer ─────────────────────────────────────────────────────────────────
   Widget _buildDrawer(BuildContext context) {
     final items = [
       {'icon': Icons.person_outline_rounded,          'label': 'Profile',       'active': false},
@@ -600,6 +537,7 @@ class _DoctorWalletScreenState extends State<DoctorWalletScreen>
         break;
       case 'Donation':
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DoctorDonationScreen()));
+        break;
     }
   }
 }

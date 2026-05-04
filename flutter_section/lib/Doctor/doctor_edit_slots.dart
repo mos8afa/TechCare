@@ -13,7 +13,8 @@ class DoctorEditTimeSlotsScreen extends StatefulWidget {
   const DoctorEditTimeSlotsScreen({super.key});
 
   @override
-  State<DoctorEditTimeSlotsScreen> createState() => _DoctorEditTimeSlotsScreenState();
+  State<DoctorEditTimeSlotsScreen> createState() =>
+      _DoctorEditTimeSlotsScreenState();
 }
 
 class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
@@ -39,13 +40,20 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
       final data = result.data;
       setState(() {
         _days = List<Map<String, dynamic>>.from(data['days'] ?? []);
-        _morningSlots = List<Map<String, dynamic>>.from(data['morning_slots'] ?? []);
-        _eveningSlots = List<Map<String, dynamic>>.from(data['evening_slots'] ?? []);
+        _morningSlots = List<Map<String, dynamic>>.from(
+          data['morning_slots'] ?? [],
+        );
+        _eveningSlots = List<Map<String, dynamic>>.from(
+          data['evening_slots'] ?? [],
+        );
         _isLoadingDays = false;
         _error = null;
       });
     } else {
-      setState(() { _error = result.error; _isLoadingDays = false; });
+      setState(() {
+        _error = result.error;
+        _isLoadingDays = false;
+      });
     }
   }
 
@@ -55,8 +63,12 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
     if (result.success) {
       final data = result.data;
       setState(() {
-        _morningSlots = List<Map<String, dynamic>>.from(data['morning_slots'] ?? []);
-        _eveningSlots = List<Map<String, dynamic>>.from(data['evening_slots'] ?? []);
+        _morningSlots = List<Map<String, dynamic>>.from(
+          data['morning_slots'] ?? [],
+        );
+        _eveningSlots = List<Map<String, dynamic>>.from(
+          data['evening_slots'] ?? [],
+        );
         _isLoadingSlots = false;
       });
     } else {
@@ -77,27 +89,32 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
       body: _isLoadingDays
           ? const Center(child: CircularProgressIndicator(color: kPrimary))
           : _error != null
-              ? Center(child: Text(_error!, style: const TextStyle(color: Colors.red)))
-              : SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildHeaderRow(),
-                      const SizedBox(height: 32),
-                      _buildWeeklySchedule(),
-                      const SizedBox(height: 32),
-                      if (_isLoadingSlots)
-                        const LinearProgressIndicator(color: kPrimary, backgroundColor: kBgLight),
-                      const SizedBox(height: 8),
-                      _buildSessionCard(isMorning: true, slots: _morningSlots),
-                      const SizedBox(height: 20),
-                      _buildSessionCard(isMorning: false, slots: _eveningSlots),
-                      const SizedBox(height: 32),
-                      _buildBottomActions(context),
-                    ],
-                  ),
-                ),
+          ? Center(
+              child: Text(_error!, style: const TextStyle(color: Colors.red)),
+            )
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHeaderRow(),
+                  const SizedBox(height: 32),
+                  _buildWeeklySchedule(),
+                  const SizedBox(height: 32),
+                  if (_isLoadingSlots)
+                    const LinearProgressIndicator(
+                      color: kPrimary,
+                      backgroundColor: kBgLight,
+                    ),
+                  const SizedBox(height: 8),
+                  _buildSessionCard(isMorning: true, slots: _morningSlots),
+                  const SizedBox(height: 20),
+                  _buildSessionCard(isMorning: false, slots: _eveningSlots),
+                  const SizedBox(height: 32),
+                  _buildBottomActions(context),
+                ],
+              ),
+            ),
     );
   }
 
@@ -107,15 +124,21 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
       elevation: 0,
       surfaceTintColor: Colors.transparent,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new_rounded,
-            color: kDarkText, size: 20),
+        icon: const Icon(
+          Icons.arrow_back_ios_new_rounded,
+          color: kDarkText,
+          size: 20,
+        ),
         onPressed: () => Navigator.pop(context),
       ),
-      title: const Text('Time Slots',
-          style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: kDarkText)),
+      title: const Text(
+        'Time Slots',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+          color: kDarkText,
+        ),
+      ),
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
         child: Container(color: kBorderColor, height: 1),
@@ -127,11 +150,19 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Edit Time Slots',
-            style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: kDarkText)),
+        Text(
+          'Edit Time Slots',
+          style: TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.w800,
+            color: kDarkText,
+          ),
+        ),
         SizedBox(height: 6),
-        Text('Customize your working hours and appointment slots.',
-            style: TextStyle(fontSize: 14, color: kTextGray)),
+        Text(
+          'Customize your working hours and appointment slots.',
+          style: TextStyle(fontSize: 14, color: kTextGray),
+        ),
       ],
     );
   }
@@ -146,20 +177,31 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
             foregroundColor: const Color(0xFF4B5563),
             side: const BorderSide(color: kBorderColor),
             padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 13),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
-          child: const Text('Back', style: TextStyle(fontWeight: FontWeight.w600)),
+          child: const Text(
+            'Back',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
         ),
         const SizedBox(width: 12),
         ElevatedButton(
           onPressed: () => Navigator.pop(context),
           style: ElevatedButton.styleFrom(
-            backgroundColor: kPrimary, foregroundColor: Colors.white,
+            backgroundColor: kPrimary,
+            foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 13),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
             elevation: 0,
           ),
-          child: const Text('Save Changes', style: TextStyle(fontWeight: FontWeight.w600)),
+          child: const Text(
+            'Save Changes',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
         ),
       ],
     );
@@ -169,13 +211,25 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('WEEKLY SCHEDULE',
-            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: kTextGray, letterSpacing: 1.5)),
+        const Text(
+          'WEEKLY SCHEDULE',
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w800,
+            color: kTextGray,
+            letterSpacing: 1.5,
+          ),
+        ),
         const SizedBox(height: 16),
         SizedBox(
           height: 88,
           child: _days.isEmpty
-              ? const Center(child: Text('No days available', style: TextStyle(color: kTextGray)))
+              ? const Center(
+                  child: Text(
+                    'No days available',
+                    style: TextStyle(color: kTextGray),
+                  ),
+                )
               : ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: _days.length,
@@ -183,7 +237,9 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
                   itemBuilder: (_, i) {
                     final active = _selectedDayIndex == i;
                     final dayData = _days[i];
-                    final dayName = (dayData['day'] as String).substring(0, 3).toUpperCase();
+                    final dayName = (dayData['day'] as String)
+                        .substring(0, 3)
+                        .toUpperCase();
                     final dateStr = dayData['date'] as String;
                     final dayNum = dateStr.split('-').last;
                     return GestureDetector(
@@ -199,19 +255,36 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
                           color: active ? kPrimary : const Color(0xFFF1F5F9),
                           borderRadius: BorderRadius.circular(14),
                           boxShadow: active
-                              ? [BoxShadow(color: kPrimary.withOpacity(0.25), blurRadius: 12, offset: const Offset(0, 6))]
+                              ? [
+                                  BoxShadow(
+                                    color: kPrimary.withOpacity(0.25),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 6),
+                                  ),
+                                ]
                               : [],
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(dayName,
-                                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800,
-                                    letterSpacing: 0.5, color: active ? Colors.white : kTextGray)),
+                            Text(
+                              dayName,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 0.5,
+                                color: active ? Colors.white : kTextGray,
+                              ),
+                            ),
                             const SizedBox(height: 6),
-                            Text(dayNum,
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800,
-                                    color: active ? Colors.white : kDarkText)),
+                            Text(
+                              dayNum,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w800,
+                                color: active ? Colors.white : kDarkText,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -232,7 +305,13 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: const [BoxShadow(color: Color(0x08000000), blurRadius: 24, offset: Offset(0, 8))],
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x08000000),
+            blurRadius: 24,
+            offset: Offset(0, 8),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,22 +319,36 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
           Row(
             children: [
               Container(
-                width: 44, height: 44,
+                width: 44,
+                height: 44,
                 decoration: BoxDecoration(
-                  color: isMorning ? const Color(0xFFFEEDDF) : const Color(0xFFE0F2FE),
+                  color: isMorning
+                      ? const Color(0xFFFEEDDF)
+                      : const Color(0xFFE0F2FE),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(isMorning ? Icons.wb_sunny_rounded : Icons.nightlight_round,
-                    color: isMorning ? kAmber : kSky, size: 22),
+                child: Icon(
+                  isMorning ? Icons.wb_sunny_rounded : Icons.nightlight_round,
+                  color: isMorning ? kAmber : kSky,
+                  size: 22,
+                ),
               ),
               const SizedBox(width: 14),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(isMorning ? 'Morning Sessions' : 'Evening Sessions',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: kDarkText)),
                   Text(
-                    isMorning ? 'Recommended: 08:00 AM – 12:00 PM' : 'Recommended: 04:00 PM – 09:00 PM',
+                    isMorning ? 'Morning Sessions' : 'Evening Sessions',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: kDarkText,
+                    ),
+                  ),
+                  Text(
+                    isMorning
+                        ? 'Recommended: 08:00 AM – 12:00 PM'
+                        : 'Recommended: 04:00 PM – 09:00 PM',
                     style: const TextStyle(fontSize: 12, color: kTextGray),
                   ),
                 ],
@@ -264,7 +357,8 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
           ),
           const SizedBox(height: 22),
           Wrap(
-            spacing: 0, runSpacing: 0,
+            spacing: 0,
+            runSpacing: 0,
             children: [
               ...slots.asMap().entries.map((entry) {
                 final slot = entry.value;
@@ -294,17 +388,32 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
               border: Border.all(color: kPrimary, width: 2),
               borderRadius: BorderRadius.circular(100),
             ),
-            child: Text(label,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: kPrimary)),
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: kPrimary,
+              ),
+            ),
           ),
           Positioned(
-            top: -8, right: -8,
+            top: -8,
+            right: -8,
             child: GestureDetector(
               onTap: onRemove,
               child: Container(
-                width: 22, height: 22,
-                decoration: const BoxDecoration(color: Color(0xFFB91C1C), shape: BoxShape.circle),
-                child: const Icon(Icons.close_rounded, color: Colors.white, size: 13),
+                width: 22,
+                height: 22,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFB91C1C),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.close_rounded,
+                  color: Colors.white,
+                  size: 13,
+                ),
               ),
             ),
           ),
@@ -328,9 +437,20 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
           child: const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.add_circle_outline_rounded, size: 18, color: Color(0xFF94A3B8)),
+              Icon(
+                Icons.add_circle_outline_rounded,
+                size: 18,
+                color: Color(0xFF94A3B8),
+              ),
               SizedBox(width: 6),
-              Text('Add Slot', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Color(0xFF94A3B8))),
+              Text(
+                'Add Slot',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF94A3B8),
+                ),
+              ),
             ],
           ),
         ),
@@ -345,7 +465,10 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result.error ?? 'Failed to delete'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text(result.error ?? 'Failed to delete'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }
@@ -361,11 +484,14 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       builder: (ctx) {
         return Padding(
           padding: EdgeInsets.only(
-            left: 24, right: 24, top: 24,
+            left: 24,
+            right: 24,
+            top: 24,
             bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
           ),
           child: Column(
@@ -374,125 +500,180 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
             children: [
               Center(
                 child: Container(
-                  width: 40, height: 4,
-                  decoration: BoxDecoration(color: kBorderColor, borderRadius: BorderRadius.circular(2)),
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: kBorderColor,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
-              const Text('Add New Time Slot',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kDarkText)),
+              const Text(
+                'Add New Time Slot',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: kDarkText,
+                ),
+              ),
               const SizedBox(height: 20),
-              StatefulBuilder(builder: (context, setModalState) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Select Time',
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF374151))),
-                    const SizedBox(height: 8),
-                    GestureDetector(
-                      onTap: () async {
-                        final picked = await showTimePicker(
-                          context: context,
-                          initialTime: selectedTime,
-                          builder: (context, child) => Theme(
-                            data: Theme.of(context).copyWith(
-                              colorScheme: const ColorScheme.light(primary: kPrimary),
-                            ),
-                            child: child!,
-                          ),
-                        );
-                        if (picked != null) setModalState(() => selectedTime = picked);
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF8FAFC),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: kBorderColor),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.access_time_rounded, color: kTextGray, size: 20),
-                            const SizedBox(width: 10),
-                            Text(selectedTime.format(context),
-                                style: const TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.w600, color: kDarkText)),
-                          ],
+              StatefulBuilder(
+                builder: (context, setModalState) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Select Time',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF374151),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () => Navigator.pop(ctx),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: const Color(0xFF4B5563),
-                              side: const BorderSide(color: kBorderColor),
-                              padding: const EdgeInsets.symmetric(vertical: 13),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
+                      const SizedBox(height: 8),
+                      GestureDetector(
+                        onTap: () async {
+                          final picked = await showTimePicker(
+                            context: context,
+                            initialTime: selectedTime,
+                            builder: (context, child) => Theme(
+                              data: Theme.of(context).copyWith(
+                                colorScheme: const ColorScheme.light(
+                                  primary: kPrimary,
+                                ),
+                              ),
+                              child: child!,
                             ),
-                            child: const Text('Cancel',
-                                style: TextStyle(fontWeight: FontWeight.w600)),
+                          );
+                          if (picked != null)
+                            setModalState(() => selectedTime = picked);
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 14,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF8FAFC),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: kBorderColor),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.access_time_rounded,
+                                color: kTextGray,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                selectedTime.format(context),
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: kDarkText,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              Navigator.pop(ctx);
+                      ),
+                      const SizedBox(height: 24),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () => Navigator.pop(ctx),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: const Color(0xFF4B5563),
+                                side: const BorderSide(color: kBorderColor),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 13,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: const Text(
+                                'Cancel',
+                                style: TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                Navigator.pop(ctx);
 
-                              final h = selectedTime.hour.toString().padLeft(2, '0');
-                              final m = selectedTime.minute.toString().padLeft(2, '0');
-                              final newTime = '$h:$m';
+                                final h = selectedTime.hour.toString().padLeft(
+                                  2,
+                                  '0',
+                                );
+                                final m = selectedTime.minute
+                                    .toString()
+                                    .padLeft(2, '0');
+                                final newTime = '$h:$m';
 
-                              // ── اجمع الـ slots الموجودة + الجديدة ──
-                              final existingTimes = [
-                                ..._morningSlots.map((s) => s['time'] as String),
-                                ..._eveningSlots.map((s) => s['time'] as String),
-                              ];
-                              if (!existingTimes.contains(newTime)) {
-                                existingTimes.add(newTime);
-                              }
-
-                              final result = await ApiService.saveDoctorTimeSlots(
-                                day: _selectedDay,
-                                times: existingTimes,
-                              );
-
-                              if (result.success) {
-                                await _loadSlotsForDay(_selectedDay);
-                              } else {
-                                if (mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(result.error ?? 'Failed to add'),
-                                      backgroundColor: Colors.red,
-                                    ),
-                                  );
+                                // ── اجمع الـ slots الموجودة + الجديدة ──
+                                final existingTimes = [
+                                  ..._morningSlots.map(
+                                    (s) => s['time'] as String,
+                                  ),
+                                  ..._eveningSlots.map(
+                                    (s) => s['time'] as String,
+                                  ),
+                                ];
+                                if (!existingTimes.contains(newTime)) {
+                                  existingTimes.add(newTime);
                                 }
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: kPrimary,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 13),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              elevation: 0,
+
+                                final result =
+                                    await ApiService.saveDoctorTimeSlots(
+                                      day: _selectedDay,
+                                      times: existingTimes,
+                                    );
+
+                                if (result.success) {
+                                  await _loadSlotsForDay(_selectedDay);
+                                } else {
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          result.error ?? 'Failed to add',
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: kPrimary,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 13,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                elevation: 0,
+                              ),
+                              child: const Text(
+                                'Add Slot',
+                                style: TextStyle(fontWeight: FontWeight.w600),
+                              ),
                             ),
-                            child: const Text('Add Slot',
-                                style: TextStyle(fontWeight: FontWeight.w600)),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                );
-              }),
+                        ],
+                      ),
+                    ],
+                  );
+                },
+              ),
             ],
           ),
         );
