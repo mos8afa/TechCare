@@ -62,7 +62,7 @@ class _DonorDoctorRequestsScreenState extends State<DonorDoctorRequestsScreen>
     {'doctor': {'id': 1,'name': 'Dr. Ahmed Ali', 'specification': 'Cardiologist'}, 'date': '2024-05-05', 'time': '14:30:00', 'disease_description': 'Patient experiencing chest pain.', 'governorate': 'Cairo', 'address': 'Nasr City', 'total_price': '300'}
   ];
   List<dynamic> _accepted = [
-    {'doctor': {'id': 3,'name': 'Dr. Mahmoud Zaki', 'specification': 'Neurologist'}, 'date': '2024-05-04', 'time': '18:00:00', 'disease_description': 'Frequent headaches.', 'governorate': 'Giza', 'address': 'Dokki', 'total_price': '400'}
+    {'doctor': {'id': 3,'name': 'Dr. Mahmoud Zaki', 'specification': 'Neurologist'}, 'date': '2024-05-04', 'time': '18:00:00', 'governorate': 'Cairo', 'address': 'Heliopolis', 'disease_description': 'Frequent headaches.', 'governorate': 'Giza', 'address': 'Dokki', 'total_price': '400'}
   ];
   List<dynamic> _done     = [
     {'doctor': {'id': 4,'name': 'Dr. Youssef Omar', 'specification': 'Pediatrician'}, 'date': '2024-04-20', 'time': '09:00:00', 'disease_description': 'Routine checkup.', 'governorate': 'Cairo', 'address': 'Maadi', 'total_price': '200'}
@@ -662,6 +662,14 @@ class _DonorDoctorRequestsScreenState extends State<DonorDoctorRequestsScreen>
               const SizedBox(width: 16),
               _miniInfo(Icons.access_time_rounded, _fmtTime(r['time'] ?? '')),
             ]),
+            const SizedBox(height: 10),
+            if ((r['governorate'] ?? '').toString().isNotEmpty)
+              Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Icon(Icons.location_on_outlined, size: 14, color: kTextGray),
+                const SizedBox(width: 4),
+                Expanded(child: Text('${r['governorate'] ?? ''} / ${r['address'] ?? ''}',
+                    style: const TextStyle(fontSize: 12, color: kTextGray))),
+              ]),
             if ((r['disease_description'] ?? '').toString().isNotEmpty) ...[
               const SizedBox(height: 10),
               const Divider(color: kBorderColor, height: 1),

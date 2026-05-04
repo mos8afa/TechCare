@@ -83,11 +83,6 @@ class _DonorDoctorBookAppointmentScreenState
     return (_days[_selectedDayIndex] as Map)['day'] as String? ?? '';
   }
 
-  String get _selectedFullDate {
-    if (_days.isEmpty) return '';
-    return (_days[_selectedDayIndex] as Map)['full_date'] as String? ?? '';
-  }
-
   List<String> get _morningSlots {
     final s = _allSlots[_selectedDayKey];
     if (s == null) return [];
