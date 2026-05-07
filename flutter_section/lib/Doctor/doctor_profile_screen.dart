@@ -95,8 +95,8 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
       backgroundColor: kBgLight,
       appBar: _buildAppBar(context),
       drawer: _buildDrawer(context),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: kPrimary))
+      body: _isLoading ? const Center(child: CircularProgressIndicator(color: kPrimary))
+
           : _error != null
           ? Center(
               child: Column(
@@ -115,6 +115,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                 ],
               ),
             )
+
           : RefreshIndicator(
               onRefresh: _loadDashboard,
               color: kPrimary,
@@ -133,7 +134,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {                       
     final picUrl = ApiService.buildMediaUrl(_dashboardData?['profile_pic']);
     return AppBar(
       backgroundColor: Colors.white,
@@ -167,11 +168,8 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
         CircleAvatar(
           radius: 20,
           backgroundColor: kBgLight,
-          backgroundImage: picUrl.isNotEmpty
-              ? NetworkImage(picUrl) as ImageProvider
-              : const NetworkImage(
-                  'https://ui-avatars.com/api/?name=Doctor&background=1D89E4&color=fff',
-                ),
+          backgroundImage: picUrl.isNotEmpty? NetworkImage(picUrl) as ImageProvider 
+          : const NetworkImage('https://ui-avatars.com/api/?name=Doctor&background=1D89E4&color=fff',),
         ),
         const SizedBox(width: 16),
       ],
@@ -303,7 +301,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
     );
   }
 
-  // ── CENTERED PROFILE CARD (matches design mockup) ────────────────────────
+  // ── PROFILE CARD ────────────────────────
   Widget _buildProfileCard() {
     final data = _dashboardData!;
     final name = data['name'] ?? '';
@@ -332,8 +330,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
       ),
       child: Column(
         children: [
-          // ── Avatar centered with verified badge ──
-          Stack(
+          Stack(                                             // Above
             alignment: Alignment.center,
             children: [
               CircleAvatar(
@@ -345,7 +342,7 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
                         'https://ui-avatars.com/api/?name=Doctor&background=1D89E4&color=fff&size=200',
                       ),
               ),
-              Positioned(
+              Positioned(                                   // Mark
                 right: 0,
                 bottom: 4,
                 child: Container(
@@ -362,7 +359,6 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
           ),
           const SizedBox(height: 16),
 
-          // ── Name + VERIFIED badge ──
           Wrap(
             alignment: WrapAlignment.center,
             crossAxisAlignment: WrapCrossAlignment.center,
@@ -402,7 +398,6 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
           ),
           const SizedBox(height: 8),
 
-          // ── Specialty ──
           Text(
             spec,
             textAlign: TextAlign.center,
@@ -414,7 +409,6 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
           ),
           const SizedBox(height: 12),
 
-          // ── Stars row ──
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -441,7 +435,6 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
           ),
           const SizedBox(height: 14),
 
-          // ── Price + Location chips ──
           Wrap(
             alignment: WrapAlignment.center,
             spacing: 10,
@@ -457,14 +450,13 @@ class _DoctorProfileScreenState extends State<DoctorProfileScreen> {
             child: Divider(color: kBorderColor),
           ),
 
-          // ── Info items ──
           _infoItem(Icons.phone_outlined, 'Phone', phone),
           const SizedBox(height: 10),
           _infoItem(Icons.email_outlined, 'Email', email),
           const SizedBox(height: 10),
           _infoItem(Icons.home_outlined, 'Address', '$address, $governorate'),
 
-          if (brief.isNotEmpty) ...[
+          if (brief.isNotEmpty) ...[            // If THERE IS 
             const SizedBox(height: 16),
             Text(
               brief,

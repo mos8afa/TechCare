@@ -547,7 +547,7 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
                             ),
                           );
                           if (picked != null)
-                            setModalState(() => selectedTime = picked);
+                            {setModalState(() => selectedTime = picked);}
                         },
                         child: Container(
                           width: double.infinity,
@@ -607,24 +607,14 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
                             child: ElevatedButton(
                               onPressed: () async {
                                 Navigator.pop(ctx);
-
-                                final h = selectedTime.hour.toString().padLeft(
-                                  2,
-                                  '0',
-                                );
-                                final m = selectedTime.minute
-                                    .toString()
-                                    .padLeft(2, '0');
+                                final messenger = ScaffoldMessenger.of(context);
+                                final h = selectedTime.hour.toString().padLeft(2, '0');
+                                final m = selectedTime.minute.toString().padLeft(2, '0');
                                 final newTime = '$h:$m';
 
-                                // ── اجمع الـ slots الموجودة + الجديدة ──
                                 final existingTimes = [
-                                  ..._morningSlots.map(
-                                    (s) => s['time'] as String,
-                                  ),
-                                  ..._eveningSlots.map(
-                                    (s) => s['time'] as String,
-                                  ),
+                                  ..._morningSlots.map((s) => s['time'] as String),
+                                  ..._eveningSlots.map((s) => s['time'] as String),
                                 ];
                                 if (!existingTimes.contains(newTime)) {
                                   existingTimes.add(newTime);
@@ -639,16 +629,12 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
                                 if (result.success) {
                                   await _loadSlotsForDay(_selectedDay);
                                 } else {
-                                  if (mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          result.error ?? 'Failed to add',
-                                        ),
-                                        backgroundColor: Colors.red,
-                                      ),
-                                    );
-                                  }
+                                  messenger.showSnackBar(
+                                    SnackBar(
+                                      content: Text(result.error ?? 'Failed to add'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
                                 }
                               },
                               style: ElevatedButton.styleFrom(
