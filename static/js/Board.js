@@ -423,3 +423,75 @@ function selectDay(el) {
 function selectSlotPill(el) {
     el.classList.toggle('active');
 }
+
+
+// ============================================================
+// MOBILE HAMBURGER MENU
+// ============================================================
+(function () {
+    'use strict';
+
+    function initMobileMenu() {
+        const sidebar = document.querySelector('.sidebar');
+        if (!sidebar) return;
+
+        // Create hamburger button
+        const btn = document.createElement('button');
+        btn.className = 'hamburger-btn';
+        btn.setAttribute('aria-label', 'Toggle menu');
+        btn.innerHTML = '<i class="ri-menu-line"></i>';
+        document.body.appendChild(btn);
+
+        // Create overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'sidebar-overlay';
+        document.body.appendChild(overlay);
+
+        function openSidebar() {
+            sidebar.classList.add('mobile-open');
+            overlay.classList.add('active');
+            btn.innerHTML = '<i class="ri-close-line"></i>';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+            btn.innerHTML = '<i class="ri-menu-line"></i>';
+            document.body.style.overflow = '';
+        }
+
+        btn.addEventListener('click', function () {
+            if (sidebar.classList.contains('mobile-open')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        });
+
+        overlay.addEventListener('click', closeSidebar);
+
+        // Close sidebar when a nav link is clicked (mobile UX)
+        sidebar.querySelectorAll('.aside-item').forEach(function (link) {
+            link.addEventListener('click', function () {
+                if (window.innerWidth <= 768) closeSidebar();
+            });
+        });
+
+        // On resize: if desktop, reset mobile state
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('mobile-open');
+                overlay.classList.remove('active');
+                btn.innerHTML = '<i class="ri-menu-line"></i>';
+                document.body.style.overflow = '';
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMobileMenu);
+    } else {
+        initMobileMenu();
+    }
+})();

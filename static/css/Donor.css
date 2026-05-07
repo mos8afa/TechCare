@@ -5709,3 +5709,96 @@ body.no-scroll-page {
 .rate-modal-submit-btn:hover {
     background-color: var(--secondary-color);
 }
+
+
+/* ============================================================
+   MOBILE RESPONSIVE — Donor
+   ============================================================ */
+
+.hamburger-btn {
+    display: none;
+    position: fixed;
+    top: 16px; left: 16px;
+    z-index: 1200;
+    width: 40px; height: 40px;
+    background: white;
+    border: 1px solid #E1E6EC;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.hamburger-btn i { font-size: 18px; color: #4b5563; }
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 1050;
+}
+.sidebar-overlay.active { display: block; }
+
+@media (max-width: 768px) {
+    .hamburger-btn { display: flex; }
+
+    .sidebar {
+        position: fixed !important;
+        top: 0; left: -260px;
+        width: 250px !important;
+        height: 100vh !important;
+        flex-direction: column !important;
+        padding: 24px !important;
+        overflow-y: auto !important;
+        z-index: 1100;
+        transition: left 0.3s ease !important;
+    }
+    .sidebar.mobile-open { left: 0 !important; }
+
+    .topbar {
+        left: 0 !important;
+        padding-left: 64px !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        padding: 16px !important;
+        padding-top: 88px !important;
+    }
+
+    /* Booking */
+    .booking-grid { grid-template-columns: 1fr; }
+    .booking-inputs-grid { grid-template-columns: 1fr; }
+    .doc-card { flex-direction: column; gap: 16px; }
+    .doc-info-wrapper { flex-direction: column; gap: 12px; }
+    .slots-grid { grid-template-columns: repeat(3, 1fr); }
+
+    /* Accepted cards */
+    .accepted-cards-container { grid-template-columns: 1fr; }
+    .accepted-card { padding: 20px; }
+    .ac-details-grid { grid-template-columns: 1fr; }
+    .ac-header { flex-direction: column; gap: 12px; }
+    .ac-badge { margin-top: 0; }
+
+    /* Category tabs */
+    .category-tabs { width: 100%; gap: 4px; }
+    .cat-tab.active { width: auto; padding: 10px 20px; }
+
+    /* Edit form */
+    .edit-form-grid { grid-template-columns: 1fr; }
+    .edit-photo-section { flex-direction: column; align-items: flex-start; }
+
+    .topbar-user-info { display: none; }
+    .line { display: none; }
+}
+
+@media (max-width: 480px) {
+    .topbar { padding-left: 60px !important; padding-right: 16px !important; }
+    .topbar-title { font-size: 16px; }
+    .slots-grid { grid-template-columns: repeat(2, 1fr); }
+    .doctors-grid { grid-template-columns: 1fr; }
+    .status-tabs { overflow-x: auto; }
+    .status-tab { white-space: nowrap; }
+    .don-tab { font-size: 12px; padding: 8px 10px; }
+}

@@ -1663,3 +1663,117 @@ body {
         align-items: flex-start;
     }
 }
+
+
+/* ============================================================
+   MOBILE RESPONSIVE — Dr_Board
+   ============================================================ */
+
+/* Hamburger button (hidden on desktop) */
+.hamburger-btn {
+    display: none;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 1200;
+    width: 40px;
+    height: 40px;
+    background: white;
+    border: 1px solid #E1E6EC;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.hamburger-btn i { font-size: 18px; color: #4b5563; }
+
+/* Overlay */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 1050;
+}
+
+.sidebar-overlay.active { display: block; }
+
+@media (max-width: 768px) {
+    /* Show hamburger */
+    .hamburger-btn { display: flex; }
+
+    /* Sidebar: off-canvas */
+    .sidebar {
+        position: fixed !important;
+        top: 0; left: -260px;
+        width: 250px !important;
+        height: 100vh !important;
+        flex-direction: column !important;
+        padding: 24px !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        z-index: 1100;
+        transition: left 0.3s ease !important;
+    }
+
+    .sidebar.mobile-open { left: 0 !important; }
+
+    /* Topbar: full width, add left padding for hamburger */
+    .topbar {
+        left: 0 !important;
+        padding-left: 64px !important;
+    }
+
+    /* Main content: no left margin */
+    .main-content {
+        margin-left: 0 !important;
+        padding: 16px !important;
+    }
+
+    /* Collapsed state ignored on mobile */
+    .sidebar.collapsed { width: 250px !important; left: -260px; }
+    .sidebar.collapsed .logo h2,
+    .sidebar.collapsed .logo p,
+    .sidebar.collapsed .aside-item span,
+    .sidebar.collapsed .logo .logo-icon { display: unset; }
+    .sidebar.collapsed .aside-item { justify-content: flex-start; }
+
+    /* Profile card */
+    .profile-row { flex-direction: column; }
+    .side-actions { flex-direction: row; justify-content: space-between; align-items: center; }
+
+    /* Grid */
+    .grid-2 { grid-template-columns: 1fr; }
+
+    /* Requests grid */
+    .requests-grid { grid-template-columns: 1fr; }
+
+    /* Edit form */
+    .edit-form-grid { grid-template-columns: 1fr; }
+    .edit-photo-section { flex-direction: column; align-items: flex-start; }
+
+    /* Time slots */
+    .edit-ts-days-row { gap: 10px; }
+    .edit-ts-day-card { width: 68px; height: 85px; }
+    .edit-ts-bottom-grid { flex-direction: column; gap: 20px; }
+    .edit-ts-pill { width: 140px; }
+
+    /* Topbar user info hide on very small */
+    .topbar-user-info { display: none; }
+    .line { display: none; }
+}
+
+@media (max-width: 480px) {
+    .main-content { padding: 12px !important; }
+    .topbar { padding-left: 60px !important; padding-right: 16px !important; }
+    .topbar-title { font-size: 16px; }
+    .name-tag h1 { font-size: 20px; }
+    .profile-card { padding: 16px; }
+    .info-card { padding: 16px; }
+    .requests-grid { grid-template-columns: 1fr; }
+    .card-mid-section { grid-template-columns: 1fr; gap: 10px; }
+    .card-footer-actions { flex-wrap: wrap; }
+    .btn-action { flex: 1; text-align: center; }
+}

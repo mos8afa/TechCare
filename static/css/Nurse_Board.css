@@ -2388,3 +2388,97 @@ input:checked + .edit-ts-slider:before {
     0%, 100% { opacity: 1; transform: scale(1); }
     50%       { opacity: 0.35; transform: scale(0.7); }
 }
+
+
+/* ============================================================
+   MOBILE RESPONSIVE — Nurse_Board
+   ============================================================ */
+
+.hamburger-btn {
+    display: none;
+    position: fixed;
+    top: 16px; left: 16px;
+    z-index: 1200;
+    width: 40px; height: 40px;
+    background: white;
+    border: 1px solid #E1E6EC;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.hamburger-btn i { font-size: 18px; color: #4b5563; }
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 1050;
+}
+.sidebar-overlay.active { display: block; }
+
+@media (max-width: 768px) {
+    .hamburger-btn { display: flex; }
+
+    .sidebar {
+        position: fixed !important;
+        top: 0; left: -260px;
+        width: 250px !important;
+        height: 100vh !important;
+        flex-direction: column !important;
+        padding: 24px !important;
+        overflow-y: auto !important;
+        z-index: 1100;
+        transition: left 0.3s ease !important;
+    }
+    .sidebar.mobile-open { left: 0 !important; }
+
+    .content-wrapper { margin-left: 0 !important; }
+
+    .topbar {
+        left: 0 !important;
+        padding-left: 64px !important;
+    }
+
+    .main-content,
+    .main-content-nurse-requst,
+    .profile-main-content {
+        padding: 16px !important;
+        padding-top: 88px !important;
+    }
+
+    /* Profile layout */
+    .profile-financials-row { flex-direction: column; }
+    .card { flex-direction: column; gap: 20px; }
+    .profile-info { grid-template-columns: 1fr; }
+    .btn-edit { flex-direction: row; justify-content: flex-end; }
+
+    /* Services */
+    .service-card { width: calc(100% - 0px); }
+    .services-container { flex-direction: column; }
+
+    /* Requests */
+    .requests-grid { grid-template-columns: 1fr; }
+    .card-mid-section { grid-template-columns: 1fr; gap: 10px; }
+    .edit-input { flex-direction: column; }
+
+    /* Time slots */
+    .ats-times-container { grid-template-columns: repeat(3, 1fr); }
+    .edit-ts-days-row { gap: 10px; }
+    .edit-ts-bottom-grid { flex-direction: column; }
+
+    .topbar-user-info { display: none; }
+    .line { display: none; }
+}
+
+@media (max-width: 480px) {
+    .topbar { padding-left: 60px !important; padding-right: 16px !important; }
+    .topbar-title { font-size: 16px; }
+    .ats-times-container { grid-template-columns: repeat(2, 1fr); }
+    .card-footer-actions { flex-wrap: wrap; }
+    .btn-action { flex: 1; text-align: center; }
+    .tabs-navigation { gap: 12px; overflow-x: auto; }
+    .tab-link { font-size: 13px; white-space: nowrap; }
+}
