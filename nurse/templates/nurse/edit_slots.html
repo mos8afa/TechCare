@@ -1,12 +1,12 @@
-{% load static %}
+﻿{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Time Slots</title>
-    <link rel="stylesheet" href="{% static 'Css/animations.css' %}">
-        <link rel="stylesheet" href="{% static 'Css/Dr_Board.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animations.css' %}">
+        <link rel="stylesheet" href="{% static 'css/Dr_Board.css' %}">
         <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
@@ -212,7 +212,7 @@
         </div>
     </div>
 </body>
-    <script src="{% static 'JS/Board.js' %}"></script>
+    <script src="{% static 'js/Board.js' %}"></script>
     <script>
     const SAVE_URL   = "{% url 'nurse:save_time_slots' %}";
     const CSRF_TOKEN = "{{ csrf_token }}";
