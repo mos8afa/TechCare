@@ -2,8 +2,22 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.shortcuts import render
+from accounts.models import Doctor, Nurse, Donor, Patient
+
+
+def home_view(request):
+    context = {
+        'doctors_count': Doctor.objects.count(),
+        'donors_count':  Donor.objects.count(),
+        'nurses_count':  Nurse.objects.count(),
+        'patients_count': Patient.objects.count(),
+    }
+    return render(request, 'index.html', context)
+
 
 urlpatterns = [
+    path('', home_view, name='home'),
     path('admin/', admin.site.urls),
     path('api/',include('api.urls')),
     path('auth/',include("accounts.urls")),

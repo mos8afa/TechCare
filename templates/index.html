@@ -1,0 +1,212 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  <!-- SEO Meta Tags -->
+  <title>TechCare — Smart Healthcare Starts Here</title>
+  <meta name="description" content="Experience the future of healthcare with TechCare. Connect with doctors, nurses, and donors seamlessly.">
+  <meta name="keywords" content="healthcare, telemedicine, doctors, nurses, blood donation, medical services">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+<body>
+
+  <!-- Background Gradient -->
+  <div class="bg-gradient"></div>
+
+  <!-- Grid Overlay -->
+  <div class="grid-overlay"></div>
+
+  <!-- Floating Shapes -->
+  <div class="shapes-container">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+    <div class="shape shape-4"></div>
+    <div class="shape shape-5"></div>
+    
+    <!-- Particle Dots -->
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+
+  <!-- Decorative Glass Cards -->
+  <div class="glass-card glass-card-1">
+    <div class="card-icon card-icon-blue">
+      <i class="fas fa-user-md"></i>
+    </div>
+    <div class="card-title">Active Doctors</div>
+    <div class="card-value">{{ doctors_count }}+</div>
+    <div class="card-sub">Verified professionals</div>
+  </div>
+
+  <div class="glass-card glass-card-2">
+    <div class="card-icon card-icon-cyan">
+      <i class="fas fa-heartbeat"></i>
+    </div>
+    <div class="card-title">Health Services</div>
+    <div class="card-value">24/7</div>
+    <div class="card-sub">Always available</div>
+  </div>
+
+  <div class="glass-card glass-card-3">
+    <div class="card-icon card-icon-purple">
+      <i class="fas fa-tint"></i>
+    </div>
+    <div class="card-title">Blood Donors</div>
+    <div class="card-value">{{ donors_count }}+</div>
+    <div class="card-sub">Ready to help</div>
+  </div>
+
+  <!-- Page Wrapper -->
+  <div class="page-wrapper">
+
+    <!-- Navbar -->
+    <nav class="navbar">
+      <a href="{% url 'home' %}" class="logo">
+        <div class="logo-icon">
+            <img src="{% static 'img/logo.png' %}" alt="TechCare Logo">
+        </div>
+        <span class="logo-text">TechCare</span>
+      </a>
+
+      <div class="nav-actions">
+        {% if user.is_authenticated %}
+          <a href="{% url 'user_profile' %}" class="btn-nav btn-nav-ghost">
+            <i class="fas fa-user"></i> Profile
+          </a>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn-nav btn-nav-ghost">
+            <i class="fas fa-sign-in-alt"></i> Login
+          </a>
+          <a href="{% url 'register' %}" class="btn-nav btn-nav-solid">
+            <i class="fas fa-user-plus"></i> Sign Up
+          </a>
+        {% endif %}
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-inner">
+
+        <!-- Badge -->
+        <div class="hero-badge">
+          <i class="fas fa-shield-alt"></i>
+          <span>Trusted Healthcare Platform</span>
+          <span class="badge-dot"></span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="hero-title">
+          <span class="title-line-1">Smart Healthcare</span>
+          <span class="title-line-2">Starts Here</span>
+        </h1>
+
+        <!-- Description -->
+        <p class="hero-description">
+          Connect with verified doctors, nurses, and blood donors instantly. 
+          Experience seamless healthcare services designed for the modern world.
+        </p>
+
+        <!-- CTA Button -->
+        <div class="cta-wrapper">
+          {% if user.is_authenticated %}
+            {% if user.role == 'doctor' %}
+              <a href="{% url 'doctor:doctor_dashboard' %}" class="btn-cta">
+                <span>Go to Dashboard</span>
+                <span class="btn-cta-icon">
+                  <i class="fas fa-arrow-right"></i>
+                </span>
+              </a>
+            {% elif user.role == 'nurse' %}
+              <a href="{% url 'nurse:nurse_dashboard' %}" class="btn-cta">
+                <span>Go to Dashboard</span>
+                <span class="btn-cta-icon">
+                  <i class="fas fa-arrow-right"></i>
+                </span>
+              </a>
+            {% elif user.role == 'patient' %}
+              <a href="{% url 'patient:patient_dashboard' %}" class="btn-cta">
+                <span>Go to Dashboard</span>
+                <span class="btn-cta-icon">
+                  <i class="fas fa-arrow-right"></i>
+                </span>
+              </a>
+            {% elif user.role == 'donor' %}
+              <a href="{% url 'donor:donor_dashboard' %}" class="btn-cta">
+                <span>Go to Dashboard</span>
+                <span class="btn-cta-icon">
+                  <i class="fas fa-arrow-right"></i>
+                </span>
+              </a>
+            {% else %}
+              <a href="{% url 'user_profile' %}" class="btn-cta">
+                <span>View Profile</span>
+                <span class="btn-cta-icon">
+                  <i class="fas fa-arrow-right"></i>
+                </span>
+              </a>
+            {% endif %}
+          {% else %}
+            <a href="{% url 'register' %}" class="btn-cta">
+              <span>Get Started</span>
+              <span class="btn-cta-icon">
+                <i class="fas fa-arrow-right"></i>
+              </span>
+            </a>
+          {% endif %}
+
+          <a href="#features" class="btn-secondary-link">
+            <span>Learn More</span>
+            <i class="fas fa-chevron-down"></i>
+          </a>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-number" data-target="{{ doctors_count }}">0</div>
+            <div class="stat-label">Verified Doctors</div>
+          </div>
+
+          <div class="stat-divider"></div>
+
+          <div class="stat-item">
+            <div class="stat-number" data-target="{{ donors_count }}">0</div>
+            <div class="stat-label">Blood Donors</div>
+          </div>
+
+          <div class="stat-divider"></div>
+
+          <div class="stat-item">
+            <div class="stat-number" data-target="{{ patients_count }}">0</div>
+            <div class="stat-label">Happy Patients</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Custom Scripts -->
+  <script src="{% static 'js/index.js' %}"></script>
+
+</body>
+</html>
