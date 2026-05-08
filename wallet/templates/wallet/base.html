@@ -44,7 +44,7 @@
                 <a href="{% url 'doctor:doctor_requests' 'pending' %}" class="nav-item">
                     <i class="ri-file-list-line"></i><span>Requests</span>
                 </a>
-                <a href="{% url 'wallet:notifications' %}" class="nav-item {% block nav_notif_doctor %}{% endblock %}">
+                <a href="#" class="nav-item {% block nav_notif_doctor %}{% endblock %}">
                     <i class="fa-regular fa-bell"></i><span>Notifications
                     {% if unread_notifications %}<span class="sidebar-badge">{{ unread_notifications }}</span>{% endif %}
                     </span>

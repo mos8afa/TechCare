@@ -27,7 +27,7 @@
             <a href="{% url 'nurse:nurse_dashboard' %}" class="aside-item">
                 <i class="bi bi-person"></i><span>Profile</span>
             </a>
-            <a href="{% url 'nurse:nurse_requests' 'pending' %}" class="aside-item">
+            <a href="{% url 'nurse:nurse_requests' 'pending' %}" class="aside-item active">
                 <i class="ri-file-list-line"></i><span>Requests</span>
             </a>
             <a href="#" class="aside-item">
@@ -64,7 +64,11 @@
                         <h4>{{ name }}</h4>
                         <span>Registered Nurse</span>
                     </div>
+                    {% if profile_pic %}
                     <img src="{{ profile_pic.url }}" alt="{{ name }}">
+                    {% else %}
+                    <i class="bi bi-person-circle" style="font-size:36px; color:#94a3b8;"></i>
+                    {% endif %}
                 </div>
             </div>
         </div>

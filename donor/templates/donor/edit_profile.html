@@ -24,7 +24,7 @@
             </div>
         </div>
                         <aside class="aside">
-            <a href="{% url 'donor:donor_dashboard' %}" class="aside-item">
+            <a href="{% url 'donor:donor_dashboard' %}" class="aside-item ">
                 <i class="bi bi-person"></i><span>Profile</span>
             </a>
             <a href="{% url 'donor:donor_requests' 'doctor' 'booking' %}" class="aside-item">
@@ -67,7 +67,7 @@
                     {% if donor.profile_pic %}
                         <img src="{{ donor.profile_pic.url }}" alt="Donor">
                     {% else %}
-                        <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="Donor">
+                        <i class="bi bi-person-circle" style="font-size:36px; color:#94a3b8;"></i>
                     {% endif %}
                 </div>
             </div>
@@ -97,11 +97,7 @@
                         <div class="edit-photo-section">
                             <div class="edit-avatar">
                                 <div class="avatar-container">
-                                    {% if donor.profile_pic %}
                                         <img id="profile-img" src="{{ donor.profile_pic.url }}" alt="Donor">
-                                    {% else %}
-                                        <img id="profile-img" src="https://randomuser.me/api/portraits/men/41.jpg" alt="Donor">
-                                    {% endif %}
                                     <div class="online-badge"></div>
                                 </div>
                             </div>
@@ -109,10 +105,8 @@
                                 <h4>Profile Photo</h4>
                                 <p>New profile pictures require admin approval and verification. Recommended size: 400x400px.</p>
                                 <div class="photo-buttons">
-                                    <input type="file" id="profile-upload" name="profile_pic" accept="image/*"
-                                           onchange="previewImage(this)" style="display:none;">
-                                    <button type="button" class="btn-primary-edit"
-                                            onclick="document.getElementById('profile-upload').click()">
+                                    <input type="file" id="profile-upload" style="display: none;" name="profile_pic" accept="image/*">
+                                    <button type="button" class="btn-primary-edit" onclick="document.getElementById('profile-upload').click()">
                                         Change Photo
                                     </button>
                                 </div>
@@ -191,7 +185,7 @@
                             <div class="form-group-edit full-width">
                                 <label>Phone Number</label>
                                 <div class="phone-wrapper-custom">
-                                    <span class="country-code">+20</span>
+                                    <span class="country-code">+2</span>
                                     <input type="tel" name="phone_number" placeholder="1001234567"
                                            value="{{ donor.phone_number }}">
                                 </div>

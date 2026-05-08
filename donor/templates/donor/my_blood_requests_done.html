@@ -44,7 +44,7 @@
             <a href="#" class="aside-item">
                 <i class="fa-regular fa-bell"></i><span>Notifications</span>
             </a>
-            <a href="{% url 'donation:my_requests_pending' %}" class="aside-item">
+            <a href="{% url 'donation:my_requests_pending' %}" class="aside-item active">
                 <i class="ri-hand-heart-line"></i><span>Donation</span>
             </a>
             <a href="{% url 'wallet:dashboard' %}" class="aside-item">
@@ -80,7 +80,7 @@
                         {% if profile_pic %}
                             <img src="{{ profile_pic.url }}" alt="{{ name }}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
                         {% else %}
-                            <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="{{ name }}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
+                            <i class="bi bi-person-circle" style="font-size:36px; color:#94a3b8;"></i>
                         {% endif %}
                     </div>
                 </div>
@@ -111,12 +111,12 @@
                                 {% if offer.request.requester.donor.profile_pic %}
                                     <img src="{{ offer.request.requester.donor.profile_pic.url }}" alt="Requester">
                                 {% else %}
-                                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Requester">
+                                    <i class="bi bi-person-circle" style="font-size:48px; color:#94a3b8;"></i>
                                 {% endif %}
                                 {% if offer.donor.profile_pic %}
                                     <img src="{{ offer.donor.profile_pic.url }}" alt="Donor">
                                 {% else %}
-                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Donor">
+                                    <i class="bi bi-person-circle" style="font-size:48px; color:#94a3b8;"></i>
                                 {% endif %}
                             </div>
                             <div class="don-card-done__badge">DONE</div>

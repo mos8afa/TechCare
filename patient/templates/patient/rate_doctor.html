@@ -5,7 +5,7 @@
             <a href="{% url 'patient:patient_dashboard' %}" class="aside-item">
                 <i class="bi bi-person"></i><span>Profile</span>
             </a>
-            <a href="{% url 'patient:patient_requests' 'doctor' 'booking' %}" class="aside-item">
+            <a href="{% url 'patient:patient_requests' 'doctor' 'booking' %}" class="aside-item active">
                 <i class="ri-file-list-line"></i><span>Requests</span>
             </a>
             <a href="#" class="aside-item">
@@ -37,7 +37,7 @@
             {% if doctor_profile_pic %}
                 <img src="{{ doctor_profile_pic.url }}" alt="{{ doctor_name }}" class="rate-modal-avatar" width="48" height="48">
             {% else %}
-                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="{{ doctor_name }}" class="rate-modal-avatar" width="48" height="48">
+                <i class="bi bi-person-circle" style="font-size:48px; color:#94a3b8;"></i>
             {% endif %}
             <div class="rate-modal-info">
                 <span class="rate-modal-name">Dr. {{ doctor_name }}</span>

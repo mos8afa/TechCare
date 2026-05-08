@@ -28,7 +28,7 @@
             <a href="{% url 'donor:donor_dashboard' %}" class="aside-item">
                 <i class="bi bi-person"></i><span>Profile</span>
             </a>
-            <a href="{% url 'donor:donor_requests' 'doctor' 'booking' %}" class="aside-item">
+            <a href="{% url 'donor:donor_requests' 'doctor' 'booking' %}" class="aside-item active">
                 <i class="ri-file-list-line"></i><span>Requests</span>
             </a>
             <a href="#" class="aside-item">
@@ -66,7 +66,7 @@
                     {% if profile_pic %}
                         <img src="{{ profile_pic.url }}" alt="{{ name }}">
                     {% else %}
-                        <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="{{ name }}">
+                        <i class="bi bi-person-circle" style="font-size:36px; color:#94a3b8;"></i>
                     {% endif %}
                 </div>
             </div>
@@ -112,7 +112,7 @@
                                 {% if req.nurse.profile_pic %}
                                     <img src="{{ req.nurse.profile_pic.url }}" alt="{{ req.nurse.user.first_name }}" class="npc-avatar">
                                 {% else %}
-                                    <img src="https://randomuser.me/api/portraits/men/46.jpg" alt="Nurse" class="npc-avatar">
+                                    <i class="bi bi-person-circle" style="font-size:48px; color:#94a3b8;"></i>
                                 {% endif %}
                                 <div class="npc-dot"></div>
                             </div>
@@ -171,7 +171,7 @@
                                 {% if req.nurse.profile_pic %}
                                     <img src="{{ req.nurse.profile_pic.url }}" alt="{{ req.nurse.user.first_name }}" class="npc-avatar">
                                 {% else %}
-                                    <img src="https://randomuser.me/api/portraits/men/46.jpg" alt="Nurse" class="npc-avatar">
+                                    <i class="bi bi-person-circle" style="font-size:48px; color:#94a3b8;"></i>
                                 {% endif %}
                                 <div class="npc-dot"></div>
                             </div>

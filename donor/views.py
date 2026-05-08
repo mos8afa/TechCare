@@ -109,7 +109,7 @@ def edit_donor_profile(request):
         donor.governorate = governorate
         donor.address = address
         donor.last_donation_date = last_donation_date
-        donor.profile_pic = profile_pic
+        donor.profile_pic = request.FILES.get('profile_pic') or donor.profile_pic
         donor.user.save()
         donor.save()
         return redirect('donor:donor_dashboard')

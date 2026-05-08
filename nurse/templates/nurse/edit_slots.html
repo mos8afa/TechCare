@@ -33,7 +33,7 @@
                 </div>
 
                                 <aside class="aside">
-            <a href="{% url 'nurse:nurse_dashboard' %}" class="aside-item">
+            <a href="{% url 'nurse:nurse_dashboard' %}" class="aside-item active">
                 <i class="bi bi-person"></i><span>Profile</span>
             </a>
             <a href="{% url 'nurse:nurse_requests' 'pending' %}" class="aside-item">
@@ -64,19 +64,9 @@
                     <div class="topbar-icon" id="notificationBtn">
                         <i class="fa-regular fa-bell"></i>
                         <div class="inbox" id="notificationBox">
-                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg">
+                            <div class="notification-item">
                                 <div class="notification-content">
-                                    <h4>Ahmed Ali</h4>
-                                    <p>New Consultation Request</p>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="notification-item" onclick="window.location.href='Notifications.html'">
-                                <img src="https://randomuser.me/api/portraits/women/12.jpg">
-                                <div class="notification-content">
-                                    <h4>Sara Mohamed</h4>
-                                    <p>Appointment Confirmed</p>
+                                    <p>No new notifications</p>
                                 </div>
                             </div>
                         </div>

@@ -18,7 +18,6 @@ from decimal import Decimal
 
 
 def _get_wallet_balance(user):
-    """Return the user's wallet balance, creating the wallet if it doesn't exist yet."""
     try:
         from wallet.models import Wallet
         wallet, _ = Wallet.objects.get_or_create(user=user)

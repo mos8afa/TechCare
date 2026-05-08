@@ -5,7 +5,7 @@
 
 {% block sidebar %}
                         <aside class="aside">
-            <a href="{% url 'doctor:doctor_dashboard' %}" class="aside-item">
+            <a href="{% url 'doctor:doctor_dashboard' %}" class="aside-item active">
                 <i class="bi bi-person"></i><span>Profile</span>
             </a>
             <a href="{% url 'doctor:doctor_requests' 'pending' %}" class="aside-item">
@@ -40,7 +40,11 @@
             <div class="profile-row">
 
                 <div class="profile-avatar">
+                    {% if profile_pic %}
                     <img src="{{profile_pic.url}}" alt="{{name}}" />
+                    {% else %}
+                    <i class="bi bi-person-circle" style="font-size:80px; color:#94a3b8;"></i>
+                    {% endif %}
                     <span class="verified-badge">
                         <i class="fas fa-check"></i>
                     </span>

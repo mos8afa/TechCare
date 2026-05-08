@@ -2,7 +2,7 @@
 
 {% block sidebar %}
                 <aside class="aside">
-            <a href="{% url 'patient:patient_dashboard' %}" class="aside-item">
+            <a href="{% url 'patient:patient_dashboard' %}" class="aside-item active">
                 <i class="bi bi-person"></i><span>Profile</span>
             </a>
             <a href="{% url 'patient:patient_requests' 'doctor' 'booking' %}" class="aside-item">
@@ -79,7 +79,7 @@
                 <div class="form-group-edit">
                     <label>Contact Phone Number</label>
                     <div class="phone-wrapper-custom">
-                        <span class="country-code">+20</span>
+                        <span class="country-code">+2</span>
                         <input name="phone_number" type="tel" placeholder="1001234567" value="{{ patient.phone_number }}">
                     </div>
                 </div>

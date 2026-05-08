@@ -24,7 +24,7 @@
             </div>
         </div>
                         <aside class="aside">
-            <a href="{% url 'donor:donor_dashboard' %}" class="aside-item">
+            <a href="{% url 'donor:donor_dashboard' %}" class="aside-item active">
                 <i class="bi bi-person"></i><span>Profile</span>
             </a>
             <a href="{% url 'donor:donor_requests' 'doctor' 'booking' %}" class="aside-item">
@@ -56,18 +56,14 @@
                     <span class="notification-badge"></span>
                     <div class="inbox" id="notificationBox">
                         <div class="notification-item">
-                            <div class="notification-content"><p>No new notifications</p></div>
-                        </div>
+                        <div class="notification-content"><p>No new notifications</p></div>
                     </div>
                 </div>
+            </div>
                 <hr class="line">
                 <div class="topbar-profile" onclick="window.location.href='{% url 'donor:donor_dashboard' %}'">
-                    <div class="topbar-user-info"><h4>{{ name }}</h4></div>
-                    {% if profile_pic %}
-                        <img src="{{ profile_pic.url }}" alt="{{ name }}">
-                    {% else %}
-                        <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="{{ name }}">
-                    {% endif %}
+                <div class="topbar-user-info"><h4>{{ name }}</h4></div>
+                        <img src="{{ profile_pic.url }}" alt="{{ name }}" class="patient-avatar">
                 </div>
             </div>
         </div>
@@ -78,11 +74,7 @@
             <!-- Donor Profile Card -->
             <div class="patient-profile-card">
                 <div class="patient-avatar-wrap">
-                    {% if profile_pic %}
                         <img src="{{ profile_pic.url }}" alt="{{ name }}" class="patient-avatar">
-                    {% else %}
-                        <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="{{ name }}" class="patient-avatar">
-                    {% endif %}
                     <div class="patient-status-dot"></div>
                 </div>
                 <div class="patient-details">
@@ -172,20 +164,23 @@
             <!-- Bottom Section Layout -->
             <div class="bottom-section donor-bottom-section">
                 <!-- Wallet Card -->
-                <div class="profile-wallet-card">
+                <div class="profile-wallet-card" onclick="window.location.href='{% url 'wallet:dashboard' %}'" style="cursor:pointer;">
                     <div class="wallet-header-flex">
                         <div class="wallet-title-area">
                             <h3>TechCare Wallet</h3>
                             <p>Easily manage your healthcare payments</p>
                         </div>
                         <div class="wallet-icon-btn">
-                            <i class="ri-wallet-3-line"></i>
+                                <i class="ri-wallet-3-line"></i>
                         </div>
                     </div>
                     <div class="wallet-balance-box">
                         <span class="balance-label">AVAILABLE BALANCE</span>
                         <div class="balance-amount">0.00 EGP</div>
                     </div>
+                    <a href="{% url 'wallet:dashboard' %}" class="wallet-go-btn" style="display:inline-block;margin-top:12px;font-size:13px;font-weight:600;color:#1D89E4;">
+                        Manage Wallet &rarr;
+                    </a>
                 </div>
 
                 <!-- Blood Type -->

@@ -24,7 +24,7 @@
             </div>
         </div>
                         <aside class="aside">
-            <a href="{% url 'patient:patient_dashboard' %}" class="aside-item">
+            <a href="{% url 'patient:patient_dashboard' %}" class="aside-item active">
                 <i class="bi bi-person"></i><span>Profile</span>
             </a>
             <a href="{% url 'patient:patient_requests' 'doctor' 'booking' %}" class="aside-item">
@@ -63,7 +63,11 @@
                 <hr class="line">
                 <div class="topbar-profile" onclick="window.location.href='{% url 'patient:patient_dashboard' %}'">
                     <div class="topbar-user-info"><h4>{{ name }}</h4></div>
+                    {% if profile_pic %}
                     <img src="{{ profile_pic.url }}" alt="{{ name }}">
+                    {% else %}
+                    <i class="bi bi-person-circle" style="font-size:36px; color:#94a3b8;"></i>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -74,7 +78,11 @@
             <!-- Patient Profile Card -->
             <div class="patient-profile-card">
                 <div class="patient-avatar-wrap">
+                    {% if profile_pic %}
                     <img src="{{ profile_pic.url }}" alt="{{ name }}" class="patient-avatar">
+                    {% else %}
+                    <i class="bi bi-person-circle" style="font-size:80px; color:#94a3b8;"></i>
+                    {% endif %}
                     <div class="patient-status-dot"></div>
                 </div>
                 <div class="patient-details">

@@ -46,7 +46,7 @@ def validate_email(email):
     return re.match(pattern,email) is not None
 
 def validate_phone(phone_number):
-    if not phone_number.isdigit() or len(phone_number) > 11 or len(phone_number) < 10 or phone_number[0] not in ['0','1'] :
+    if not phone_number.isdigit() or len(phone_number) != 11  or phone_number[0] not in ['0'] :
         return False
     else:
         return True
