@@ -50,10 +50,10 @@ class _DonorDoctorBookAppointmentScreenState
 
   // TODO: replace with ApiService calls when donor API is ready
   Map<String, dynamic>? _doctorData;
-  List<dynamic> _days            = [];
-  Map<String, dynamic> _allSlots = {};
-  bool    _isLoading  = false; // set false until API is ready
-  bool    _isBooking  = false;
+  final List<dynamic> _days            = [];
+  final Map<String, dynamic> _allSlots = {};
+  final bool    _isLoading  = false; // set false until API is ready
+  final bool    _isBooking  = false;
   String? _error;
 
   int     _selectedDayIndex    = 0;
@@ -228,7 +228,7 @@ class _DonorDoctorBookAppointmentScreenState
             style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText)),
         const SizedBox(height: 10),
         DropdownButtonFormField<String>(
-          value: _selectedGovernorate,
+          initialValue: _selectedGovernorate,
           hint: const Text('Select governorate', style: TextStyle(fontSize: 14, color: kTextGray)),
           items: kGovernorates
               .map((g) => DropdownMenuItem(value: g['value'], child: Text(g['label']!)))

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TechCare — Coming Soon</title>
+    <meta name="description" content="TechCare Medical Portal is launching soon. Enter your email to be notified on launch day." />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <!-- ===== Page Loader ===== -->
+    <div class="loader" id="loader">
+        <div class="loader-ring">
+            <div class="loader-inner"></div>
+        </div>
+        <span class="loader-text">TechCare</span>
+    </div>
+
+    <!-- ===== Animated Particle Canvas ===== -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- ===== Radial Glow Orbs ===== -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- ===== Main Page Wrapper ===== -->
+    <main class="page-wrapper" id="pageWrapper">
+
+        <!-- Top brand bar -->
+        <header class="top-bar animate slide-up" style="animation-delay: 0.1s;">
+            <div class="brand">
+                <span class="brand-icon">
+                    <img src="../img/logo.png" alt="TechCare Logo" />
+                </span>
+                <div class="brand-text">
+                    <h2>TechCare</h2>
+                    <p>Medical Portal</p>
+                </div>
+            </div>
+            <div class="status-badge">
+                <span class="pulse-dot"></span>
+                Under Development
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+
+            <!-- Tag -->
+            <div class="hero-tag animate slide-up" style="animation-delay: 0.25s;">
+                <i class="bi bi-rocket-takeoff-fill"></i>
+                Something incredible is coming
+            </div>
+
+            <!-- Main heading -->
+            <h1 class="hero-title animate slide-up" style="animation-delay: 0.4s;">
+                Coming <span class="accent">Soon</span>
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="hero-subtitle animate slide-up" style="animation-delay: 0.55s;">
+                We're crafting a smarter, faster, and more connected<br class="br-desktop" />
+                healthcare experience — just for you.
+            </p>
+
+            <!-- Countdown Timer -->
+            <div class="countdown-wrapper animate slide-up" style="animation-delay: 0.7s;">
+                <div class="countdown-unit" id="days-unit">
+                    <div class="countdown-box">
+                        <span class="countdown-value" id="days">00</span>
+                    </div>
+                    <span class="countdown-label">Days</span>
+                </div>
+                <div class="countdown-sep">:</div>
+                <div class="countdown-unit" id="hours-unit">
+                    <div class="countdown-box">
+                        <span class="countdown-value" id="hours">00</span>
+                    </div>
+                    <span class="countdown-label">Hours</span>
+                </div>
+                <div class="countdown-sep">:</div>
+                <div class="countdown-unit" id="minutes-unit">
+                    <div class="countdown-box">
+                        <span class="countdown-value" id="minutes">00</span>
+                    </div>
+                    <span class="countdown-label">Minutes</span>
+                </div>
+                <div class="countdown-sep">:</div>
+                <div class="countdown-unit" id="seconds-unit">
+                    <div class="countdown-box">
+                        <span class="countdown-value" id="seconds">00</span>
+                    </div>
+                    <span class="countdown-label">Seconds</span>
+                </div>
+            </div>
+
+
+
+        </section>
+
+        <!-- Progress Bar -->
+        <div class="progress-section animate slide-up" style="animation-delay: 1s;">
+            <div class="progress-info">
+                <span>Development Progress</span>
+                <span class="progress-percent">78%</span>
+            </div>
+            <div class="progress-bar-wrap">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="page-footer animate slide-up" style="animation-delay: 1.1s;">
+            <p>&copy; 2026 TechCare Medical Portal. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#" class="social-btn" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+                <a href="#" class="social-btn" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                <a href="#" class="social-btn" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            </div>
+        </footer>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

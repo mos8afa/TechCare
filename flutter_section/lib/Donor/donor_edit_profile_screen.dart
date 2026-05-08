@@ -399,7 +399,7 @@ class _DropdownField extends StatelessWidget {
         Text(label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: _kDarkText)),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
-          value: value,
+          initialValue: value,
           onChanged: onChanged,
           isExpanded: true,
           items: items.map((g) => DropdownMenuItem(value: g, child: Text(g))).toList(),

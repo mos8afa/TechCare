@@ -57,7 +57,7 @@ class _PatientNurseBookAppointmentScreenState
   List<dynamic> _days     = [];
   Map<String, dynamic> _allSlots = {};
 
-  Set<int> _selectedServices = {};
+  final Set<int> _selectedServices = {};
 
   bool    _isLoading  = true;
   bool    _isBooking  = false;
@@ -271,8 +271,11 @@ class _PatientNurseBookAppointmentScreenState
 
           return GestureDetector(
             onTap: () => setState(() {
-              if (selected) _selectedServices.remove(id);
-              else _selectedServices.add(id);
+              if (selected) {
+                _selectedServices.remove(id);
+              } else {
+                _selectedServices.add(id);
+              }
             }),
             child: Container(
               margin: const EdgeInsets.only(bottom: 10),
@@ -338,7 +341,7 @@ class _PatientNurseBookAppointmentScreenState
             style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: kDarkText)),
         const SizedBox(height: 10),
         DropdownButtonFormField<String>(
-          value: _selectedGovernorate,
+          initialValue: _selectedGovernorate,
           hint: const Text('Select governorate', style: TextStyle(fontSize: 14, color: kTextGray)),
           items: kGovernorates
               .map((g) => DropdownMenuItem(value: g['value'], child: Text(g['label']!)))

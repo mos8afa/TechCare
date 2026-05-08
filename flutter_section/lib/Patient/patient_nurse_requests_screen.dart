@@ -912,25 +912,34 @@ class _PatientNurseRequestsScreenState extends State<PatientNurseRequestsScreen>
   Future<void> _acceptReschedule(int id) async {
     final result = await ApiService.acceptNurseReschedule(id);
     if (!mounted) return;
-    if (result.success) _loadCurrentTab();
-    else ScaffoldMessenger.of(context).showSnackBar(
+    if (result.success) {
+      _loadCurrentTab();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result.error ?? 'Failed'), backgroundColor: Colors.red));
+    }
   }
 
   Future<void> _cancelRequest(int id) async {
     final result = await ApiService.cancelNurseRequest(id);
     if (!mounted) return;
-    if (result.success) _loadCurrentTab();
-    else ScaffoldMessenger.of(context).showSnackBar(
+    if (result.success) {
+      _loadCurrentTab();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result.error ?? 'Failed'), backgroundColor: Colors.red));
+    }
   }
 
   Future<void> _markDone(int id) async {
     final result = await ApiService.markNurseDone(id);
     if (!mounted) return;
-    if (result.success) _loadCurrentTab();
-    else ScaffoldMessenger.of(context).showSnackBar(
+    if (result.success) {
+      _loadCurrentTab();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result.error ?? 'Failed'), backgroundColor: Colors.red));
+    }
   }
 
   // ── Shared helpers ───────────────────────────────────────────────────────

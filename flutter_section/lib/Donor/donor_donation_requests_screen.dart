@@ -48,18 +48,18 @@ class DonorDonationRequestsScreen extends StatefulWidget {
 class _DonorDonationRequestsScreenState extends State<DonorDonationRequestsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _statusTab;
-  bool _isLoading = false;
+  final bool _isLoading = false;
 
-  List<dynamic> _pending  = [
+  final List<dynamic> _pending  = [
     {'blood_bank': {'name': 'Life Blood Center'}, 'donation_date': '2024-05-06', 'donation_time': '10:00:00', 'blood_type': 'O+', 'quantity_ml': 450, 'address': '123 Main St', 'city': 'Cairo', 'medical_notes': 'No chronic diseases.', 'total_amount': '500'}
   ];
-  List<dynamic> _edited   = [
+  final List<dynamic> _edited   = [
     {'blood_bank': {'name': 'City Blood Bank'}, 'donation_date': '2024-05-07', 'donation_time': '11:00:00', 'blood_type': 'A-', 'quantity_ml': 500, 'address': '45 King St', 'city': 'Alexandria', 'medical_notes': 'Healthy', 'total_amount': '550'}
   ];
-  List<dynamic> _accepted = [
+  final List<dynamic> _accepted = [
     {'blood_bank': {'name': 'Hope Hospital'}, 'donation_date': '2024-05-05', 'donation_time': '12:00:00', 'blood_type': 'A+', 'quantity_ml': 400, 'address': '45 Health Ave', 'city': 'Giza', 'total_amount': '450'}
   ];
-  List<dynamic> _done     = [
+  final List<dynamic> _done     = [
     {'blood_bank': {'name': 'Red Crescent'}, 'donation_date': '2024-04-10', 'donation_time': '09:30:00', 'blood_type': 'B+', 'quantity_ml': 500, 'address': '78 Care St', 'city': 'Alexandria', 'total_amount': '600'}
   ];
 

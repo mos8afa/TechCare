@@ -546,8 +546,9 @@ class _DoctorEditTimeSlotsScreenState extends State<DoctorEditTimeSlotsScreen> {
                               child: child!,
                             ),
                           );
-                          if (picked != null)
+                          if (picked != null) {
                             setModalState(() => selectedTime = picked);
+                          }
                         },
                         child: Container(
                           width: double.infinity,

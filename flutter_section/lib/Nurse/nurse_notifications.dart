@@ -304,7 +304,9 @@ class _NurseNotificationsScreenState extends State<NurseNotificationsScreen> {
                     if (_unreadCount > 0)
                       ElevatedButton.icon(
                         onPressed: () => setState(() {
-                          for (final n in _all) n.read = true;
+                          for (final n in _all) {
+                            n.read = true;
+                          }
                         }),
                         icon: const Icon(Icons.done_all_rounded, size: 14),
                         label: const Text(
