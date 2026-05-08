@@ -26,6 +26,7 @@ urlpatterns = [
     path('patient/', include('patient.urls', namespace='patient')),
     path('donor/', include('donor.urls', namespace='donor')),
     path('donation/', include('donor.donation_urls', namespace='donation')),
+    path('wallet/', include('wallet.urls', namespace='wallet')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

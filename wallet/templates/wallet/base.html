@@ -1,0 +1,227 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block page_title %}Wallet{% endblock %} — TechCare</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/wallet.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+<div class="wallet-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="wallet-sidebar" id="walletSidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">
+                    <img src="{% static 'img/logo.png' %}" alt="TechCare">
+                </span>
+                <div class="logo-text">
+                    <h2>TechCare</h2>
+                    <p>Medical Portal</p>
+                </div>
+                <button class="sidebar-toggle-btn" id="sidebarToggle" title="Toggle sidebar">
+                    <i class="bi bi-layout-sidebar-inset-reverse"></i>
+                </button>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            {# ── Doctor ── #}
+            {% if role == 'doctor' %}
+                <a href="{% url 'doctor:doctor_dashboard' %}" class="nav-item">
+                    <i class="bi bi-person"></i><span>Profile</span>
+                </a>
+                <a href="{% url 'doctor:doctor_requests' 'pending' %}" class="nav-item">
+                    <i class="ri-file-list-line"></i><span>Requests</span>
+                </a>
+                <a href="{% url 'wallet:notifications' %}" class="nav-item {% block nav_notif_doctor %}{% endblock %}">
+                    <i class="fa-regular fa-bell"></i><span>Notifications
+                    {% if unread_notifications %}<span class="sidebar-badge">{{ unread_notifications }}</span>{% endif %}
+                    </span>
+                </a>
+                <a href="{% url 'wallet:dashboard' %}" class="nav-item {% block nav_wallet %}{% endblock %}">
+                    <i class="ri-wallet-3-line"></i><span>Wallet</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="ri-error-warning-line"></i><span>Complaints</span>
+                </a>
+
+            {# ── Nurse ── #}
+            {% elif role == 'nurse' %}
+                <a href="{% url 'nurse:nurse_dashboard' %}" class="nav-item">
+                    <i class="bi bi-person"></i><span>Profile</span>
+                </a>
+                <a href="{% url 'nurse:nurse_requests' 'pending' %}" class="nav-item">
+                    <i class="ri-file-list-line"></i><span>Requests</span>
+                </a>
+                <a href="{% url 'wallet:notifications' %}" class="nav-item {% block nav_notif_nurse %}{% endblock %}">
+                    <i class="fa-regular fa-bell"></i><span>Notifications
+                    {% if unread_notifications %}<span class="sidebar-badge">{{ unread_notifications }}</span>{% endif %}
+                    </span>
+                </a>
+                <a href="{% url 'wallet:dashboard' %}" class="nav-item {% block nav_wallet_nurse %}{% endblock %}">
+                    <i class="ri-wallet-3-line"></i><span>Wallet</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="ri-error-warning-line"></i><span>Complaints</span>
+                </a>
+
+            {# ── Patient ── #}
+            {% elif role == 'patient' %}
+                <a href="{% url 'patient:patient_dashboard' %}" class="nav-item">
+                    <i class="bi bi-person"></i><span>Profile</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="ri-file-list-line"></i><span>Requests</span>
+                </a>
+                <a href="{% url 'wallet:notifications' %}" class="nav-item {% block nav_notif_patient %}{% endblock %}">
+                    <i class="fa-regular fa-bell"></i><span>Notifications
+                    {% if unread_notifications %}<span class="sidebar-badge">{{ unread_notifications }}</span>{% endif %}
+                    </span>
+                </a>
+                <a href="{% url 'wallet:dashboard' %}" class="nav-item {% block nav_wallet_patient %}{% endblock %}">
+                    <i class="ri-wallet-3-line"></i><span>Wallet</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="ri-error-warning-line"></i><span>Complaints</span>
+                </a>
+
+            {# ── Donor ── #}
+            {% elif role == 'donor' %}
+                <a href="{% url 'donor:donor_dashboard' %}" class="nav-item">
+                    <i class="bi bi-person"></i><span>Profile</span>
+                </a>
+                <a href="{% url 'donor:donor_requests' 'doctor' 'booking' %}" class="nav-item">
+                    <i class="ri-file-list-line"></i><span>Requests</span>
+                </a>
+                <a href="{% url 'wallet:notifications' %}" class="nav-item {% block nav_notif_donor %}{% endblock %}">
+                    <i class="fa-regular fa-bell"></i><span>Notifications
+                    {% if unread_notifications %}<span class="sidebar-badge">{{ unread_notifications }}</span>{% endif %}
+                    </span>
+                </a>
+                <a href="{% url 'donation:my_requests_pending' %}" class="nav-item">
+                    <i class="ri-hand-heart-line"></i><span>Donation</span>
+                </a>
+                <a href="{% url 'wallet:dashboard' %}" class="nav-item {% block nav_wallet_donor %}{% endblock %}">
+                    <i class="ri-wallet-3-line"></i><span>Wallet</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="ri-error-warning-line"></i><span>Complaints</span>
+                </a>
+
+            {# ── Fallback ── #}
+            {% else %}
+                <a href="{% url 'wallet:dashboard' %}" class="nav-item {% block nav_wallet_default %}{% endblock %}">
+                    <i class="ri-wallet-3-line"></i><span>Wallet</span>
+                </a>
+            {% endif %}
+
+            {# ── Wallet sub-nav (always shown when inside wallet) ── #}
+            <div class="sidebar-divider"></div>
+            <a href="{% url 'wallet:dashboard' %}"      class="nav-item nav-sub {% block sub_dashboard %}{% endblock %}">
+                <i class="ri-dashboard-line"></i><span>Overview</span>
+            </a>
+            <a href="{% url 'wallet:transactions' %}"   class="nav-item nav-sub {% block sub_transactions %}{% endblock %}">
+                <i class="ri-exchange-line"></i><span>Transactions</span>
+            </a>
+            <a href="{% url 'wallet:saved_cards' %}"    class="nav-item nav-sub {% block sub_cards %}{% endblock %}">
+                <i class="ri-bank-card-line"></i><span>Cards</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- MAIN AREA -->
+    <div class="wallet-main" id="walletMain">
+
+        <!-- Topbar -->
+        <header class="wallet-topbar">
+            <div class="topbar-left">
+                {% block topbar_title %}
+                    <h2 class="page-title">Wallet</h2>
+                {% endblock %}
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-notif" id="notifBtn">
+                    <i class="fa-regular fa-bell"></i>
+                    {% if unread_notifications %}
+                        <span class="notif-badge">{{ unread_notifications }}</span>
+                    {% endif %}
+                    <div class="notif-dropdown" id="notifDropdown">
+                        <div class="notif-header">
+                            <span>Notifications</span>
+                            <a href="{% url 'wallet:notifications' %}" class="notif-view-all">View All</a>
+                        </div>
+                        {% with wallet.notifications.all|slice:":4" as recent_notifs %}
+                            {% if recent_notifs %}
+                                {% for n in recent_notifs %}
+                                <div class="notif-item {% if not n.is_read %}unread{% endif %}">
+                                    <div class="notif-icon notif-{{ n.notif_type }}">
+                                        {% if n.notif_type == 'deposit' %}<i class="ri-arrow-down-circle-line"></i>
+                                        {% elif n.notif_type == 'withdraw' %}<i class="ri-arrow-up-circle-line"></i>
+                                        {% elif n.notif_type == 'payment' %}<i class="ri-bank-card-line"></i>
+                                        {% else %}<i class="ri-information-line"></i>{% endif %}
+                                    </div>
+                                    <div class="notif-content">
+                                        <p class="notif-title">{{ n.title }}</p>
+                                        <p class="notif-time">{{ n.created_at|timesince }} ago</p>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="notif-empty">No notifications yet</div>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+
+                <div class="topbar-divider"></div>
+
+                <div class="topbar-profile">
+                    <div class="profile-info">
+                        <h4>{{ name }}</h4>
+                        <span class="profile-role">{{ role|capfirst }}</span>
+                    </div>
+                    {% if profile_pic %}
+                        <img src="{{ profile_pic.url }}" alt="{{ name }}" class="profile-avatar">
+                    {% else %}
+                        <div class="profile-avatar-placeholder">{{ name|first|upper }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert-toast alert-{{ message.tags }}" role="alert">
+                {% if 'success' in message.tags %}<i class="ri-checkbox-circle-line"></i>
+                {% elif 'error' in message.tags %}<i class="ri-error-warning-line"></i>
+                {% else %}<i class="ri-information-line"></i>{% endif %}
+                {{ message }}
+                <button class="toast-close" onclick="this.parentElement.remove()">&#215;</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <main class="wallet-content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/wallet.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

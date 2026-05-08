@@ -1,0 +1,241 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet Detail — {{ target_user.username }} — TechCare Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/wallet.css' %}">
+    <style>
+        body { background: #F4F7FC; font-family: 'Inter', sans-serif; }
+        .admin-header { background: #1D89E4; color: #fff; padding: 16px 32px; display: flex; align-items: center; gap: 16px; }
+        .admin-header h1 { font-size: 18px; font-weight: 700; margin: 0; }
+        .back-link { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 13px; }
+        .back-link:hover { color: #fff; }
+        .admin-body { padding: 28px; }
+        .info-card { background: #fff; border-radius: 14px; padding: 24px; border: 1px solid #E1E6EC; margin-bottom: 20px; }
+        .info-title { font-size: 15px; font-weight: 700; margin-bottom: 16px; color: #1a1c1e; display: flex; align-items: center; gap: 8px; }
+        .info-row { display: flex; gap: 32px; flex-wrap: wrap; margin-bottom: 8px; }
+        .info-item label { font-size: 11px; font-weight: 700; color: #718096; text-transform: uppercase; display: block; margin-bottom: 4px; }
+        .info-item span { font-size: 15px; font-weight: 600; color: #1a1c1e; }
+        .balance-big { font-size: 36px; font-weight: 800; color: #1D89E4; }
+        .admin-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .admin-table th { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: #718096; text-transform: uppercase; padding: 10px 12px; border-bottom: 1px solid #E1E6EC; text-align: left; }
+        .admin-table td { padding: 11px 12px; border-bottom: 1px solid #F0F4F8; vertical-align: middle; }
+        .admin-table tr:last-child td { border-bottom: none; }
+        .amount-credit { color: #10b981; font-weight: 700; }
+        .amount-debit  { color: #EF4444; font-weight: 700; }
+        .reconcile-ok  { background: #DCFCE7; color: #166534; padding: 8px 16px; border-radius: 10px; font-weight: 600; font-size: 13px; display: inline-block; }
+        .reconcile-err { background: #FEE2E2; color: #991B1B; padding: 8px 16px; border-radius: 10px; font-weight: 600; font-size: 13px; display: inline-block; }
+        .vis-ok  { background: #DCFCE7; color: #166534; padding: 6px 14px; border-radius: 50px; font-size: 12px; font-weight: 700; }
+        .vis-err { background: #FEE2E2; color: #991B1B; padding: 6px 14px; border-radius: 50px; font-size: 12px; font-weight: 700; }
+        .tab-nav { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 2px solid #E1E6EC; }
+        .tab-btn { padding: 10px 18px; border: none; background: none; font-size: 13px; font-weight: 600; color: #718096; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+        .tab-btn.active { color: #1D89E4; border-bottom-color: #1D89E4; }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+    </style>
+</head>
+<body>
+
+<div class="admin-header">
+    <a href="{% url 'wallet:admin_dashboard' %}" class="back-link"><i class="ri-arrow-left-line"></i> Back</a>
+    <h1>Wallet Detail — {{ target_user.username }}</h1>
+</div>
+
+<div class="admin-body">
+    <div class="row g-4">
+
+        <!-- ── User & Wallet Info ── -->
+        <div class="col-lg-4">
+            <div class="info-card">
+                <div class="info-title"><i class="ri-user-line" style="color:#1D89E4"></i> User Info</div>
+                <div class="info-row">
+                    <div class="info-item"><label>Username</label><span>{{ target_user.username }}</span></div>
+                    <div class="info-item"><label>Role</label><span>{{ target_user.role|capfirst }}</span></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-item"><label>Email</label><span>{{ target_user.email }}</span></div>
+                    <div class="info-item"><label>Verified</label><span>{{ target_user.is_verified|yesno:"Yes,No" }}</span></div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="info-title"><i class="ri-wallet-3-line" style="color:#1D89E4"></i> Wallet Balance</div>
+                <div class="balance-big">{{ wallet.balance|floatformat:2 }} EGP</div>
+                <div class="mt-3">
+                    <div class="info-row">
+                        <div class="info-item"><label>Total Deposits</label><span class="amount-credit">{{ wallet.total_deposits|floatformat:2 }}</span></div>
+                        <div class="info-item"><label>Total Withdrawals</label><span class="amount-debit">{{ wallet.total_withdrawals|floatformat:2 }}</span></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-item"><label>Total Spent</label><span class="amount-debit">{{ wallet.total_spent|floatformat:2 }}</span></div>
+                        <div class="info-item"><label>Active</label><span>{{ wallet.is_active|yesno:"Yes,No" }}</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reconciliation -->
+            <div class="info-card">
+                <div class="info-title"><i class="ri-scales-line" style="color:#1D89E4"></i> Ledger Reconciliation</div>
+                {% if reconciliation.is_reconciled %}
+                    <span class="reconcile-ok"><i class="ri-checkbox-circle-line"></i> Balanced</span>
+                {% else %}
+                    <span class="reconcile-err"><i class="ri-error-warning-line"></i> Discrepancy: {{ reconciliation.discrepancy|floatformat:2 }} EGP</span>
+                {% endif %}
+                <div class="mt-2" style="font-size:12px;color:#718096;">
+                    Ledger balance: {{ reconciliation.ledger_balance|floatformat:2 }} EGP
+                </div>
+            </div>
+
+            <!-- Provider Visibility -->
+            {% if visibility_status %}
+            <div class="info-card">
+                <div class="info-title"><i class="ri-eye-line" style="color:#1D89E4"></i> Provider Visibility</div>
+                {% if visibility_status.is_visible %}
+                    <span class="vis-ok"><i class="ri-eye-line"></i> Visible to patients</span>
+                {% else %}
+                    <span class="vis-err"><i class="ri-eye-off-line"></i> Hidden from patients</span>
+                {% endif %}
+                <div class="mt-3" style="font-size:13px;">
+                    <div class="info-row">
+                        <div class="info-item"><label>Threshold</label><span>{{ visibility_status.threshold|floatformat:2 }} EGP</span></div>
+                        <div class="info-item"><label>Balance</label><span>{{ visibility_status.balance|floatformat:2 }} EGP</span></div>
+                    </div>
+                    {% if not visibility_status.is_visible %}
+                    <div class="info-item mt-2"><label>Shortfall</label><span class="amount-debit">{{ visibility_status.shortfall|floatformat:2 }} EGP needed</span></div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- ── Tabbed Detail ── -->
+        <div class="col-lg-8">
+            <div class="info-card">
+                <div class="tab-nav">
+                    <button class="tab-btn active" onclick="showTab('transactions', this)">Transactions</button>
+                    <button class="tab-btn" onclick="showTab('ledger', this)">Ledger</button>
+                    <button class="tab-btn" onclick="showTab('deposits', this)">Deposit Requests</button>
+                    <button class="tab-btn" onclick="showTab('withdrawals', this)">Withdrawal Requests</button>
+                    <button class="tab-btn" onclick="showTab('notifications', this)">Notifications</button>
+                </div>
+
+                <!-- Transactions -->
+                <div id="tab-transactions" class="tab-pane active">
+                    <table class="admin-table">
+                        <thead><tr><th>Type</th><th>Amount</th><th>Description</th><th>Status</th><th>Date</th></tr></thead>
+                        <tbody>
+                            {% for txn in transactions %}
+                            <tr>
+                                <td><span class="badge-service badge-{{ txn.transaction_type }}" style="font-size:11px;padding:3px 8px;border-radius:50px;">{{ txn.get_transaction_type_display }}</span></td>
+                                <td class="{% if txn.is_credit %}amount-credit{% else %}amount-debit{% endif %}">
+                                    {% if txn.is_credit %}+{% else %}-{% endif %}{{ txn.amount|floatformat:2 }} EGP
+                                </td>
+                                <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ txn.description|truncatechars:35 }}</td>
+                                <td><span class="badge-status badge-{{ txn.status }}" style="font-size:11px;padding:3px 8px;border-radius:50px;">{{ txn.get_status_display }}</span></td>
+                                <td style="color:#718096;font-size:12px;">{{ txn.created_at|date:"M d, Y H:i" }}</td>
+                            </tr>
+                            {% empty %}<tr><td colspan="5" style="text-align:center;color:#718096;padding:20px;">No transactions.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Ledger -->
+                <div id="tab-ledger" class="tab-pane">
+                    <table class="admin-table">
+                        <thead><tr><th>Type</th><th>Amount</th><th>Before</th><th>After</th><th>Description</th><th>Date</th></tr></thead>
+                        <tbody>
+                            {% for entry in ledger %}
+                            <tr>
+                                <td><span style="font-size:11px;font-weight:700;text-transform:uppercase;color:#718096;">{{ entry.entry_type }}</span></td>
+                                <td class="{% if entry.entry_type in 'credit,refund' %}amount-credit{% else %}amount-debit{% endif %}">
+                                    {{ entry.amount|floatformat:2 }} EGP
+                                </td>
+                                <td style="color:#718096;">{{ entry.balance_before|floatformat:2 }}</td>
+                                <td style="font-weight:600;">{{ entry.balance_after|floatformat:2 }}</td>
+                                <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;">{{ entry.description|truncatechars:30 }}</td>
+                                <td style="color:#718096;font-size:12px;">{{ entry.created_at|date:"M d, Y H:i" }}</td>
+                            </tr>
+                            {% empty %}<tr><td colspan="6" style="text-align:center;color:#718096;padding:20px;">No ledger entries.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Deposit Requests -->
+                <div id="tab-deposits" class="tab-pane">
+                    <table class="admin-table">
+                        <thead><tr><th>Amount</th><th>Card</th><th>Status</th><th>Created</th><th>Processed</th></tr></thead>
+                        <tbody>
+                            {% for dep in dep_requests %}
+                            <tr>
+                                <td class="amount-credit">{{ dep.amount|floatformat:2 }} EGP</td>
+                                <td>{{ dep.card_type|upper }} •••• {{ dep.card_last4 }}</td>
+                                <td><span class="badge-status badge-{{ dep.status }}" style="font-size:11px;padding:3px 8px;border-radius:50px;">{{ dep.get_status_display }}</span></td>
+                                <td style="color:#718096;font-size:12px;">{{ dep.created_at|date:"M d, Y" }}</td>
+                                <td style="color:#718096;font-size:12px;">{{ dep.processed_at|date:"M d, Y"|default:"—" }}</td>
+                            </tr>
+                            {% empty %}<tr><td colspan="5" style="text-align:center;color:#718096;padding:20px;">No deposit requests.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Withdrawal Requests -->
+                <div id="tab-withdrawals" class="tab-pane">
+                    <table class="admin-table">
+                        <thead><tr><th>Amount</th><th>Bank</th><th>Account Holder</th><th>Status</th><th>Created</th></tr></thead>
+                        <tbody>
+                            {% for wr in wd_requests %}
+                            <tr>
+                                <td class="amount-debit">{{ wr.amount|floatformat:2 }} EGP</td>
+                                <td>{{ wr.bank_name|default:"—" }}</td>
+                                <td>{{ wr.account_holder|default:"—" }}</td>
+                                <td><span class="badge-status badge-{{ wr.status }}" style="font-size:11px;padding:3px 8px;border-radius:50px;">{{ wr.get_status_display }}</span></td>
+                                <td style="color:#718096;font-size:12px;">{{ wr.created_at|date:"M d, Y" }}</td>
+                            </tr>
+                            {% empty %}<tr><td colspan="5" style="text-align:center;color:#718096;padding:20px;">No withdrawal requests.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Notifications -->
+                <div id="tab-notifications" class="tab-pane">
+                    <table class="admin-table">
+                        <thead><tr><th>Type</th><th>Title</th><th>Message</th><th>Read</th><th>Date</th></tr></thead>
+                        <tbody>
+                            {% for notif in notifications %}
+                            <tr>
+                                <td style="font-size:11px;font-weight:700;text-transform:uppercase;color:#718096;">{{ notif.notif_type }}</td>
+                                <td style="font-weight:600;">{{ notif.title }}</td>
+                                <td style="font-size:12px;color:#4b5563;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ notif.message|truncatechars:50 }}</td>
+                                <td>{% if notif.is_read %}<span style="color:#10b981;font-size:12px;">✓</span>{% else %}<span style="color:#EF4444;font-size:12px;">●</span>{% endif %}</td>
+                                <td style="color:#718096;font-size:12px;">{{ notif.created_at|date:"M d, Y H:i" }}</td>
+                            </tr>
+                            {% empty %}<tr><td colspan="5" style="text-align:center;color:#718096;padding:20px;">No notifications.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function showTab(name, btn) {
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+}
+</script>
+</body>
+</html>

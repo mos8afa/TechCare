@@ -13,7 +13,18 @@ from datetime import datetime as dt
 import json as _json
 from donor.models import BloodDonationRequest, DonorOffer
 from accounts.models import BLOOD_TYPES, GOVERNORATES as GOV_CHOICES
+from decimal import Decimal
 
+
+
+def _get_wallet_balance(user):
+    """Return the user's wallet balance, creating the wallet if it doesn't exist yet."""
+    try:
+        from wallet.models import Wallet
+        wallet, _ = Wallet.objects.get_or_create(user=user)
+        return wallet.balance
+    except Exception:
+        return Decimal('0.00')
 
 
 @login_required
@@ -71,6 +82,8 @@ def patient_dashboard(request):
         'total_pending': total_pending,
         'total_accepted': total_accepted,
         'total_completed': total_completed,
+        # wallet
+        'wallet_balance': _get_wallet_balance(request.user),
     })
 
 @login_required
@@ -163,7 +176,9 @@ def patient_requests(request, category, type):
         all_requests = patient.doctor_requests.all()
 
         if type == 'booking':
-            doctors = Doctor.objects.filter(slots__isnull=False).distinct()
+            from wallet.services.provider_visibility_service import filter_visible_doctors
+            all_doctors = Doctor.objects.filter(slots__isnull=False).distinct()
+            doctors = filter_visible_doctors(all_doctors)
             for doctor in doctors:
                 avg = doctor.rates.aggregate(Avg('rate'))['rate__avg'] or 0
                 doctor.avg_rating = round(avg)
@@ -201,11 +216,16 @@ def patient_requests(request, category, type):
         all_nurse = patient.nurse_requests.all()
 
         if type == 'booking':
-            nurses = Nurse.objects.filter(slots__isnull=False).distinct()
+            from wallet.services.provider_visibility_service import filter_visible_nurses
+            all_nurses = Nurse.objects.filter(slots__isnull=False).distinct()
+            nurses = filter_visible_nurses(all_nurses)
+            min_price = None
             for nurse in nurses:
                 avg = nurse.rates.aggregate(Avg('rate'))['rate__avg'] or 0
                 nurse.avg_rating = round(avg)
-                min_price = nurse.nurse_services.aggregate(Min('price'))['price__min']
+                np = nurse.nurse_services.aggregate(Min('price'))['price__min']
+                if np is not None and (min_price is None or np < min_price):
+                    min_price = np
             return render(request, 'patient/nurse_booking.html', {
                 **context_base,
                 'nurses': nurses,

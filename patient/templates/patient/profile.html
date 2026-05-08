@@ -23,17 +23,25 @@
                 <button class="sidebar-toggle"><i class="bi bi-layout-sidebar-inset-reverse"></i></button>
             </div>
         </div>
-        <aside class="aside">
-            <a href="{% url 'patient:patient_dashboard' %}" class="aside-item active">
+                        <aside class="aside">
+            <a href="{% url 'patient:patient_dashboard' %}" class="aside-item">
                 <i class="bi bi-person"></i><span>Profile</span>
             </a>
             <a href="{% url 'patient:patient_requests' 'doctor' 'booking' %}" class="aside-item">
                 <i class="ri-file-list-line"></i><span>Requests</span>
             </a>
-            <a href="#" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
-            <a href="{% url 'patient:my_blood_requests_pending' %}" class="aside-item"><i class="ri-hand-heart-line"></i><span>Donation</span></a>
-            <a href="#" class="aside-item"><i class="ri-wallet-3-line"></i><span>Wallet</span></a>
-            <a href="#" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
+            <a href="#" class="aside-item">
+                <i class="fa-regular fa-bell"></i><span>Notifications</span>
+            </a>
+            <a href="{% url 'patient:my_blood_requests_pending' %}" class="aside-item">
+                <i class="ri-hand-heart-line"></i><span>Donation</span>
+            </a>
+            <a href="{% url 'wallet:dashboard' %}" class="aside-item">
+                <i class="ri-wallet-3-line"></i><span>Wallet</span>
+            </a>
+            <a href="#" class="aside-item">
+                <i class="ri-error-warning-line"></i><span>Complaints</span>
+            </a>
         </aside>
     </aside>
 
@@ -147,7 +155,7 @@
             <!-- Bottom Section -->
             <div class="bottom-section">
                 <!-- Wallet Card -->
-                <div class="profile-wallet-card">
+                <div class="profile-wallet-card" onclick="window.location.href='{% url 'wallet:dashboard' %}'" style="cursor:pointer;">
                     <div class="wallet-header-flex">
                         <div class="wallet-title-area">
                             <h3>TechCare Wallet</h3>
@@ -159,8 +167,11 @@
                     </div>
                     <div class="wallet-balance-box">
                         <span class="balance-label">AVAILABLE BALANCE</span>
-                        <div class="balance-amount">0.00 EGP</div>
+                        <div class="balance-amount">{{ wallet_balance|floatformat:2 }} EGP</div>
                     </div>
+                    <a href="{% url 'wallet:dashboard' %}" class="wallet-go-btn" style="display:inline-block;margin-top:12px;font-size:13px;font-weight:600;color:#1D89E4;">
+                        Manage Wallet &rarr;
+                    </a>
                 </div>
 
                 <!-- Stats Column -->

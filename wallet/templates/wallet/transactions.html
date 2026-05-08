@@ -1,0 +1,109 @@
+{% extends 'wallet/base.html' %}
+{% load static %}
+
+{% block page_title %}Transactions{% endblock %}
+{% block sub_transactions %}active{% endblock %}
+
+{% block topbar_title %}
+    <div>
+        <h2 class="page-title">Transaction History</h2>
+        <p class="page-subtitle">Full record of all your wallet activity.</p>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+<!-- Filter Bar -->
+<div class="filter-bar">
+    <form method="get" class="filter-form">
+        <div class="filter-group">
+            <label>Type</label>
+            <select name="type" class="wallet-select" onchange="this.form.submit()">
+                <option value="">All Types</option>
+                {% for val, label in transaction_types %}
+                    <option value="{{ val }}" {% if filter_type == val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Status</label>
+            <select name="status" class="wallet-select" onchange="this.form.submit()">
+                <option value="">All Statuses</option>
+                {% for val, label in status_choices %}
+                    <option value="{{ val }}" {% if filter_status == val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% if filter_type or filter_status %}
+            <a href="{% url 'wallet:transactions' %}" class="btn-clear-filter">
+                <i class="ri-close-line"></i> Clear
+            </a>
+        {% endif %}
+    </form>
+</div>
+
+<!-- Transactions Table -->
+<div class="transactions-card">
+    <div class="table-responsive">
+        <table class="wallet-table">
+            <thead>
+                <tr>
+                    <th>DESCRIPTION</th>
+                    <th>DATE</th>
+                    <th>TYPE</th>
+                    <th>AMOUNT</th>
+                    <th>STATUS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for txn in transactions %}
+                <tr class="txn-row">
+                    <td>
+                        <div class="txn-entity">
+                            <div class="entity-icon entity-{{ txn.transaction_type }}">
+                                {% if txn.transaction_type == 'deposit' %}<i class="ri-arrow-down-circle-line"></i>
+                                {% elif txn.transaction_type == 'withdraw' %}<i class="ri-arrow-up-circle-line"></i>
+                                {% elif txn.transaction_type == 'payment' %}<i class="ri-bank-card-line"></i>
+                                {% elif txn.transaction_type == 'refund' %}<i class="ri-refund-2-line"></i>
+                                {% elif txn.transaction_type == 'deduction' %}<i class="ri-subtract-line"></i>
+                                {% else %}<i class="ri-exchange-line"></i>{% endif %}
+                            </div>
+                            <div>
+                                <p class="entity-name">{{ txn.description|default:"—"|truncatechars:50 }}</p>
+                                {% if txn.reference %}
+                                    <p class="entity-ref">Ref: {{ txn.reference }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </td>
+                    <td class="txn-date">{{ txn.created_at|date:"M d, Y" }}<br><small>{{ txn.created_at|time:"H:i" }}</small></td>
+                    <td>
+                        <span class="badge-service badge-{{ txn.transaction_type }}">
+                            {{ txn.get_transaction_type_display }}
+                        </span>
+                    </td>
+                    <td class="txn-amount {% if txn.is_credit %}credit{% else %}debit{% endif %}">
+                        {% if txn.is_credit %}+{% else %}-{% endif %}{{ txn.amount|floatformat:2 }} EGP
+                    </td>
+                    <td>
+                        <span class="badge-status badge-{{ txn.status }}">
+                            {{ txn.get_status_display }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">
+                        <div class="empty-state-full">
+                            <i class="ri-file-list-3-line"></i>
+                            <p>No transactions found.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

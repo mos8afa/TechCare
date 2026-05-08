@@ -1,0 +1,232 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet Admin Dashboard — TechCare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/wallet.css' %}">
+    <style>
+        body { background: #F4F7FC; font-family: 'Inter', sans-serif; }
+        .admin-header { background: #1D89E4; color: #fff; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; }
+        .admin-header h1 { font-size: 20px; font-weight: 700; margin: 0; }
+        .admin-nav a { color: rgba(255,255,255,0.85); text-decoration: none; margin-left: 20px; font-size: 14px; font-weight: 500; }
+        .admin-nav a:hover { color: #fff; }
+        .admin-body { padding: 32px; }
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
+        .stat-box { background: #fff; border-radius: 14px; padding: 20px; border: 1px solid #E1E6EC; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .stat-box .label { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; color: #718096; text-transform: uppercase; margin-bottom: 8px; }
+        .stat-box .value { font-size: 26px; font-weight: 800; color: #1a1c1e; }
+        .stat-box .value.green { color: #10b981; }
+        .stat-box .value.red   { color: #EF4444; }
+        .stat-box .value.blue  { color: #1D89E4; }
+        .stat-box .value.orange{ color: #F59E0B; }
+        .section-card { background: #fff; border-radius: 14px; padding: 24px; border: 1px solid #E1E6EC; margin-bottom: 24px; }
+        .section-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .badge-vis { display: inline-block; padding: 3px 10px; border-radius: 50px; font-size: 11px; font-weight: 700; }
+        .badge-vis.visible   { background: #DCFCE7; color: #166534; }
+        .badge-vis.invisible { background: #FEE2E2; color: #991B1B; }
+        .admin-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .admin-table th { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: #718096; text-transform: uppercase; padding: 10px 12px; border-bottom: 1px solid #E1E6EC; text-align: left; }
+        .admin-table td { padding: 12px; border-bottom: 1px solid #F0F4F8; vertical-align: middle; }
+        .admin-table tr:last-child td { border-bottom: none; }
+        .admin-table tr:hover td { background: #FAFBFF; }
+        .amount-credit { color: #10b981; font-weight: 700; }
+        .amount-debit  { color: #EF4444; font-weight: 700; }
+        .pending-badge { background: #FEF9C3; color: #854D0E; padding: 3px 10px; border-radius: 50px; font-size: 11px; font-weight: 700; }
+        .detail-link { color: #1D89E4; font-weight: 600; font-size: 12px; text-decoration: none; }
+        .detail-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="admin-header">
+    <h1><i class="ri-wallet-3-line"></i> Wallet Admin Dashboard</h1>
+    <nav class="admin-nav">
+        <a href="{% url 'wallet:admin_dashboard' %}">Overview</a>
+        <a href="{% url 'wallet:admin_provider_visibility' %}">Provider Visibility</a>
+        <a href="{% url 'admin:index' %}">Django Admin</a>
+        <a href="{% url 'wallet:dashboard' %}">My Wallet</a>
+    </nav>
+</div>
+
+<div class="admin-body">
+
+    <!-- ── System Totals ── -->
+    <div class="stat-grid">
+        <div class="stat-box">
+            <div class="label">Total System Balance</div>
+            <div class="value blue">{{ total_system_balance|floatformat:2 }} EGP</div>
+        </div>
+        <div class="stat-box">
+            <div class="label">Active Wallets</div>
+            <div class="value">{{ active_wallets }} / {{ total_wallets }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="label">Total Deposits</div>
+            <div class="value green">{{ total_deposits|floatformat:2 }} EGP</div>
+        </div>
+        <div class="stat-box">
+            <div class="label">Total Withdrawals</div>
+            <div class="value red">{{ total_withdrawals|floatformat:2 }} EGP</div>
+        </div>
+        <div class="stat-box">
+            <div class="label">Total Payments</div>
+            <div class="value orange">{{ total_payments|floatformat:2 }} EGP</div>
+        </div>
+        <div class="stat-box">
+            <div class="label">Total Refunds</div>
+            <div class="value green">{{ total_refunds|floatformat:2 }} EGP</div>
+        </div>
+        <div class="stat-box">
+            <div class="label">Pending Deposits</div>
+            <div class="value orange">{{ pending_deposits }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="label">Pending Withdrawals</div>
+            <div class="value orange">{{ pending_withdraws }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="label">Unread Notifications</div>
+            <div class="value">{{ unread_notifs }}</div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- ── Provider Visibility Summary ── -->
+        <div class="col-lg-6">
+            <div class="section-card">
+                <div class="section-title">
+                    <i class="ri-eye-line" style="color:#1D89E4"></i>
+                    Provider Visibility
+                    <a href="{% url 'wallet:admin_provider_visibility' %}" class="detail-link ms-auto">Full Report →</a>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-6">
+                        <div class="stat-box" style="padding:14px">
+                            <div class="label">Visible Doctors</div>
+                            <div class="value green" style="font-size:20px">{{ visible_doctors_count }}</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-box" style="padding:14px">
+                            <div class="label">Hidden Doctors</div>
+                            <div class="value red" style="font-size:20px">{{ invisible_doctors_count }}</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-box" style="padding:14px">
+                            <div class="label">Visible Nurses</div>
+                            <div class="value green" style="font-size:20px">{{ visible_nurses_count }}</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-box" style="padding:14px">
+                            <div class="label">Hidden Nurses</div>
+                            <div class="value red" style="font-size:20px">{{ invisible_nurses_count }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if invisible_doctors %}
+                <p style="font-size:12px;font-weight:700;color:#718096;margin-bottom:8px;">DOCTORS BELOW THRESHOLD</p>
+                <table class="admin-table">
+                    <thead><tr><th>Doctor</th><th>Balance</th><th>Threshold</th><th>Shortfall</th></tr></thead>
+                    <tbody>
+                        {% for doc in invisible_doctors %}
+                        <tr>
+                            <td>Dr. {{ doc.user.first_name }} {{ doc.user.last_name }}</td>
+                            <td class="amount-debit">{{ doc._wallet_balance|floatformat:2 }}</td>
+                            <td>{{ doc._visibility_threshold|floatformat:2 }}</td>
+                            <td class="amount-debit">{{ doc._shortfall|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- ── Top Wallets ── -->
+        <div class="col-lg-6">
+            <div class="section-card">
+                <div class="section-title">
+                    <i class="ri-trophy-line" style="color:#F59E0B"></i>
+                    Top Wallets by Balance
+                </div>
+                <table class="admin-table">
+                    <thead><tr><th>User</th><th>Role</th><th>Balance</th><th>Detail</th></tr></thead>
+                    <tbody>
+                        {% for w in top_wallets %}
+                        <tr>
+                            <td>{{ w.user.username }}</td>
+                            <td>{{ w.user.role|capfirst }}</td>
+                            <td class="amount-credit">{{ w.balance|floatformat:2 }} EGP</td>
+                            <td><a href="{% url 'wallet:admin_wallet_detail' w.user.pk %}" class="detail-link">View →</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ── Recent Transactions ── -->
+        <div class="col-12">
+            <div class="section-card">
+                <div class="section-title">
+                    <i class="ri-exchange-line" style="color:#1D89E4"></i>
+                    Recent Transactions (Last 20)
+                </div>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Wallet</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for txn in recent_transactions %}
+                            <tr>
+                                <td>{{ txn.wallet.user.username }}</td>
+                                <td>
+                                    <span class="badge-service badge-{{ txn.transaction_type }}" style="font-size:11px;padding:3px 8px;border-radius:50px;">
+                                        {{ txn.get_transaction_type_display }}
+                                    </span>
+                                </td>
+                                <td class="{% if txn.is_credit %}amount-credit{% else %}amount-debit{% endif %}">
+                                    {% if txn.is_credit %}+{% else %}-{% endif %}{{ txn.amount|floatformat:2 }} EGP
+                                </td>
+                                <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                                    {{ txn.description|truncatechars:40 }}
+                                </td>
+                                <td>
+                                    <span class="badge-status badge-{{ txn.status }}" style="font-size:11px;padding:3px 8px;border-radius:50px;">
+                                        {{ txn.get_status_display }}
+                                    </span>
+                                </td>
+                                <td style="color:#718096;font-size:12px;">{{ txn.created_at|date:"M d, Y H:i" }}</td>
+                                <td><a href="{% url 'wallet:admin_wallet_detail' txn.wallet.user.pk %}" class="detail-link">View →</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

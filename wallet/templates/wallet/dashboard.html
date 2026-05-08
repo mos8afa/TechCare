@@ -1,0 +1,535 @@
+﻿{% extends "wallet/base.html" %}
+{% load static %}
+
+{% block page_title %}Wallet{% endblock %}
+
+{% block topbar_title %}
+    {% if template_variant == "provider" %}
+        <div>
+            <h2 class="page-title">Income &amp; Earnings</h2>
+            <p class="page-subtitle">Overview of your professional earnings from consultations.</p>
+        </div>
+    {% else %}
+        <div>
+            <h2 class="page-title">My Wallet &amp; Payments</h2>
+            <p class="page-subtitle">Manage your clinical credits and payment history securely.</p>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block nav_wallet %}active{% endblock %}
+{% block nav_wallet_nurse %}active{% endblock %}
+{% block nav_wallet_patient %}active{% endblock %}
+{% block nav_wallet_donor %}active{% endblock %}
+{% block nav_wallet_default %}active{% endblock %}
+{% block sub_dashboard %}active{% endblock %}
+
+{% block extra_css %}
+<style>
+.chart-container { position: relative; height: 180px; }
+.analytics-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.analytics-pill { background: #F4F7FC; border-radius: 10px; padding: 10px 16px; flex: 1; min-width: 120px; }
+.analytics-pill .ap-label { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; color: #718096; text-transform: uppercase; }
+.analytics-pill .ap-value { font-size: 18px; font-weight: 800; color: #1a1c1e; margin-top: 2px; }
+.analytics-pill .ap-value.green { color: #10b981; }
+.analytics-pill .ap-value.red   { color: #EF4444; }
+.analytics-pill .ap-value.blue  { color: #1D89E4; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+{% if template_variant == "provider" %}
+
+<div class="row g-4">
+
+    <!-- Balance Card -->
+    <div class="col-lg-5">
+        <div class="balance-card balance-card--provider">
+            <p class="balance-label">AVAILABLE BALANCE</p>
+            <h1 class="balance-amount">
+                {{ wallet.balance|floatformat:2 }}
+                <span class="balance-currency">EGP</span>
+            </h1>
+            <div class="balance-actions mt-4">
+                <button class="btn-wallet btn-wallet--outline"
+                        data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                    <i class="ri-bank-line"></i> Withdraw to Bank
+                </button>
+                <button class="btn-wallet btn-wallet--ghost"
+                        data-bs-toggle="modal" data-bs-target="#depositModal">
+                    <i class="ri-add-line"></i> Add Funds
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats (real data from analytics service) -->
+    <div class="col-lg-7">
+        <div class="row g-3 h-100">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon--blue">
+                        <i class="ri-money-dollar-circle-line"></i>
+                    </div>
+                    <p class="stat-label">CONSULTATION INCOME</p>
+                    <h3 class="stat-value">{{ consultation_income|floatformat:0 }}</h3>
+                    <p class="stat-sub">This Month</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon--orange">
+                        <i class="ri-percent-line"></i>
+                    </div>
+                    <p class="stat-label">PLATFORM FEES ({{ fee_percent }}%)</p>
+                    <h3 class="stat-value text-danger">-{{ platform_fees|floatformat:0 }}</h3>
+                    <p class="stat-sub">Standard Commission</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon--green">
+                        <i class="ri-shield-check-line"></i>
+                    </div>
+                    <p class="stat-label">NET PROFIT</p>
+                    <h3 class="stat-value text-success">{{ net_profit|floatformat:0 }}</h3>
+                    <p class="stat-sub">Final Earnings</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monthly Earnings Chart -->
+    <div class="col-lg-6">
+        <div class="transactions-card">
+            <div class="transactions-header">
+                <h3>Monthly Earnings</h3>
+                <span style="font-size:12px;color:#718096;">Last 6 months</span>
+            </div>
+            <div class="chart-container">
+                <canvas id="earningsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- All-time totals -->
+    <div class="col-lg-6">
+        <div class="transactions-card">
+            <div class="transactions-header"><h3>All-Time Summary</h3></div>
+            <div class="analytics-row">
+                <div class="analytics-pill">
+                    <div class="ap-label">Total Income</div>
+                    <div class="ap-value blue">{{ total_income|floatformat:2 }} EGP</div>
+                </div>
+                <div class="analytics-pill">
+                    <div class="ap-label">Total Fees</div>
+                    <div class="ap-value red">{{ total_fees|floatformat:2 }} EGP</div>
+                </div>
+                <div class="analytics-pill">
+                    <div class="ap-label">Net Profit</div>
+                    <div class="ap-value green">{{ total_net|floatformat:2 }} EGP</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="col-12">
+        <div class="transactions-card">
+            <div class="transactions-header">
+                <h3>Recent Transactions</h3>
+                <a href="{% url 'wallet:transactions' %}" class="btn-view-all">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="wallet-table">
+                    <thead>
+                        <tr>
+                            <th>PATIENT / ENTITY</th>
+                            <th>DATE</th>
+                            <th>SERVICE TYPE</th>
+                            <th>AMOUNT</th>
+                            <th>STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for txn in recent_transactions %}
+                        <tr>
+                            <td>
+                                <div class="txn-entity">
+                                    <div class="entity-avatar">{{ txn.description|first|upper }}</div>
+                                    <span>{{ txn.description|truncatechars:32 }}</span>
+                                </div>
+                            </td>
+                            <td class="txn-date">{{ txn.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <span class="badge-service badge-{{ txn.transaction_type }}">
+                                    {{ txn.get_transaction_type_display }}
+                                </span>
+                            </td>
+                            <td class="txn-amount {% if txn.is_credit %}credit{% else %}debit{% endif %}">
+                                {% if txn.is_credit %}+{% else %}-{% endif %}{{ txn.amount|floatformat:2 }} EGP
+                            </td>
+                            <td>
+                                <span class="badge-status badge-{{ txn.status }}">
+                                    {{ txn.get_status_display }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" class="empty-state">No transactions yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% else %}
+
+<div class="row g-4">
+
+    <!-- Left Column -->
+    <div class="col-lg-8">
+
+        <!-- Balance Card -->
+        <div class="balance-card balance-card--consumer">
+            <div class="balance-left">
+                <p class="balance-label">AVAILABLE BALANCE</p>
+                <h1 class="balance-amount">
+                    {{ wallet.balance|floatformat:0 }}
+                    <span class="balance-currency">EGP</span>
+                </h1>
+            </div>
+            <div class="balance-actions">
+                <button class="btn-wallet btn-wallet--outline"
+                        data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                    <i class="ri-arrow-up-circle-line"></i> Withdraw
+                </button>
+                <button class="btn-wallet btn-wallet--primary"
+                        data-bs-toggle="modal" data-bs-target="#depositModal">
+                    <i class="ri-add-circle-line"></i> Add Funds
+                </button>
+            </div>
+        </div>
+
+        <!-- Real analytics pills -->
+        <div class="analytics-row mt-3">
+            <div class="analytics-pill">
+                <div class="ap-label">Total Spent</div>
+                <div class="ap-value red">{{ total_spent|floatformat:2 }} EGP</div>
+            </div>
+            <div class="analytics-pill">
+                <div class="ap-label">This Month Deposits</div>
+                <div class="ap-value green">{{ month_deposits|floatformat:2 }} EGP</div>
+            </div>
+            <div class="analytics-pill">
+                <div class="ap-label">This Month Payments</div>
+                <div class="ap-value red">{{ month_payments|floatformat:2 }} EGP</div>
+            </div>
+            <div class="analytics-pill">
+                <div class="ap-label">Last 30 Days Txns</div>
+                <div class="ap-value blue">{{ last_30_tx_count }}</div>
+            </div>
+        </div>
+
+        <!-- Spending Chart -->
+        <div class="transactions-card mt-3">
+            <div class="transactions-header">
+                <h3>Monthly Spending</h3>
+                <span style="font-size:12px;color:#718096;">Last 6 months</span>
+            </div>
+            <div class="chart-container">
+                <canvas id="spendingChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="transactions-card mt-3">
+            <div class="transactions-header">
+                <h3>Recent Activity</h3>
+                <a href="{% url 'wallet:transactions' %}" class="btn-view-all">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="wallet-table">
+                    <thead>
+                        <tr>
+                            <th>SERVICE / ENTITY</th>
+                            <th>DATE</th>
+                            <th>STATUS</th>
+                            <th>AMOUNT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for txn in recent_transactions %}
+                        <tr>
+                            <td>
+                                <div class="txn-entity">
+                                    <div class="entity-icon entity-{{ txn.transaction_type }}">
+                                        {% if txn.transaction_type == "deposit" %}<i class="ri-bank-line"></i>
+                                        {% elif txn.transaction_type == "payment" %}<i class="ri-stethoscope-line"></i>
+                                        {% elif txn.transaction_type == "refund" %}<i class="ri-refund-2-line"></i>
+                                        {% else %}<i class="ri-exchange-line"></i>{% endif %}
+                                    </div>
+                                    <div>
+                                        <p class="entity-name">{{ txn.description|truncatechars:38 }}</p>
+                                        {% if txn.reference %}
+                                            <p class="entity-ref">{{ txn.reference }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="txn-date">{{ txn.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <span class="badge-status badge-{{ txn.status }}">
+                                    {{ txn.get_status_display }}
+                                </span>
+                            </td>
+                            <td class="txn-amount {% if txn.is_credit %}credit{% else %}debit{% endif %}">
+                                {% if txn.is_credit %}+{% else %}-{% endif %}{{ txn.amount|floatformat:2 }} EGP
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="empty-state">No transactions yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="col-lg-4">
+
+        <!-- Saved Cards -->
+        <div class="saved-cards-widget">
+            <div class="widget-header">
+                <h4>Saved Cards</h4>
+                <a href="{% url 'wallet:saved_cards' %}" class="widget-edit">Edit</a>
+            </div>
+
+            {% for card in saved_cards %}
+            <div class="payment-card payment-card--{{ card.card_type }}">
+                <div class="card-top">
+                    <span class="card-brand">
+                        {% if card.card_type == "visa" %}VISA
+                        {% else %}
+                            <span class="mc-logo">
+                                <span class="mc-red"></span>
+                                <span class="mc-orange"></span>
+                            </span>
+                        {% endif %}
+                    </span>
+                    <i class="ri-nfc-line card-nfc"></i>
+                </div>
+                <p class="card-number">&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; {{ card.last4 }}</p>
+                <div class="card-bottom">
+                    <div>
+                        <p class="card-field-label">CARD HOLDER</p>
+                        <p class="card-field-value">{{ card.cardholder_name }}</p>
+                    </div>
+                    <div>
+                        <p class="card-field-label">EXPIRES</p>
+                        <p class="card-field-value">{{ card.expiry }}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-cards-placeholder">
+                <i class="ri-bank-card-line"></i>
+                <p>No saved cards yet</p>
+            </div>
+            {% endfor %}
+
+            <button class="btn-add-card"
+                    data-bs-toggle="modal" data-bs-target="#depositModal">
+                <i class="ri-bank-card-line"></i> Add New Method
+            </button>
+        </div>
+
+        <!-- Weekly spending mini-chart -->
+        <div class="transactions-card mt-3">
+            <div class="transactions-header">
+                <h3>This Week</h3>
+                <span style="font-size:12px;color:#718096;">Spending</span>
+            </div>
+            <div class="chart-container" style="height:140px;">
+                <canvas id="weeklyChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Health Saver Plan -->
+        <div class="promo-banner mt-3">
+            <div class="promo-content">
+                <h5>Health Saver Plan</h5>
+                <p>Deposit 5,000 EGP or more to unlock a 5% instant cashback on all pharmacy orders.</p>
+                <a href="{% url 'wallet:deposit' %}" class="promo-link">Learn More &rarr;</a>
+            </div>
+            <div class="promo-icon"><i class="ri-heart-pulse-line"></i></div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+<div class="modal fade" id="depositModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content wallet-modal">
+            <div class="modal-body p-4">
+                <h4 class="modal-title-custom">Add Funds to Wallet</h4>
+                <p class="modal-subtitle">Enter your card details to securely add funds.</p>
+                <form method="post" action="{% url 'wallet:deposit' %}">
+                    {% csrf_token %}
+                    <div class="form-group-wallet">
+                        <label>AMOUNT TO ADD (EGP)</label>
+                        <input type="number" name="amount" class="wallet-input" placeholder="0.00" min="1" step="0.01" required>
+                    </div>
+                    <div class="form-group-wallet">
+                        <label>CARDHOLDER NAME</label>
+                        <input type="text" name="cardholder_name" class="wallet-input" placeholder="Full name on card">
+                    </div>
+                    <div class="form-group-wallet">
+                        <label>CARD NUMBER</label>
+                        <div class="input-with-icon">
+                            <input type="text" name="card_number" class="wallet-input" placeholder="0000 0000 0000 0000" maxlength="19" id="cardNumberInput">
+                            <i class="ri-bank-card-line input-icon"></i>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="form-group-wallet">
+                                <label>EXPIRY DATE (MM/YY)</label>
+                                <input type="text" name="expiry" class="wallet-input" placeholder="MM/YY" maxlength="5">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group-wallet">
+                                <label>CVV</label>
+                                <input type="password" name="cvv" class="wallet-input" placeholder="&bull;&bull;&bull;" maxlength="4">
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="card_type" id="cardTypeInput" value="visa">
+                    <button type="submit" class="btn-wallet btn-wallet--primary w-100 mt-3">Confirm &amp; Add Funds</button>
+                    <button type="button" class="btn-wallet btn-wallet--text w-100 mt-2" data-bs-dismiss="modal">Cancel</button>
+                    <p class="secure-note mt-3"><i class="ri-lock-line"></i> PCI-DSS COMPLIANT SECURE PAYMENT</p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="withdrawModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content wallet-modal">
+            <div class="modal-body p-4">
+                <h4 class="modal-title-custom">Withdraw to Bank</h4>
+                <p class="modal-subtitle">Enter your bank details to process the withdrawal.</p>
+                <form method="post" action="{% url 'wallet:withdraw' %}">
+                    {% csrf_token %}
+                    <div class="form-group-wallet">
+                        <label>AMOUNT (EGP)</label>
+                        <input type="number" name="amount" class="wallet-input" placeholder="0.00" min="1" step="0.01" required>
+                        <small class="balance-hint">Available: {{ wallet.balance|floatformat:2 }} EGP</small>
+                    </div>
+                    <div class="form-group-wallet">
+                        <label>BANK NAME</label>
+                        <input type="text" name="bank_name" class="wallet-input" placeholder="e.g. CIB, NBE, Banque Misr">
+                    </div>
+                    <div class="form-group-wallet">
+                        <label>ACCOUNT HOLDER NAME</label>
+                        <input type="text" name="account_holder" class="wallet-input" placeholder="Full name">
+                    </div>
+                    <div class="form-group-wallet">
+                        <label>ACCOUNT NUMBER / IBAN</label>
+                        <input type="text" name="account_number" class="wallet-input" placeholder="Account number">
+                    </div>
+                    <button type="submit" class="btn-wallet btn-wallet--primary w-100 mt-3">Confirm Withdrawal</button>
+                    <button type="button" class="btn-wallet btn-wallet--text w-100 mt-2" data-bs-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+const chartDefaults = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#718096' } },
+        y: { grid: { color: '#F0F4F8' }, ticks: { font: { size: 11 }, color: '#718096' } }
+    }
+};
+
+{% if template_variant == "provider" %}
+// Provider: monthly earnings bar chart
+const earningsCtx = document.getElementById('earningsChart');
+if (earningsCtx) {
+    new Chart(earningsCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ chart_labels_json|safe }},
+            datasets: [{
+                label: 'Earnings (EGP)',
+                data: {{ chart_data_json|safe }},
+                backgroundColor: 'rgba(29,137,228,0.8)',
+                borderRadius: 6,
+            }]
+        },
+        options: chartDefaults
+    });
+}
+{% else %}
+// Consumer: monthly spending line chart
+const spendCtx = document.getElementById('spendingChart');
+if (spendCtx) {
+    new Chart(spendCtx, {
+        type: 'line',
+        data: {
+            labels: {{ spend_labels_json|safe }},
+            datasets: [{
+                label: 'Spending (EGP)',
+                data: {{ spend_data_json|safe }},
+                borderColor: '#EF4444',
+                backgroundColor: 'rgba(239,68,68,0.08)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#EF4444',
+                pointRadius: 4,
+            }]
+        },
+        options: chartDefaults
+    });
+}
+
+// Weekly spending bar chart
+const weekCtx = document.getElementById('weeklyChart');
+if (weekCtx) {
+    new Chart(weekCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ weekly_labels_json|safe }},
+            datasets: [{
+                label: 'Spending (EGP)',
+                data: {{ weekly_data_json|safe }},
+                backgroundColor: 'rgba(29,137,228,0.7)',
+                borderRadius: 4,
+            }]
+        },
+        options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, display: false } } }
+    });
+}
+{% endif %}
+</script>
+{% endblock %}

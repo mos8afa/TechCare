@@ -1,0 +1,135 @@
+{% extends 'wallet/base.html' %}
+{% load static %}
+
+{% block page_title %}Saved Cards{% endblock %}
+{% block sub_cards %}active{% endblock %}
+
+{% block topbar_title %}
+    <div>
+        <h2 class="page-title">Saved Cards</h2>
+        <p class="page-subtitle">Manage your payment methods.</p>
+    </div>
+{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+
+    <!-- Cards List -->
+    <div class="col-lg-7">
+        <div class="transactions-card">
+            <div class="transactions-header">
+                <h3>Your Cards</h3>
+            </div>
+
+            {% for card in saved_cards %}
+            <div class="saved-card-row">
+                <div class="payment-card payment-card--{{ card.card_type }} payment-card--sm">
+                    <div class="card-top">
+                        <span class="card-brand">
+                            {% if card.card_type == 'visa' %}VISA
+                            {% else %}<span class="mc-logo"><span class="mc-red"></span><span class="mc-orange"></span></span>{% endif %}
+                        </span>
+                        <i class="ri-nfc-line card-nfc"></i>
+                    </div>
+                    <p class="card-number">•••• •••• •••• {{ card.last4 }}</p>
+                    <div class="card-bottom">
+                        <div>
+                            <p class="card-field-label">CARD HOLDER</p>
+                            <p class="card-field-value">{{ card.cardholder_name }}</p>
+                        </div>
+                        <div>
+                            <p class="card-field-label">EXPIRES</p>
+                            <p class="card-field-value">{{ card.expiry }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="saved-card-actions">
+                    {% if card.is_default %}
+                        <span class="badge-default">Default</span>
+                    {% else %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="set_default">
+                            <input type="hidden" name="card_id" value="{{ card.id }}">
+                            <button type="submit" class="btn-card-action btn-card-action--ghost">Set Default</button>
+                        </form>
+                    {% endif %}
+                    <form method="post" onsubmit="return confirm('Remove this card?')">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="card_id" value="{{ card.id }}">
+                        <button type="submit" class="btn-card-action btn-card-action--danger">
+                            <i class="ri-delete-bin-line"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state-full">
+                <i class="ri-bank-card-line"></i>
+                <p>No saved cards yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Add New Card -->
+    <div class="col-lg-5">
+        <div class="form-card">
+            <div class="form-card-header">
+                <div class="form-card-icon">
+                    <i class="ri-add-circle-line"></i>
+                </div>
+                <div>
+                    <h4>Add New Card</h4>
+                    <p>Save a card for faster payments.</p>
+                </div>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add">
+
+                <div class="form-group-wallet">
+                    <label>CARD TYPE</label>
+                    <select name="card_type" class="wallet-select">
+                        <option value="visa">Visa</option>
+                        <option value="mastercard">Mastercard</option>
+                    </select>
+                </div>
+                <div class="form-group-wallet">
+                    <label>CARDHOLDER NAME</label>
+                    <input type="text" name="cardholder_name" class="wallet-input" placeholder="Full name on card" required>
+                </div>
+                <div class="form-group-wallet">
+                    <label>CARD NUMBER</label>
+                    <div class="input-with-icon">
+                        <input type="text" name="card_number" class="wallet-input"
+                               placeholder="0000 0000 0000 0000" maxlength="19" id="cardNumberInput" required>
+                        <i class="ri-bank-card-line input-icon"></i>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="form-group-wallet">
+                            <label>EXPIRY (MM/YY)</label>
+                            <input type="text" name="expiry" class="wallet-input" placeholder="MM/YY" maxlength="5" required>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group-wallet">
+                            <label>CVV</label>
+                            <input type="password" name="cvv" class="wallet-input" placeholder="•••" maxlength="4">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-wallet btn-wallet--primary w-100 mt-3">
+                    Save Card
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

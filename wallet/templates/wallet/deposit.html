@@ -1,0 +1,103 @@
+{% extends 'wallet/base.html' %}
+{% load static %}
+
+{% block page_title %}Add Funds{% endblock %}
+
+{% block topbar_title %}
+    <div>
+        <h2 class="page-title">Add Funds</h2>
+        <p class="page-subtitle">Top up your wallet balance securely.</p>
+    </div>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+        <div class="form-card">
+            <div class="form-card-header">
+                <div class="form-card-icon">
+                    <i class="ri-add-circle-line"></i>
+                </div>
+                <div>
+                    <h4>Add Funds to Wallet</h4>
+                    <p>Enter your card details to securely add funds.</p>
+                </div>
+            </div>
+
+            <form method="post" action="{% url 'wallet:deposit' %}">
+                {% csrf_token %}
+
+                <div class="form-group-wallet">
+                    <label>AMOUNT TO ADD (EGP)</label>
+                    <input type="number" name="amount" class="wallet-input" placeholder="0.00"
+                           min="1" step="0.01" required autofocus>
+                </div>
+
+                <div class="form-group-wallet">
+                    <label>CARDHOLDER NAME</label>
+                    <input type="text" name="cardholder_name" class="wallet-input"
+                           placeholder="Full name on card">
+                </div>
+
+                <div class="form-group-wallet">
+                    <label>CARD NUMBER</label>
+                    <div class="input-with-icon">
+                        <input type="text" name="card_number" class="wallet-input"
+                               placeholder="0000 0000 0000 0000" maxlength="19" id="cardNumberInput">
+                        <i class="ri-bank-card-line input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="form-group-wallet">
+                            <label>EXPIRY DATE (MM/YY)</label>
+                            <input type="text" name="expiry" class="wallet-input"
+                                   placeholder="MM/YY" maxlength="5">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group-wallet">
+                            <label>CVV <i class="ri-question-line" title="3-digit code on back of card"></i></label>
+                            <input type="password" name="cvv" class="wallet-input"
+                                   placeholder="•••" maxlength="4">
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" name="card_type" id="cardTypeInput" value="visa">
+
+                <button type="submit" class="btn-wallet btn-wallet--primary w-100 mt-3">
+                    Confirm &amp; Add Funds
+                </button>
+                <a href="{% url 'wallet:dashboard' %}" class="btn-wallet btn-wallet--text w-100 mt-2">
+                    Cancel
+                </a>
+
+                <p class="secure-note mt-3">
+                    <i class="ri-lock-line"></i> PCI-DSS COMPLIANT SECURE PAYMENT
+                </p>
+            </form>
+        </div>
+
+        <!-- Quick amounts -->
+        <div class="quick-amounts mt-3">
+            <p class="quick-label">Quick amounts:</p>
+            <div class="quick-btns">
+                <button class="quick-btn" onclick="setAmount(100)">100 EGP</button>
+                <button class="quick-btn" onclick="setAmount(500)">500 EGP</button>
+                <button class="quick-btn" onclick="setAmount(1000)">1,000 EGP</button>
+                <button class="quick-btn" onclick="setAmount(5000)">5,000 EGP</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function setAmount(val) {
+    document.querySelector('input[name="amount"]').value = val;
+}
+</script>
+{% endblock %}

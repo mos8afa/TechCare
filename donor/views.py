@@ -162,7 +162,9 @@ def donor_requests(request, category, type):
         all_reqs = donor.doctor_requests.all()
 
         if type == 'booking':
-            doctors = Doctor.objects.filter(slots__isnull=False).distinct()
+            from wallet.services.provider_visibility_service import filter_visible_doctors
+            all_doctors = Doctor.objects.filter(slots__isnull=False).distinct()
+            doctors = filter_visible_doctors(all_doctors)
             for doc in doctors:
                 avg = doc.rates.aggregate(Avg('rate'))['rate__avg'] or 0
                 doc.avg_rating = round(avg)
@@ -201,7 +203,9 @@ def donor_requests(request, category, type):
         all_reqs = donor.nurse_requests.all()
 
         if type == 'booking':
-            nurses = Nurse.objects.filter(slots__isnull=False).distinct()
+            from wallet.services.provider_visibility_service import filter_visible_nurses
+            all_nurses = Nurse.objects.filter(slots__isnull=False).distinct()
+            nurses = filter_visible_nurses(all_nurses)
             for nurse in nurses:
                 avg = nurse.rates.aggregate(Avg('rate'))['rate__avg'] or 0
                 nurse.avg_rating = round(avg)

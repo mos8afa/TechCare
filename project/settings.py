@@ -27,13 +27,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework_simplejwt',
+    'drf_spectacular',          # API documentation (Swagger / OpenAPI)
     'api',
     'accounts',
     'doctor.apps.DoctorConfig',
-    'wallet',
+    'wallet.apps.WalletConfig',
     'nurse.apps.NurseConfig',
     'patient',
-    'donor', 
+    'donor',
 ]
 
 MIDDLEWARE = [
@@ -49,7 +50,47 @@ MIDDLEWARE = [
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    # Phase 7: Standardized pagination
+    'DEFAULT_PAGINATION_CLASS': 'wallet.pagination.WalletPageNumberPagination',
+    'PAGE_SIZE': 20,
+    # Phase 7: Filtering & ordering
+    'DEFAULT_FILTER_BACKENDS': [
+        'rest_framework.filters.OrderingFilter',
+        'rest_framework.filters.SearchFilter',
+    ],
+    # Phase 4: Default throttling
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'user':            '200/min',
+        'wallet_deposit':  '10/min',
+        'wallet_withdraw': '5/min',
+        'wallet_read':     '60/min',
+        'wallet_anon':     '5/min',
+    },
+    # Phase 8: drf-spectacular schema generation
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# ── drf-spectacular (Swagger / OpenAPI) ─────────────────────
+SPECTACULAR_SETTINGS = {
+    'TITLE':       'TechCare Wallet API',
+    'DESCRIPTION': 'Production-grade wallet system for TechCare Medical Portal.',
+    'VERSION':     '2.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'TAGS': [
+        {'name': 'Wallet',        'description': 'Wallet balance and summary'},
+        {'name': 'Transactions',  'description': 'Transaction history and filtering'},
+        {'name': 'Deposits',      'description': 'Add funds to wallet'},
+        {'name': 'Withdrawals',   'description': 'Withdraw funds from wallet'},
+        {'name': 'Cards',         'description': 'Saved payment methods'},
+        {'name': 'Notifications', 'description': 'Wallet notifications'},
+        {'name': 'Analytics',     'description': 'Dashboard analytics and charts'},
+        {'name': 'Ledger',        'description': 'Immutable financial ledger'},
+    ],
 }
 
 SIMPLE_JWT = {

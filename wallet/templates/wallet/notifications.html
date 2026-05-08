@@ -1,0 +1,52 @@
+{% extends 'wallet/base.html' %}
+{% load static %}
+
+{% block page_title %}Notifications{% endblock %}
+{% block nav_notif_doctor %}active{% endblock %}
+{% block nav_notif_nurse %}active{% endblock %}
+{% block nav_notif_patient %}active{% endblock %}
+{% block nav_notif_donor %}active{% endblock %}
+
+{% block topbar_title %}
+    <div>
+        <h2 class="page-title">Notifications</h2>
+        <p class="page-subtitle">Stay updated on all your wallet activity.</p>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+<div class="notifications-list">
+    {% for notif in notifications %}
+    <div class="notif-card {% if not notif.is_read %}notif-card--unread{% endif %}">
+        <div class="notif-card-icon notif-{{ notif.notif_type }}">
+            {% if notif.notif_type == 'deposit' %}
+                <i class="ri-arrow-down-circle-line"></i>
+            {% elif notif.notif_type == 'withdraw' %}
+                <i class="ri-arrow-up-circle-line"></i>
+            {% elif notif.notif_type == 'payment' %}
+                <i class="ri-bank-card-line"></i>
+            {% else %}
+                <i class="ri-information-line"></i>
+            {% endif %}
+        </div>
+        <div class="notif-card-body">
+            <div class="notif-card-header-row">
+                <h5 class="notif-card-title">{{ notif.title }}</h5>
+                <span class="notif-card-time">{{ notif.created_at|timesince }} ago</span>
+            </div>
+            <p class="notif-card-message">{{ notif.message }}</p>
+        </div>
+        {% if not notif.is_read %}
+            <span class="unread-dot"></span>
+        {% endif %}
+    </div>
+    {% empty %}
+    <div class="empty-state-full">
+        <i class="ri-notification-off-line"></i>
+        <p>No notifications yet.</p>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

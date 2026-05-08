@@ -1,0 +1,180 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provider Visibility Report — TechCare Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/wallet.css' %}">
+    <style>
+        body { background: #F4F7FC; font-family: 'Inter', sans-serif; }
+        .admin-header { background: #1D89E4; color: #fff; padding: 16px 32px; display: flex; align-items: center; gap: 16px; }
+        .admin-header h1 { font-size: 18px; font-weight: 700; margin: 0; }
+        .back-link { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 13px; }
+        .admin-body { padding: 28px; }
+        .section-card { background: #fff; border-radius: 14px; padding: 24px; border: 1px solid #E1E6EC; margin-bottom: 24px; }
+        .section-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+        .admin-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .admin-table th { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: #718096; text-transform: uppercase; padding: 10px 12px; border-bottom: 1px solid #E1E6EC; text-align: left; }
+        .admin-table td { padding: 12px; border-bottom: 1px solid #F0F4F8; vertical-align: middle; }
+        .admin-table tr:last-child td { border-bottom: none; }
+        .vis-ok  { background: #DCFCE7; color: #166534; padding: 4px 12px; border-radius: 50px; font-size: 11px; font-weight: 700; }
+        .vis-err { background: #FEE2E2; color: #991B1B; padding: 4px 12px; border-radius: 50px; font-size: 11px; font-weight: 700; }
+        .amount-credit { color: #10b981; font-weight: 700; }
+        .amount-debit  { color: #EF4444; font-weight: 700; }
+        .detail-link { color: #1D89E4; font-weight: 600; font-size: 12px; text-decoration: none; }
+        .rule-box { background: #EFF6FF; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; border-left: 4px solid #1D89E4; }
+        .rule-box h5 { font-size: 14px; font-weight: 700; color: #1D89E4; margin-bottom: 8px; }
+        .rule-box p  { font-size: 13px; color: #374151; margin: 0; }
+    </style>
+</head>
+<body>
+
+<div class="admin-header">
+    <a href="{% url 'wallet:admin_dashboard' %}" class="back-link"><i class="ri-arrow-left-line"></i> Back to Dashboard</a>
+    <h1><i class="ri-eye-line"></i> Provider Visibility Report</h1>
+</div>
+
+<div class="admin-body">
+
+    <!-- Business Rule Explanation -->
+    <div class="rule-box">
+        <h5>Visibility Business Rules</h5>
+        <p>
+            <strong>Doctor:</strong> Visible only if <code>wallet.balance ≥ 20% of consultation price</code><br>
+            <strong>Nurse:</strong> Visible only if <code>wallet.balance ≥ 20% of highest service price</code><br>
+            Providers below threshold are hidden from patient/donor booking pages. This is enforced server-side.
+        </p>
+    </div>
+
+    <!-- Summary -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="section-card" style="padding:16px;text-align:center;">
+                <div style="font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;margin-bottom:6px;">Visible Doctors</div>
+                <div style="font-size:28px;font-weight:800;color:#10b981;">{{ visible_doctors }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="section-card" style="padding:16px;text-align:center;">
+                <div style="font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;margin-bottom:6px;">Hidden Doctors</div>
+                <div style="font-size:28px;font-weight:800;color:#EF4444;">{{ doctor_statuses|length|add:"-"|add:visible_doctors }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="section-card" style="padding:16px;text-align:center;">
+                <div style="font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;margin-bottom:6px;">Visible Nurses</div>
+                <div style="font-size:28px;font-weight:800;color:#10b981;">{{ visible_nurses }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="section-card" style="padding:16px;text-align:center;">
+                <div style="font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;margin-bottom:6px;">Hidden Nurses</div>
+                <div style="font-size:28px;font-weight:800;color:#EF4444;">{{ nurse_statuses|length|add:"-"|add:visible_nurses }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctors Table -->
+    <div class="section-card">
+        <div class="section-title"><i class="ri-user-heart-line" style="color:#1D89E4"></i> Doctors ({{ doctor_statuses|length }} total)</div>
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Doctor</th>
+                        <th>Consultation Price</th>
+                        <th>Required (20%)</th>
+                        <th>Wallet Balance</th>
+                        <th>Shortfall</th>
+                        <th>Status</th>
+                        <th>Detail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in doctor_statuses %}
+                    <tr>
+                        <td style="font-weight:600;">{{ s.name }}</td>
+                        <td>{{ s.price|floatformat:2 }} EGP</td>
+                        <td>{{ s.threshold|floatformat:2 }} EGP</td>
+                        <td class="{% if s.is_visible %}amount-credit{% else %}amount-debit{% endif %}">
+                            {{ s.balance|floatformat:2 }} EGP
+                        </td>
+                        <td>
+                            {% if s.shortfall > 0 %}
+                                <span class="amount-debit">{{ s.shortfall|floatformat:2 }} EGP</span>
+                            {% else %}—{% endif %}
+                        </td>
+                        <td>
+                            {% if s.is_visible %}
+                                <span class="vis-ok"><i class="ri-eye-line"></i> Visible</span>
+                            {% else %}
+                                <span class="vis-err"><i class="ri-eye-off-line"></i> Hidden</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% comment %}Link to wallet detail — need user pk{% endcomment %}
+                            <span style="color:#718096;font-size:12px;">—</span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7" style="text-align:center;color:#718096;padding:20px;">No doctors found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Nurses Table -->
+    <div class="section-card">
+        <div class="section-title"><i class="ri-nurse-line" style="color:#1D89E4"></i> Nurses ({{ nurse_statuses|length }} total)</div>
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Nurse</th>
+                        <th>Highest Service Price</th>
+                        <th>Required (20%)</th>
+                        <th>Wallet Balance</th>
+                        <th>Shortfall</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in nurse_statuses %}
+                    <tr>
+                        <td style="font-weight:600;">{{ s.name }}</td>
+                        <td>{{ s.max_service_price|floatformat:2 }} EGP</td>
+                        <td>{{ s.threshold|floatformat:2 }} EGP</td>
+                        <td class="{% if s.is_visible %}amount-credit{% else %}amount-debit{% endif %}">
+                            {{ s.balance|floatformat:2 }} EGP
+                        </td>
+                        <td>
+                            {% if s.shortfall > 0 %}
+                                <span class="amount-debit">{{ s.shortfall|floatformat:2 }} EGP</span>
+                            {% else %}—{% endif %}
+                        </td>
+                        <td>
+                            {% if s.is_visible %}
+                                <span class="vis-ok"><i class="ri-eye-line"></i> Visible</span>
+                            {% else %}
+                                <span class="vis-err"><i class="ri-eye-off-line"></i> Hidden</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" style="text-align:center;color:#718096;padding:20px;">No nurses found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
