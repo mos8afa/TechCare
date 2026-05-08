@@ -887,3 +887,13 @@ def donor_mark_done(request, offer_id):
         donor.save()
     offer.save()
     return redirect('donation:my_offers')
+
+
+@login_required
+def coming_soon(request):
+    feature = request.GET.get('feature', 'This Feature')
+    back_url = request.META.get('HTTP_REFERER', '/')
+    return render(request, 'coming_soon.html', {
+        'feature_name': feature,
+        'back_url': back_url,
+    })

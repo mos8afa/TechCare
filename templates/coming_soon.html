@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coming Soon — TechCare</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f6ff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cs-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 60px 48px;
+            text-align: center;
+            max-width: 480px;
+            width: 90%;
+            box-shadow: 0 8px 40px rgba(29, 137, 228, 0.10);
+        }
+
+        .cs-icon-wrap {
+            width: 88px;
+            height: 88px;
+            background: linear-gradient(135deg, #e0f0ff 0%, #c7e3ff 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 28px;
+        }
+
+        .cs-icon-wrap i {
+            font-size: 40px;
+            color: #1D89E4;
+        }
+
+        .cs-badge {
+            display: inline-block;
+            background: #e0f0ff;
+            color: #1D89E4;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 18px;
+        }
+
+        .cs-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .cs-subtitle {
+            font-size: 15px;
+            color: #64748b;
+            line-height: 1.7;
+            margin-bottom: 36px;
+        }
+
+        .cs-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #1D89E4;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 12px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .cs-back-btn:hover {
+            background: #1670c0;
+        }
+
+        .cs-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 36px;
+        }
+
+        .cs-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            animation: pulse 1.4s ease-in-out infinite;
+        }
+
+        .cs-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .cs-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(0.85); }
+            50%       { opacity: 1;   transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="cs-card">
+        <div class="cs-icon-wrap">
+            <i class="bi bi-rocket-takeoff"></i>
+        </div>
+        <span class="cs-badge">Coming Soon</span>
+        <h1 class="cs-title">{{ feature_name|default:"This Feature" }}</h1>
+        <p class="cs-subtitle">
+            We're working hard to bring you something amazing.<br>
+            This feature will be available very soon!
+        </p>
+        <a href="{{ back_url }}" class="cs-back-btn">
+            <i class="bi bi-arrow-left"></i>
+            Go Back
+        </a>
+        <div class="cs-dots">
+            <span></span><span></span><span></span>
+        </div>
+    </div>
+</body>
+</html>

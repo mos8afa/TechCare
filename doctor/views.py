@@ -492,3 +492,13 @@ def my_blood_requests_done(request):
     return render(request, 'doctor/my_blood_requests_done.html', {
         'completed_offers': completed_offers, 'name': name, 'profile_pic': profile_pic,
     })
+
+
+@login_required
+def coming_soon(request):
+    feature = request.GET.get('feature', 'This Feature')
+    back_url = request.META.get('HTTP_REFERER', '/')
+    return render(request, 'coming_soon.html', {
+        'feature_name': feature,
+        'back_url': back_url,
+    })

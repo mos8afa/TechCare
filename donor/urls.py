@@ -20,4 +20,5 @@ urlpatterns = [
     path('nurse-request/<int:request_id>/done/', views.mark_nurse_done, name='mark_nurse_done'),
     path('nurse-request/<int:request_id>/rate/', views.rate_nurse, name='rate_nurse'),
     path('blood/request/my/pending/', views.my_blood_requests_pending, name='my_blood_requests_pending'),
+    path('coming-soon/', views.coming_soon, name='coming_soon'),
 ]

@@ -1,4 +1,4 @@
-{% extends 'doctor_base.html' %}
+﻿{% extends 'doctor_base.html' %}
 
 {% block title %}<title>Accepted Requests</title>{% endblock %}
 
@@ -10,18 +10,14 @@
             <a href="{% url 'doctor:doctor_requests' 'pending' %}" class="aside-item active">
                 <i class="ri-file-list-line"></i><span>Requests</span>
             </a>
-            <a href="#" class="aside-item">
-                <i class="fa-regular fa-bell"></i><span>Notifications</span>
-            </a>
+            <a href="{% url 'doctor:coming_soon' %}?feature=Notifications" class="aside-item"><i class="fa-regular fa-bell"></i><span>Notifications</span></a>
             <a href="{% url 'doctor:my_blood_requests_pending' %}" class="aside-item">
                 <i class="ri-hand-heart-line"></i><span>Donation</span>
             </a>
             <a href="{% url 'wallet:dashboard' %}" class="aside-item">
                 <i class="ri-wallet-3-line"></i><span>Wallet</span>
             </a>
-            <a href="#" class="aside-item">
-                <i class="ri-error-warning-line"></i><span>Complaints</span>
-            </a>
+            <a href="{% url 'doctor:coming_soon' %}?feature=Complaints" class="aside-item"><i class="ri-error-warning-line"></i><span>Complaints</span></a>
         </aside>
 </aside>
 {% endblock %}

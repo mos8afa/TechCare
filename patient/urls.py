@@ -29,4 +29,5 @@ urlpatterns = [
     path('blood/request/my/accepted/', views.my_blood_requests_accepted, name='my_blood_requests_accepted'),
     path('blood/request/my/done/', views.my_blood_requests_done, name='my_blood_requests_done'),
     path('blood/request/my/pending/', views.my_blood_requests_pending, name='my_blood_requests_pending'),
+    path('coming-soon/', views.coming_soon, name='coming_soon'),
 ]
