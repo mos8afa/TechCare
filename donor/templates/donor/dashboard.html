@@ -172,7 +172,7 @@
                     </div>
                     <div class="wallet-balance-box">
                         <span class="balance-label">AVAILABLE BALANCE</span>
-                        <div class="balance-amount">0.00 EGP</div>
+                        <div class="balance-amount">{{ wallet_balance|floatformat:2 }}EGP</div>
                     </div>
                     <a href="{% url 'wallet:dashboard' %}" class="wallet-go-btn" style="display:inline-block;margin-top:12px;font-size:13px;font-weight:600;color:#1D89E4;">
                         Manage Wallet &rarr;

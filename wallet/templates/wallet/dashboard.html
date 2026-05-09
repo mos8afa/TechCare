@@ -101,39 +101,7 @@
         </div>
     </div>
 
-    <!-- Monthly Earnings Chart -->
-    <div class="col-lg-6">
-        <div class="transactions-card">
-            <div class="transactions-header">
-                <h3>Monthly Earnings</h3>
-                <span style="font-size:12px;color:#718096;">Last 6 months</span>
-            </div>
-            <div class="chart-container">
-                <canvas id="earningsChart"></canvas>
-            </div>
-        </div>
-    </div>
 
-    <!-- All-time totals -->
-    <div class="col-lg-6">
-        <div class="transactions-card">
-            <div class="transactions-header"><h3>All-Time Summary</h3></div>
-            <div class="analytics-row">
-                <div class="analytics-pill">
-                    <div class="ap-label">Total Income</div>
-                    <div class="ap-value blue">{{ total_income|floatformat:2 }} EGP</div>
-                </div>
-                <div class="analytics-pill">
-                    <div class="ap-label">Total Fees</div>
-                    <div class="ap-value red">{{ total_fees|floatformat:2 }} EGP</div>
-                </div>
-                <div class="analytics-pill">
-                    <div class="ap-label">Net Profit</div>
-                    <div class="ap-value green">{{ total_net|floatformat:2 }} EGP</div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Recent Transactions -->
     <div class="col-12">
@@ -233,17 +201,6 @@
             <div class="analytics-pill">
                 <div class="ap-label">Last 30 Days Txns</div>
                 <div class="ap-value blue">{{ last_30_tx_count }}</div>
-            </div>
-        </div>
-
-        <!-- Spending Chart -->
-        <div class="transactions-card mt-3">
-            <div class="transactions-header">
-                <h3>Monthly Spending</h3>
-                <span style="font-size:12px;color:#718096;">Last 6 months</span>
-            </div>
-            <div class="chart-container">
-                <canvas id="spendingChart"></canvas>
             </div>
         </div>
 
@@ -350,26 +307,6 @@
             </button>
         </div>
 
-        <!-- Weekly spending mini-chart -->
-        <div class="transactions-card mt-3">
-            <div class="transactions-header">
-                <h3>This Week</h3>
-                <span style="font-size:12px;color:#718096;">Spending</span>
-            </div>
-            <div class="chart-container" style="height:140px;">
-                <canvas id="weeklyChart"></canvas>
-            </div>
-        </div>
-
-        <!-- Health Saver Plan -->
-        <div class="promo-banner mt-3">
-            <div class="promo-content">
-                <h5>Health Saver Plan</h5>
-                <p>Deposit 5,000 EGP or more to unlock a 5% instant cashback on all pharmacy orders.</p>
-                <a href="{% url 'wallet:deposit' %}" class="promo-link">Learn More &rarr;</a>
-            </div>
-            <div class="promo-icon"><i class="ri-heart-pulse-line"></i></div>
-        </div>
     </div>
 </div>
 {% endif %}
@@ -487,47 +424,6 @@ if (earningsCtx) {
             }]
         },
         options: chartDefaults
-    });
-}
-{% else %}
-// Consumer: monthly spending line chart
-const spendCtx = document.getElementById('spendingChart');
-if (spendCtx) {
-    new Chart(spendCtx, {
-        type: 'line',
-        data: {
-            labels: {{ spend_labels_json|safe }},
-            datasets: [{
-                label: 'Spending (EGP)',
-                data: {{ spend_data_json|safe }},
-                borderColor: '#EF4444',
-                backgroundColor: 'rgba(239,68,68,0.08)',
-                borderWidth: 2,
-                fill: true,
-                tension: 0.4,
-                pointBackgroundColor: '#EF4444',
-                pointRadius: 4,
-            }]
-        },
-        options: chartDefaults
-    });
-}
-
-// Weekly spending bar chart
-const weekCtx = document.getElementById('weeklyChart');
-if (weekCtx) {
-    new Chart(weekCtx, {
-        type: 'bar',
-        data: {
-            labels: {{ weekly_labels_json|safe }},
-            datasets: [{
-                label: 'Spending (EGP)',
-                data: {{ weekly_data_json|safe }},
-                backgroundColor: 'rgba(29,137,228,0.7)',
-                borderRadius: 4,
-            }]
-        },
-        options: { ...chartDefaults, scales: { ...chartDefaults.scales, y: { ...chartDefaults.scales.y, display: false } } }
     });
 }
 {% endif %}

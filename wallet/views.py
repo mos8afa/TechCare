@@ -17,8 +17,6 @@ from .services import (
     get_dashboard_summary,
     get_provider_earnings,
     get_monthly_deposits,
-    get_monthly_spending,
-    get_weekly_stats,
 )
 from .constants import PLATFORM_FEE_PERCENT
 
@@ -91,16 +89,6 @@ def wallet_dashboard(request):
         })
     else:
         summary      = get_dashboard_summary(wallet)
-        monthly_dep  = get_monthly_deposits(wallet, months=6)
-        monthly_spend= get_monthly_spending(wallet, months=6)
-        weekly       = get_weekly_stats(wallet)
-
-        dep_labels   = [d['label'] for d in monthly_dep]
-        dep_data     = [float(d['amount']) for d in monthly_dep]
-        spend_labels = [d['label'] for d in monthly_spend]
-        spend_data   = [float(d['amount']) for d in monthly_spend]
-        weekly_labels= [d['day_name'] for d in weekly['daily']]
-        weekly_data  = [float(d['payments']) for d in weekly['daily']]
 
         ctx.update({
             'template_variant':    'consumer',
@@ -112,13 +100,6 @@ def wallet_dashboard(request):
             'month_payments':      summary['month_payments'],
             'last_30_spent':       summary['last_30_spent'],
             'last_30_tx_count':    summary['last_30_tx_count'],
-            # Chart.js data
-            'dep_labels_json':     json.dumps(dep_labels),
-            'dep_data_json':       json.dumps(dep_data),
-            'spend_labels_json':   json.dumps(spend_labels),
-            'spend_data_json':     json.dumps(spend_data),
-            'weekly_labels_json':  json.dumps(weekly_labels),
-            'weekly_data_json':    json.dumps(weekly_data),
         })
 
     return render(request, 'wallet/dashboard.html', ctx)

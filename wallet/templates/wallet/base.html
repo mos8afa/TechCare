@@ -44,7 +44,7 @@
                 <a href="{% url 'doctor:doctor_requests' 'pending' %}" class="nav-item">
                     <i class="ri-file-list-line"></i><span>Requests</span>
                 </a>
-                <a href="#" class="nav-item {% block nav_notif_doctor %}{% endblock %}">
+                <a href="{% url 'doctor:coming_soon' %}?feature=Notifications" class="nav-item {% block nav_notif_doctor %}{% endblock %}">
                     <i class="fa-regular fa-bell"></i><span>Notifications
                     {% if unread_notifications %}<span class="sidebar-badge">{{ unread_notifications }}</span>{% endif %}
                     </span>
@@ -52,7 +52,7 @@
                 <a href="{% url 'wallet:dashboard' %}" class="nav-item {% block nav_wallet %}{% endblock %}">
                     <i class="ri-wallet-3-line"></i><span>Wallet</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="{% url 'doctor:coming_soon' %}?feature=Complaints" class="nav-item">
                     <i class="ri-error-warning-line"></i><span>Complaints</span>
                 </a>
 
@@ -64,7 +64,7 @@
                 <a href="{% url 'nurse:nurse_requests' 'pending' %}" class="nav-item">
                     <i class="ri-file-list-line"></i><span>Requests</span>
                 </a>
-                <a href="{% url 'wallet:notifications' %}" class="nav-item {% block nav_notif_nurse %}{% endblock %}">
+                <a href="{% url 'nurse:coming_soon' %}?feature=Notifications" class="nav-item {% block nav_notif_nurse %}{% endblock %}">
                     <i class="fa-regular fa-bell"></i><span>Notifications
                     {% if unread_notifications %}<span class="sidebar-badge">{{ unread_notifications }}</span>{% endif %}
                     </span>
@@ -72,7 +72,7 @@
                 <a href="{% url 'wallet:dashboard' %}" class="nav-item {% block nav_wallet_nurse %}{% endblock %}">
                     <i class="ri-wallet-3-line"></i><span>Wallet</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="{% url 'nurse:coming_soon' %}?feature=Complaints" class="nav-item">
                     <i class="ri-error-warning-line"></i><span>Complaints</span>
                 </a>
 
@@ -84,7 +84,7 @@
                 <a href="#" class="nav-item">
                     <i class="ri-file-list-line"></i><span>Requests</span>
                 </a>
-                <a href="{% url 'wallet:notifications' %}" class="nav-item {% block nav_notif_patient %}{% endblock %}">
+                <a href="{% url 'patient:coming_soon' %}?feature=Notifications" class="nav-item {% block nav_notif_patient %}{% endblock %}">
                     <i class="fa-regular fa-bell"></i><span>Notifications
                     {% if unread_notifications %}<span class="sidebar-badge">{{ unread_notifications }}</span>{% endif %}
                     </span>
@@ -92,7 +92,7 @@
                 <a href="{% url 'wallet:dashboard' %}" class="nav-item {% block nav_wallet_patient %}{% endblock %}">
                     <i class="ri-wallet-3-line"></i><span>Wallet</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="{% url 'patient:coming_soon' %}?feature=Complaints" class="nav-item">
                     <i class="ri-error-warning-line"></i><span>Complaints</span>
                 </a>
 
@@ -104,7 +104,7 @@
                 <a href="{% url 'donor:donor_requests' 'doctor' 'booking' %}" class="nav-item">
                     <i class="ri-file-list-line"></i><span>Requests</span>
                 </a>
-                <a href="{% url 'wallet:notifications' %}" class="nav-item {% block nav_notif_donor %}{% endblock %}">
+                <a href="{% url 'donor:coming_soon' %}?feature=Notifications" class="nav-item {% block nav_notif_donor %}{% endblock %}">
                     <i class="fa-regular fa-bell"></i><span>Notifications
                     {% if unread_notifications %}<span class="sidebar-badge">{{ unread_notifications }}</span>{% endif %}
                     </span>
@@ -115,7 +115,7 @@
                 <a href="{% url 'wallet:dashboard' %}" class="nav-item {% block nav_wallet_donor %}{% endblock %}">
                     <i class="ri-wallet-3-line"></i><span>Wallet</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="{% url 'donor:coming_soon' %}?feature=Complaints" class="nav-item">
                     <i class="ri-error-warning-line"></i><span>Complaints</span>
                 </a>
 

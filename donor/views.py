@@ -8,6 +8,8 @@ from django.db.models import Avg
 from accounts.models import Doctor, Nurse, SPECIFICATIONS, GOVERNORATES, TimeSlots, get_provider_days_with_dates
 from doctor.models import DoctorRequest
 from datetime import time as time_type, datetime as dt
+
+from wallet.services.provider_visibility_service import _get_wallet_balance
 from .models import BloodDonationRequest, DonorOffer
 from accounts.models import BLOOD_TYPES, GOVERNORATES as GOV_CHOICES
 
@@ -46,6 +48,7 @@ def donor_dashboard(request):
         'nurse_requests': nurse_requests,
         'donations_requests': donations_requests,
         'profile_pic': prfile_pic,
+        'wallet_balance': _get_wallet_balance(request.user),
     })
 
 @login_required

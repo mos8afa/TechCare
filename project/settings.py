@@ -186,8 +186,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True  
 EMAIL_USE_SSL = False  
-EMAIL_HOST_USER = 'imos8afa@gmail.com' 
-EMAIL_HOST_PASSWORD = 'cbfg kfuy yzeh bjmc' 
+EMAIL_HOST_USER = 'techcare.platform.team@gmail.com' 
+EMAIL_HOST_PASSWORD = 'fcfz ppuq mbnj toun' 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
